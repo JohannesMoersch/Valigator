@@ -11,10 +11,10 @@ namespace Newtonsoft.FluentValidation
 		public static RequiredValidator<TValue> Required<TValue>()
 			=> new RequiredValidator<TValue>();
 
-		public static OptionalValidator<Option<TValue>> Optional<TValue>()
+		public static OptionalValidator<TValue> Optional<TValue>()
 			=> new OptionalValidator<TValue>();
 
 		public static OptionalWithDefaultValidator<TValue> Optional<TValue>(TValue defaultValue)
-			=> new OptionalWithDefaultValidator<TValue>();
+			=> new OptionalWithDefaultValidator<TValue>(defaultValue);
 	}
 }

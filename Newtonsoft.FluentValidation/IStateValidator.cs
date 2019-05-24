@@ -5,8 +5,8 @@ using Functional;
 
 namespace Newtonsoft.FluentValidation
 {
-	public interface ISecondaryValidator<T>
+	public interface IStateValidator<TValue>
 	{
-		Result<Option<T>, ValidationError> Validate(Option<T> value);
+		Result<TValue, ValidationError> Validate(bool isSet, TValue value);
 	}
 }

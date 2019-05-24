@@ -5,13 +5,16 @@ using Functional;
 
 namespace Newtonsoft.FluentValidation.DataValidators
 {
-	public struct ValueTypeNotDefaultValidator<TSecondaryValidator, TValue> : ITertiaryValidator<TValue>
-		where TSecondaryValidator : ISecondaryValidator<TValue>
+	public struct ValueTypeNotDefaultValidator<TStateValidator, TValue> : IValueValidator<TValue>
+		where TStateValidator : IStateValidator<TValue>
 		where TValue : struct
 	{
-		private readonly TSecondaryValidator _secondaryValidator;
+		private readonly TStateValidator _stateValidator;
 
-		public Result<Option<TValue>, ValidationError> Validate(TValue value)
-			=> Result.Create(!value.Equals(default(TValue)), () => Option.Some(value), () => new ValidationError("Value must not be default."));
+		public ValueTypeNotDefaultValidator(TStateValidator stateValidator) 
+			=> _stateValidator = stateValidator;
+
+		public Result<Unit, ValidationError> Validate(TValue value)
+			=> Result.Create(!value.Equals(default(TValue)), () => Unit.Value, () => new ValidationError("Value must not be default."));
 	}
 }

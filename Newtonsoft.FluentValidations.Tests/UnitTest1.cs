@@ -1,4 +1,5 @@
 using System;
+using Functional;
 using Newtonsoft.FluentValidation;
 using Xunit;
 
@@ -6,7 +7,7 @@ namespace Newtonsoft.FluentValidations.Tests
 {
 	public class TestModel
 	{
-		public Data<int?> One { get; set; } = Data.Required<int>().Nullable();
+		public Data<Option<int>> One { get; set; } = Data.Required<int>().Nullable();
 	}
 
 	public class UnitTest1
@@ -16,10 +17,10 @@ namespace Newtonsoft.FluentValidations.Tests
 		{
 			var model = new TestModel()
 			{
-				One = 12
+				One = Option.Some(12)
 			};
 
-			int stuff = model.One;
+			Option<int> stuff = model.One;
 		}
 	}
 }

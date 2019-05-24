@@ -5,12 +5,12 @@ using Functional;
 
 namespace Newtonsoft.FluentValidation.DataValidators
 {
-	public struct RequiredValidator<TValue> : IPrimaryValidator<TValue>
+	public struct RequiredValidator<TValue> : IStateValidator<TValue>
 	{
-		public Result<Option<TValue>, ValidationError> Validate(bool isSet, Option<TValue> value)
+		public Result<TValue, ValidationError> Validate(bool isSet, TValue value)
 			=> Result.Create(isSet, value, new ValidationError("A value must be explicitly provided."));
 
 		public static implicit operator Data<TValue>(RequiredValidator<TValue> dataValidator)
-			=> new Data<TValue>(dataValidator);
+			=> new Data<TValue>(null);
 	}
 }

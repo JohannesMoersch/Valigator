@@ -7,8 +7,7 @@ namespace Newtonsoft.FluentValidation
 {
 	public static class PrimaryValidatorExtensions
 	{
-		public static NullableStructValidator<RequiredValidator<TValue>, TValue> Nullable<TValue>(this RequiredValidator<TValue> primaryValidator)
-			where TValue : struct
-			=> new NullableStructValidator<RequiredValidator<TValue>, TValue>(primaryValidator);
+		public static NullableValidator<RequiredValidator<TValue>, TValue> Nullable<TValue>(this RequiredValidator<TValue> primaryValidator)
+			=> new NullableValidator<RequiredValidator<TValue>, TValue>(primaryValidator);
 	}
 }

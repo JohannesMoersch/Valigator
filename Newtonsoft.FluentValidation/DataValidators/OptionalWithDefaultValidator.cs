@@ -5,12 +5,22 @@ using Functional;
 
 namespace Newtonsoft.FluentValidation.DataValidators
 {
-	public class OptionalWithDefaultValidator<TValue> : IDataValidator<TValue>
+	public class OptionalWithDefaultValidator<TValue> : IStateValidator<TValue>
 	{
-		public Result<Unit, ValidationError> Validate(bool isSet, Option<TValue> value)
-			=> Result.Unit<ValidationError>();
+		private readonly TValue _defaultValue;
+
+		public OptionalWithDefaultValidator(TValue defaultValue) 
+			=> _defaultValue = defaultValue;
+
+		public Result<TValue, ValidationError> Validate(bool isSet, TValue value)
+		{
+			if (!isSet)
+				return Result.Success<TValue, ValidationError>(_defaultValue);
+
+			return Result.Create(value != null, () => value, () => new ValidationError("Value cannot be null."));
+		}
 
 		public static implicit operator Data<TValue>(OptionalWithDefaultValidator<TValue> dataValidator)
-			=> new Data<TValue>(dataValidator);
+			=> new Data<TValue>(null);
 	}
 }
