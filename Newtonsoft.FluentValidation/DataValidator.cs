@@ -19,7 +19,19 @@ namespace Newtonsoft.FluentValidation
 			_valueValidator = valueValidator;
 		}
 
-		public Result<TValue, ValidationError> Validate(bool isSet, TValue value) 
-			=> throw new NotImplementedException();
+		public Result<TValue, ValidationError> Validate(object model, bool isSet, TValue value)
+			=> _stateValidator
+				.Validate(model, isSet, value)
+				.Match
+				(
+					success => _valueValidator
+						.Validate(success)
+						.Match
+						(
+							_ => Result.Success<TValue, ValidationError>(success), 
+							Result.Failure<TValue, ValidationError>
+						),
+					Result.Failure<TValue, ValidationError>
+				);
 	}
 }

@@ -8,9 +8,17 @@ namespace Newtonsoft.FluentValidation
 	{
 		private readonly bool _hasBeenSet;
 
-		private readonly IDataValidator<TValue> _dataValidator;
+		private readonly IDataValidator<TValue> _dataValidator; // TODO: Handle this being null
 
 		public TValue Value { get; }
+
+		public Data(TValue value)
+		{
+			Value = value;
+
+			_hasBeenSet = true;
+			_dataValidator = null;
+		}
 
 		public Data(IDataValidator<TValue> dataValidator)
 		{
@@ -31,8 +39,10 @@ namespace Newtonsoft.FluentValidation
 		public Data<TValue> WithValue(TValue value)
 			=> new Data<TValue>(value, _dataValidator);
 
-		public Result<Unit, ValidationError> Validate()
-			=> _dataValidator.Validate(_hasBeenSet, Value).Match(_ => Result.Unit<ValidationError>(), _ => Result.Unit<ValidationError>());
+		public Result<Data<TValue>, ValidationError> Verify(object model)
+			=> _dataValidator
+				.Validate(model, _hasBeenSet, Value)
+				.Match(value => Result.Success<Data<TValue>, ValidationError>(new Data<TValue>(value)), Result.Failure<Data<TValue>, ValidationError>);
 
 		public static implicit operator Data<TValue>(TValue value)
 			=> new Data<TValue>(value, null);

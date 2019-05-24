@@ -7,6 +7,6 @@ namespace Newtonsoft.FluentValidation
 {
 	public interface IDataValidator<TValue>
 	{
-		Result<TValue, ValidationError> Validate(bool isSet, TValue value);
+		Result<TValue, ValidationError> Validate(object model, bool isSet, TValue value);
 	}
 }
