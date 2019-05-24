@@ -5,15 +5,20 @@ using Functional;
 
 namespace Newtonsoft.FluentValidation.DataValidators
 {
-	public struct RangeValidator_Int32 : IValueValidator<int>
+	public struct RangeValidator_Int32<TStateValidator> : IValueValidator<int>
+		where TStateValidator : IStateValidator<int>
 	{
+		private readonly TStateValidator _stateValidator;
+
 		private readonly Option<int> _lessThan;
 		private readonly bool _lessThanOrEqualTo;
 		private readonly Option<int> _greaterThan;
 		private readonly bool _greaterThanOrEqualTo;
 
-		public RangeValidator_Int32(int? lessThan, bool lessThanOrEqualTo, int? greaterThan, bool greaterThanOrEqualTo)
+		public RangeValidator_Int32(TStateValidator stateValidator, int? lessThan, bool lessThanOrEqualTo, int? greaterThan, bool greaterThanOrEqualTo)
 		{
+			_stateValidator = stateValidator;
+
 			_lessThan = Option.FromNullable(lessThan);
 			_lessThanOrEqualTo = lessThanOrEqualTo;
 			_greaterThan = Option.FromNullable(greaterThan);
@@ -43,5 +48,8 @@ namespace Newtonsoft.FluentValidation.DataValidators
 					Result.Failure<Unit, ValidationError>
 				);
 		}
+
+		public static implicit operator Data<int>(RangeValidator_Int32<TStateValidator> valueValidator)
+			=> new Data<int>(new DataValidator<TStateValidator, RangeValidator_Int32<TStateValidator>, int>(valueValidator._stateValidator, valueValidator));
 	}
 }

@@ -15,5 +15,8 @@ namespace Newtonsoft.FluentValidation
 		public static ValueTypeNotDefaultValidator<NullableValidator<RequiredValidator<TValue>, TValue>, Option<TValue>> NotDefault<TValue>(this NullableValidator<RequiredValidator<TValue>, TValue> nullableValidator)
 			where TValue : struct
 			=> new ValueTypeNotDefaultValidator<NullableValidator<RequiredValidator<TValue>, TValue>, Option<TValue>>(nullableValidator);
+
+		public static RangeValidator_Int32<RequiredValidator<int>> InRange(this RequiredValidator<int> requiredValidator, int? lessThan = null, int? lessThanOrEqualTo = null, int? greaterThan = null, int? greaterThanOrEqualTo = null)
+			=> new RangeValidator_Int32<RequiredValidator<int>>(requiredValidator, lessThan ?? lessThanOrEqualTo, lessThanOrEqualTo.HasValue, greaterThan ?? greaterThanOrEqualTo, greaterThanOrEqualTo.HasValue);
 	}
 }
