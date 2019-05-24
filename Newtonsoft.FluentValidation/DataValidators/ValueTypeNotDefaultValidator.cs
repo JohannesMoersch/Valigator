@@ -16,5 +16,8 @@ namespace Newtonsoft.FluentValidation.DataValidators
 
 		public Result<Unit, ValidationError> Validate(TValue value)
 			=> Result.Create(!value.Equals(default(TValue)), () => Unit.Value, () => new ValidationError("Value must not be default."));
+
+		public static implicit operator Data<TValue>(ValueTypeNotDefaultValidator<TStateValidator, TValue> valueValidator)
+			=> new Data<TValue>(new DataValidator<TStateValidator, ValueTypeNotDefaultValidator<TStateValidator, TValue>, TValue>(valueValidator._stateValidator, valueValidator));
 	}
 }

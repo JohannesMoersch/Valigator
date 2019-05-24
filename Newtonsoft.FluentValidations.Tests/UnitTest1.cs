@@ -7,7 +7,9 @@ namespace Newtonsoft.FluentValidations.Tests
 {
 	public class TestModel
 	{
-		public Data<Option<int>> One { get; set; } = Data.Required<int>().Nullable();
+		public Data<Option<int>> One { get; set; } = Data.Required<int>().Nullable().NotDefault();
+
+		public Data<string> Two { get; set; } = Data.Required<string>();
 	}
 
 	public class UnitTest1

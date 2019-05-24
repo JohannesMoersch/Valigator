@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Text;
 using Functional;
 
-namespace Newtonsoft.FluentValidation.DataValidators
+namespace Newtonsoft.FluentValidation
 {
 	public class DataValidator<TStateValidator, TValueValidator, TValue> : IDataValidator<TValue>
 		where TStateValidator : IStateValidator<TValue>
-		where TValueValidator : IStateValidator<TValue>
+		where TValueValidator : IValueValidator<TValue>
 	{
 		private readonly TStateValidator _stateValidator;
 

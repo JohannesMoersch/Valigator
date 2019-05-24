@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Functional;
 using Newtonsoft.FluentValidation.DataValidators;
+using Newtonsoft.FluentValidation.StateValidators;
 
 namespace Newtonsoft.FluentValidation
 {
