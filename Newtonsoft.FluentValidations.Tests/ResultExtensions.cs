@@ -8,9 +8,9 @@ namespace Newtonsoft.FluentValidations.Tests
 	public static class ResultExtensions
 	{
 		public static TSuccess AssureSuccess<TSuccess, TFailure>(this Result<TSuccess, TFailure> result)
-			=> result.Match(_ => _, _ => throw new Exception("Expected failure but found success."));
+			=> result.Match(_ => _, _ => throw new Exception("Expected success but found failure."));
 
 		public static TFailure AssureFailure<TSuccess, TFailure>(this Result<TSuccess, TFailure> result)
-			=> result.Match(_ => throw new Exception("Expected success but found failure."), _ => _);
+			=> result.Match(_ => throw new Exception("Expected failure but found success."), _ => _);
 	}
 }

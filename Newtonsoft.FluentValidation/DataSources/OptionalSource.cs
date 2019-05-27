@@ -6,7 +6,7 @@ using Newtonsoft.FluentValidation.ValueValidators;
 
 namespace Newtonsoft.FluentValidation.DataSources
 {
-	public class OptionalSource<TValue> : IDataSource<Option<TValue>>
+	public struct OptionalSource<TValue> : IDataSource<Option<TValue>>
 	{
 		private static DataValidator<OptionalSource<TValue>, PassthroughValidator<Option<TValue>>, Option<TValue>> Instance { get; } = new DataValidator<OptionalSource<TValue>, PassthroughValidator<Option<TValue>>, Option<TValue>>(default, default);
 
