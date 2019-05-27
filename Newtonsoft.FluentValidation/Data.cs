@@ -1,6 +1,5 @@
 ﻿using System;
 using Functional;
-using Newtonsoft.FluentValidation.DataValidators;
 
 namespace Newtonsoft.FluentValidation
 {

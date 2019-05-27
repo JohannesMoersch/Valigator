@@ -6,7 +6,7 @@ using Functional;
 namespace Newtonsoft.FluentValidation
 {
 	public class DataValidator<TStateValidator, TValueValidator, TValue> : IDataValidator<TValue>
-		where TStateValidator : IStateValidator<TValue>
+		where TStateValidator : IDataSource<TValue>
 		where TValueValidator : IValueValidator<TValue>
 	{
 		private readonly TStateValidator _stateValidator;

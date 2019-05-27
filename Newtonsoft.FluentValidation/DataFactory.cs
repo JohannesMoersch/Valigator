@@ -2,20 +2,23 @@
 using System.Collections.Generic;
 using System.Text;
 using Functional;
-using Newtonsoft.FluentValidation.DataValidators;
-using Newtonsoft.FluentValidation.StateValidators;
+using Newtonsoft.FluentValidation.DataSources;
 
 namespace Newtonsoft.FluentValidation
 {
 	public static class Data
 	{
-		public static RequiredValidator<TValue> Required<TValue>()
-			=> new RequiredValidator<TValue>();
+		public static RequiredSource<TValue> Required<TValue>()
+			=> new RequiredSource<TValue>();
 
-		public static OptionalValidator<TValue> Optional<TValue>()
-			=> new OptionalValidator<TValue>();
+		public static OptionalSource<TValue> Optional<TValue>()
+			=> new OptionalSource<TValue>();
 
-		public static OptionalWithDefaultValidator<TValue> Optional<TValue>(TValue defaultValue)
-			=> new OptionalWithDefaultValidator<TValue>(defaultValue);
+		public static DefaultedSource<TValue> Defaulted<TValue>()
+			where TValue : struct
+			=> new DefaultedSource<TValue>();
+
+		public static DefaultedSource<TValue> Defaulted<TValue>(TValue defaultValue)
+			=> new DefaultedSource<TValue>(defaultValue);
 	}
 }

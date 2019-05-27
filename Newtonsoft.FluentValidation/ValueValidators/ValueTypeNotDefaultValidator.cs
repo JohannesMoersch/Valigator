@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Text;
 using Functional;
 
-namespace Newtonsoft.FluentValidation.DataValidators
+namespace Newtonsoft.FluentValidation.ValueValidators
 {
 	public struct ValueTypeNotDefaultValidator<TStateValidator, TValue> : IValueValidator<TValue>
-		where TStateValidator : IStateValidator<TValue>
+		where TStateValidator : IDataSource<TValue>
 		where TValue : struct
 	{
 		private readonly TStateValidator _stateValidator;
