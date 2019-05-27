@@ -6,7 +6,7 @@ using Functional;
 namespace Newtonsoft.FluentValidation.ValueValidators
 {
 	public struct RangeValidator_Byte<TStateValidator> : IValueValidator<byte>
-	where TStateValidator : IDataSource<byte>
+		where TStateValidator : IDataSource<byte>
 	{
 		private readonly TStateValidator _stateValidator;
 
@@ -56,7 +56,7 @@ namespace Newtonsoft.FluentValidation.ValueValidators
 	}
 
 	public struct RangeValidator_SByte<TStateValidator> : IValueValidator<sbyte>
-	where TStateValidator : IDataSource<sbyte>
+		where TStateValidator : IDataSource<sbyte>
 	{
 		private readonly TStateValidator _stateValidator;
 
@@ -106,7 +106,7 @@ namespace Newtonsoft.FluentValidation.ValueValidators
 	}
 
 	public struct RangeValidator_Int16<TStateValidator> : IValueValidator<short>
-	where TStateValidator : IDataSource<short>
+		where TStateValidator : IDataSource<short>
 	{
 		private readonly TStateValidator _stateValidator;
 
@@ -156,7 +156,7 @@ namespace Newtonsoft.FluentValidation.ValueValidators
 	}
 
 	public struct RangeValidator_UInt16<TStateValidator> : IValueValidator<ushort>
-	where TStateValidator : IDataSource<ushort>
+		where TStateValidator : IDataSource<ushort>
 	{
 		private readonly TStateValidator _stateValidator;
 
@@ -206,7 +206,7 @@ namespace Newtonsoft.FluentValidation.ValueValidators
 	}
 
 	public struct RangeValidator_Int32<TStateValidator> : IValueValidator<int>
-	where TStateValidator : IDataSource<int>
+		where TStateValidator : IDataSource<int>
 	{
 		private readonly TStateValidator _stateValidator;
 
@@ -256,7 +256,7 @@ namespace Newtonsoft.FluentValidation.ValueValidators
 	}
 
 	public struct RangeValidator_UInt32<TStateValidator> : IValueValidator<uint>
-	where TStateValidator : IDataSource<uint>
+		where TStateValidator : IDataSource<uint>
 	{
 		private readonly TStateValidator _stateValidator;
 
@@ -306,7 +306,7 @@ namespace Newtonsoft.FluentValidation.ValueValidators
 	}
 
 	public struct RangeValidator_Int64<TStateValidator> : IValueValidator<long>
-	where TStateValidator : IDataSource<long>
+		where TStateValidator : IDataSource<long>
 	{
 		private readonly TStateValidator _stateValidator;
 
@@ -355,19 +355,19 @@ namespace Newtonsoft.FluentValidation.ValueValidators
 			=> valueValidator.Data;
 	}
 
-	public struct RangeValidator_UInt64<TStateValidator> : IValueValidator<uint>
-	where TStateValidator : IDataSource<uint>
+	public struct RangeValidator_UInt64<TStateValidator> : IValueValidator<ulong>
+		where TStateValidator : IDataSource<ulong>
 	{
 		private readonly TStateValidator _stateValidator;
 
-		private readonly Option<uint> _lessThan;
+		private readonly Option<ulong> _lessThan;
 		private readonly bool _lessThanOrEqualTo;
-		private readonly Option<uint> _greaterThan;
+		private readonly Option<ulong> _greaterThan;
 		private readonly bool _greaterThanOrEqualTo;
 
-		public Data<uint> Data => new Data<uint>(new DataValidator<TStateValidator, RangeValidator_UInt64<TStateValidator>, uint>(_stateValidator, this));
+		public Data<ulong> Data => new Data<ulong>(new DataValidator<TStateValidator, RangeValidator_UInt64<TStateValidator>, ulong>(_stateValidator, this));
 
-		public RangeValidator_UInt64(TStateValidator stateValidator, uint? lessThan, bool lessThanOrEqualTo, uint? greaterThan, bool greaterThanOrEqualTo)
+		public RangeValidator_UInt64(TStateValidator stateValidator, ulong? lessThan, bool lessThanOrEqualTo, ulong? greaterThan, bool greaterThanOrEqualTo)
 		{
 			_stateValidator = stateValidator;
 
@@ -377,7 +377,7 @@ namespace Newtonsoft.FluentValidation.ValueValidators
 			_greaterThanOrEqualTo = greaterThanOrEqualTo;
 		}
 
-		public Result<Unit, ValidationError> Validate(uint value)
+		public Result<Unit, ValidationError> Validate(ulong value)
 		{
 			var lessThanOrEqualTo = _lessThanOrEqualTo;
 			var greaterThan = _greaterThan;
@@ -401,7 +401,7 @@ namespace Newtonsoft.FluentValidation.ValueValidators
 				);
 		}
 
-		public static implicit operator Data<uint>(RangeValidator_UInt64<TStateValidator> valueValidator)
+		public static implicit operator Data<ulong>(RangeValidator_UInt64<TStateValidator> valueValidator)
 			=> valueValidator.Data;
 	}
 }

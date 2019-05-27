@@ -13,7 +13,7 @@ namespace Newtonsoft.FluentValidations.Tests
 		{
 			Data<int> data = Data.Required<int>();
 
-			data.Verify(null).AssureFailure();
+			data.Verify(new object()).AssureFailure();
 		}
 
 		[Fact]
@@ -21,7 +21,7 @@ namespace Newtonsoft.FluentValidations.Tests
 		{
 			Data<int> data = Data.Required<int>();
 
-			data.WithValue(10).Verify(null).AssureSuccess().Value.Should().Be(10);
+			data.WithValue(10).Verify(new object()).AssureSuccess().Value.Should().Be(10);
 		}
 
 		[Fact]
@@ -29,7 +29,7 @@ namespace Newtonsoft.FluentValidations.Tests
 		{
 			Data<int> data = Data.Required<int>().InRange(lessThan: 8);
 
-			data.WithValue(10).Verify(null).AssureFailure();
+			data.WithValue(10).Verify(new object()).AssureFailure();
 		}
 
 		[Fact]
@@ -37,7 +37,7 @@ namespace Newtonsoft.FluentValidations.Tests
 		{
 			Data<int> data = Data.Required<int>().InRange(lessThan: 15);
 
-			data.WithValue(10).Verify(null).AssureSuccess().Value.Should().Be(10);
+			data.WithValue(10).Verify(new object()).AssureSuccess().Value.Should().Be(10);
 		}
 	}
 }
