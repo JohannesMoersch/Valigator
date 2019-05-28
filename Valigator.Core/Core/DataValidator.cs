@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Functional;
+using Valigator.Core.Helpers;
 
 namespace Valigator.Core
 {
@@ -22,18 +23,16 @@ namespace Valigator.Core
 		}
 
 		public Result<TValue, ValidationError> Validate(object model, bool isSet, TValue value)
-			=> _stateValidator
-				.Validate(model, isSet, value)
-				.Match
-				(
-					success => _valueValidator
-						.Validate(success)
-						.Match
-						(
-							_ => Result.Success<TValue, ValidationError>(success), 
-							Result.Failure<TValue, ValidationError>
-						),
-					Result.Failure<TValue, ValidationError>
-				);
+		{
+			if (_stateValidator.Validate(model, isSet, value).TryGetValue(out var success, out var failure))
+			{
+				if (_valueValidator.Validate(success).TryGetValue(out var _, out var error))
+					return Result.Success<TValue, ValidationError>(success);
+
+				return Result.Failure<TValue, ValidationError>(error);
+			}
+
+			return Result.Failure<TValue, ValidationError>(failure);
+		}
 	}
 }

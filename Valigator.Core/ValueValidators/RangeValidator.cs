@@ -8,22 +8,15 @@ using Valigator.Core.Helpers;
 
 namespace Valigator.Core.ValueValidators
 {
-	public struct RangeValidator_Byte<TStateValidator> : IValueValidator<byte>
-		where TStateValidator : IStateValidator<byte>
+	public struct RangeValidator_Byte : IValueValidator<byte>
 	{
-		private readonly TStateValidator _stateValidator;
-
 		private readonly Option<byte> _lessThanValue;
 		private readonly bool _lessThanOrEqualTo;
 		private readonly Option<byte> _greaterThanValue;
 		private readonly bool _greaterThanOrEqualTo;
 
-		public Data<byte> Data => new Data<byte>(new DataValidator<TStateValidator, RangeValidator_Byte<TStateValidator>, byte>(_stateValidator, this));
-
-		public RangeValidator_Byte(TStateValidator stateValidator, byte? lessThan, bool lessThanOrEqualTo, byte? greaterThan, bool greaterThanOrEqualTo)
+		public RangeValidator_Byte(byte? lessThan, bool lessThanOrEqualTo, byte? greaterThan, bool greaterThanOrEqualTo)
 		{
-			_stateValidator = stateValidator;
-
 			_lessThanValue = Option.FromNullable(lessThan);
 			_lessThanOrEqualTo = lessThanOrEqualTo;
 			_greaterThanValue = Option.FromNullable(greaterThan);
@@ -46,27 +39,17 @@ namespace Valigator.Core.ValueValidators
 
 		private ValidationError GetValidationError(byte value)
 			=> new ValidationError("");
-
-		public static implicit operator Data<byte>(RangeValidator_Byte<TStateValidator> valueValidator)
-			=> valueValidator.Data;
 	}
 
-	public struct RangeValidator_SByte<TStateValidator> : IValueValidator<sbyte>
-		where TStateValidator : IStateValidator<sbyte>
+	public struct RangeValidator_SByte : IValueValidator<sbyte>
 	{
-		private readonly TStateValidator _stateValidator;
-
 		private readonly Option<sbyte> _lessThanValue;
 		private readonly bool _lessThanOrEqualTo;
 		private readonly Option<sbyte> _greaterThanValue;
 		private readonly bool _greaterThanOrEqualTo;
 
-		public Data<sbyte> Data => new Data<sbyte>(new DataValidator<TStateValidator, RangeValidator_SByte<TStateValidator>, sbyte>(_stateValidator, this));
-
-		public RangeValidator_SByte(TStateValidator stateValidator, sbyte? lessThan, bool lessThanOrEqualTo, sbyte? greaterThan, bool greaterThanOrEqualTo)
+		public RangeValidator_SByte(sbyte? lessThan, bool lessThanOrEqualTo, sbyte? greaterThan, bool greaterThanOrEqualTo)
 		{
-			_stateValidator = stateValidator;
-
 			_lessThanValue = Option.FromNullable(lessThan);
 			_lessThanOrEqualTo = lessThanOrEqualTo;
 			_greaterThanValue = Option.FromNullable(greaterThan);
@@ -89,27 +72,17 @@ namespace Valigator.Core.ValueValidators
 
 		private ValidationError GetValidationError(sbyte value)
 			=> new ValidationError("");
-
-		public static implicit operator Data<sbyte>(RangeValidator_SByte<TStateValidator> valueValidator)
-			=> valueValidator.Data;
 	}
 
-	public struct RangeValidator_Int16<TStateValidator> : IValueValidator<short>
-		where TStateValidator : IStateValidator<short>
+	public struct RangeValidator_Int16 : IValueValidator<short>
 	{
-		private readonly TStateValidator _stateValidator;
-
 		private readonly Option<short> _lessThanValue;
 		private readonly bool _lessThanOrEqualTo;
 		private readonly Option<short> _greaterThanValue;
 		private readonly bool _greaterThanOrEqualTo;
 
-		public Data<short> Data => new Data<short>(new DataValidator<TStateValidator, RangeValidator_Int16<TStateValidator>, short>(_stateValidator, this));
-
-		public RangeValidator_Int16(TStateValidator stateValidator, short? lessThan, bool lessThanOrEqualTo, short? greaterThan, bool greaterThanOrEqualTo)
+		public RangeValidator_Int16(short? lessThan, bool lessThanOrEqualTo, short? greaterThan, bool greaterThanOrEqualTo)
 		{
-			_stateValidator = stateValidator;
-
 			_lessThanValue = Option.FromNullable(lessThan);
 			_lessThanOrEqualTo = lessThanOrEqualTo;
 			_greaterThanValue = Option.FromNullable(greaterThan);
@@ -132,27 +105,17 @@ namespace Valigator.Core.ValueValidators
 
 		private ValidationError GetValidationError(short value)
 			=> new ValidationError("");
-
-		public static implicit operator Data<short>(RangeValidator_Int16<TStateValidator> valueValidator)
-			=> valueValidator.Data;
 	}
 
-	public struct RangeValidator_UInt16<TStateValidator> : IValueValidator<ushort>
-		where TStateValidator : IStateValidator<ushort>
+	public struct RangeValidator_UInt16 : IValueValidator<ushort>
 	{
-		private readonly TStateValidator _stateValidator;
-
 		private readonly Option<ushort> _lessThanValue;
 		private readonly bool _lessThanOrEqualTo;
 		private readonly Option<ushort> _greaterThanValue;
 		private readonly bool _greaterThanOrEqualTo;
 
-		public Data<ushort> Data => new Data<ushort>(new DataValidator<TStateValidator, RangeValidator_UInt16<TStateValidator>, ushort>(_stateValidator, this));
-
-		public RangeValidator_UInt16(TStateValidator stateValidator, ushort? lessThan, bool lessThanOrEqualTo, ushort? greaterThan, bool greaterThanOrEqualTo)
+		public RangeValidator_UInt16(ushort? lessThan, bool lessThanOrEqualTo, ushort? greaterThan, bool greaterThanOrEqualTo)
 		{
-			_stateValidator = stateValidator;
-
 			_lessThanValue = Option.FromNullable(lessThan);
 			_lessThanOrEqualTo = lessThanOrEqualTo;
 			_greaterThanValue = Option.FromNullable(greaterThan);
@@ -175,27 +138,17 @@ namespace Valigator.Core.ValueValidators
 
 		private ValidationError GetValidationError(ushort value)
 			=> new ValidationError("");
-
-		public static implicit operator Data<ushort>(RangeValidator_UInt16<TStateValidator> valueValidator)
-			=> valueValidator.Data;
 	}
 
-	public struct RangeValidator_Int32<TStateValidator> : IValueValidator<int>
-		where TStateValidator : IStateValidator<int>
+	public struct RangeValidator_Int32 : IValueValidator<int>
 	{
-		private readonly TStateValidator _stateValidator;
-
 		private readonly Option<int> _lessThanValue;
 		private readonly bool _lessThanOrEqualTo;
 		private readonly Option<int> _greaterThanValue;
 		private readonly bool _greaterThanOrEqualTo;
 
-		public Data<int> Data => new Data<int>(new DataValidator<TStateValidator, RangeValidator_Int32<TStateValidator>, int>(_stateValidator, this));
-
-		public RangeValidator_Int32(TStateValidator stateValidator, int? lessThan, bool lessThanOrEqualTo, int? greaterThan, bool greaterThanOrEqualTo)
+		public RangeValidator_Int32(int? lessThan, bool lessThanOrEqualTo, int? greaterThan, bool greaterThanOrEqualTo)
 		{
-			_stateValidator = stateValidator;
-
 			_lessThanValue = Option.FromNullable(lessThan);
 			_lessThanOrEqualTo = lessThanOrEqualTo;
 			_greaterThanValue = Option.FromNullable(greaterThan);
@@ -218,27 +171,17 @@ namespace Valigator.Core.ValueValidators
 
 		private ValidationError GetValidationError(int value)
 			=> new ValidationError("");
-
-		public static implicit operator Data<int>(RangeValidator_Int32<TStateValidator> valueValidator)
-			=> valueValidator.Data;
 	}
 
-	public struct RangeValidator_UInt32<TStateValidator> : IValueValidator<uint>
-		where TStateValidator : IStateValidator<uint>
+	public struct RangeValidator_UInt32 : IValueValidator<uint>
 	{
-		private readonly TStateValidator _stateValidator;
-
 		private readonly Option<uint> _lessThanValue;
 		private readonly bool _lessThanOrEqualTo;
 		private readonly Option<uint> _greaterThanValue;
 		private readonly bool _greaterThanOrEqualTo;
 
-		public Data<uint> Data => new Data<uint>(new DataValidator<TStateValidator, RangeValidator_UInt32<TStateValidator>, uint>(_stateValidator, this));
-
-		public RangeValidator_UInt32(TStateValidator stateValidator, uint? lessThan, bool lessThanOrEqualTo, uint? greaterThan, bool greaterThanOrEqualTo)
+		public RangeValidator_UInt32(uint? lessThan, bool lessThanOrEqualTo, uint? greaterThan, bool greaterThanOrEqualTo)
 		{
-			_stateValidator = stateValidator;
-
 			_lessThanValue = Option.FromNullable(lessThan);
 			_lessThanOrEqualTo = lessThanOrEqualTo;
 			_greaterThanValue = Option.FromNullable(greaterThan);
@@ -261,27 +204,17 @@ namespace Valigator.Core.ValueValidators
 
 		private ValidationError GetValidationError(uint value)
 			=> new ValidationError("");
-
-		public static implicit operator Data<uint>(RangeValidator_UInt32<TStateValidator> valueValidator)
-			=> valueValidator.Data;
 	}
 
-	public struct RangeValidator_Int64<TStateValidator> : IValueValidator<long>
-		where TStateValidator : IStateValidator<long>
+	public struct RangeValidator_Int64 : IValueValidator<long>
 	{
-		private readonly TStateValidator _stateValidator;
-
 		private readonly Option<long> _lessThanValue;
 		private readonly bool _lessThanOrEqualTo;
 		private readonly Option<long> _greaterThanValue;
 		private readonly bool _greaterThanOrEqualTo;
 
-		public Data<long> Data => new Data<long>(new DataValidator<TStateValidator, RangeValidator_Int64<TStateValidator>, long>(_stateValidator, this));
-
-		public RangeValidator_Int64(TStateValidator stateValidator, long? lessThan, bool lessThanOrEqualTo, long? greaterThan, bool greaterThanOrEqualTo)
+		public RangeValidator_Int64(long? lessThan, bool lessThanOrEqualTo, long? greaterThan, bool greaterThanOrEqualTo)
 		{
-			_stateValidator = stateValidator;
-
 			_lessThanValue = Option.FromNullable(lessThan);
 			_lessThanOrEqualTo = lessThanOrEqualTo;
 			_greaterThanValue = Option.FromNullable(greaterThan);
@@ -304,27 +237,17 @@ namespace Valigator.Core.ValueValidators
 
 		private ValidationError GetValidationError(long value)
 			=> new ValidationError("");
-
-		public static implicit operator Data<long>(RangeValidator_Int64<TStateValidator> valueValidator)
-			=> valueValidator.Data;
 	}
 
-	public struct RangeValidator_UInt64<TStateValidator> : IValueValidator<ulong>
-		where TStateValidator : IStateValidator<ulong>
+	public struct RangeValidator_UInt64 : IValueValidator<ulong>
 	{
-		private readonly TStateValidator _stateValidator;
-
 		private readonly Option<ulong> _lessThanValue;
 		private readonly bool _lessThanOrEqualTo;
 		private readonly Option<ulong> _greaterThanValue;
 		private readonly bool _greaterThanOrEqualTo;
 
-		public Data<ulong> Data => new Data<ulong>(new DataValidator<TStateValidator, RangeValidator_UInt64<TStateValidator>, ulong>(_stateValidator, this));
-
-		public RangeValidator_UInt64(TStateValidator stateValidator, ulong? lessThan, bool lessThanOrEqualTo, ulong? greaterThan, bool greaterThanOrEqualTo)
+		public RangeValidator_UInt64(ulong? lessThan, bool lessThanOrEqualTo, ulong? greaterThan, bool greaterThanOrEqualTo)
 		{
-			_stateValidator = stateValidator;
-
 			_lessThanValue = Option.FromNullable(lessThan);
 			_lessThanOrEqualTo = lessThanOrEqualTo;
 			_greaterThanValue = Option.FromNullable(greaterThan);
@@ -347,27 +270,17 @@ namespace Valigator.Core.ValueValidators
 
 		private ValidationError GetValidationError(ulong value)
 			=> new ValidationError("");
-
-		public static implicit operator Data<ulong>(RangeValidator_UInt64<TStateValidator> valueValidator)
-			=> valueValidator.Data;
 	}
 
-	public struct RangeValidator_Single<TStateValidator> : IValueValidator<float>
-		where TStateValidator : IStateValidator<float>
+	public struct RangeValidator_Single : IValueValidator<float>
 	{
-		private readonly TStateValidator _stateValidator;
-
 		private readonly Option<float> _lessThanValue;
 		private readonly bool _lessThanOrEqualTo;
 		private readonly Option<float> _greaterThanValue;
 		private readonly bool _greaterThanOrEqualTo;
 
-		public Data<float> Data => new Data<float>(new DataValidator<TStateValidator, RangeValidator_Single<TStateValidator>, float>(_stateValidator, this));
-
-		public RangeValidator_Single(TStateValidator stateValidator, float? lessThan, bool lessThanOrEqualTo, float? greaterThan, bool greaterThanOrEqualTo)
+		public RangeValidator_Single(float? lessThan, bool lessThanOrEqualTo, float? greaterThan, bool greaterThanOrEqualTo)
 		{
-			_stateValidator = stateValidator;
-
 			_lessThanValue = Option.FromNullable(lessThan);
 			_lessThanOrEqualTo = lessThanOrEqualTo;
 			_greaterThanValue = Option.FromNullable(greaterThan);
@@ -390,27 +303,17 @@ namespace Valigator.Core.ValueValidators
 
 		private ValidationError GetValidationError(float value)
 			=> new ValidationError("");
-
-		public static implicit operator Data<float>(RangeValidator_Single<TStateValidator> valueValidator)
-			=> valueValidator.Data;
 	}
 
-	public struct RangeValidator_Double<TStateValidator> : IValueValidator<double>
-		where TStateValidator : IStateValidator<double>
+	public struct RangeValidator_Double : IValueValidator<double>
 	{
-		private readonly TStateValidator _stateValidator;
-
 		private readonly Option<double> _lessThanValue;
 		private readonly bool _lessThanOrEqualTo;
 		private readonly Option<double> _greaterThanValue;
 		private readonly bool _greaterThanOrEqualTo;
 
-		public Data<double> Data => new Data<double>(new DataValidator<TStateValidator, RangeValidator_Double<TStateValidator>, double>(_stateValidator, this));
-
-		public RangeValidator_Double(TStateValidator stateValidator, double? lessThan, bool lessThanOrEqualTo, double? greaterThan, bool greaterThanOrEqualTo)
+		public RangeValidator_Double(double? lessThan, bool lessThanOrEqualTo, double? greaterThan, bool greaterThanOrEqualTo)
 		{
-			_stateValidator = stateValidator;
-
 			_lessThanValue = Option.FromNullable(lessThan);
 			_lessThanOrEqualTo = lessThanOrEqualTo;
 			_greaterThanValue = Option.FromNullable(greaterThan);
@@ -433,27 +336,17 @@ namespace Valigator.Core.ValueValidators
 
 		private ValidationError GetValidationError(double value)
 			=> new ValidationError("");
-
-		public static implicit operator Data<double>(RangeValidator_Double<TStateValidator> valueValidator)
-			=> valueValidator.Data;
 	}
 
-	public struct RangeValidator_Decimal<TStateValidator> : IValueValidator<decimal>
-		where TStateValidator : IStateValidator<decimal>
+	public struct RangeValidator_Decimal : IValueValidator<decimal>
 	{
-		private readonly TStateValidator _stateValidator;
-
 		private readonly Option<decimal> _lessThanValue;
 		private readonly bool _lessThanOrEqualTo;
 		private readonly Option<decimal> _greaterThanValue;
 		private readonly bool _greaterThanOrEqualTo;
 
-		public Data<decimal> Data => new Data<decimal>(new DataValidator<TStateValidator, RangeValidator_Decimal<TStateValidator>, decimal>(_stateValidator, this));
-
-		public RangeValidator_Decimal(TStateValidator stateValidator, decimal? lessThan, bool lessThanOrEqualTo, decimal? greaterThan, bool greaterThanOrEqualTo)
+		public RangeValidator_Decimal(decimal? lessThan, bool lessThanOrEqualTo, decimal? greaterThan, bool greaterThanOrEqualTo)
 		{
-			_stateValidator = stateValidator;
-
 			_lessThanValue = Option.FromNullable(lessThan);
 			_lessThanOrEqualTo = lessThanOrEqualTo;
 			_greaterThanValue = Option.FromNullable(greaterThan);
@@ -476,8 +369,5 @@ namespace Valigator.Core.ValueValidators
 
 		private ValidationError GetValidationError(decimal value)
 			=> new ValidationError("");
-
-		public static implicit operator Data<decimal>(RangeValidator_Decimal<TStateValidator> valueValidator)
-			=> valueValidator.Data;
 	}
 }

@@ -8,8 +8,6 @@ namespace Valigator.Core
 {
 	public interface IValueValidator<TValue>
 	{
-		Data<TValue> Data { get; }
-
 		IEnumerable<IValueDescriptor> GetDescriptors();
 
 		Result<Unit, ValidationError> Validate(TValue value);
