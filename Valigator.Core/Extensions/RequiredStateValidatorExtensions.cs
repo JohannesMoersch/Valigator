@@ -7,7 +7,7 @@ using Valigator.Core.ValueValidators;
 
 namespace Valigator
 {
-	public static class StateValidatorExtensions
+	public static class RequiredStateValidatorExtensions
 	{
 		public static RangeValidator_Byte<RequiredStateValidator<byte>> LessThan(this RequiredStateValidator<byte> requiredValidator, byte value)
 			=> new RangeValidator_Byte<RequiredStateValidator<byte>>(requiredValidator, value, false, null, false);
