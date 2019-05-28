@@ -5,7 +5,7 @@ using FluentAssertions;
 using Valigator;
 using Xunit;
 
-namespace Valigators.Tests
+namespace Valigator.Tests
 {
 	public class StateValidatorTests
 	{
