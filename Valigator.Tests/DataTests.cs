@@ -11,7 +11,7 @@ namespace Valigators.Tests
 	{
 		[Fact]
 		public void ValueNotInitialized()
-		=> Assert.Throws<DataNotInitializedException>(() => default(Data<int>).Value);
+			=> Assert.Throws<DataNotInitializedException>(() => default(Data<int>).Value);
 
 		[Fact]
 		public void WithValueNotInitialized()
@@ -40,5 +40,21 @@ namespace Valigators.Tests
 		[Fact]
 		public void ValueAlreadyVerified()
 			=> Assert.Throws<DataAlreadyVerifiedException>(() => Data.Required<int>().Data.WithValue(5).Verify(new object()).AssureSuccess().Verify(new object()));
+
+		[Fact]
+		public void ValueNotInitializedGetDataDescriptor()
+			=> Assert.Throws<DataNotInitializedException>(() => default(Data<int>).DataDescriptor);
+
+		[Fact]
+		public void ValueNotSetGetDataDescriptor()
+			=> Data.Required<int>().Data.DataDescriptor.Should().NotBeNull();
+
+		[Fact]
+		public void ValueSetGetDataDescriptor()
+			=> Data.Required<int>().Data.WithValue(5).DataDescriptor.Should().NotBeNull();
+
+		[Fact]
+		public void ValueSetAndVerifiedGetDataDescriptor()
+			=> Data.Required<int>().Data.WithValue(5).Verify(new object()).AssureSuccess().DataDescriptor.Should().NotBeNull();
 	}
 }
