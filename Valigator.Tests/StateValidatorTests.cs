@@ -7,7 +7,7 @@ using Xunit;
 
 namespace Valigators.Tests
 {
-	public class DataSourceTests
+	public class StateValidatorTests
 	{
 		[Fact]
 		public void RequiredWithValue()

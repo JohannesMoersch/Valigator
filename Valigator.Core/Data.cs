@@ -1,66 +1,70 @@
 ﻿using System;
 using Functional;
 using Valigator.Core;
+using Valigator.Core.Helpers;
 
 namespace Valigator
 {
 	public struct Data<TValue>
 	{
-		private readonly bool _hasBeenSet;
+		private enum State
+		{
+			Uninitialized,
+			UnSet,
+			Set,
+			Verified
+		}
+
+		private readonly State _state;
 
 		private readonly IDataValidator<TValue> _dataValidator;
 
-		private TValue _value;
-		public TValue Value => _dataValidator == null ? (_hasBeenSet ? _value : throw new DataNotInitializedException()) : throw new DataNotVerifiedException();
+		private readonly TValue _value;
+		public TValue Value => _state == State.Uninitialized ? throw new DataNotInitializedException() : (_state == State.Verified ? _value : throw new DataNotVerifiedException());
 
-		public Data(TValue value)
-		{
-			_value = value;
-
-			_hasBeenSet = true;
-			_dataValidator = null;
-		}
+		public DataDescriptor DataDescriptor
+			=> _state != State.Uninitialized ? _dataValidator.DataDescriptor : throw new DataNotInitializedException();
 
 		public Data(IDataValidator<TValue> dataValidator)
 		{
+			_state = State.UnSet;
+			_dataValidator = dataValidator ?? throw new ArgumentNullException(nameof(dataValidator));
 			_value = default;
-
-			_hasBeenSet = false;
-			_dataValidator = dataValidator;
 		}
 
-		private Data(TValue value, IDataValidator<TValue> dataValidator)
+		private Data(State state, TValue value, IDataValidator<TValue> dataValidator)
 		{
-			_value = value;
-
-			_hasBeenSet = true;
+			_state = state;
 			_dataValidator = dataValidator;
+			_value = value;
 		}
 
 		public Data<TValue> WithValue(TValue value)
 		{
-			if (_hasBeenSet)
-				throw new DataAlreadySetException();
+			if (_state == State.UnSet)
+				return new Data<TValue>(State.Set, value, _dataValidator);
 
-			if (_dataValidator == null)
+			if (_state == State.Uninitialized)
 				throw new DataNotInitializedException();
 
-			return new Data<TValue>(value, _dataValidator);
+			throw new DataAlreadySetException();
 		}
 
 		public Result<Data<TValue>, ValidationError> Verify(object model)
 		{
-			if (_dataValidator == null)
-			{
-				if (_hasBeenSet)
-					throw new DataAlreadyVerifiedException();
+			if (model == null)
+				throw new ArgumentNullException(nameof(model));
 
+			if (_state == State.Uninitialized)
 				throw new DataNotInitializedException();
-			}
 
-			return _dataValidator
-				  .Validate(model ?? throw new ArgumentNullException(nameof(model)), _hasBeenSet, _value)
-				  .Match(value => Result.Success<Data<TValue>, ValidationError>(new Data<TValue>(value)), Result.Failure<Data<TValue>, ValidationError>);
+			if (_state == State.Verified)
+				throw new DataAlreadyVerifiedException();
+
+			if (_dataValidator.Validate(model, _state == State.Set, _value).TryGetValue(out var success, out var failure))
+				return Result.Success<Data<TValue>, ValidationError>(new Data<TValue>(State.Verified, success, _dataValidator));
+			else
+				return Result.Failure<Data<TValue>, ValidationError>(failure);
 		}
 
 		public static implicit operator TValue(Data<TValue> data)
