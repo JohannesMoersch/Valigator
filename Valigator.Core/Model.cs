@@ -54,13 +54,15 @@ namespace Valigator.Core
 
 		private static Expression CreatePropertyDescriptor(string propertyName, Expression dataDescriptor)
 		{
-			var constructor = typeof(PropertyDescriptor).GetConstructor(new[] { typeof(string), typeof(IStateDescriptor), typeof(IEnumerable<IValueDescriptor>) });
+			var constructor = typeof(PropertyDescriptor).GetConstructor(new[] { typeof(string), typeof(Type), typeof(IStateDescriptor), typeof(IEnumerable<IValueDescriptor>) });
+
+			var propertyType = Expression.Property(dataDescriptor, nameof(DataDescriptor.PropertyType));
 
 			var stateDescriptor = Expression.Property(dataDescriptor, nameof(DataDescriptor.StateDescriptor));
 
 			var valueDescriptors = Expression.Property(dataDescriptor, nameof(DataDescriptor.ValueDescriptors));
 
-			return Expression.New(constructor, Expression.Constant(propertyName, typeof(string)), stateDescriptor, valueDescriptors);
+			return Expression.New(constructor, Expression.Constant(propertyName, typeof(string)), propertyType, stateDescriptor, valueDescriptors);
 		}
 	}
 }
