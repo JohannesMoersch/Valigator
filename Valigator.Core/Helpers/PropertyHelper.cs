@@ -17,6 +17,11 @@ namespace Valigator.Core.Helpers
 		{
 			var modelType = model?.GetType() ?? throw new ArgumentNullException(nameof(model));
 
+			return GetPropertyGetter(modelType, propertyName).Invoke(model);
+		}
+
+		public static Func<object, object> GetPropertyGetter(Type modelType, string propertyName)
+		{
 			if (!_getFunctionCache.TryGetValue((modelType, propertyName), out var function))
 			{
 				function = CreateGetFunction(modelType, propertyName);
@@ -24,7 +29,7 @@ namespace Valigator.Core.Helpers
 				_getFunctionCache.TryAdd((modelType, propertyName), function);
 			}
 
-			return function.Invoke(model);
+			return function;
 		}
 
 		private static Func<object, object> CreateGetFunction(Type modelType, string propertyName)
@@ -42,6 +47,11 @@ namespace Valigator.Core.Helpers
 		{
 			var modelType = model?.GetType() ?? throw new ArgumentNullException(nameof(model));
 
+			GetPropertySetter(modelType, propertyName).Invoke(model, value);
+		}
+
+		public static Action<object, object> GetPropertySetter(Type modelType, string propertyName)
+		{
 			if (!_setFunctionCache.TryGetValue((modelType, propertyName), out var function))
 			{
 				function = CreateSetFunction(modelType, propertyName);
@@ -49,7 +59,7 @@ namespace Valigator.Core.Helpers
 				_setFunctionCache.TryAdd((modelType, propertyName), function);
 			}
 
-			function.Invoke(model, value);
+			return function;
 		}
 
 		private static Action<object, object> CreateSetFunction(Type modelType, string propertyName)
