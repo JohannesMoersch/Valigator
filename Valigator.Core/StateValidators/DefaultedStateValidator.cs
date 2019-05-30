@@ -44,10 +44,10 @@ namespace Valigator.Core.StateValidators
 		IStateDescriptor IStateValidator<TValue>.GetDescriptor()
 			=> new DefaultedStateDescriptor(false, _defaultValue.Match(_ => _, () => default));
 
-		Result<TValue, ValidationError> IStateValidator<TValue>.Validate(object model, bool isSet, TValue value)
+		Result<TValue, ValidationError[]> IStateValidator<TValue>.Validate(object model, bool isSet, TValue value)
 			=> !isSet || value != null
-				? Result.Success<TValue, ValidationError>(isSet ? value : _defaultValue.Match(_ => _, () => default))
-				: Result.Failure<TValue, ValidationError>(new ValidationError("Value cannot be null."));
+				? Result.Success<TValue, ValidationError[]>(isSet ? value : _defaultValue.Match(_ => _, () => default))
+				: Result.Failure<TValue, ValidationError[]>(new[] { new ValidationError("Value cannot be null.") });
 
 		public static implicit operator Data<TValue>(DefaultedStateValidator<TValue> stateValidator)
 			=> stateValidator.Data;

@@ -36,8 +36,8 @@ namespace Valigator.Core.StateValidators
 		IStateDescriptor IStateValidator<Option<TValue>>.GetDescriptor()
 			=> new DefaultedStateDescriptor(true, _defaultValue.Match(_ => _, () => default));
 
-		Result<Option<TValue>, ValidationError> IStateValidator<Option<TValue>>.Validate(object model, bool isSet, Option<TValue> value)
-			=> Result.Success<Option<TValue>, ValidationError>(isSet ? value : _defaultValue);
+		Result<Option<TValue>, ValidationError[]> IStateValidator<Option<TValue>>.Validate(object model, bool isSet, Option<TValue> value)
+			=> Result.Success<Option<TValue>, ValidationError[]>(isSet ? value : _defaultValue);
 
 		public static implicit operator Data<Option<TValue>>(DefaultedNullableStateValidator<TValue> stateValidator)
 			=> stateValidator.Data;

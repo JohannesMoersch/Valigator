@@ -25,10 +25,10 @@ namespace Valigator.Core.StateValidators
 		IStateDescriptor IStateValidator<Option<TValue[]>>.GetDescriptor()
 			=> new CollectionStateDescriptor(false, _item.DataDescriptor);
 
-		Result<Option<TValue[]>, ValidationError> IStateValidator<Option<TValue[]>>.Validate(object model, bool isSet, Option<TValue[]> value)
+		Result<Option<TValue[]>, ValidationError[]> IStateValidator<Option<TValue[]>>.Validate(object model, bool isSet, Option<TValue[]> value)
 			=> isSet
-				? (value.TryGetValue(out var v) ? _item.VerifyCollection(model, v).Select(Option.Some) : Result.Success<Option<TValue[]>, ValidationError>(value))
-				: Result.Success<Option<TValue[]>, ValidationError>(_defaultValue);
+				? (value.TryGetValue(out var v) ? _item.VerifyCollection(model, v).Select(Option.Some) : Result.Success<Option<TValue[]>, ValidationError[]>(value))
+				: Result.Success<Option<TValue[]>, ValidationError[]>(_defaultValue);
 
 		public static implicit operator Data<Option<TValue[]>>(DefaultedCollectionNullableStateValidator<TValue> stateValidator)
 			=> stateValidator.Data;

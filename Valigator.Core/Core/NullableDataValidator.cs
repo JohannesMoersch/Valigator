@@ -22,20 +22,24 @@ namespace Valigator.Core
 			_valueValidator = valueValidator;
 		}
 
-		public Result<Option<TValue>, ValidationError> Validate(object model, bool isSet, Option<TValue> value)
+		public Result<Option<TValue>, ValidationError[]> Validate(object model, bool isSet, Option<TValue> value)
 		{
 			if (_stateValidator.Validate(model, isSet, value).TryGetValue(out var success, out var failure))
 			{
 				if (!success.TryGetValue(out var some))
-					return Result.Success<Option<TValue>, ValidationError>(success);
-				
-				if (_valueValidator.Validate(some).TryGetValue(out var _, out var error))
-					return Result.Success<Option<TValue>, ValidationError>(success);
+					return Result.Success<Option<TValue>, ValidationError[]>(success);
 
-				return Result.Failure<Option<TValue>, ValidationError>(error);
+				if (_valueValidator.Validate(some).TryGetValue(out var _, out var error))
+				{
+					return Model<TValue>
+						.Verify(some)
+						.Select(_ => success);
+				}
+
+				return Result.Failure<Option<TValue>, ValidationError[]>(new[] { error });
 			}
 
-			return Result.Failure<Option<TValue>, ValidationError>(failure);
+			return Result.Failure<Option<TValue>, ValidationError[]>(failure);
 		}
 	}
 }

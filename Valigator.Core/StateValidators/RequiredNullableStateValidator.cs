@@ -16,10 +16,10 @@ namespace Valigator.Core.StateValidators
 		IStateDescriptor IStateValidator<Option<TValue>>.GetDescriptor()
 			=> new RequiredStateDescriptor(true);
 
-		Result<Option<TValue>, ValidationError> IStateValidator<Option<TValue>>.Validate(object model, bool isSet, Option<TValue> value)
+		Result<Option<TValue>, ValidationError[]> IStateValidator<Option<TValue>>.Validate(object model, bool isSet, Option<TValue> value)
 			=> isSet
-			? Result.Success<Option<TValue>, ValidationError>(value)
-			: Result.Failure<Option<TValue>, ValidationError>(new ValidationError(""));
+			? Result.Success<Option<TValue>, ValidationError[]>(value)
+			: Result.Failure<Option<TValue>, ValidationError[]>(new[] { new ValidationError("") });
 
 		public static implicit operator Data<Option<TValue>>(RequiredNullableStateValidator<TValue> stateValidator)
 			=> stateValidator.Data;

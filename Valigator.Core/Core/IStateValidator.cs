@@ -12,6 +12,6 @@ namespace Valigator.Core
 
 		IStateDescriptor GetDescriptor();
 
-		Result<TValue, ValidationError> Validate(object model, bool isSet, TValue value);
+		Result<TValue, ValidationError[]> Validate(object model, bool isSet, TValue value);
 	}
 }

@@ -50,7 +50,7 @@ namespace Valigator
 			throw new DataAlreadySetException();
 		}
 
-		public Result<Data<TValue>, ValidationError> Verify(object model)
+		public Result<Data<TValue>, ValidationError[]> Verify(object model)
 		{
 			if (model == null)
 				throw new ArgumentNullException(nameof(model));
@@ -62,9 +62,9 @@ namespace Valigator
 				throw new DataAlreadyVerifiedException();
 
 			if (_dataValidator.Validate(model, _state == State.Set, _value).TryGetValue(out var success, out var failure))
-				return Result.Success<Data<TValue>, ValidationError>(new Data<TValue>(State.Verified, success, _dataValidator));
+				return Result.Success<Data<TValue>, ValidationError[]>(new Data<TValue>(State.Verified, success, _dataValidator));
 			else
-				return Result.Failure<Data<TValue>, ValidationError>(failure);
+				return Result.Failure<Data<TValue>, ValidationError[]>(failure);
 		}
 
 		public static implicit operator TValue(Data<TValue> data)
