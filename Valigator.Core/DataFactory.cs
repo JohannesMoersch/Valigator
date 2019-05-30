@@ -17,7 +17,7 @@ namespace Valigator
 
 		public static DefaultedStateValidator<TValue> Defaulted<TValue>()
 			where TValue : struct
-			=> new DefaultedStateValidator<TValue>();
+			=> new DefaultedStateValidator<TValue>(default);
 
 		public static DefaultedStateValidator<TValue> Defaulted<TValue>(TValue defaultValue)
 			=> new DefaultedStateValidator<TValue>(defaultValue);

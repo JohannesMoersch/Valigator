@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Valigator.Core;
 using Valigator.Core.StateValidators;
 using Valigator.Core.ValueValidators;
 
-namespace Valigator.Core.Extensions
+namespace Valigator
 {
 	public static class DefaultedNullableStateValidatorExtensions
 	{
@@ -28,7 +29,7 @@ namespace Valigator.Core.Extensions
 			if (greaterThan.HasValue && greaterThanOrEqualTo.HasValue)
 				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"{nameof(greaterThan)} and {nameof(greaterThanOrEqualTo)} cannot both be specified.");
 
-			if ((lessThan ?? lessThanOrEqualTo) >= (greaterThan ?? greaterThanOrEqualTo))
+			if ((lessThan ?? lessThanOrEqualTo) <= (greaterThan ?? greaterThanOrEqualTo))
 				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"Specified range must include more than one possible value.");
 
 			return new NullableDataSource<DefaultedNullableStateValidator<byte>, RangeValidator_Byte, byte>(defaultedValidator, new RangeValidator_Byte(lessThan ?? lessThanOrEqualTo, lessThanOrEqualTo.HasValue, greaterThan ?? greaterThanOrEqualTo, greaterThanOrEqualTo.HasValue));
@@ -54,7 +55,7 @@ namespace Valigator.Core.Extensions
 			if (greaterThan.HasValue && greaterThanOrEqualTo.HasValue)
 				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"{nameof(greaterThan)} and {nameof(greaterThanOrEqualTo)} cannot both be specified.");
 
-			if ((lessThan ?? lessThanOrEqualTo) >= (greaterThan ?? greaterThanOrEqualTo))
+			if ((lessThan ?? lessThanOrEqualTo) <= (greaterThan ?? greaterThanOrEqualTo))
 				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"Specified range must include more than one possible value.");
 
 			return new NullableDataSource<DefaultedNullableStateValidator<sbyte>, RangeValidator_SByte, sbyte>(defaultedValidator, new RangeValidator_SByte(lessThan ?? lessThanOrEqualTo, lessThanOrEqualTo.HasValue, greaterThan ?? greaterThanOrEqualTo, greaterThanOrEqualTo.HasValue));
@@ -80,7 +81,7 @@ namespace Valigator.Core.Extensions
 			if (greaterThan.HasValue && greaterThanOrEqualTo.HasValue)
 				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"{nameof(greaterThan)} and {nameof(greaterThanOrEqualTo)} cannot both be specified.");
 
-			if ((lessThan ?? lessThanOrEqualTo) >= (greaterThan ?? greaterThanOrEqualTo))
+			if ((lessThan ?? lessThanOrEqualTo) <= (greaterThan ?? greaterThanOrEqualTo))
 				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"Specified range must include more than one possible value.");
 
 			return new NullableDataSource<DefaultedNullableStateValidator<short>, RangeValidator_Int16, short>(defaultedValidator, new RangeValidator_Int16(lessThan ?? lessThanOrEqualTo, lessThanOrEqualTo.HasValue, greaterThan ?? greaterThanOrEqualTo, greaterThanOrEqualTo.HasValue));
@@ -106,7 +107,7 @@ namespace Valigator.Core.Extensions
 			if (greaterThan.HasValue && greaterThanOrEqualTo.HasValue)
 				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"{nameof(greaterThan)} and {nameof(greaterThanOrEqualTo)} cannot both be specified.");
 
-			if ((lessThan ?? lessThanOrEqualTo) >= (greaterThan ?? greaterThanOrEqualTo))
+			if ((lessThan ?? lessThanOrEqualTo) <= (greaterThan ?? greaterThanOrEqualTo))
 				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"Specified range must include more than one possible value.");
 
 			return new NullableDataSource<DefaultedNullableStateValidator<ushort>, RangeValidator_UInt16, ushort>(defaultedValidator, new RangeValidator_UInt16(lessThan ?? lessThanOrEqualTo, lessThanOrEqualTo.HasValue, greaterThan ?? greaterThanOrEqualTo, greaterThanOrEqualTo.HasValue));
@@ -132,7 +133,7 @@ namespace Valigator.Core.Extensions
 			if (greaterThan.HasValue && greaterThanOrEqualTo.HasValue)
 				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"{nameof(greaterThan)} and {nameof(greaterThanOrEqualTo)} cannot both be specified.");
 
-			if ((lessThan ?? lessThanOrEqualTo) >= (greaterThan ?? greaterThanOrEqualTo))
+			if ((lessThan ?? lessThanOrEqualTo) <= (greaterThan ?? greaterThanOrEqualTo))
 				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"Specified range must include more than one possible value.");
 
 			return new NullableDataSource<DefaultedNullableStateValidator<int>, RangeValidator_Int32, int>(defaultedValidator, new RangeValidator_Int32(lessThan ?? lessThanOrEqualTo, lessThanOrEqualTo.HasValue, greaterThan ?? greaterThanOrEqualTo, greaterThanOrEqualTo.HasValue));
@@ -158,7 +159,7 @@ namespace Valigator.Core.Extensions
 			if (greaterThan.HasValue && greaterThanOrEqualTo.HasValue)
 				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"{nameof(greaterThan)} and {nameof(greaterThanOrEqualTo)} cannot both be specified.");
 
-			if ((lessThan ?? lessThanOrEqualTo) >= (greaterThan ?? greaterThanOrEqualTo))
+			if ((lessThan ?? lessThanOrEqualTo) <= (greaterThan ?? greaterThanOrEqualTo))
 				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"Specified range must include more than one possible value.");
 
 			return new NullableDataSource<DefaultedNullableStateValidator<uint>, RangeValidator_UInt32, uint>(defaultedValidator, new RangeValidator_UInt32(lessThan ?? lessThanOrEqualTo, lessThanOrEqualTo.HasValue, greaterThan ?? greaterThanOrEqualTo, greaterThanOrEqualTo.HasValue));
@@ -184,7 +185,7 @@ namespace Valigator.Core.Extensions
 			if (greaterThan.HasValue && greaterThanOrEqualTo.HasValue)
 				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"{nameof(greaterThan)} and {nameof(greaterThanOrEqualTo)} cannot both be specified.");
 
-			if ((lessThan ?? lessThanOrEqualTo) >= (greaterThan ?? greaterThanOrEqualTo))
+			if ((lessThan ?? lessThanOrEqualTo) <= (greaterThan ?? greaterThanOrEqualTo))
 				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"Specified range must include more than one possible value.");
 
 			return new NullableDataSource<DefaultedNullableStateValidator<long>, RangeValidator_Int64, long>(defaultedValidator, new RangeValidator_Int64(lessThan ?? lessThanOrEqualTo, lessThanOrEqualTo.HasValue, greaterThan ?? greaterThanOrEqualTo, greaterThanOrEqualTo.HasValue));
@@ -210,7 +211,7 @@ namespace Valigator.Core.Extensions
 			if (greaterThan.HasValue && greaterThanOrEqualTo.HasValue)
 				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"{nameof(greaterThan)} and {nameof(greaterThanOrEqualTo)} cannot both be specified.");
 
-			if ((lessThan ?? lessThanOrEqualTo) >= (greaterThan ?? greaterThanOrEqualTo))
+			if ((lessThan ?? lessThanOrEqualTo) <= (greaterThan ?? greaterThanOrEqualTo))
 				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"Specified range must include more than one possible value.");
 
 			return new NullableDataSource<DefaultedNullableStateValidator<ulong>, RangeValidator_UInt64, ulong>(defaultedValidator, new RangeValidator_UInt64(lessThan ?? lessThanOrEqualTo, lessThanOrEqualTo.HasValue, greaterThan ?? greaterThanOrEqualTo, greaterThanOrEqualTo.HasValue));
@@ -236,7 +237,7 @@ namespace Valigator.Core.Extensions
 			if (greaterThan.HasValue && greaterThanOrEqualTo.HasValue)
 				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"{nameof(greaterThan)} and {nameof(greaterThanOrEqualTo)} cannot both be specified.");
 
-			if ((lessThan ?? lessThanOrEqualTo) >= (greaterThan ?? greaterThanOrEqualTo))
+			if ((lessThan ?? lessThanOrEqualTo) <= (greaterThan ?? greaterThanOrEqualTo))
 				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"Specified range must include more than one possible value.");
 
 			return new NullableDataSource<DefaultedNullableStateValidator<float>, RangeValidator_Single, float>(defaultedValidator, new RangeValidator_Single(lessThan ?? lessThanOrEqualTo, lessThanOrEqualTo.HasValue, greaterThan ?? greaterThanOrEqualTo, greaterThanOrEqualTo.HasValue));
@@ -262,7 +263,7 @@ namespace Valigator.Core.Extensions
 			if (greaterThan.HasValue && greaterThanOrEqualTo.HasValue)
 				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"{nameof(greaterThan)} and {nameof(greaterThanOrEqualTo)} cannot both be specified.");
 
-			if ((lessThan ?? lessThanOrEqualTo) >= (greaterThan ?? greaterThanOrEqualTo))
+			if ((lessThan ?? lessThanOrEqualTo) <= (greaterThan ?? greaterThanOrEqualTo))
 				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"Specified range must include more than one possible value.");
 
 			return new NullableDataSource<DefaultedNullableStateValidator<double>, RangeValidator_Double, double>(defaultedValidator, new RangeValidator_Double(lessThan ?? lessThanOrEqualTo, lessThanOrEqualTo.HasValue, greaterThan ?? greaterThanOrEqualTo, greaterThanOrEqualTo.HasValue));
@@ -288,7 +289,7 @@ namespace Valigator.Core.Extensions
 			if (greaterThan.HasValue && greaterThanOrEqualTo.HasValue)
 				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"{nameof(greaterThan)} and {nameof(greaterThanOrEqualTo)} cannot both be specified.");
 
-			if ((lessThan ?? lessThanOrEqualTo) >= (greaterThan ?? greaterThanOrEqualTo))
+			if ((lessThan ?? lessThanOrEqualTo) <= (greaterThan ?? greaterThanOrEqualTo))
 				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"Specified range must include more than one possible value.");
 
 			return new NullableDataSource<DefaultedNullableStateValidator<decimal>, RangeValidator_Decimal, decimal>(defaultedValidator, new RangeValidator_Decimal(lessThan ?? lessThanOrEqualTo, lessThanOrEqualTo.HasValue, greaterThan ?? greaterThanOrEqualTo, greaterThanOrEqualTo.HasValue));

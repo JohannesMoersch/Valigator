@@ -9,7 +9,7 @@ namespace Valigator.Tests
 {
 	public class TestModel
 	{
-		public Data<Option<int>> One { get; set; } = Data.Required<int>().Nullable().GreaterThan(0);
+		public Data<Option<int>> One { get; set; } = Data.Defaulted<int>().Nullable().InRange(greaterThanOrEqualTo: 1, lessThanOrEqualTo: 2);
 
 		public Data<int[]> Two { get; set; } = Data.Collection<int>(f => f.GreaterThan(10)).DefaultedToEmpty();
 	}
@@ -20,6 +20,8 @@ namespace Valigator.Tests
 		public void Test()
 		{
 			var descriptors = Model.GetPropertyDescriptors(new TestModel());
+
+			var result = Model.Verify(new TestModel());
 		}
 	}
 }
