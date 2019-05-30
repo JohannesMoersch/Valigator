@@ -47,7 +47,7 @@ namespace Valigator.Core
 		{
 			var data = Expression.Property(modelExpression, property);
 
-			var dataDescriptor = Expression.Property(data, nameof(IHasDescriptor.DataDescriptor));
+			var dataDescriptor = Expression.Property(data, nameof(Data<object>.DataDescriptor));
 
 			return CreatePropertyDescriptor(property.Name, dataDescriptor);
 		}

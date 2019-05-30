@@ -5,7 +5,7 @@ using Valigator.Core.Helpers;
 
 namespace Valigator
 {
-	public struct Data<TValue> : IHasDescriptor
+	public struct Data<TValue>
 	{
 		private enum State
 		{
