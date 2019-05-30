@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 using Functional;
-using Valigator.Core;
 
-namespace Valigator
+namespace Valigator.Core
 {
 	public struct NullableDataSource<TStateValidator, TValueValidator, TValue>
 		where TStateValidator : IStateValidator<Option<TValue>>

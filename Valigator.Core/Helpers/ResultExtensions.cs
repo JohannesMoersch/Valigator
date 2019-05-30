@@ -20,5 +20,8 @@ namespace Valigator.Core.Helpers
 			failure = result.Match(_ => default, f => f);
 			return false;
 		}
+
+		public static Result<TResult, TFailure> Select<TSuccess, TResult, TFailure>(this Result<TSuccess, TFailure> result, Func<TSuccess, TResult> resultSelector)
+			=> result.Match(success => Result.Success<TResult, TFailure>(resultSelector.Invoke(success)), Result.Failure<TResult, TFailure>);
 	}
 }

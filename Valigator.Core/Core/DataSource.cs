@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Valigator.Core;
 
-namespace Valigator
+namespace Valigator.Core
 {
 	public struct DataSource<TStateValidator, TValueValidator, TValue>
 		where TStateValidator : IStateValidator<TValue>

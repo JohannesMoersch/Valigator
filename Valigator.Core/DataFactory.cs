@@ -22,13 +22,13 @@ namespace Valigator
 		public static DefaultedStateValidator<TValue> Defaulted<TValue>(TValue defaultValue)
 			=> new DefaultedStateValidator<TValue>(defaultValue);
 
-		public static CollectionStateValidator<TValue> Collection<TValue>()
-			=> new CollectionStateValidator<TValue>(Required<TValue>());
+		public static CollectionFactory<TValue> Collection<TValue>()
+			=> new CollectionFactory<TValue>(Required<TValue>());
 
-		public static CollectionStateValidator<TValue> Collection<TValue>(Func<RequiredStateValidator<TValue>, Data<TValue>> dataFactory)
-			=> new CollectionStateValidator<TValue>(dataFactory.Invoke(new RequiredStateValidator<TValue>()));
+		public static CollectionFactory<TValue> Collection<TValue>(Func<RequiredStateValidator<TValue>, Data<TValue>> dataFactory)
+			=> new CollectionFactory<TValue>(dataFactory.Invoke(new RequiredStateValidator<TValue>()));
 
-		public static CollectionStateValidator<Option<TValue>> Collection<TValue>(Func<RequiredStateValidator<TValue>, Data<Option<TValue>>> dataFactory)
-			=> new CollectionStateValidator<Option<TValue>>(dataFactory.Invoke(new RequiredStateValidator<TValue>()));
+		public static CollectionFactory<Option<TValue>> Collection<TValue>(Func<RequiredStateValidator<TValue>, Data<Option<TValue>>> dataFactory)
+			=> new CollectionFactory<Option<TValue>>(dataFactory.Invoke(new RequiredStateValidator<TValue>()));
 	}
 }

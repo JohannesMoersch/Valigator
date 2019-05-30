@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Valigator.Core.Descriptors;
 
-namespace Valigator
+namespace Valigator.Core
 {
 	public struct PropertyDescriptor
 	{

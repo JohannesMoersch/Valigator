@@ -11,7 +11,7 @@ namespace Valigator.Tests
 	{
 		public Data<Option<int>> One { get; set; } = Data.Required<int>().Nullable().GreaterThan(0);
 
-		public Data<int[]> Two { get; set; } = Data.Collection<int>(f => f.GreaterThan(10));
+		public Data<int[]> Two { get; set; } = Data.Collection<int>(f => f.GreaterThan(10)).DefaultedToEmpty();
 	}
 
 	public class ModelTests

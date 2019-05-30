@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Valigator.Core;
 using Valigator.Core.StateValidators;
 using Valigator.Core.ValueValidators;
 
