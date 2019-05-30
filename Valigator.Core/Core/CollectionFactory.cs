@@ -20,5 +20,8 @@ namespace Valigator.Core
 
 		public DefaultedCollectionStateValidator<TValue> Defaulted(TValue[] defaultValue)
 			=> new DefaultedCollectionStateValidator<TValue>(_item, defaultValue);
+
+		public DefaultedCollectionStateValidator<TValue> Defaulted(Func<TValue[]> defaultValueFactory)
+			=> new DefaultedCollectionStateValidator<TValue>(_item, defaultValueFactory);
 	}
 }

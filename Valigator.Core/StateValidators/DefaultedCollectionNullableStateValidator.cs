@@ -16,10 +16,20 @@ namespace Valigator.Core.StateValidators
 
 		private readonly Option<TValue[]> _defaultValue;
 
+		private readonly Func<Option<TValue[]>> _defaultValueFactory;
+
 		public DefaultedCollectionNullableStateValidator(Data<TValue> item, Option<TValue[]> defaultValue)
 		{
 			_item = item;
 			_defaultValue = defaultValue;
+			_defaultValueFactory = null;
+		}
+
+		public DefaultedCollectionNullableStateValidator(Data<TValue> item, Func<Option<TValue[]>> defaultValueFactory)
+		{
+			_item = item;
+			_defaultValue = Option.None<TValue[]>();
+			_defaultValueFactory = defaultValueFactory;
 		}
 
 		IStateDescriptor IStateValidator<Option<TValue[]>>.GetDescriptor()
@@ -28,7 +38,7 @@ namespace Valigator.Core.StateValidators
 		Result<Option<TValue[]>, ValidationError[]> IStateValidator<Option<TValue[]>>.Validate(object model, bool isSet, Option<TValue[]> value)
 			=> isSet
 				? (value.TryGetValue(out var v) ? _item.VerifyCollection(model, v).Select(Option.Some) : Result.Success<Option<TValue[]>, ValidationError[]>(value))
-				: Result.Success<Option<TValue[]>, ValidationError[]>(_defaultValue);
+				: Result.Success<Option<TValue[]>, ValidationError[]>(_defaultValueFactory != null ? _defaultValueFactory.Invoke() : _defaultValue);
 
 		public static implicit operator Data<Option<TValue[]>>(DefaultedCollectionNullableStateValidator<TValue> stateValidator)
 			=> stateValidator.Data;

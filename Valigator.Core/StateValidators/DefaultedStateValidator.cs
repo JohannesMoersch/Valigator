@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Functional;
 using Valigator.Core.Descriptors;
+using Valigator.Core.Helpers;
 using Valigator.Core.ValueValidators;
 
 namespace Valigator.Core.StateValidators
@@ -15,23 +16,28 @@ namespace Valigator.Core.StateValidators
 		{
 			get
 			{
-				var instance = this;
+				if (_defaultValueFactory == null && !_defaultValue.TryGetValue(out var value))
+					return new Data<TValue>(Instance);
 
-				var validator = _defaultValue
-					.Match
-					(
-						value => new DataValidator<DefaultedStateValidator<TValue>, PassthroughValidator<TValue>, TValue>(instance, default),
-						() => Instance
-					);
-
-				return new Data<TValue>(validator);
+				return new Data<TValue>(new DataValidator<DefaultedStateValidator<TValue>, PassthroughValidator<TValue>, TValue>(this, default));
 			}
 		}
 
 		private readonly Option<TValue> _defaultValue;
 
+		private readonly Func<TValue> _defaultValueFactory;
+
 		public DefaultedStateValidator(TValue defaultValue)
-			=> _defaultValue = Option.Some(defaultValue != null ? defaultValue : throw new ArgumentNullException(nameof(defaultValue)));
+		{
+			_defaultValue = Option.Some(defaultValue != null ? defaultValue : throw new ArgumentNullException(nameof(defaultValue)));
+			_defaultValueFactory = null;
+		}
+
+		public DefaultedStateValidator(Func<TValue> defaultValueFactory)
+		{
+			_defaultValue = Option.None<TValue>();
+			_defaultValueFactory = defaultValueFactory;
+		}
 
 		public DefaultedNullableStateValidator<TValue> Nullable()
 			=> _defaultValue
@@ -46,7 +52,7 @@ namespace Valigator.Core.StateValidators
 
 		Result<TValue, ValidationError[]> IStateValidator<TValue>.Validate(object model, bool isSet, TValue value)
 			=> !isSet || value != null
-				? Result.Success<TValue, ValidationError[]>(isSet ? value : _defaultValue.Match(_ => _, () => default))
+				? Result.Success<TValue, ValidationError[]>(isSet ? value : (_defaultValueFactory != null ? _defaultValueFactory.Invoke() : _defaultValue.Match(_ => _, () => default)))
 				: Result.Failure<TValue, ValidationError[]>(new[] { new ValidationError("Value cannot be null.") });
 
 		public static implicit operator Data<TValue>(DefaultedStateValidator<TValue> stateValidator)
