@@ -10,18 +10,12 @@ namespace Valigator.Core
 	{
 		public string PropertyName { get; }
 
-		public Type PropertyType { get; }
+		public DataDescriptor DataDescriptor { get; }
 
-		public IStateDescriptor StateDescriptor { get; }
-
-		public IReadOnlyList<IValueDescriptor> ValueDescriptors { get; }
-
-		public PropertyDescriptor(string propertyName, Type propertyType, IStateDescriptor stateDescriptor, IEnumerable<IValueDescriptor> valueDescriptors)
+		public PropertyDescriptor(string propertyName, DataDescriptor dataDescriptor)
 		{
 			PropertyName = propertyName ?? throw new ArgumentNullException(nameof(propertyName));
-			PropertyType = propertyType ?? throw new ArgumentNullException(nameof(propertyType));
-			StateDescriptor = stateDescriptor ?? throw new ArgumentNullException(nameof(stateDescriptor));
-			ValueDescriptors = (valueDescriptors ?? throw new ArgumentNullException(nameof(valueDescriptors))).ToArray();
+			DataDescriptor = dataDescriptor;
 		}
 	}
 }

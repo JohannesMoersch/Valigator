@@ -22,7 +22,7 @@ namespace Valigator.Core.StateValidators
 			=> new RequiredCollectionNullableStateValidator<TValue>();
 
 		IStateDescriptor IStateValidator<TValue[]>.GetDescriptor()
-			=> new CollectionStateDescriptor(false, _item.DataDescriptor);
+			=> new RequiredCollectionStateDescriptor(false, _item.DataDescriptor);
 
 		Result<TValue[], ValidationError[]> IStateValidator<TValue[]>.Validate(object model, bool isSet, TValue[] value)
 			=> isSet

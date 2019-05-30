@@ -22,7 +22,7 @@ namespace Valigator.Core.StateValidators
 			=> new OptionalCollectionNullableStateValidator<TValue>();
 
 		IStateDescriptor IStateValidator<Option<TValue[]>>.GetDescriptor()
-			=> new CollectionStateDescriptor(false, _item.DataDescriptor);
+			=> new OptionalCollectionStateDescriptor(false, _item.DataDescriptor);
 
 		Result<Option<TValue[]>, ValidationError[]> IStateValidator<Option<TValue[]>>.Validate(object model, bool isSet, Option<TValue[]> value)
 			=> isSet

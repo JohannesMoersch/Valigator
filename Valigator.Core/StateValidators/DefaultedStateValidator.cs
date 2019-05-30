@@ -40,19 +40,25 @@ namespace Valigator.Core.StateValidators
 		}
 
 		public DefaultedNullableStateValidator<TValue> Nullable()
-			=> _defaultValue
-				.Match
-				(
-					value => new DefaultedNullableStateValidator<TValue>(value),
-					() => new DefaultedNullableStateValidator<TValue>()
-				);
+		{
+			if (_defaultValueFactory != null)
+				return new DefaultedNullableStateValidator<TValue>(_defaultValueFactory);
+
+			if (_defaultValue.TryGetValue(out var value))
+				return new DefaultedNullableStateValidator<TValue>(value);
+
+			return new DefaultedNullableStateValidator<TValue>();
+		}
+
+		private TValue GetDefaultValue()
+			=> _defaultValueFactory != null ? _defaultValueFactory.Invoke() : _defaultValue.Match(_ => _, () => default);
 
 		IStateDescriptor IStateValidator<TValue>.GetDescriptor()
-			=> new DefaultedStateDescriptor(false, _defaultValue.Match(_ => _, () => default));
+			=> new DefaultedStateDescriptor(false, GetDefaultValue());
 
 		Result<TValue, ValidationError[]> IStateValidator<TValue>.Validate(object model, bool isSet, TValue value)
 			=> !isSet || value != null
-				? Result.Success<TValue, ValidationError[]>(isSet ? value : (_defaultValueFactory != null ? _defaultValueFactory.Invoke() : _defaultValue.Match(_ => _, () => default)))
+				? Result.Success<TValue, ValidationError[]>(isSet ? value : GetDefaultValue())
 				: Result.Failure<TValue, ValidationError[]>(new[] { new ValidationError("Value cannot be null.") });
 
 		public static implicit operator Data<TValue>(DefaultedStateValidator<TValue> stateValidator)

@@ -22,7 +22,7 @@ namespace Valigator.Core.StateValidators
 		public DefaultedCollectionStateValidator(Data<TValue> item, TValue[] defaultValue)
 		{
 			_item = item;
-			_defaultValue = defaultValue;
+			_defaultValue = defaultValue ?? throw new ArgumentNullException(nameof(defaultValue));
 			_defaultValueFactory = null;
 		}
 
@@ -30,19 +30,27 @@ namespace Valigator.Core.StateValidators
 		{
 			_item = item;
 			_defaultValue = null;
-			_defaultValueFactory = defaultValueFactory;
+			_defaultValueFactory = defaultValueFactory ?? throw new ArgumentNullException(nameof(defaultValueFactory));
 		}
 
 		public DefaultedCollectionNullableStateValidator<TValue> Nullable()
-			=> new DefaultedCollectionNullableStateValidator<TValue>();
+		{
+			if (_defaultValueFactory != null)
+				return new DefaultedCollectionNullableStateValidator<TValue>(_item, _defaultValueFactory);
+
+			return new DefaultedCollectionNullableStateValidator<TValue>(_item, _defaultValue);
+		}
+
+		private TValue[] GetDefaultValue()
+			=> _defaultValueFactory != null ? _defaultValueFactory.Invoke() : _defaultValue;
 
 		IStateDescriptor IStateValidator<TValue[]>.GetDescriptor()
-			=> new CollectionStateDescriptor(false, _item.DataDescriptor);
+			=> new DefaultedCollectionStateDescriptor(false, GetDefaultValue(), _item.DataDescriptor);
 
 		Result<TValue[], ValidationError[]> IStateValidator<TValue[]>.Validate(object model, bool isSet, TValue[] value)
 			=> isSet
 				? (value != null ? _item.VerifyCollection(model, value) : Result.Failure<TValue[], ValidationError[]>(new[] { new ValidationError("") }))
-				: Result.Success<TValue[], ValidationError[]>(_defaultValueFactory != null ? _defaultValueFactory.Invoke() : _defaultValue);
+				: Result.Success<TValue[], ValidationError[]>(GetDefaultValue());
 
 		public static implicit operator Data<TValue[]>(DefaultedCollectionStateValidator<TValue> stateValidator)
 			=> stateValidator.Data;

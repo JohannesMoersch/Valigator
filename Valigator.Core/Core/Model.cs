@@ -52,15 +52,9 @@ namespace Valigator.Core
 
 			var dataDescriptor = Expression.Property(data, nameof(Data<object>.DataDescriptor));
 
-			var constructor = typeof(PropertyDescriptor).GetConstructor(new[] { typeof(string), typeof(Type), typeof(IStateDescriptor), typeof(IEnumerable<IValueDescriptor>) });
+			var constructor = typeof(PropertyDescriptor).GetConstructor(new[] { typeof(string), typeof(DataDescriptor) });
 
-			var propertyType = Expression.Property(dataDescriptor, nameof(DataDescriptor.PropertyType));
-
-			var stateDescriptor = Expression.Property(dataDescriptor, nameof(DataDescriptor.StateDescriptor));
-
-			var valueDescriptors = Expression.Property(dataDescriptor, nameof(DataDescriptor.ValueDescriptors));
-
-			return Expression.New(constructor, Expression.Constant(property.Name, typeof(string)), propertyType, stateDescriptor, valueDescriptors);
+			return Expression.New(constructor, Expression.Constant(property.Name, typeof(string)), dataDescriptor);
 		}
 
 		private static object _verifyModelLockObj = new object();

@@ -18,7 +18,7 @@ namespace Valigator.Core.StateValidators
 			=> _item = item;
 
 		IStateDescriptor IStateValidator<Option<TValue[]>>.GetDescriptor()
-			=> new CollectionStateDescriptor(false, _item.DataDescriptor);
+			=> new OptionalCollectionStateDescriptor(true, _item.DataDescriptor);
 
 		Result<Option<TValue[]>, ValidationError[]> IStateValidator<Option<TValue[]>>.Validate(object model, bool isSet, Option<TValue[]> value)
 			=> isSet
