@@ -5,7 +5,7 @@ using Functional;
 
 namespace Valigator.Core.ValueDescriptors
 {
-	public class RangeDescriptor : IValueDescriptor
+	public class RangeDescriptor : IValueDescriptor, IEquatable<RangeDescriptor>
 	{
 		public Option<object> LessThanValue { get; }
 
@@ -21,6 +21,25 @@ namespace Valigator.Core.ValueDescriptors
 			LessThanOrEqualTo = lessThanOrEqualTo;
 			GreaterThanValue = greaterThanValue;
 			GreaterThanOrEqualTo = greaterThanOrEqualTo;
+		}
+
+		public override bool Equals(object obj) 
+			=> Equals(obj as RangeDescriptor);
+
+		public bool Equals(RangeDescriptor other)
+			=> other != null && LessThanValue.Equals(other.LessThanValue) && LessThanOrEqualTo == other.LessThanOrEqualTo && GreaterThanValue.Equals(other.GreaterThanValue) && GreaterThanOrEqualTo == other.GreaterThanOrEqualTo;
+
+		public bool Equals(IValueDescriptor other)
+			=> other is RangeDescriptor rangeDescriptor && Equals(rangeDescriptor);
+
+		public override int GetHashCode()
+		{
+			var hashCode = 1146995530;
+			hashCode = hashCode * -1521134295 + EqualityComparer<Option<object>>.Default.GetHashCode(LessThanValue);
+			hashCode = hashCode * -1521134295 + LessThanOrEqualTo.GetHashCode();
+			hashCode = hashCode * -1521134295 + EqualityComparer<Option<object>>.Default.GetHashCode(GreaterThanValue);
+			hashCode = hashCode * -1521134295 + GreaterThanOrEqualTo.GetHashCode();
+			return hashCode;
 		}
 	}
 }
