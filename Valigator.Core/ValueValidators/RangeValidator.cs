@@ -370,4 +370,37 @@ namespace Valigator.Core.ValueValidators
 		private ValidationError GetValidationError(decimal value)
 			=> new ValidationError("");
 	}
+
+	public struct RangeValidator_DateTime : IValueValidator<DateTime>
+	{
+		private readonly Option<DateTime> _lessThanValue;
+		private readonly bool _lessThanOrEqualTo;
+		private readonly Option<DateTime> _greaterThanValue;
+		private readonly bool _greaterThanOrEqualTo;
+
+		public RangeValidator_DateTime(DateTime? lessThan, bool lessThanOrEqualTo, DateTime? greaterThan, bool greaterThanOrEqualTo)
+		{
+			_lessThanValue = Option.FromNullable(lessThan);
+			_lessThanOrEqualTo = lessThanOrEqualTo;
+			_greaterThanValue = Option.FromNullable(greaterThan);
+			_greaterThanOrEqualTo = greaterThanOrEqualTo;
+		}
+
+		IEnumerable<IValueDescriptor> IValueValidator<DateTime>.GetDescriptors()
+			=> new[] { new RangeDescriptor(_lessThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _lessThanOrEqualTo, _greaterThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _greaterThanOrEqualTo) };
+
+		public Result<Unit, ValidationError> Validate(DateTime value)
+		{
+			if (_lessThanValue.TryGetValue(out var lessThan) && _lessThanOrEqualTo ? value > lessThan : value >= lessThan)
+				return Result.Failure<Unit, ValidationError>(GetValidationError(value));
+
+			if (_greaterThanValue.TryGetValue(out var greaterThan) && _greaterThanOrEqualTo ? value < greaterThan : value <= greaterThan)
+				return Result.Failure<Unit, ValidationError>(GetValidationError(value));
+
+			return Result.Unit<ValidationError>();
+		}
+
+		private ValidationError GetValidationError(DateTime value)
+			=> new ValidationError("");
+	}
 }

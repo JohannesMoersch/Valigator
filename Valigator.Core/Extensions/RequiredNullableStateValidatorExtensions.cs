@@ -294,5 +294,31 @@ namespace Valigator
 
 			return new NullableDataSource<RequiredNullableStateValidator<decimal>, RangeValidator_Decimal, decimal>(requiredValidator, new RangeValidator_Decimal(lessThan ?? lessThanOrEqualTo, lessThanOrEqualTo.HasValue, greaterThan ?? greaterThanOrEqualTo, greaterThanOrEqualTo.HasValue));
 		}
+
+		public static NullableDataSource<RequiredNullableStateValidator<DateTime>, RangeValidator_DateTime, DateTime> LessThan(this RequiredNullableStateValidator<DateTime> requiredValidator, DateTime value)
+			=> new NullableDataSource<RequiredNullableStateValidator<DateTime>, RangeValidator_DateTime, DateTime>(requiredValidator, new RangeValidator_DateTime(value, false, null, false));
+
+		public static NullableDataSource<RequiredNullableStateValidator<DateTime>, RangeValidator_DateTime, DateTime> LessThanOrEqualTo(this RequiredNullableStateValidator<DateTime> requiredValidator, DateTime value)
+			=> new NullableDataSource<RequiredNullableStateValidator<DateTime>, RangeValidator_DateTime, DateTime>(requiredValidator, new RangeValidator_DateTime(value, true, null, false));
+
+		public static NullableDataSource<RequiredNullableStateValidator<DateTime>, RangeValidator_DateTime, DateTime> GreaterThan(this RequiredNullableStateValidator<DateTime> requiredValidator, DateTime value)
+			=> new NullableDataSource<RequiredNullableStateValidator<DateTime>, RangeValidator_DateTime, DateTime>(requiredValidator, new RangeValidator_DateTime(null, false, value, false));
+
+		public static NullableDataSource<RequiredNullableStateValidator<DateTime>, RangeValidator_DateTime, DateTime> GreaterThanOrEqualTo(this RequiredNullableStateValidator<DateTime> requiredValidator, DateTime value)
+			=> new NullableDataSource<RequiredNullableStateValidator<DateTime>, RangeValidator_DateTime, DateTime>(requiredValidator, new RangeValidator_DateTime(null, false, value, true));
+
+		public static NullableDataSource<RequiredNullableStateValidator<DateTime>, RangeValidator_DateTime, DateTime> InRange(this RequiredNullableStateValidator<DateTime> requiredValidator, DateTime? lessThan = null, DateTime? lessThanOrEqualTo = null, DateTime? greaterThan = null, DateTime? greaterThanOrEqualTo = null)
+		{
+			if (lessThan.HasValue && lessThanOrEqualTo.HasValue)
+				throw new ArgumentOutOfRangeException(nameof(lessThan), $"{nameof(lessThan)} and {nameof(lessThanOrEqualTo)} cannot both be specified.");
+
+			if (greaterThan.HasValue && greaterThanOrEqualTo.HasValue)
+				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"{nameof(greaterThan)} and {nameof(greaterThanOrEqualTo)} cannot both be specified.");
+
+			if ((lessThan ?? lessThanOrEqualTo) <= (greaterThan ?? greaterThanOrEqualTo))
+				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"Specified range must include more than one possible value.");
+
+			return new NullableDataSource<RequiredNullableStateValidator<DateTime>, RangeValidator_DateTime, DateTime>(requiredValidator, new RangeValidator_DateTime(lessThan ?? lessThanOrEqualTo, lessThanOrEqualTo.HasValue, greaterThan ?? greaterThanOrEqualTo, greaterThanOrEqualTo.HasValue));
+		}
 	}
 }
