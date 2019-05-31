@@ -23,21 +23,21 @@ namespace Valigator.Core.ValueValidators
 			_greaterThanOrEqualTo = greaterThanOrEqualTo;
 		}
 
-		IEnumerable<IValueDescriptor> IValueValidator<byte>.GetDescriptors()
-			=> new[] { new RangeDescriptor(_lessThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _lessThanOrEqualTo, _greaterThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _greaterThanOrEqualTo) };
+		IValueDescriptor IValueValidator<byte>.GetDescriptor()
+			=> new RangeDescriptor(_lessThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _lessThanOrEqualTo, _greaterThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _greaterThanOrEqualTo);
 
-		public Result<Unit, ValidationError> Validate(byte value)
+		bool IValueValidator<byte>.IsValid(byte value)
 		{
 			if (_lessThanValue.TryGetValue(out var lessThan) && _lessThanOrEqualTo ? value > lessThan : value >= lessThan)
-				return Result.Failure<Unit, ValidationError>(GetValidationError(value));
+				return false;
 
 			if (_greaterThanValue.TryGetValue(out var greaterThan) && _greaterThanOrEqualTo ? value < greaterThan : value <= greaterThan)
-				return Result.Failure<Unit, ValidationError>(GetValidationError(value));
+				return false;
 
-			return Result.Unit<ValidationError>();
+			return true;
 		}
 
-		private ValidationError GetValidationError(byte value)
+		ValidationError IValueValidator<byte>.GetError(byte value, bool inverted)
 			=> new ValidationError("");
 	}
 
@@ -56,21 +56,21 @@ namespace Valigator.Core.ValueValidators
 			_greaterThanOrEqualTo = greaterThanOrEqualTo;
 		}
 
-		IEnumerable<IValueDescriptor> IValueValidator<sbyte>.GetDescriptors()
-			=> new[] { new RangeDescriptor(_lessThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _lessThanOrEqualTo, _greaterThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _greaterThanOrEqualTo) };
+		IValueDescriptor IValueValidator<sbyte>.GetDescriptor()
+			=> new RangeDescriptor(_lessThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _lessThanOrEqualTo, _greaterThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _greaterThanOrEqualTo);
 
-		public Result<Unit, ValidationError> Validate(sbyte value)
+		bool IValueValidator<sbyte>.IsValid(sbyte value)
 		{
 			if (_lessThanValue.TryGetValue(out var lessThan) && _lessThanOrEqualTo ? value > lessThan : value >= lessThan)
-				return Result.Failure<Unit, ValidationError>(GetValidationError(value));
+				return false;
 
 			if (_greaterThanValue.TryGetValue(out var greaterThan) && _greaterThanOrEqualTo ? value < greaterThan : value <= greaterThan)
-				return Result.Failure<Unit, ValidationError>(GetValidationError(value));
+				return false;
 
-			return Result.Unit<ValidationError>();
+			return true;
 		}
 
-		private ValidationError GetValidationError(sbyte value)
+		ValidationError IValueValidator<sbyte>.GetError(sbyte value, bool inverted)
 			=> new ValidationError("");
 	}
 
@@ -89,21 +89,21 @@ namespace Valigator.Core.ValueValidators
 			_greaterThanOrEqualTo = greaterThanOrEqualTo;
 		}
 
-		IEnumerable<IValueDescriptor> IValueValidator<short>.GetDescriptors()
-			=> new[] { new RangeDescriptor(_lessThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _lessThanOrEqualTo, _greaterThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _greaterThanOrEqualTo) };
+		IValueDescriptor IValueValidator<short>.GetDescriptor()
+			=> new RangeDescriptor(_lessThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _lessThanOrEqualTo, _greaterThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _greaterThanOrEqualTo);
 
-		public Result<Unit, ValidationError> Validate(short value)
+		bool IValueValidator<short>.IsValid(short value)
 		{
 			if (_lessThanValue.TryGetValue(out var lessThan) && _lessThanOrEqualTo ? value > lessThan : value >= lessThan)
-				return Result.Failure<Unit, ValidationError>(GetValidationError(value));
+				return false;
 
 			if (_greaterThanValue.TryGetValue(out var greaterThan) && _greaterThanOrEqualTo ? value < greaterThan : value <= greaterThan)
-				return Result.Failure<Unit, ValidationError>(GetValidationError(value));
+				return false;
 
-			return Result.Unit<ValidationError>();
+			return true;
 		}
 
-		private ValidationError GetValidationError(short value)
+		ValidationError IValueValidator<short>.GetError(short value, bool inverted)
 			=> new ValidationError("");
 	}
 
@@ -122,21 +122,21 @@ namespace Valigator.Core.ValueValidators
 			_greaterThanOrEqualTo = greaterThanOrEqualTo;
 		}
 
-		IEnumerable<IValueDescriptor> IValueValidator<ushort>.GetDescriptors()
-			=> new[] { new RangeDescriptor(_lessThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _lessThanOrEqualTo, _greaterThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _greaterThanOrEqualTo) };
+		IValueDescriptor IValueValidator<ushort>.GetDescriptor()
+			=> new RangeDescriptor(_lessThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _lessThanOrEqualTo, _greaterThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _greaterThanOrEqualTo);
 
-		public Result<Unit, ValidationError> Validate(ushort value)
+		bool IValueValidator<ushort>.IsValid(ushort value)
 		{
 			if (_lessThanValue.TryGetValue(out var lessThan) && _lessThanOrEqualTo ? value > lessThan : value >= lessThan)
-				return Result.Failure<Unit, ValidationError>(GetValidationError(value));
+				return false;
 
 			if (_greaterThanValue.TryGetValue(out var greaterThan) && _greaterThanOrEqualTo ? value < greaterThan : value <= greaterThan)
-				return Result.Failure<Unit, ValidationError>(GetValidationError(value));
+				return false;
 
-			return Result.Unit<ValidationError>();
+			return true;
 		}
 
-		private ValidationError GetValidationError(ushort value)
+		ValidationError IValueValidator<ushort>.GetError(ushort value, bool inverted)
 			=> new ValidationError("");
 	}
 
@@ -155,21 +155,21 @@ namespace Valigator.Core.ValueValidators
 			_greaterThanOrEqualTo = greaterThanOrEqualTo;
 		}
 
-		IEnumerable<IValueDescriptor> IValueValidator<int>.GetDescriptors()
-			=> new[] { new RangeDescriptor(_lessThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _lessThanOrEqualTo, _greaterThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _greaterThanOrEqualTo) };
+		IValueDescriptor IValueValidator<int>.GetDescriptor()
+			=> new RangeDescriptor(_lessThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _lessThanOrEqualTo, _greaterThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _greaterThanOrEqualTo);
 
-		public Result<Unit, ValidationError> Validate(int value)
+		bool IValueValidator<int>.IsValid(int value)
 		{
 			if (_lessThanValue.TryGetValue(out var lessThan) && _lessThanOrEqualTo ? value > lessThan : value >= lessThan)
-				return Result.Failure<Unit, ValidationError>(GetValidationError(value));
+				return false;
 
 			if (_greaterThanValue.TryGetValue(out var greaterThan) && _greaterThanOrEqualTo ? value < greaterThan : value <= greaterThan)
-				return Result.Failure<Unit, ValidationError>(GetValidationError(value));
+				return false;
 
-			return Result.Unit<ValidationError>();
+			return true;
 		}
 
-		private ValidationError GetValidationError(int value)
+		ValidationError IValueValidator<int>.GetError(int value, bool inverted)
 			=> new ValidationError("");
 	}
 
@@ -188,21 +188,21 @@ namespace Valigator.Core.ValueValidators
 			_greaterThanOrEqualTo = greaterThanOrEqualTo;
 		}
 
-		IEnumerable<IValueDescriptor> IValueValidator<uint>.GetDescriptors()
-			=> new[] { new RangeDescriptor(_lessThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _lessThanOrEqualTo, _greaterThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _greaterThanOrEqualTo) };
+		IValueDescriptor IValueValidator<uint>.GetDescriptor()
+			=> new RangeDescriptor(_lessThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _lessThanOrEqualTo, _greaterThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _greaterThanOrEqualTo);
 
-		public Result<Unit, ValidationError> Validate(uint value)
+		bool IValueValidator<uint>.IsValid(uint value)
 		{
 			if (_lessThanValue.TryGetValue(out var lessThan) && _lessThanOrEqualTo ? value > lessThan : value >= lessThan)
-				return Result.Failure<Unit, ValidationError>(GetValidationError(value));
+				return false;
 
 			if (_greaterThanValue.TryGetValue(out var greaterThan) && _greaterThanOrEqualTo ? value < greaterThan : value <= greaterThan)
-				return Result.Failure<Unit, ValidationError>(GetValidationError(value));
+				return false;
 
-			return Result.Unit<ValidationError>();
+			return true;
 		}
 
-		private ValidationError GetValidationError(uint value)
+		ValidationError IValueValidator<uint>.GetError(uint value, bool inverted)
 			=> new ValidationError("");
 	}
 
@@ -221,21 +221,21 @@ namespace Valigator.Core.ValueValidators
 			_greaterThanOrEqualTo = greaterThanOrEqualTo;
 		}
 
-		IEnumerable<IValueDescriptor> IValueValidator<long>.GetDescriptors()
-			=> new[] { new RangeDescriptor(_lessThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _lessThanOrEqualTo, _greaterThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _greaterThanOrEqualTo) };
+		IValueDescriptor IValueValidator<long>.GetDescriptor()
+			=> new RangeDescriptor(_lessThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _lessThanOrEqualTo, _greaterThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _greaterThanOrEqualTo);
 
-		public Result<Unit, ValidationError> Validate(long value)
+		bool IValueValidator<long>.IsValid(long value)
 		{
 			if (_lessThanValue.TryGetValue(out var lessThan) && _lessThanOrEqualTo ? value > lessThan : value >= lessThan)
-				return Result.Failure<Unit, ValidationError>(GetValidationError(value));
+				return false;
 
 			if (_greaterThanValue.TryGetValue(out var greaterThan) && _greaterThanOrEqualTo ? value < greaterThan : value <= greaterThan)
-				return Result.Failure<Unit, ValidationError>(GetValidationError(value));
+				return false;
 
-			return Result.Unit<ValidationError>();
+			return true;
 		}
 
-		private ValidationError GetValidationError(long value)
+		ValidationError IValueValidator<long>.GetError(long value, bool inverted)
 			=> new ValidationError("");
 	}
 
@@ -254,21 +254,21 @@ namespace Valigator.Core.ValueValidators
 			_greaterThanOrEqualTo = greaterThanOrEqualTo;
 		}
 
-		IEnumerable<IValueDescriptor> IValueValidator<ulong>.GetDescriptors()
-			=> new[] { new RangeDescriptor(_lessThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _lessThanOrEqualTo, _greaterThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _greaterThanOrEqualTo) };
+		IValueDescriptor IValueValidator<ulong>.GetDescriptor()
+			=> new RangeDescriptor(_lessThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _lessThanOrEqualTo, _greaterThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _greaterThanOrEqualTo);
 
-		public Result<Unit, ValidationError> Validate(ulong value)
+		bool IValueValidator<ulong>.IsValid(ulong value)
 		{
 			if (_lessThanValue.TryGetValue(out var lessThan) && _lessThanOrEqualTo ? value > lessThan : value >= lessThan)
-				return Result.Failure<Unit, ValidationError>(GetValidationError(value));
+				return false;
 
 			if (_greaterThanValue.TryGetValue(out var greaterThan) && _greaterThanOrEqualTo ? value < greaterThan : value <= greaterThan)
-				return Result.Failure<Unit, ValidationError>(GetValidationError(value));
+				return false;
 
-			return Result.Unit<ValidationError>();
+			return true;
 		}
 
-		private ValidationError GetValidationError(ulong value)
+		ValidationError IValueValidator<ulong>.GetError(ulong value, bool inverted)
 			=> new ValidationError("");
 	}
 
@@ -287,21 +287,21 @@ namespace Valigator.Core.ValueValidators
 			_greaterThanOrEqualTo = greaterThanOrEqualTo;
 		}
 
-		IEnumerable<IValueDescriptor> IValueValidator<float>.GetDescriptors()
-			=> new[] { new RangeDescriptor(_lessThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _lessThanOrEqualTo, _greaterThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _greaterThanOrEqualTo) };
+		IValueDescriptor IValueValidator<float>.GetDescriptor()
+			=> new RangeDescriptor(_lessThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _lessThanOrEqualTo, _greaterThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _greaterThanOrEqualTo);
 
-		public Result<Unit, ValidationError> Validate(float value)
+		bool IValueValidator<float>.IsValid(float value)
 		{
 			if (_lessThanValue.TryGetValue(out var lessThan) && _lessThanOrEqualTo ? value > lessThan : value >= lessThan)
-				return Result.Failure<Unit, ValidationError>(GetValidationError(value));
+				return false;
 
 			if (_greaterThanValue.TryGetValue(out var greaterThan) && _greaterThanOrEqualTo ? value < greaterThan : value <= greaterThan)
-				return Result.Failure<Unit, ValidationError>(GetValidationError(value));
+				return false;
 
-			return Result.Unit<ValidationError>();
+			return true;
 		}
 
-		private ValidationError GetValidationError(float value)
+		ValidationError IValueValidator<float>.GetError(float value, bool inverted)
 			=> new ValidationError("");
 	}
 
@@ -320,21 +320,21 @@ namespace Valigator.Core.ValueValidators
 			_greaterThanOrEqualTo = greaterThanOrEqualTo;
 		}
 
-		IEnumerable<IValueDescriptor> IValueValidator<double>.GetDescriptors()
-			=> new[] { new RangeDescriptor(_lessThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _lessThanOrEqualTo, _greaterThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _greaterThanOrEqualTo) };
+		IValueDescriptor IValueValidator<double>.GetDescriptor()
+			=> new RangeDescriptor(_lessThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _lessThanOrEqualTo, _greaterThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _greaterThanOrEqualTo);
 
-		public Result<Unit, ValidationError> Validate(double value)
+		bool IValueValidator<double>.IsValid(double value)
 		{
 			if (_lessThanValue.TryGetValue(out var lessThan) && _lessThanOrEqualTo ? value > lessThan : value >= lessThan)
-				return Result.Failure<Unit, ValidationError>(GetValidationError(value));
+				return false;
 
 			if (_greaterThanValue.TryGetValue(out var greaterThan) && _greaterThanOrEqualTo ? value < greaterThan : value <= greaterThan)
-				return Result.Failure<Unit, ValidationError>(GetValidationError(value));
+				return false;
 
-			return Result.Unit<ValidationError>();
+			return true;
 		}
 
-		private ValidationError GetValidationError(double value)
+		ValidationError IValueValidator<double>.GetError(double value, bool inverted)
 			=> new ValidationError("");
 	}
 
@@ -353,21 +353,21 @@ namespace Valigator.Core.ValueValidators
 			_greaterThanOrEqualTo = greaterThanOrEqualTo;
 		}
 
-		IEnumerable<IValueDescriptor> IValueValidator<decimal>.GetDescriptors()
-			=> new[] { new RangeDescriptor(_lessThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _lessThanOrEqualTo, _greaterThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _greaterThanOrEqualTo) };
+		IValueDescriptor IValueValidator<decimal>.GetDescriptor()
+			=> new RangeDescriptor(_lessThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _lessThanOrEqualTo, _greaterThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _greaterThanOrEqualTo);
 
-		public Result<Unit, ValidationError> Validate(decimal value)
+		bool IValueValidator<decimal>.IsValid(decimal value)
 		{
 			if (_lessThanValue.TryGetValue(out var lessThan) && _lessThanOrEqualTo ? value > lessThan : value >= lessThan)
-				return Result.Failure<Unit, ValidationError>(GetValidationError(value));
+				return false;
 
 			if (_greaterThanValue.TryGetValue(out var greaterThan) && _greaterThanOrEqualTo ? value < greaterThan : value <= greaterThan)
-				return Result.Failure<Unit, ValidationError>(GetValidationError(value));
+				return false;
 
-			return Result.Unit<ValidationError>();
+			return true;
 		}
 
-		private ValidationError GetValidationError(decimal value)
+		ValidationError IValueValidator<decimal>.GetError(decimal value, bool inverted)
 			=> new ValidationError("");
 	}
 
@@ -386,21 +386,21 @@ namespace Valigator.Core.ValueValidators
 			_greaterThanOrEqualTo = greaterThanOrEqualTo;
 		}
 
-		IEnumerable<IValueDescriptor> IValueValidator<DateTime>.GetDescriptors()
-			=> new[] { new RangeDescriptor(_lessThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _lessThanOrEqualTo, _greaterThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _greaterThanOrEqualTo) };
+		IValueDescriptor IValueValidator<DateTime>.GetDescriptor()
+			=> new RangeDescriptor(_lessThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _lessThanOrEqualTo, _greaterThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _greaterThanOrEqualTo);
 
-		public Result<Unit, ValidationError> Validate(DateTime value)
+		bool IValueValidator<DateTime>.IsValid(DateTime value)
 		{
 			if (_lessThanValue.TryGetValue(out var lessThan) && _lessThanOrEqualTo ? value > lessThan : value >= lessThan)
-				return Result.Failure<Unit, ValidationError>(GetValidationError(value));
+				return false;
 
 			if (_greaterThanValue.TryGetValue(out var greaterThan) && _greaterThanOrEqualTo ? value < greaterThan : value <= greaterThan)
-				return Result.Failure<Unit, ValidationError>(GetValidationError(value));
+				return false;
 
-			return Result.Unit<ValidationError>();
+			return true;
 		}
 
-		private ValidationError GetValidationError(DateTime value)
+		ValidationError IValueValidator<DateTime>.GetError(DateTime value, bool inverted)
 			=> new ValidationError("");
 	}
 }

@@ -7,14 +7,17 @@ using Valigator.Core.Descriptors;
 
 namespace Valigator.Core.ValueValidators
 {
-	public struct PassthroughValidator<TValue> : IValueValidator<TValue>
+	internal struct PassthroughValidator<TValue> : IValueValidator<TValue>
 	{
 		public Data<TValue> Data => throw new NotImplementedException();
 
-		IEnumerable<IValueDescriptor> IValueValidator<TValue>.GetDescriptors()
-			=> Enumerable.Empty<IValueDescriptor>();
+		IValueDescriptor IValueValidator<TValue>.GetDescriptor()
+			=> null;
 
-		public Result<Unit, ValidationError> Validate(TValue value)
-			=> Result.Unit<ValidationError>();
+		bool IValueValidator<TValue>.IsValid(TValue value)
+			=> true;
+
+		ValidationError IValueValidator<TValue>.GetError(TValue value, bool inverted)
+			=> throw new NotImplementedException();
 	}
 }

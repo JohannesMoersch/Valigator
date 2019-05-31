@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Functional;
 using Valigator.Core;
 using Valigator.Core.StateValidators;
 using Valigator.Core.ValueValidators;
@@ -9,6 +10,10 @@ namespace Valigator
 {
 	public static class OptionalStateValidatorExtensions
 	{
+		public static InvertedDataSource<OptionalStateValidator<TValue>, TValueValidator, Option<TValue>> Not<TValueValidator, TValue>(this OptionalStateValidator<TValue> defaultedValidator, Func<OptionalStateValidator<TValue>, DataSource<OptionalStateValidator<TValue>, TValueValidator, Option<TValue>>> validatorFactory)
+			where TValueValidator : IValueValidator<Option<TValue>>
+			=> validatorFactory.Invoke(defaultedValidator).Invert();
+
 		public static NullableDataSource<OptionalStateValidator<byte>, RangeValidator_Byte, byte> LessThan(this OptionalStateValidator<byte> defaultedValidator, byte value)
 			=> new NullableDataSource<OptionalStateValidator<byte>, RangeValidator_Byte, byte>(defaultedValidator, new RangeValidator_Byte(value, false, null, false));
 

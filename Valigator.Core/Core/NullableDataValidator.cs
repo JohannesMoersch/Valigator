@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Functional;
+using Valigator.Core.Descriptors;
 using Valigator.Core.Helpers;
 
 namespace Valigator.Core
@@ -10,7 +11,7 @@ namespace Valigator.Core
 		where TStateValidator : IStateValidator<Option<TValue>>
 		where TValueValidator : IValueValidator<TValue>
 	{
-		public DataDescriptor DataDescriptor => new DataDescriptor(typeof(TValue), _stateValidator.GetDescriptor(), _valueValidator.GetDescriptors());
+		public DataDescriptor DataDescriptor => new DataDescriptor(typeof(TValue), _stateValidator.GetDescriptor(), CreateValueDescriptorArray(_valueValidator.GetDescriptor()));
 
 		private readonly TStateValidator _stateValidator;
 
@@ -29,17 +30,18 @@ namespace Valigator.Core
 				if (!success.TryGetValue(out var some))
 					return Result.Success<Option<TValue>, ValidationError[]>(success);
 
-				if (_valueValidator.Validate(some).TryGetValue(out var _, out var error))
-				{
-					return Model<TValue>
-						.Verify(some)
-						.Select(_ => success);
-				}
+				if (!_valueValidator.IsValid(some))
+					return Result.Failure<Option<TValue>, ValidationError[]>(new[] { _valueValidator.GetError(some, false) });
 
-				return Result.Failure<Option<TValue>, ValidationError[]>(new[] { error });
+				return Model<TValue>
+					.Verify(some)
+					.Select(_ => success);
 			}
 
 			return Result.Failure<Option<TValue>, ValidationError[]>(failure);
 		}
+
+		private static IValueDescriptor[] CreateValueDescriptorArray(IValueDescriptor valueDescriptor)
+			=> valueDescriptor != null ? new[] { valueDescriptor } : Array.Empty<IValueDescriptor>();
 	}
 }

@@ -19,6 +19,9 @@ namespace Valigator.Core
 			_valueValidator = valueValidator;
 		}
 
+		internal InvertedDataSource<TStateValidator, TValueValidator, TValue> Invert()
+			=> new InvertedDataSource<TStateValidator, TValueValidator, TValue>(_stateValidator, _valueValidator);
+
 		public static implicit operator Data<TValue>(DataSource<TStateValidator, TValueValidator, TValue> dataSource)
 			=> dataSource.Data;
 	}

@@ -14,11 +14,11 @@ namespace Valigator.Core
 
 		public IReadOnlyList<IValueDescriptor> ValueDescriptors { get; }
 
-		public DataDescriptor(Type propertyType, IStateDescriptor stateDescriptor, IEnumerable<IValueDescriptor> valueDescriptors)
+		public DataDescriptor(Type propertyType, IStateDescriptor stateDescriptor, IValueDescriptor[] valueDescriptors)
 		{
 			PropertyType = propertyType ?? throw new ArgumentNullException(nameof(propertyType));
 			StateDescriptor = stateDescriptor ?? throw new ArgumentNullException(nameof(stateDescriptor));
-			ValueDescriptors = (valueDescriptors ?? throw new ArgumentNullException(nameof(valueDescriptors))).ToArray();
+			ValueDescriptors = valueDescriptors ?? throw new ArgumentNullException(nameof(valueDescriptors));
 		}
 	}
 }

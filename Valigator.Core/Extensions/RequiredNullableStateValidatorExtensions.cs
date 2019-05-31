@@ -9,6 +9,10 @@ namespace Valigator
 {
 	public static class RequiredNullableStateValidatorExtensions
 	{
+		public static InvertedNullableDataSource<RequiredNullableStateValidator<TValue>, TValueValidator, TValue> Not<TValueValidator, TValue>(this RequiredNullableStateValidator<TValue> defaultedValidator, Func<RequiredNullableStateValidator<TValue>, NullableDataSource<RequiredNullableStateValidator<TValue>, TValueValidator, TValue>> validatorFactory)
+			where TValueValidator : IValueValidator<TValue>
+			=> validatorFactory.Invoke(defaultedValidator).Invert();
+
 		public static NullableDataSource<RequiredNullableStateValidator<byte>, RangeValidator_Byte, byte> LessThan(this RequiredNullableStateValidator<byte> requiredValidator, byte value)
 			=> new NullableDataSource<RequiredNullableStateValidator<byte>, RangeValidator_Byte, byte>(requiredValidator, new RangeValidator_Byte(value, false, null, false));
 
