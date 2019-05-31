@@ -34,7 +34,7 @@ namespace Valigator.Core
 			hashCode = hashCode * -1521134295 + EqualityComparer<Type>.Default.GetHashCode(PropertyType);
 			hashCode = hashCode * -1521134295 + EqualityComparer<IStateDescriptor>.Default.GetHashCode(StateDescriptor);
 
-			ValueDescriptors.Aggregate(0, (counter, current) => counter * hashCode * EqualityComparer<IValueDescriptor>.Default.GetHashCode(current));
+			ValueDescriptors.Aggregate(0, (counter, current) => counter * -1521134295 * EqualityComparer<IValueDescriptor>.Default.GetHashCode(current));
 			return hashCode;
 		}
 	}
