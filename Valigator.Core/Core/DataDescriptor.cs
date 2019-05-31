@@ -7,7 +7,7 @@ using Valigator.Core.ValueDescriptors;
 
 namespace Valigator.Core
 {
-	public struct DataDescriptor
+	public struct DataDescriptor : IEquatable<DataDescriptor>
 	{
 		public Type PropertyType { get; }
 
@@ -20,6 +20,21 @@ namespace Valigator.Core
 			PropertyType = propertyType ?? throw new ArgumentNullException(nameof(propertyType));
 			StateDescriptor = stateDescriptor ?? throw new ArgumentNullException(nameof(stateDescriptor));
 			ValueDescriptors = valueDescriptors ?? throw new ArgumentNullException(nameof(valueDescriptors));
+		}
+
+		public override bool Equals(object obj)
+			=> obj is DataDescriptor descriptor && Equals(descriptor);
+
+		public bool Equals(DataDescriptor other)
+			=> EqualityComparer<Type>.Default.Equals(PropertyType, other.PropertyType) && EqualityComparer<IStateDescriptor>.Default.Equals(StateDescriptor, other.StateDescriptor) && ValueDescriptors.SequenceEqual(other.ValueDescriptors);;
+
+		public override int GetHashCode()
+		{
+			var hashCode = 1881245575;
+			hashCode = hashCode * -1521134295 + EqualityComparer<Type>.Default.GetHashCode(PropertyType);
+			hashCode = hashCode * -1521134295 + EqualityComparer<IStateDescriptor>.Default.GetHashCode(StateDescriptor);
+			hashCode = hashCode * -1521134295 + EqualityComparer<IReadOnlyList<IValueDescriptor>>.Default.GetHashCode(ValueDescriptors);
+			return hashCode;
 		}
 	}
 }

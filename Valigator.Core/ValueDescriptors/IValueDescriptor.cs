@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Valigator.Core.ValueDescriptors
 {
-	public interface IValueDescriptor
+	public interface IValueDescriptor : IEquatable<IValueDescriptor>
 	{
 	}
 }

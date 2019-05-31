@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Valigator.Core.StateDescriptors
 {
-	public interface IStateDescriptor
+	public interface IStateDescriptor : IEquatable<IStateDescriptor>
 	{
 	}
 }
