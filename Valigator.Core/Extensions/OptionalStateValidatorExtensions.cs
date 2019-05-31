@@ -20,6 +20,9 @@ namespace Valigator
 		public static NullableDataSource<OptionalStateValidator<TValue>, InSetValidator<TValue>, TValue> InSet<TValue>(this OptionalStateValidator<TValue> optionalValidator, ISet<TValue> options)
 			=> new NullableDataSource<OptionalStateValidator<TValue>, InSetValidator<TValue>, TValue>(optionalValidator, new InSetValidator<TValue>(options));
 
+		public static NullableDataSource<OptionalStateValidator<string>, StringLengthValidator, string> Length(this OptionalStateValidator<string> optionalValidator, int? minimumLength = null, int? maximumLength = null)
+			=> new NullableDataSource<OptionalStateValidator<string>, StringLengthValidator, string>(optionalValidator, new StringLengthValidator(minimumLength, maximumLength));
+
 		public static NullableDataSource<OptionalStateValidator<byte>, RangeValidator_Byte, byte> LessThan(this OptionalStateValidator<byte> optionalValidator, byte value)
 			=> new NullableDataSource<OptionalStateValidator<byte>, RangeValidator_Byte, byte>(optionalValidator, new RangeValidator_Byte(value, false, null, false));
 

@@ -19,6 +19,9 @@ namespace Valigator
 		public static DataSource<RequiredStateValidator<TValue>, InSetValidator<TValue>, TValue> InSet<TValue>(this RequiredStateValidator<TValue> requiredValidator, ISet<TValue> options)
 			=> new DataSource<RequiredStateValidator<TValue>, InSetValidator<TValue>, TValue>(requiredValidator, new InSetValidator<TValue>(options));
 
+		public static DataSource<RequiredStateValidator<string>, StringLengthValidator, string> Length(this RequiredStateValidator<string> requiredValidator, int? minimumLength = null, int? maximumLength = null)
+			=> new DataSource<RequiredStateValidator<string>, StringLengthValidator, string>(requiredValidator, new StringLengthValidator(minimumLength, maximumLength));
+
 		public static DataSource<RequiredStateValidator<byte>, RangeValidator_Byte, byte> LessThan(this RequiredStateValidator<byte> requiredValidator, byte value)
 			=> new DataSource<RequiredStateValidator<byte>, RangeValidator_Byte, byte>(requiredValidator, new RangeValidator_Byte(value, false, null, false));
 

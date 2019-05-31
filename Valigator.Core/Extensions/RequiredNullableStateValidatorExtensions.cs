@@ -19,6 +19,9 @@ namespace Valigator
 		public static NullableDataSource<RequiredNullableStateValidator<TValue>, InSetValidator<TValue>, TValue> InSet<TValue>(this RequiredNullableStateValidator<TValue> requiredValidator, ISet<TValue> options)
 			=> new NullableDataSource<RequiredNullableStateValidator<TValue>, InSetValidator<TValue>, TValue>(requiredValidator, new InSetValidator<TValue>(options));
 
+		public static NullableDataSource<RequiredNullableStateValidator<string>, StringLengthValidator, string> Length(this RequiredNullableStateValidator<string> requiredValidator, int? minimumLength = null, int? maximumLength = null)
+			=> new NullableDataSource<RequiredNullableStateValidator<string>, StringLengthValidator, string>(requiredValidator, new StringLengthValidator(minimumLength, maximumLength));
+
 		public static NullableDataSource<RequiredNullableStateValidator<byte>, RangeValidator_Byte, byte> LessThan(this RequiredNullableStateValidator<byte> requiredValidator, byte value)
 			=> new NullableDataSource<RequiredNullableStateValidator<byte>, RangeValidator_Byte, byte>(requiredValidator, new RangeValidator_Byte(value, false, null, false));
 
