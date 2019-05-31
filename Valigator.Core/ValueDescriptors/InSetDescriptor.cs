@@ -22,6 +22,6 @@ namespace Valigator.Core.ValueDescriptors
 			=> other is InSetDescriptor inSetDescriptor && Equals(inSetDescriptor);
 
 		public override int GetHashCode()
-			=> Options.Aggregate(0, (counter, current) => counter * 37816589 * EqualityComparer<object>.Default.GetHashCode(current));
+			=> Options.Aggregate(551998973, (counter, current) => counter * 37816589 + EqualityComparer<object>.Default.GetHashCode(current));
 	}
 }
