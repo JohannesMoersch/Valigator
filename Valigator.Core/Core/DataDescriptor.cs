@@ -26,7 +26,7 @@ namespace Valigator.Core
 			=> obj is DataDescriptor descriptor && Equals(descriptor);
 
 		public bool Equals(DataDescriptor other)
-			=> EqualityComparer<Type>.Default.Equals(PropertyType, other.PropertyType) && EqualityComparer<IStateDescriptor>.Default.Equals(StateDescriptor, other.StateDescriptor) && ValueDescriptors.SequenceEqual(other.ValueDescriptors);;
+			=> EqualityComparer<Type>.Default.Equals(PropertyType, other.PropertyType) && EqualityComparer<IStateDescriptor>.Default.Equals(StateDescriptor, other.StateDescriptor) && ValueDescriptors.SequenceEqual(other.ValueDescriptors);
 
 		public override int GetHashCode()
 		{

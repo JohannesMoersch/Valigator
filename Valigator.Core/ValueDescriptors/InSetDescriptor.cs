@@ -16,7 +16,7 @@ namespace Valigator.Core.ValueDescriptors
 			=> Equals(obj as InSetDescriptor);
 
 		public bool Equals(InSetDescriptor other)
-			=> other != null && Options.SequenceEqual(other.Options));
+			=> other != null && Options.SequenceEqual(other.Options);
 		
 		public bool Equals(IValueDescriptor other)
 			=> other is InSetDescriptor inSetDescriptor && Equals(inSetDescriptor);
