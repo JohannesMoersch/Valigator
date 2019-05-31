@@ -17,11 +17,11 @@ namespace Valigator.Core.ValueDescriptors
 
 		public bool Equals(InSetDescriptor other)
 			=> other != null && Options.SequenceEqual(other.Options);
-		
+
 		public bool Equals(IValueDescriptor other)
 			=> other is InSetDescriptor inSetDescriptor && Equals(inSetDescriptor);
 
 		public override int GetHashCode()
-			=> 37816589 + EqualityComparer<IReadOnlyList<object>>.Default.GetHashCode(Options);
+			=> Options.Aggregate(0, (counter, current) => counter * 37816589 * EqualityComparer<object>.Default.GetHashCode(current));
 	}
 }
