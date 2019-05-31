@@ -9,9 +9,15 @@ namespace Valigator
 {
 	public static class RequiredStateValidatorExtensions
 	{
-		public static InvertedDataSource<RequiredStateValidator<TValue>, TValueValidator, TValue> Not<TValueValidator, TValue>(this RequiredStateValidator<TValue> defaultedValidator, Func<RequiredStateValidator<TValue>, DataSource<RequiredStateValidator<TValue>, TValueValidator, TValue>> validatorFactory)
+		public static InvertedDataSource<RequiredStateValidator<TValue>, TValueValidator, TValue> Not<TValueValidator, TValue>(this RequiredStateValidator<TValue> requiredValidator, Func<RequiredStateValidator<TValue>, DataSource<RequiredStateValidator<TValue>, TValueValidator, TValue>> validatorFactory)
 			where TValueValidator : IValueValidator<TValue>
-			=> validatorFactory.Invoke(defaultedValidator).Invert();
+			=> validatorFactory.Invoke(requiredValidator).Invert();
+
+		public static DataSource<RequiredStateValidator<TValue>, InSetValidator<TValue>, TValue> InSet<TValue>(this RequiredStateValidator<TValue> requiredValidator, TValue[] options)
+			=> new DataSource<RequiredStateValidator<TValue>, InSetValidator<TValue>, TValue>(requiredValidator, new InSetValidator<TValue>(options));
+
+		public static DataSource<RequiredStateValidator<TValue>, InSetValidator<TValue>, TValue> InSet<TValue>(this RequiredStateValidator<TValue> requiredValidator, ISet<TValue> options)
+			=> new DataSource<RequiredStateValidator<TValue>, InSetValidator<TValue>, TValue>(requiredValidator, new InSetValidator<TValue>(options));
 
 		public static DataSource<RequiredStateValidator<byte>, RangeValidator_Byte, byte> LessThan(this RequiredStateValidator<byte> requiredValidator, byte value)
 			=> new DataSource<RequiredStateValidator<byte>, RangeValidator_Byte, byte>(requiredValidator, new RangeValidator_Byte(value, false, null, false));

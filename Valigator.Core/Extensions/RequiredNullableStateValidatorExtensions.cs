@@ -9,9 +9,15 @@ namespace Valigator
 {
 	public static class RequiredNullableStateValidatorExtensions
 	{
-		public static InvertedNullableDataSource<RequiredNullableStateValidator<TValue>, TValueValidator, TValue> Not<TValueValidator, TValue>(this RequiredNullableStateValidator<TValue> defaultedValidator, Func<RequiredNullableStateValidator<TValue>, NullableDataSource<RequiredNullableStateValidator<TValue>, TValueValidator, TValue>> validatorFactory)
+		public static InvertedNullableDataSource<RequiredNullableStateValidator<TValue>, TValueValidator, TValue> Not<TValueValidator, TValue>(this RequiredNullableStateValidator<TValue> requiredValidator, Func<RequiredNullableStateValidator<TValue>, NullableDataSource<RequiredNullableStateValidator<TValue>, TValueValidator, TValue>> validatorFactory)
 			where TValueValidator : IValueValidator<TValue>
-			=> validatorFactory.Invoke(defaultedValidator).Invert();
+			=> validatorFactory.Invoke(requiredValidator).Invert();
+
+		public static NullableDataSource<RequiredNullableStateValidator<TValue>, InSetValidator<TValue>, TValue> InSet<TValue>(this RequiredNullableStateValidator<TValue> requiredValidator, TValue[] options)
+			=> new NullableDataSource<RequiredNullableStateValidator<TValue>, InSetValidator<TValue>, TValue>(requiredValidator, new InSetValidator<TValue>(options));
+
+		public static NullableDataSource<RequiredNullableStateValidator<TValue>, InSetValidator<TValue>, TValue> InSet<TValue>(this RequiredNullableStateValidator<TValue> requiredValidator, ISet<TValue> options)
+			=> new NullableDataSource<RequiredNullableStateValidator<TValue>, InSetValidator<TValue>, TValue>(requiredValidator, new InSetValidator<TValue>(options));
 
 		public static NullableDataSource<RequiredNullableStateValidator<byte>, RangeValidator_Byte, byte> LessThan(this RequiredNullableStateValidator<byte> requiredValidator, byte value)
 			=> new NullableDataSource<RequiredNullableStateValidator<byte>, RangeValidator_Byte, byte>(requiredValidator, new RangeValidator_Byte(value, false, null, false));

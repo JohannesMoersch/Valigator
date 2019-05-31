@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Functional;
-using Valigator.Core.Descriptors;
 using Valigator.Core.Helpers;
+using Valigator.Core.StateDescriptors;
 using Valigator.Core.ValueValidators;
 
 namespace Valigator.Core.StateValidators

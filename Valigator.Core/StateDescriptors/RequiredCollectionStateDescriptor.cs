@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Valigator.Core.Descriptors
+namespace Valigator.Core.StateDescriptors
 {
-	public class OptionalCollectionStateDescriptor : IStateDescriptor
+	public class RequiredCollectionStateDescriptor : IStateDescriptor
 	{
 		public bool Nullable { get; }
 
 		public DataDescriptor ItemDescriptor { get; }
 
-		public OptionalCollectionStateDescriptor(bool nullable, DataDescriptor itemDescriptor)
+		public RequiredCollectionStateDescriptor(bool nullable, DataDescriptor itemDescriptor)
 		{
 			Nullable = nullable;
 			ItemDescriptor = itemDescriptor;

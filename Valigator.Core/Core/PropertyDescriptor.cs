@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Valigator.Core.Descriptors;
 
 namespace Valigator.Core
 {

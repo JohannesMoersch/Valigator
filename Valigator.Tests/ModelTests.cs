@@ -9,7 +9,7 @@ namespace Valigator.Tests
 {
 	public class TestModel
 	{
-		public Data<Option<int>> One { get; set; } = Data.Defaulted<int>().Nullable().Not(o => o.InRange(greaterThanOrEqualTo: 0, lessThanOrEqualTo: 2));
+		public Data<Option<int>> One { get; set; } = Data.Defaulted<int>(-1).Nullable().Not(o => o.InRange(greaterThanOrEqualTo: 0, lessThanOrEqualTo: 2));
 
 		public Data<int[]> Two { get; set; } = Data.Collection<int>(f => f.GreaterThan(10)).DefaultedToEmpty();
 

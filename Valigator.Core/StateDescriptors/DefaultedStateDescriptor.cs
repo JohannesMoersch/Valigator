@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Valigator.Core.Descriptors
+namespace Valigator.Core.StateDescriptors
 {
 	public class DefaultedStateDescriptor : IStateDescriptor
 	{

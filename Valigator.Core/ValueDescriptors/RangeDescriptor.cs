@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Functional;
 
-namespace Valigator.Core.Descriptors
+namespace Valigator.Core.ValueDescriptors
 {
 	public class RangeDescriptor : IValueDescriptor
 	{

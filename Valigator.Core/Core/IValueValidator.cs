@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Functional;
-using Valigator.Core.Descriptors;
+using Valigator.Core.ValueDescriptors;
 
 namespace Valigator.Core
 {

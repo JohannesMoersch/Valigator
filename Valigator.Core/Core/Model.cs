@@ -6,7 +6,6 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using Functional;
-using Valigator.Core.Descriptors;
 
 namespace Valigator.Core
 {
