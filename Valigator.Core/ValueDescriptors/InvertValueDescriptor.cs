@@ -9,7 +9,7 @@ namespace Valigator.Core.ValueDescriptors
 		public IValueDescriptor InvertedDescriptor { get; }
 
 		public InvertValueDescriptor(IValueDescriptor invertedDescriptor) 
-			=> InvertedDescriptor = invertedDescriptor;
+			=> InvertedDescriptor = invertedDescriptor ?? throw new ArgumentNullException(nameof(invertedDescriptor));
 
 		public override bool Equals(object obj) 
 			=> Equals(obj as InvertValueDescriptor);

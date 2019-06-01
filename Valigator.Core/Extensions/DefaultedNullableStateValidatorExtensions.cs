@@ -13,7 +13,7 @@ namespace Valigator
 			where TValueValidator : IValueValidator<TValue>
 			=> validatorFactory.Invoke(defaultedValidator).Invert();
 
-		public static NullableDataSource<DefaultedNullableStateValidator<TValue>, InSetValidator<TValue>, TValue> InSet<TValue>(this DefaultedNullableStateValidator<TValue> defaultedValidator, TValue[] options)
+		public static NullableDataSource<DefaultedNullableStateValidator<TValue>, InSetValidator<TValue>, TValue> InSet<TValue>(this DefaultedNullableStateValidator<TValue> defaultedValidator, params TValue[] options)
 			=> new NullableDataSource<DefaultedNullableStateValidator<TValue>, InSetValidator<TValue>, TValue>(defaultedValidator, new InSetValidator<TValue>(options));
 
 		public static NullableDataSource<DefaultedNullableStateValidator<TValue>, InSetValidator<TValue>, TValue> InSet<TValue>(this DefaultedNullableStateValidator<TValue> defaultedValidator, ISet<TValue> options)

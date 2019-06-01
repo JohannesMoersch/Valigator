@@ -13,7 +13,10 @@ namespace Valigator
 			where TValueValidator : IValueValidator<TValue>
 			=> validatorFactory.Invoke(requiredValidator).Invert();
 
-		public static DataSource<RequiredStateValidator<TValue>, InSetValidator<TValue>, TValue> InSet<TValue>(this RequiredStateValidator<TValue> requiredValidator, TValue[] options)
+		public static DataSource<RequiredStateValidator<TValue>, EqualsValidator<TValue>, TValue> Equals<TValue>(this RequiredStateValidator<TValue> requiredValidator, TValue value)
+			=> new DataSource<RequiredStateValidator<TValue>, EqualsValidator<TValue>, TValue>(requiredValidator, new EqualsValidator<TValue>(value));
+
+		public static DataSource<RequiredStateValidator<TValue>, InSetValidator<TValue>, TValue> InSet<TValue>(this RequiredStateValidator<TValue> requiredValidator, params TValue[] options)
 			=> new DataSource<RequiredStateValidator<TValue>, InSetValidator<TValue>, TValue>(requiredValidator, new InSetValidator<TValue>(options));
 
 		public static DataSource<RequiredStateValidator<TValue>, InSetValidator<TValue>, TValue> InSet<TValue>(this RequiredStateValidator<TValue> requiredValidator, ISet<TValue> options)
@@ -21,6 +24,15 @@ namespace Valigator
 
 		public static DataSource<RequiredStateValidator<string>, StringLengthValidator, string> Length(this RequiredStateValidator<string> requiredValidator, int? minimumLength = null, int? maximumLength = null)
 			=> new DataSource<RequiredStateValidator<string>, StringLengthValidator, string>(requiredValidator, new StringLengthValidator(minimumLength, maximumLength));
+
+		public static InvertedDataSource<RequiredStateValidator<string>, EqualsValidator<string>, string> NotEmpty(this RequiredStateValidator<string> requiredValidator)
+			=> new InvertedDataSource<RequiredStateValidator<string>, EqualsValidator<string>, string>(requiredValidator, new EqualsValidator<string>(String.Empty));
+
+		public static InvertedDataSource<RequiredStateValidator<Guid>, EqualsValidator<Guid>, Guid> NotEmpty(this RequiredStateValidator<Guid> requiredValidator)
+			=> new InvertedDataSource<RequiredStateValidator<Guid>, EqualsValidator<Guid>, Guid>(requiredValidator, new EqualsValidator<Guid>(Guid.Empty));
+
+		public static InvertedDataSource<RequiredStateValidator<byte>, EqualsValidator<byte>, byte> NotZero(this RequiredStateValidator<byte> requiredValidator)
+			=> new InvertedDataSource<RequiredStateValidator<byte>, EqualsValidator<byte>, byte>(requiredValidator, new EqualsValidator<byte>(0));
 
 		public static DataSource<RequiredStateValidator<byte>, RangeValidator_Byte, byte> LessThan(this RequiredStateValidator<byte> requiredValidator, byte value)
 			=> new DataSource<RequiredStateValidator<byte>, RangeValidator_Byte, byte>(requiredValidator, new RangeValidator_Byte(value, false, null, false));
@@ -48,6 +60,9 @@ namespace Valigator
 			return new DataSource<RequiredStateValidator<byte>, RangeValidator_Byte, byte>(requiredValidator, new RangeValidator_Byte(lessThan ?? lessThanOrEqualTo, lessThanOrEqualTo.HasValue, greaterThan ?? greaterThanOrEqualTo, greaterThanOrEqualTo.HasValue));
 		}
 
+		public static InvertedDataSource<RequiredStateValidator<sbyte>, EqualsValidator<sbyte>, sbyte> NotZero(this RequiredStateValidator<sbyte> requiredValidator)
+			=> new InvertedDataSource<RequiredStateValidator<sbyte>, EqualsValidator<sbyte>, sbyte>(requiredValidator, new EqualsValidator<sbyte>(0));
+
 		public static DataSource<RequiredStateValidator<sbyte>, RangeValidator_SByte, sbyte> LessThan(this RequiredStateValidator<sbyte> requiredValidator, sbyte value)
 			=> new DataSource<RequiredStateValidator<sbyte>, RangeValidator_SByte, sbyte>(requiredValidator, new RangeValidator_SByte(value, false, null, false));
 
@@ -73,6 +88,9 @@ namespace Valigator
 
 			return new DataSource<RequiredStateValidator<sbyte>, RangeValidator_SByte, sbyte>(requiredValidator, new RangeValidator_SByte(lessThan ?? lessThanOrEqualTo, lessThanOrEqualTo.HasValue, greaterThan ?? greaterThanOrEqualTo, greaterThanOrEqualTo.HasValue));
 		}
+
+		public static InvertedDataSource<RequiredStateValidator<short>, EqualsValidator<short>, short> NotZero(this RequiredStateValidator<short> requiredValidator)
+			=> new InvertedDataSource<RequiredStateValidator<short>, EqualsValidator<short>, short>(requiredValidator, new EqualsValidator<short>(0));
 
 		public static DataSource<RequiredStateValidator<short>, RangeValidator_Int16, short> LessThan(this RequiredStateValidator<short> requiredValidator, short value)
 			=> new DataSource<RequiredStateValidator<short>, RangeValidator_Int16, short>(requiredValidator, new RangeValidator_Int16(value, false, null, false));
@@ -100,6 +118,9 @@ namespace Valigator
 			return new DataSource<RequiredStateValidator<short>, RangeValidator_Int16, short>(requiredValidator, new RangeValidator_Int16(lessThan ?? lessThanOrEqualTo, lessThanOrEqualTo.HasValue, greaterThan ?? greaterThanOrEqualTo, greaterThanOrEqualTo.HasValue));
 		}
 
+		public static InvertedDataSource<RequiredStateValidator<ushort>, EqualsValidator<ushort>, ushort> NotZero(this RequiredStateValidator<ushort> requiredValidator)
+			=> new InvertedDataSource<RequiredStateValidator<ushort>, EqualsValidator<ushort>, ushort>(requiredValidator, new EqualsValidator<ushort>(0));
+
 		public static DataSource<RequiredStateValidator<ushort>, RangeValidator_UInt16, ushort> LessThan(this RequiredStateValidator<ushort> requiredValidator, ushort value)
 			=> new DataSource<RequiredStateValidator<ushort>, RangeValidator_UInt16, ushort>(requiredValidator, new RangeValidator_UInt16(value, false, null, false));
 
@@ -125,6 +146,9 @@ namespace Valigator
 
 			return new DataSource<RequiredStateValidator<ushort>, RangeValidator_UInt16, ushort>(requiredValidator, new RangeValidator_UInt16(lessThan ?? lessThanOrEqualTo, lessThanOrEqualTo.HasValue, greaterThan ?? greaterThanOrEqualTo, greaterThanOrEqualTo.HasValue));
 		}
+
+		public static InvertedDataSource<RequiredStateValidator<int>, EqualsValidator<int>, int> NotZero(this RequiredStateValidator<int> requiredValidator)
+			=> new InvertedDataSource<RequiredStateValidator<int>, EqualsValidator<int>, int>(requiredValidator, new EqualsValidator<int>(0));
 
 		public static DataSource<RequiredStateValidator<int>, RangeValidator_Int32, int> LessThan(this RequiredStateValidator<int> requiredValidator, int value)
 			=> new DataSource<RequiredStateValidator<int>, RangeValidator_Int32, int>(requiredValidator, new RangeValidator_Int32(value, false, null, false));
@@ -152,6 +176,9 @@ namespace Valigator
 			return new DataSource<RequiredStateValidator<int>, RangeValidator_Int32, int>(requiredValidator, new RangeValidator_Int32(lessThan ?? lessThanOrEqualTo, lessThanOrEqualTo.HasValue, greaterThan ?? greaterThanOrEqualTo, greaterThanOrEqualTo.HasValue));
 		}
 
+		public static InvertedDataSource<RequiredStateValidator<uint>, EqualsValidator<uint>, uint> NotZero(this RequiredStateValidator<uint> requiredValidator)
+			=> new InvertedDataSource<RequiredStateValidator<uint>, EqualsValidator<uint>, uint>(requiredValidator, new EqualsValidator<uint>(0));
+
 		public static DataSource<RequiredStateValidator<uint>, RangeValidator_UInt32, uint> LessThan(this RequiredStateValidator<uint> requiredValidator, uint value)
 			=> new DataSource<RequiredStateValidator<uint>, RangeValidator_UInt32, uint>(requiredValidator, new RangeValidator_UInt32(value, false, null, false));
 
@@ -177,6 +204,9 @@ namespace Valigator
 
 			return new DataSource<RequiredStateValidator<uint>, RangeValidator_UInt32, uint>(requiredValidator, new RangeValidator_UInt32(lessThan ?? lessThanOrEqualTo, lessThanOrEqualTo.HasValue, greaterThan ?? greaterThanOrEqualTo, greaterThanOrEqualTo.HasValue));
 		}
+
+		public static InvertedDataSource<RequiredStateValidator<long>, EqualsValidator<long>, long> NotZero(this RequiredStateValidator<long> requiredValidator)
+			=> new InvertedDataSource<RequiredStateValidator<long>, EqualsValidator<long>, long>(requiredValidator, new EqualsValidator<long>(0));
 
 		public static DataSource<RequiredStateValidator<long>, RangeValidator_Int64, long> LessThan(this RequiredStateValidator<long> requiredValidator, long value)
 			=> new DataSource<RequiredStateValidator<long>, RangeValidator_Int64, long>(requiredValidator, new RangeValidator_Int64(value, false, null, false));
@@ -204,6 +234,9 @@ namespace Valigator
 			return new DataSource<RequiredStateValidator<long>, RangeValidator_Int64, long>(requiredValidator, new RangeValidator_Int64(lessThan ?? lessThanOrEqualTo, lessThanOrEqualTo.HasValue, greaterThan ?? greaterThanOrEqualTo, greaterThanOrEqualTo.HasValue));
 		}
 
+		public static InvertedDataSource<RequiredStateValidator<ulong>, EqualsValidator<ulong>, ulong> NotZero(this RequiredStateValidator<ulong> requiredValidator)
+			=> new InvertedDataSource<RequiredStateValidator<ulong>, EqualsValidator<ulong>, ulong>(requiredValidator, new EqualsValidator<ulong>(0));
+
 		public static DataSource<RequiredStateValidator<ulong>, RangeValidator_UInt64, ulong> LessThan(this RequiredStateValidator<ulong> requiredValidator, ulong value)
 			=> new DataSource<RequiredStateValidator<ulong>, RangeValidator_UInt64, ulong>(requiredValidator, new RangeValidator_UInt64(value, false, null, false));
 
@@ -229,6 +262,9 @@ namespace Valigator
 
 			return new DataSource<RequiredStateValidator<ulong>, RangeValidator_UInt64, ulong>(requiredValidator, new RangeValidator_UInt64(lessThan ?? lessThanOrEqualTo, lessThanOrEqualTo.HasValue, greaterThan ?? greaterThanOrEqualTo, greaterThanOrEqualTo.HasValue));
 		}
+
+		public static InvertedDataSource<RequiredStateValidator<float>, EqualsValidator<float>, float> NotZero(this RequiredStateValidator<float> requiredValidator)
+			=> new InvertedDataSource<RequiredStateValidator<float>, EqualsValidator<float>, float>(requiredValidator, new EqualsValidator<float>(0));
 
 		public static DataSource<RequiredStateValidator<float>, RangeValidator_Single, float> LessThan(this RequiredStateValidator<float> requiredValidator, float value)
 			=> new DataSource<RequiredStateValidator<float>, RangeValidator_Single, float>(requiredValidator, new RangeValidator_Single(value, false, null, false));
@@ -256,6 +292,9 @@ namespace Valigator
 			return new DataSource<RequiredStateValidator<float>, RangeValidator_Single, float>(requiredValidator, new RangeValidator_Single(lessThan ?? lessThanOrEqualTo, lessThanOrEqualTo.HasValue, greaterThan ?? greaterThanOrEqualTo, greaterThanOrEqualTo.HasValue));
 		}
 
+		public static InvertedDataSource<RequiredStateValidator<double>, EqualsValidator<double>, double> NotZero(this RequiredStateValidator<double> requiredValidator)
+			=> new InvertedDataSource<RequiredStateValidator<double>, EqualsValidator<double>, double>(requiredValidator, new EqualsValidator<double>(0));
+
 		public static DataSource<RequiredStateValidator<double>, RangeValidator_Double, double> LessThan(this RequiredStateValidator<double> requiredValidator, double value)
 			=> new DataSource<RequiredStateValidator<double>, RangeValidator_Double, double>(requiredValidator, new RangeValidator_Double(value, false, null, false));
 
@@ -281,6 +320,9 @@ namespace Valigator
 
 			return new DataSource<RequiredStateValidator<double>, RangeValidator_Double, double>(requiredValidator, new RangeValidator_Double(lessThan ?? lessThanOrEqualTo, lessThanOrEqualTo.HasValue, greaterThan ?? greaterThanOrEqualTo, greaterThanOrEqualTo.HasValue));
 		}
+
+		public static InvertedDataSource<RequiredStateValidator<decimal>, EqualsValidator<decimal>, decimal> NotZero(this RequiredStateValidator<decimal> requiredValidator)
+			=> new InvertedDataSource<RequiredStateValidator<decimal>, EqualsValidator<decimal>, decimal>(requiredValidator, new EqualsValidator<decimal>(0));
 
 		public static DataSource<RequiredStateValidator<decimal>, RangeValidator_Decimal, decimal> LessThan(this RequiredStateValidator<decimal> requiredValidator, decimal value)
 			=> new DataSource<RequiredStateValidator<decimal>, RangeValidator_Decimal, decimal>(requiredValidator, new RangeValidator_Decimal(value, false, null, false));
