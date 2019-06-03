@@ -11,7 +11,7 @@ namespace Valigator.Core.StateValidators
 {
 	public struct RequiredCollectionStateValidator<TValue> : IStateValidator<TValue[]>
 	{
-		public Data<TValue[]> Data => new DataSource<RequiredCollectionStateValidator<TValue>, PassthroughValidator<TValue[]>, TValue[]>(this, default);
+		public Data<TValue[]> Data => new DataSource<RequiredCollectionStateValidator<TValue>, TValue[]>(this);
 
 		private readonly Data<TValue> _item;
 

@@ -9,7 +9,7 @@ namespace Valigator.Core.StateValidators
 {
 	public struct RequiredStateValidator<TValue> : IStateValidator<TValue>
 	{
-		private static DataValidator<RequiredStateValidator<TValue>, PassthroughValidator<TValue>, TValue> Instance { get; } = new DataValidator<RequiredStateValidator<TValue>, PassthroughValidator<TValue>, TValue>(default, default);
+		private static DataValidator<RequiredStateValidator<TValue>, TValue> Instance { get; } = new DataValidator<RequiredStateValidator<TValue>, TValue>(default);
 
 		public Data<TValue> Data => new Data<TValue>(Instance);
 

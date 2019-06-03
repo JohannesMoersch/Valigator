@@ -10,7 +10,7 @@ namespace Valigator.Core.StateValidators
 {
 	public struct OptionalCollectionNullableStateValidator<TValue> : IStateValidator<Option<TValue[]>>
 	{
-		public Data<Option<TValue[]>> Data => new DataSource<OptionalCollectionNullableStateValidator<TValue>, PassthroughValidator<Option<TValue[]>>, Option<TValue[]>>(this, default);
+		public Data<Option<TValue[]>> Data => new DataSource<OptionalCollectionNullableStateValidator<TValue>, Option<TValue[]>>(this);
 
 		private readonly Data<TValue> _item;
 

@@ -9,7 +9,7 @@ namespace Valigator.Core.StateValidators
 {
 	public struct OptionalStateValidator<TValue> : IStateValidator<Option<TValue>>
 	{
-		private static DataValidator<OptionalStateValidator<TValue>, PassthroughValidator<Option<TValue>>, Option<TValue>> Instance { get; } = new DataValidator<OptionalStateValidator<TValue>, PassthroughValidator<Option<TValue>>, Option<TValue>>(default, default);
+		private static DataValidator<OptionalStateValidator<TValue>, Option<TValue>> Instance { get; } = new DataValidator<OptionalStateValidator<TValue>, Option<TValue>>(default);
 
 		public Data<Option<TValue>> Data => new Data<Option<TValue>>(Instance);
 

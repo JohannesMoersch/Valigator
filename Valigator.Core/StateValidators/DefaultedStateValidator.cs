@@ -10,7 +10,7 @@ namespace Valigator.Core.StateValidators
 {
 	public struct DefaultedStateValidator<TValue> : IStateValidator<TValue>
 	{
-		private static DataValidator<DefaultedStateValidator<TValue>, PassthroughValidator<TValue>, TValue> Instance { get; } = new DataValidator<DefaultedStateValidator<TValue>, PassthroughValidator<TValue>, TValue>(default, default);
+		private static DataValidator<DefaultedStateValidator<TValue>, TValue> Instance { get; } = new DataValidator<DefaultedStateValidator<TValue>, TValue>(default);
 
 		public Data<TValue> Data
 		{
@@ -19,7 +19,7 @@ namespace Valigator.Core.StateValidators
 				if (_defaultValueFactory == null && !_defaultValue.TryGetValue(out var value))
 					return new Data<TValue>(Instance);
 
-				return new Data<TValue>(new DataValidator<DefaultedStateValidator<TValue>, PassthroughValidator<TValue>, TValue>(this, default));
+				return new Data<TValue>(new DataValidator<DefaultedStateValidator<TValue>, TValue>(this));
 			}
 		}
 
