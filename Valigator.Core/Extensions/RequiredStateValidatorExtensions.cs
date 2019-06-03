@@ -11,7 +11,7 @@ namespace Valigator
 	{
 		public static DataSourceInverted<RequiredStateValidator<TValue>, TValueValidator, TValue> Not<TValueValidator, TValue>(this RequiredStateValidator<TValue> requiredValidator, Func<RequiredStateValidator<TValue>, DataSourceStandard<RequiredStateValidator<TValue>, TValueValidator, TValue>> validatorFactory)
 			where TValueValidator : IValueValidator<TValue>
-			=> validatorFactory.Invoke(requiredValidator).Invert();
+			=> validatorFactory.Invoke(requiredValidator).InvertOne();
 
 		public static DataSourceStandard<RequiredStateValidator<TValue>, CustomValidator<TValue>, TValue> Assert<TValue>(this RequiredStateValidator<TValue> requiredValidator, string description, Func<TValue, bool> validator)
 			=> new DataSourceStandard<RequiredStateValidator<TValue>, CustomValidator<TValue>, TValue>(requiredValidator, new CustomValidator<TValue>(description, validator));
