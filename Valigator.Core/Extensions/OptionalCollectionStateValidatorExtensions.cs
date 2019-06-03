@@ -11,5 +11,8 @@ namespace Valigator
 	{
 		public static NullableDataSource<OptionalCollectionStateValidator<TValue>, ItemCountValidator<TValue>, TValue[]> ItemCount<TValue>(this OptionalCollectionStateValidator<TValue> optionalCollection, int? minimumItems = null, int? maximumItems = null)
 			=> new NullableDataSource<OptionalCollectionStateValidator<TValue>, ItemCountValidator<TValue>, TValue[]>(optionalCollection, new ItemCountValidator<TValue>(minimumItems, maximumItems));
+
+		public static NullableDataSource<OptionalCollectionStateValidator<TValue>, UniqueValidator<TValue>, TValue[]> Unique<TValue>(this OptionalCollectionStateValidator<TValue> optionalCollection)
+			=> new NullableDataSource<OptionalCollectionStateValidator<TValue>, UniqueValidator<TValue>, TValue[]>(optionalCollection, new UniqueValidator<TValue>());
 	}
 }
