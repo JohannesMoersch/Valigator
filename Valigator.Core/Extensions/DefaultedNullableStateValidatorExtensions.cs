@@ -13,6 +13,12 @@ namespace Valigator
 			where TValueValidator : IValueValidator<TValue>
 			=> validatorFactory.Invoke(defaultedValidator).Invert();
 
+		public static NullableDataSource<DefaultedNullableStateValidator<TValue>, CustomValidator<TValue>, TValue> Assert<TValue>(this DefaultedNullableStateValidator<TValue> defaultedValidator, string description, Func<TValue, bool> validator)
+			=> new NullableDataSource<DefaultedNullableStateValidator<TValue>, CustomValidator<TValue>, TValue>(defaultedValidator, new CustomValidator<TValue>(description, validator));
+
+		public static NullableDataSource<DefaultedNullableStateValidator<decimal>, PrecisionValidator, decimal> Precision(this DefaultedNullableStateValidator<decimal> defaultedValidator, decimal? minimumDecimalPlaces, decimal? maximumDecimalPlaces)
+			=> new NullableDataSource<DefaultedNullableStateValidator<decimal>, PrecisionValidator, decimal>(defaultedValidator, new PrecisionValidator(minimumDecimalPlaces, maximumDecimalPlaces));
+
 		public static NullableDataSource<DefaultedNullableStateValidator<TValue>, InSetValidator<TValue>, TValue> InSet<TValue>(this DefaultedNullableStateValidator<TValue> defaultedValidator, params TValue[] options)
 			=> new NullableDataSource<DefaultedNullableStateValidator<TValue>, InSetValidator<TValue>, TValue>(defaultedValidator, new InSetValidator<TValue>(options));
 
