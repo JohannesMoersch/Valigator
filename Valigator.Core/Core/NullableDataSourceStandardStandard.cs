@@ -26,6 +26,10 @@ namespace Valigator.Core
 		internal NullableDataSourceStandardInverted<TStateValidator, TValueValidatorOne, TValueValidatorTwo, TValue> InvertTwo()
 			=> new NullableDataSourceStandardInverted<TStateValidator, TValueValidatorOne, TValueValidatorTwo, TValue>(_stateValidator, _valueValidatorOne, _valueValidatorTwo);
 
+		internal NullableDataSourceStandardStandardStandard<TStateValidator, TValueValidatorOne, TValueValidatorTwo, TValueValidatorThree, TValue> Add<TValueValidatorThree>(TValueValidatorThree valueValidator)
+			where TValueValidatorThree : IValueValidator<TValue>
+			=> new NullableDataSourceStandardStandardStandard<TStateValidator, TValueValidatorOne, TValueValidatorTwo, TValueValidatorThree, TValue>(_stateValidator, _valueValidatorOne, _valueValidatorTwo, valueValidator);
+
 		public static implicit operator Data<Option<TValue>>(NullableDataSourceStandardStandard<TStateValidator, TValueValidatorOne, TValueValidatorTwo, TValue> dataSource)
 			=> dataSource.Data;
 	}
