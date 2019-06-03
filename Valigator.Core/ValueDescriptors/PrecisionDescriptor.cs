@@ -8,6 +8,7 @@ namespace Valigator.Core.ValueDescriptors
 	public class PrecisionDescriptor : IValueDescriptor, IEquatable<PrecisionDescriptor>
 	{
 		public Option<decimal> MinimumDecimalPlaces { get; }
+
 		public Option<decimal> MaximumDecimalPlaces { get; }
 		
 		public PrecisionDescriptor(Option<decimal> minimumDecimalPlaces, Option<decimal> maximumDecimalPlaces)

@@ -11,7 +11,7 @@ namespace Valigator.Tests
 	{
 		public Data<Option<int>> One { get; set; } = Data.Defaulted<int>(-1).Nullable().Not(o => o.InRange(greaterThanOrEqualTo: 0, lessThanOrEqualTo: 2));
 
-		public Data<int[]> Two { get; set; } = Data.Collection<int>(f => f.GreaterThan(10)).DefaultedToEmpty();
+		public Data<int[]> Two { get; set; } = Data.Collection<int>(f => f.GreaterThan(10)).DefaultedToEmpty().ItemCount(maximumItems: 10);
 
 		public Data<Stuff> Three { get; set; } = Data.Defaulted<Stuff>(new Stuff());
 	}

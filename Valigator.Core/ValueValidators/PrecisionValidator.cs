@@ -14,6 +14,9 @@ namespace Valigator.Core.ValueValidators
 
 		public PrecisionValidator(decimal? minimumDecimalPlaces, decimal? maximumDecimalPlaces)
 		{
+			if (!minimumDecimalPlaces.HasValue && !minimumDecimalPlaces.HasValue)
+				throw new ArgumentException("Either a minimum or a maximum precision must be set.");
+
 			_minimumDecimalPlaces = Option.FromNullable(minimumDecimalPlaces);
 			_maximumDecimalPlaces = Option.FromNullable(maximumDecimalPlaces);
 		}
