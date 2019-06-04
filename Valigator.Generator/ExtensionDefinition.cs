@@ -7,8 +7,9 @@ namespace Valigator.Generator
 {
 	public class ExtensionDefinition
 	{
-		public ExtensionDefinition(string extensionName, string validatorName, string[] genericParameters, ParameterDefinition[] parameters, string validatorConstruction, ValueType valueType, string dataType = null)
+		public ExtensionDefinition(ValueValidators identifier, string extensionName, string validatorName, string[] genericParameters, ParameterDefinition[] parameters, string validatorConstruction, ValueType valueType, string dataType = null)
 		{
+			Identifier = identifier;
 			ExtensionName = extensionName ?? throw new ArgumentNullException(nameof(extensionName));
 			_validatorName = validatorName ?? throw new ArgumentNullException(nameof(validatorName));
 			GenericParameters = genericParameters ?? throw new ArgumentNullException(nameof(genericParameters));
@@ -20,6 +21,8 @@ namespace Valigator.Generator
 
 		private readonly string _validatorName;
 		private readonly string _validatorConstruction;
+
+		public ValueValidators Identifier { get; }
 
 		public string ExtensionName { get; }
 
