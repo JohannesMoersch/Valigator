@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28803.452
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Valigator.Core", "Valigator.Core\Valigator.Core.csproj", "{32C3F649-F6D9-417B-A931-666B05D8F8E4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Valigator.Core", "Valigator.Core\Valigator.Core.csproj", "{32C3F649-F6D9-417B-A931-666B05D8F8E4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Valigator.Tests", "Valigator.Tests\Valigator.Tests.csproj", "{4955C6DA-6393-4121-8749-17BF2C1B2303}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Valigator.Tests", "Valigator.Tests\Valigator.Tests.csproj", "{4955C6DA-6393-4121-8749-17BF2C1B2303}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Valigator.Generator", "Valigator.Generator\Valigator.Generator.csproj", "{EFC4561D-301D-4426-832B-1EA63B30315C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{4955C6DA-6393-4121-8749-17BF2C1B2303}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4955C6DA-6393-4121-8749-17BF2C1B2303}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4955C6DA-6393-4121-8749-17BF2C1B2303}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EFC4561D-301D-4426-832B-1EA63B30315C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFC4561D-301D-4426-832B-1EA63B30315C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EFC4561D-301D-4426-832B-1EA63B30315C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EFC4561D-301D-4426-832B-1EA63B30315C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -9,17 +9,13 @@ namespace Valigator
 {
 	public static class DefaultedCollectionNullableStateValidatorExtensions
 	{
-		public static NullableDataSourceInverted<DefaultedCollectionNullableStateValidator<TValue>, TValueValidator, TValue[]> Not<TValueValidator, TValue>(this DefaultedCollectionNullableStateValidator<TValue> defaultedCollection, Func<DefaultedCollectionNullableStateValidator<TValue>, NullableDataSourceStandard<DefaultedCollectionNullableStateValidator<TValue>, TValueValidator, TValue[]>> validatorFactory)
-			where TValueValidator : IValueValidator<TValue[]>
-			=> validatorFactory.Invoke(defaultedCollection).InvertOne();
-
 		public static NullableDataSourceStandard<DefaultedCollectionNullableStateValidator<TValue>, CustomValidator<TValue[]>, TValue[]> Assert<TValue>(this DefaultedCollectionNullableStateValidator<TValue> defaultedCollection, string description, Func<TValue[], bool> validator)
 			=> new NullableDataSourceStandard<DefaultedCollectionNullableStateValidator<TValue>, CustomValidator<TValue[]>, TValue[]>(defaultedCollection, new CustomValidator<TValue[]>(description, validator));
 
 		// Item Count + Nested
 
 		public static NullableDataSourceStandard<DefaultedCollectionNullableStateValidator<TValue>, ItemCountValidator<TValue>, TValue[]> ItemCount<TValue>(this DefaultedCollectionNullableStateValidator<TValue> defaultedCollection, int? minimumItems = null, int? maximumItems = null)
-			=> new NullableDataSourceStandard<DefaultedCollectionNullableStateValidator<TValue>, ItemCountValidator<TValue>, TValue[]>(defaultedCollection, new ItemCountValidator<TValue>(minimumItems, maximumItems));
+			=> defaultedCollection.Add(new ItemCountValidator<TValue>(minimumItems, maximumItems));
 
 		public static NullableDataSourceStandardStandard<DefaultedCollectionNullableStateValidator<TValue>, ItemCountValidator<TValue>, UniqueValidator<TValue>, TValue[]> Unique<TValue>(this NullableDataSourceStandard<DefaultedCollectionNullableStateValidator<TValue>, ItemCountValidator<TValue>, TValue[]> defaultedCollection)
 			=> defaultedCollection.Add(new UniqueValidator<TValue>());

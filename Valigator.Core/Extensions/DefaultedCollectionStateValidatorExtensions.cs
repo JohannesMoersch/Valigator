@@ -9,10 +9,6 @@ namespace Valigator
 {
 	public static class DefaultedCollectionStateValidatorExtensions
 	{
-		public static DataSourceInverted<DefaultedCollectionStateValidator<TValue>, TValueValidator, TValue[]> Not<TValueValidator, TValue>(this DefaultedCollectionStateValidator<TValue> defaultedValidator, Func<DefaultedCollectionStateValidator<TValue>, DataSourceStandard<DefaultedCollectionStateValidator<TValue>, TValueValidator, TValue[]>> validatorFactory)
-			where TValueValidator : IValueValidator<TValue[]>
-			=> validatorFactory.Invoke(defaultedValidator).InvertOne();
-
 		public static DataSourceStandard<DefaultedCollectionStateValidator<TValue>, ItemCountValidator<TValue>, TValue[]> ItemCount<TValue>(this DefaultedCollectionStateValidator<TValue> defaultedCollection, int? minimumItems = null, int? maximumItems = null)
 			=> new DataSourceStandard<DefaultedCollectionStateValidator<TValue>, ItemCountValidator<TValue>, TValue[]>(defaultedCollection, new ItemCountValidator<TValue>(minimumItems, maximumItems));
 
