@@ -22,8 +22,13 @@ namespace Valigator.Generator
 
 		public ValueType ValueType { get; }
 
-		public string GetSourceName(string valueTypeParameterName)
-			=> _sourceName.Replace(Constants.ValueReplacementString, valueTypeParameterName);
+		public string GetSourceName(Option<string> valueTypeParameterName)
+			=> valueTypeParameterName
+				.Match
+				(
+					valueName => $"{_sourceName}<{valueName}>",
+					() => _sourceName
+				);
 
 		public static SourceDefinition Create(Type stateValidatorType)
 		{
@@ -46,7 +51,7 @@ namespace Valigator.Generator
 		}
 
 		private static string GetName(Type stateValidatorType)
-			=> new string(stateValidatorType.Name.TakeWhile(c => c != '`').ToArray()) + $"<{Constants.ValueReplacementString}>";
+			=> new string(stateValidatorType.Name.TakeWhile(c => c != '`').ToArray());
 
 		private static ValueType GetValueType(Type valueType)
 			=> valueType.IsArray ? ValueType.Array : ValueType.Value;

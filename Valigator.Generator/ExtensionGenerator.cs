@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Functional;
 
 namespace Valigator.Generator
 {
@@ -12,7 +13,7 @@ namespace Valigator.Generator
 			=> stateValidator.Add(__ValidatorConstruction__);
 ";
 
-		public static string GenerateSingleExtension(SourceDefinition sourceDefinition, ExtensionDefinition extensionDefinition)
+		public static string GenerateStarterExtension(SourceDefinition sourceDefinition, ExtensionDefinition extensionDefinition)
 		{
 			if (sourceDefinition.ValueType == ValueType.Value && extensionDefinition.ValueType != ValueType.Value)
 				throw new Exception("Array extensions cannot be generated for value type sources.");
@@ -23,7 +24,7 @@ namespace Valigator.Generator
 
 			return _singleExtensionTemplate
 				.Replace("__DataSource__", $"{(sourceDefinition.IsNullable ? "Nullable" : String.Empty)}DataSourceStandard")
-				.Replace("__StateValidator__", sourceDefinition.GetSourceName(valueGenericName))
+				.Replace("__StateValidator__", sourceDefinition.GetSourceName(Option.Some(valueGenericName)))
 				.Replace("__ValueValidator__", extensionDefinition.GetValidatorName(valueGenericName))
 				.Replace("__TValueType__", sourceDefinition.ValueType == ValueType.Array ? $"{valueGenericName}[]" : valueGenericName)
 				.Replace("__ExtensionName__", extensionDefinition.ExtensionName)

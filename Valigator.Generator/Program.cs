@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using Functional;
 
@@ -8,14 +9,12 @@ namespace Valigator.Generator
 	{
 		static void Main(string[] args)
 		{
-			var sources = Constants.Sources;
+			foreach (var source in Data.Sources.Where(s => s.ValueType == ValueType.Value))
+			{
+				var file = ExtensionsClass.Generate(source);
 
-			var strs = Constants
-				.Extensions
-				.Select(extension => ExtensionGenerator.GenerateSingleExtension(sources.First(s => s.ValueType == ValueType.Value), extension))
-				.ToArray();
-
-			var extensions = String.Join(Environment.NewLine, strs);
+				File.WriteAllText($"../../../../Valigator.Core/Extensions/{source.GetSourceName(Option.None<string>())}Extensions.cs", file);
+			}
 		}
 	}
 }

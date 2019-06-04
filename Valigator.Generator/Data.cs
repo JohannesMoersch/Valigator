@@ -7,7 +7,7 @@ using Valigator.Core.StateValidators;
 
 namespace Valigator.Generator
 {
-	public static class Constants
+	public static class Data
 	{
 		public static string ValueReplacementString { get; } = "__TValue__";
 

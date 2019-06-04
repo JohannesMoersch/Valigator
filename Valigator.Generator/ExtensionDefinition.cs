@@ -32,9 +32,9 @@ namespace Valigator.Generator
 		public Option<string> DataType { get; }
 
 		public string GetValidatorName(string valueTypeParameterName)
-			=> _validatorName.Replace(Constants.ValueReplacementString, valueTypeParameterName);
+			=> _validatorName.Replace(Data.ValueReplacementString, valueTypeParameterName);
 
 		public string GetValidatorConstruction(string valueTypeParameterName)
-			=> _validatorConstruction.Replace(Constants.ValueReplacementString, valueTypeParameterName);
+			=> _validatorConstruction.Replace(Data.ValueReplacementString, valueTypeParameterName);
 	}
 }

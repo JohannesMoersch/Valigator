@@ -9,7 +9,7 @@ namespace Valigator.Tests
 	{
 		public void Stuff()
 		{
-			//Data<Option<int>> a = Data.Required<int>().Nullable().GreaterThan(10);
+			Data<Option<int>> a = Data.Required<int>().Nullable().GreaterThan(10);
 		}
 	}
 }

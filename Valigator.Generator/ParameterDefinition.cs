@@ -21,6 +21,6 @@ namespace Valigator.Generator
 		public Option<string> DefaultValue { get; }
 
 		public string GetTypeName(string valueTypeParameterName)
-			=> _typeName.Replace(Constants.ValueReplacementString, valueTypeParameterName);
+			=> _typeName.Replace(Data.ValueReplacementString, valueTypeParameterName);
 	}
 }
