@@ -35,16 +35,23 @@ namespace Valigator
 					current = current.GetOrAddChild(validator);
 			}
 
-			var extensions = GenerateExtensions(source, root);
+			var extensions = GenerateExtensions(source, root).OrderBy(_ => _);
 
 			return String.Join(Environment.NewLine, new[] { _header.Replace("__StateValidator__", source.GetSourceName(Option.None<string>())) }.Concat(extensions).Append(_footer));
 		}
 
 		private static IEnumerable<string> GenerateExtensions(SourceDefinition source, ExtensionPathNode extension)
-			=> (extension.ValueValidator == ValueValidators.Root ? Array.Empty<string>() : GenerateExtension(source, extension))
-				.Concat(extension.Children.SelectMany(child => GenerateExtensions(source, child)));
+		{
+			var childExtensions = extension.Children.SelectMany(child => GenerateExtensions(source, child)).ToArray();
 
-		private static IEnumerable<string> GenerateExtension(SourceDefinition source, ExtensionPathNode extension)
+			if (extension.ValueValidator == ValueValidators.Root)
+				return childExtensions;
+
+			return GenerateExtension(source, extension, childExtensions.Any())
+				.Concat(childExtensions);
+		}
+
+		private static IEnumerable<string> GenerateExtension(SourceDefinition source, ExtensionPathNode extension, bool hasChildren)
 		{
 			var extensions = new List<ValueValidators>();
 
@@ -61,11 +68,19 @@ namespace Valigator
 				{
 					case 1:
 						yield return ExtensionGenerator.GenerateExtensionOne(source, set[0]);
+						if (hasChildren)
+							yield return ExtensionGenerator.GenerateInvertExtensionTwo(source, set[0]);
 						break;
 					case 2:
 						var resultTwo = ExtensionGenerator.GenerateExtensionTwo(source, set[0], set[1]);
 						if (resultTwo.HasValue())
 							yield return resultTwo.ValueOrDefault();
+						if (hasChildren)
+						{
+							var notResult = ExtensionGenerator.GenerateInvertExtensionThree(source, set[0], set[1]);
+							if (notResult.HasValue())
+								yield return notResult.ValueOrDefault();
+						}
 						break;
 					case 3:
 						var resultThree = ExtensionGenerator.GenerateExtensionThree(source, set[0], set[1], set[2]);
@@ -79,13 +94,9 @@ namespace Valigator
 		}
 		private static IEnumerable<ExtensionDefinition[]> GetExtensionDefinitions(List<ValueValidators> valueValidators)
 			=>
-			(
-				from one in Data.Extensions.Where(e => e.Identifier == valueValidators.Skip(0).FirstOrDefault())
-				from two in Data.Extensions.Where(e => e.Identifier == valueValidators.Skip(1).FirstOrDefault()).DefaultIfEmpty()
-				from three in Data.Extensions.Where(e => e.Identifier == valueValidators.Skip(2).FirstOrDefault()).DefaultIfEmpty()
-				select (one, two, three)
-			)
-			.Distinct()
-			.Select(set => new[] { set.one, set.two, set.three }.OfType<ExtensionDefinition>().ToArray());
+			from one in Data.Extensions.Where(e => e.Identifier == valueValidators.Skip(0).FirstOrDefault())
+			from two in Data.Extensions.Where(e => e.Identifier == valueValidators.Skip(1).FirstOrDefault()).DefaultIfEmpty()
+			from three in Data.Extensions.Where(e => e.Identifier == valueValidators.Skip(2).FirstOrDefault()).DefaultIfEmpty()
+			select new[] { one, two, three }.OfType<ExtensionDefinition>().ToArray();
 	}
 }
