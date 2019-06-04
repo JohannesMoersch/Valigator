@@ -26,18 +26,27 @@ namespace Valigator
 
 		public static string Generate(SourceDefinition source)
 		{
-			var root = new ExtensionPathNode(ValueValidators.Root, null);
+			var root = new ExtensionPathNode(Option.None<string>(), ValueValidators.Root, null);
 
 			foreach (var path in Data.ValueValidationPaths)
-			{
-				var current = root;
-				foreach (var validator in path)
-					current = current.GetOrAddChild(validator);
-			}
+				AddValidators(root, path);
 
 			var extensions = GenerateExtensions(source, root).OrderBy(_ => _);
 
 			return String.Join(Environment.NewLine, new[] { _header.Replace("__StateValidator__", source.GetSourceName(Option.None<string>())) }.Concat(extensions).Append(_footer));
+		}
+
+		private static void AddValidators(ExtensionPathNode current, IEnumerable<ValueValidators> validators)
+		{
+			if (!validators.Any())
+				return;
+
+			var validator = validators.First();
+			foreach (var match in Data.Extensions.Where(e => e.Identifier == validator))
+			{
+				if (current.TryGetOrAddChild(match.DataType, validator, out var node))
+					AddValidators(node, validators.Skip(1));
+			}
 		}
 
 		private static IEnumerable<string> GenerateExtensions(SourceDefinition source, ExtensionPathNode extension)
