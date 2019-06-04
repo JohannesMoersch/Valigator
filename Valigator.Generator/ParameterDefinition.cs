@@ -7,7 +7,7 @@ namespace Valigator.Generator
 {
 	public class ParameterDefinition
 	{
-		public ParameterDefinition(string typeName, string name, Option<string> defaultValue)
+		public ParameterDefinition(string typeName, string name, Option<string> defaultValue = default)
 		{
 			_typeName = typeName ?? throw new ArgumentNullException(nameof(typeName));
 			Name = name ?? throw new ArgumentNullException(nameof(name));
