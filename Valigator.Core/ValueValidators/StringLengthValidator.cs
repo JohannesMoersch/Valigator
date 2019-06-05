@@ -17,6 +17,15 @@ namespace Valigator.Core.ValueValidators
 			if (!minimumLength.HasValue && !maximumLength.HasValue)
 				throw new ArgumentException("Either a minimum or a maximum length must be set.");
 
+			if (minimumLength < 0)
+				throw new ArgumentException("Minimum cannot be less than zero.");
+
+			if (maximumLength < 1)
+				throw new ArgumentException("Maximum cannot be less than one.");
+
+			if (maximumLength < minimumLength)
+				throw new ArgumentException("Maximum cannot be less than minimum.");
+
 			_minimumLength = Option.FromNullable(minimumLength);
 			_maximumLength = Option.FromNullable(maximumLength);
 		}
