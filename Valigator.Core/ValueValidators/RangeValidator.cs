@@ -205,10 +205,10 @@ namespace Valigator.Core.ValueValidators
 
 		bool IValueValidator<int>.IsValid(int value)
 		{
-			if (_lessThanValue.TryGetValue(out var lessThan) && _lessThanOrEqualTo ? value > lessThan : value >= lessThan)
+			if (_lessThanValue.TryGetValue(out var lessThan) && (_lessThanOrEqualTo ? value > lessThan : value >= lessThan))
 				return false;
 
-			if (_greaterThanValue.TryGetValue(out var greaterThan) && _greaterThanOrEqualTo ? value < greaterThan : value <= greaterThan)
+			if (_greaterThanValue.TryGetValue(out var greaterThan) && (_greaterThanOrEqualTo ? value < greaterThan : value <= greaterThan))
 				return false;
 
 			return true;
