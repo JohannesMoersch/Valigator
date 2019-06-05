@@ -16,7 +16,7 @@ namespace Valigator.Core
 		private readonly TValueValidatorTwo _valueValidatorTwo;
 		private readonly TValueValidatorThree _valueValidatorThree;
 
-		public Data<TValue> Data => new Data<TValue>(new DataValidator<TStateValidator, TValueValidatorOne, InvertValidator<TValueValidatorTwo, TValue>, TValueValidatorThree, TValue>(_stateValidator, _valueValidatorOne, new InvertValidator<TValueValidatorTwo, TValue>(_valueValidatorTwo), _valueValidatorThree));
+		public Data<TValue> Data => new Data<TValue>(new DataValidator<TStateValidator, TValueValidatorOne, InvertValidator<TValueValidatorTwo, TValue>, InvertValidator<TValueValidatorThree, TValue>, TValue>(_stateValidator, _valueValidatorOne, new InvertValidator<TValueValidatorTwo, TValue>(_valueValidatorTwo), new InvertValidator<TValueValidatorThree, TValue>(_valueValidatorThree)));
 
 		public DataSourceStandardInvertedInverted(TStateValidator stateValidator, TValueValidatorOne valueValidatorOne, TValueValidatorTwo valueValidatorTwo, TValueValidatorThree valueValidatorThree)
 		{

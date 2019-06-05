@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Valigator.Core.ValueValidators;
 
 namespace Valigator.Core
 {
@@ -15,7 +16,7 @@ namespace Valigator.Core
 		private readonly TValueValidatorTwo _valueValidatorTwo;
 		private readonly TValueValidatorThree _valueValidatorThree;
 
-		public Data<TValue> Data => new Data<TValue>(new DataValidator<TStateValidator, TValueValidatorOne, TValueValidatorTwo, TValueValidatorThree, TValue>(_stateValidator, _valueValidatorOne, _valueValidatorTwo, _valueValidatorThree));
+		public Data<TValue> Data => new Data<TValue>(new DataValidator<TStateValidator, TValueValidatorOne, TValueValidatorTwo, InvertValidator<TValueValidatorThree, TValue>, TValue>(_stateValidator, _valueValidatorOne, _valueValidatorTwo, new InvertValidator<TValueValidatorThree, TValue>(_valueValidatorThree)));
 
 		public DataSourceStandardStandardInverted(TStateValidator stateValidator, TValueValidatorOne valueValidatorOne, TValueValidatorTwo valueValidatorTwo, TValueValidatorThree valueValidatorThree)
 		{

@@ -7,10 +7,10 @@ namespace Valigator.Tests
 {
 	public static class OptionExtensions
 	{
-		public static TValue AssureSome<TValue>(this Option<TValue> option)
+		public static TValue AssertSome<TValue>(this Option<TValue> option)
 			=> option.Match(_ => _, () => throw new Exception("Expected some but found none."));
 
-		public static void AssureNone<TValue>(this Option<TValue> option)
+		public static void AssertNone<TValue>(this Option<TValue> option)
 			=> option.Match(_ => throw new Exception("Expected none but found some."), () => default(TValue));
 	}
 }

@@ -16,7 +16,7 @@ namespace Valigator.Tests
 				.Data
 				.WithValue(5)
 				.Verify(new object())
-				.AssureSuccess()
+				.AssertSuccess()
 				.Value
 				.Should()
 				.Be(5);
@@ -28,7 +28,7 @@ namespace Valigator.Tests
 				.Data
 				.WithValue(null)
 				.Verify(new object())
-				.AssureFailure();
+				.AssertFailure();
 
 		[Fact]
 		public void RequiredAndUnset()
@@ -36,7 +36,7 @@ namespace Valigator.Tests
 				.Required<int?>()
 				.Data
 				.Verify(new object())
-				.AssureFailure();
+				.AssertFailure();
 
 		[Fact]
 		public void RequiredNullableWithValue()
@@ -46,9 +46,9 @@ namespace Valigator.Tests
 				.Data
 				.WithValue(5)
 				.Verify(new object())
-				.AssureSuccess()
+				.AssertSuccess()
 				.Value
-				.AssureSome()
+				.AssertSome()
 				.Should()
 				.Be(5);
 
@@ -60,9 +60,9 @@ namespace Valigator.Tests
 				.Data
 				.WithValue(null)
 				.Verify(new object())
-				.AssureSuccess()
+				.AssertSuccess()
 				.Value
-				.AssureNone();
+				.AssertNone();
 
 		[Fact]
 		public void RequiredNullableAndUnset()
@@ -71,7 +71,7 @@ namespace Valigator.Tests
 				.Nullable()
 				.Data
 				.Verify(new object())
-				.AssureFailure();
+				.AssertFailure();
 
 		[Fact]
 		public void OptionalWithValue()
@@ -80,9 +80,9 @@ namespace Valigator.Tests
 				.Data
 				.WithValue(5)
 				.Verify(new object())
-				.AssureSuccess()
+				.AssertSuccess()
 				.Value
-				.AssureSome()
+				.AssertSome()
 				.Should()
 				.Be(5);
 
@@ -93,7 +93,7 @@ namespace Valigator.Tests
 				.Data
 				.WithValue(null)
 				.Verify(new object())
-				.AssureFailure();
+				.AssertFailure();
 
 		[Fact]
 		public void OptionalAndUnset()
@@ -101,9 +101,9 @@ namespace Valigator.Tests
 				.Optional<int>()
 				.Data
 				.Verify(new object())
-				.AssureSuccess()
+				.AssertSuccess()
 				.Value
-				.AssureNone();
+				.AssertNone();
 
 
 		[Fact]
@@ -114,9 +114,9 @@ namespace Valigator.Tests
 				.Data
 				.WithValue(5)
 				.Verify(new object())
-				.AssureSuccess()
+				.AssertSuccess()
 				.Value
-				.AssureSome()
+				.AssertSome()
 				.Should()
 				.Be(5);
 
@@ -128,9 +128,9 @@ namespace Valigator.Tests
 				.Data
 				.WithValue(null)
 				.Verify(new object())
-				.AssureSuccess()
+				.AssertSuccess()
 				.Value
-				.AssureNone();
+				.AssertNone();
 
 		[Fact]
 		public void OptionalNullableAndUnset()
@@ -139,9 +139,9 @@ namespace Valigator.Tests
 				.Nullable()
 				.Data
 				.Verify(new object())
-				.AssureSuccess()
+				.AssertSuccess()
 				.Value
-				.AssureNone();
+				.AssertNone();
 
 		[Fact]
 		public void DefaultedWithValue()
@@ -150,7 +150,7 @@ namespace Valigator.Tests
 				.Data
 				.WithValue(5)
 				.Verify(new object())
-				.AssureSuccess()
+				.AssertSuccess()
 				.Value
 				.Should()
 				.Be(5);
@@ -162,7 +162,7 @@ namespace Valigator.Tests
 				.Data
 				.WithValue(null)
 				.Verify(new object())
-				.AssureFailure();
+				.AssertFailure();
 
 		[Fact]
 		public void DefaultedAndUnset()
@@ -170,7 +170,7 @@ namespace Valigator.Tests
 				.Defaulted<int?>(10)
 				.Data
 				.Verify(new object())
-				.AssureSuccess()
+				.AssertSuccess()
 				.Value
 				.Should()
 				.Be(10);
@@ -183,9 +183,9 @@ namespace Valigator.Tests
 				.Data
 				.WithValue(5)
 				.Verify(new object())
-				.AssureSuccess()
+				.AssertSuccess()
 				.Value
-				.AssureSome()
+				.AssertSome()
 				.Should()
 				.Be(5);
 
@@ -197,9 +197,9 @@ namespace Valigator.Tests
 				.Data
 				.WithValue(null)
 				.Verify(new object())
-				.AssureSuccess()
+				.AssertSuccess()
 				.Value
-				.AssureNone();
+				.AssertNone();
 
 		[Fact]
 		public void DefaultedNullableAndUnset()
@@ -208,9 +208,9 @@ namespace Valigator.Tests
 				.Nullable()
 				.Data
 				.Verify(new object())
-				.AssureSuccess()
+				.AssertSuccess()
 				.Value
-				.AssureSome()
+				.AssertSome()
 				.Should()
 				.Be(10);
 	}
