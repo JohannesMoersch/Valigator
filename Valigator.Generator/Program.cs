@@ -13,7 +13,7 @@ namespace Valigator.Generator
 			{
 				var file = ExtensionsClass.Generate(source);
 
-				//File.WriteAllText($"../../../../Valigator.Core/Extensions/{source.GetSourceName(Option.None<string>())}Extensions.cs", file);
+				File.WriteAllText($"../../../../Valigator.Core/Extensions/{source.GetSourceName(Option.None<string>())}Extensions.cs", file);
 			}
 		}
 	}

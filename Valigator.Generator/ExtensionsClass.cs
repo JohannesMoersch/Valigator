@@ -18,7 +18,8 @@ using Valigator.Core.ValueValidators;
 namespace Valigator
 {
 	public static class __StateValidator__Extensions
-	{";
+	{
+";
 
 		private static readonly string _footer =
 @"	}
@@ -31,9 +32,11 @@ namespace Valigator
 			foreach (var path in Data.ValueValidationPaths)
 				AddValidators(root, path);
 
-			var extensions = GenerateExtensions(source, root).OrderBy(_ => _);
+			var extensions = GenerateExtensions(source, root);
 
-			return String.Join(Environment.NewLine, new[] { _header.Replace("__StateValidator__", source.GetSourceName(Option.None<string>())) }.Concat(extensions).Append(_footer));
+			var header = _header.Replace("__StateValidator__", source.GetSourceName(Option.None<string>()));
+
+			return $"{header}{String.Join($"{Environment.NewLine}{Environment.NewLine}", extensions)}{_footer}";
 		}
 
 		private static void AddValidators(ExtensionPathNode current, IEnumerable<ValidatorGroups> validators)
