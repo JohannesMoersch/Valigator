@@ -242,8 +242,8 @@ namespace Valigator
 		public static NullableDataSourceStandard<OptionalStateValidator<DateTime>, RangeValidator_DateTime, DateTime> InRange(this OptionalStateValidator<DateTime> source, DateTime? lessThan = null, DateTime? lessThanOrEqualTo = null, DateTime? greaterThan = null, DateTime? greaterThanOrEqualTo = null)
 			=> source.Add(new RangeValidator_DateTime(lessThan, lessThanOrEqualTo, greaterThan, greaterThanOrEqualTo));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<string>, StringLengthValidator, string> Length(this OptionalStateValidator<string> source, int? minimumDecimalPlaces = null, int? maximumDecimalPlaces = null)
-			=> source.Add(new StringLengthValidator(minimumDecimalPlaces, maximumDecimalPlaces));
+		public static NullableDataSourceStandard<OptionalStateValidator<string>, StringLengthValidator, string> Length(this OptionalStateValidator<string> source, int? minimumLength = null, int? maximumLength = null)
+			=> source.Add(new StringLengthValidator(minimumLength, maximumLength));
 
 		public static NullableDataSourceStandardStandard<OptionalStateValidator<TValue>, EqualsValidator<TValue>, CustomValidator<TValue>, TValue> Assert<TValue>(this NullableDataSourceStandard<OptionalStateValidator<TValue>, EqualsValidator<TValue>, TValue> source, string description, Func<TValue, bool> validator)
 			=> source.Add(new CustomValidator<TValue>(description, validator));
@@ -559,5 +559,6 @@ namespace Valigator
 
 		public static NullableDataSourceInvertedInverted<OptionalStateValidator<string>, StringLengthValidator, TValueValidator, string> Not<TValueValidator>(this NullableDataSourceInverted<OptionalStateValidator<string>, StringLengthValidator, string> source, Func<NullableDataSourceInverted<OptionalStateValidator<string>, StringLengthValidator, string>, NullableDataSourceInvertedStandard<OptionalStateValidator<string>, StringLengthValidator, TValueValidator, string>> validatorFactory)
 			where TValueValidator : IValueValidator<string>
-			=> validatorFactory.Invoke(source).InvertTwo();	}
+			=> validatorFactory.Invoke(source).InvertTwo();
+	}
 }

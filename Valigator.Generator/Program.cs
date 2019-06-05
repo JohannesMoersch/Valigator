@@ -9,11 +9,11 @@ namespace Valigator.Generator
 	{
 		static void Main(string[] args)
 		{
-			foreach (var source in Data.Sources.Where(s => s.ValueType == ValueType.Array))
+			foreach (var source in Data.Sources)
 			{
 				var file = ExtensionsClass.Generate(source);
 
-				//File.WriteAllText($"../../../../Valigator.Core/Extensions/{source.GetSourceName(Option.None<string>())}Extensions.cs", file);
+				File.WriteAllText($"../../../../Valigator.Core/Extensions/{source.GetSourceName(Option.None<string>())}Extensions.cs", file);
 			}
 		}
 	}

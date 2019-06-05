@@ -242,8 +242,8 @@ namespace Valigator
 		public static DataSourceStandard<DefaultedStateValidator<DateTime>, RangeValidator_DateTime, DateTime> InRange(this DefaultedStateValidator<DateTime> source, DateTime? lessThan = null, DateTime? lessThanOrEqualTo = null, DateTime? greaterThan = null, DateTime? greaterThanOrEqualTo = null)
 			=> source.Add(new RangeValidator_DateTime(lessThan, lessThanOrEqualTo, greaterThan, greaterThanOrEqualTo));
 
-		public static DataSourceStandard<DefaultedStateValidator<string>, StringLengthValidator, string> Length(this DefaultedStateValidator<string> source, int? minimumDecimalPlaces = null, int? maximumDecimalPlaces = null)
-			=> source.Add(new StringLengthValidator(minimumDecimalPlaces, maximumDecimalPlaces));
+		public static DataSourceStandard<DefaultedStateValidator<string>, StringLengthValidator, string> Length(this DefaultedStateValidator<string> source, int? minimumLength = null, int? maximumLength = null)
+			=> source.Add(new StringLengthValidator(minimumLength, maximumLength));
 
 		public static DataSourceStandardStandard<DefaultedStateValidator<TValue>, EqualsValidator<TValue>, CustomValidator<TValue>, TValue> Assert<TValue>(this DataSourceStandard<DefaultedStateValidator<TValue>, EqualsValidator<TValue>, TValue> source, string description, Func<TValue, bool> validator)
 			=> source.Add(new CustomValidator<TValue>(description, validator));
@@ -559,5 +559,6 @@ namespace Valigator
 
 		public static DataSourceInvertedInverted<DefaultedStateValidator<string>, StringLengthValidator, TValueValidator, string> Not<TValueValidator>(this DataSourceInverted<DefaultedStateValidator<string>, StringLengthValidator, string> source, Func<DataSourceInverted<DefaultedStateValidator<string>, StringLengthValidator, string>, DataSourceInvertedStandard<DefaultedStateValidator<string>, StringLengthValidator, TValueValidator, string>> validatorFactory)
 			where TValueValidator : IValueValidator<string>
-			=> validatorFactory.Invoke(source).InvertTwo();	}
+			=> validatorFactory.Invoke(source).InvertTwo();
+	}
 }
