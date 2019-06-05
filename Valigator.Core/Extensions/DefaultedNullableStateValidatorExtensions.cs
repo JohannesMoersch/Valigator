@@ -8,6 +8,10 @@ namespace Valigator
 {
 	public static class DefaultedNullableStateValidatorExtensions
 	{
+		public static NullableDataSourceInverted<DefaultedNullableStateValidator<TValue>, TValueValidator, TValue> Not<TValueValidator, TValue>(this DefaultedNullableStateValidator<TValue> source, Func<DefaultedNullableStateValidator<TValue>, NullableDataSourceStandard<DefaultedNullableStateValidator<TValue>, TValueValidator, TValue>> validatorFactory)
+			where TValueValidator : IValueValidator<TValue>
+			=> validatorFactory.Invoke(source).InvertOne();
+
 		public static NullableDataSourceStandard<DefaultedNullableStateValidator<TValue>, CustomValidator<TValue>, TValue> Assert<TValue>(this DefaultedNullableStateValidator<TValue> source, string description, Func<TValue, bool> validator)
 			=> source.Add(new CustomValidator<TValue>(description, validator));
 

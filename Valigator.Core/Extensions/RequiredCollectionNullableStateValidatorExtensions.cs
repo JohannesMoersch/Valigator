@@ -8,6 +8,10 @@ namespace Valigator
 {
 	public static class RequiredCollectionNullableStateValidatorExtensions
 	{
+		public static NullableDataSourceInverted<RequiredCollectionNullableStateValidator<TValue>, TValueValidator, TValue[]> Not<TValueValidator, TValue>(this RequiredCollectionNullableStateValidator<TValue> source, Func<RequiredCollectionNullableStateValidator<TValue>, NullableDataSourceStandard<RequiredCollectionNullableStateValidator<TValue>, TValueValidator, TValue[]>> validatorFactory)
+			where TValueValidator : IValueValidator<TValue[]>
+			=> validatorFactory.Invoke(source).InvertOne();
+
 		public static NullableDataSourceStandard<RequiredCollectionNullableStateValidator<TValue>, CustomValidator<TValue[]>, TValue[]> Assert<TValue>(this RequiredCollectionNullableStateValidator<TValue> source, string description, Func<TValue[], bool> validator)
 			=> source.Add(new CustomValidator<TValue[]>(description, validator));
 

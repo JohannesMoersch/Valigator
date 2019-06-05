@@ -46,7 +46,8 @@ namespace Valigator
 			foreach (var path in paths)
 				AddValidators(root, path);
 
-			var extensions = GenerateExtensions(source, root);
+			var extensions = ExtensionGenerator.GenerateInvertExtensionOne(source)
+				.Concat(GenerateExtensions(source, root));
 
 			var header = _header.Replace("__StateValidator__", source.GetSourceName(Option.None<string>()));
 
