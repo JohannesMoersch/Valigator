@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Functional;
+using Valigator.Core.ValueValidators;
 
 namespace Valigator.Core
 {
@@ -16,7 +17,7 @@ namespace Valigator.Core
 		private readonly TValueValidatorTwo _valueValidatorTwo;
 		private readonly TValueValidatorThree _valueValidatorThree;
 
-		public Data<Option<TValue>> Data => new Data<Option<TValue>>(new NullableDataValidator<TStateValidator, TValueValidatorOne, TValueValidatorTwo, TValueValidatorThree, TValue>(_stateValidator, _valueValidatorOne, _valueValidatorTwo, _valueValidatorThree));
+		public Data<Option<TValue>> Data => new Data<Option<TValue>>(new NullableDataValidator<TStateValidator, TValueValidatorOne, TValueValidatorTwo, InvertValidator<TValueValidatorThree, TValue>, TValue>(_stateValidator, _valueValidatorOne, _valueValidatorTwo, new InvertValidator<TValueValidatorThree, TValue>(_valueValidatorThree)));
 
 		public NullableDataSourceStandardStandardInverted(TStateValidator stateValidator, TValueValidatorOne valueValidatorOne, TValueValidatorTwo valueValidatorTwo, TValueValidatorThree valueValidatorThree)
 		{
