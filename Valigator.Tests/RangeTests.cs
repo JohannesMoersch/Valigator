@@ -15,7 +15,7 @@ namespace Valigator.Tests
 		}
 
 		[Fact]
-		public void Thing()
+		public void WithValidValuesSucceeds()
 		{
 			var resource = new TestClass();
 			resource.Skip = resource.Skip.WithValue(3);
