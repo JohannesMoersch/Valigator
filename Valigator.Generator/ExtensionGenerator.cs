@@ -9,8 +9,8 @@ namespace Valigator.Generator
 	public static class ExtensionGenerator
 	{
 		private static readonly string _singleExtensionTemplate =
-@"		public static __DataSource__<__StateValidator__, __ValueValidator__, __TValueType__> __ExtensionName____Open____ExtensionGenericParameters____TValue____Close__(this __StateValidator__ stateValidator__ExtensionParameters__)
-			=> stateValidator.Add(__ValidatorConstruction__);
+@"		public static __DataSource__<__StateValidator__, __ValueValidator__, __TValueType__> __ExtensionName____Open____TValue____Close__(this __StateValidator__ stateValidator__ExtensionParameters__)
+			=> stateValidator.Add(new __ValidatorConstruction__(__Parameters__));
 ";
 
 		public static IEnumerable<string> GenerateExtensionOne(SourceDefinition sourceDefinition, Option<string> dataType, ExtensionDefinition extension)
@@ -20,23 +20,23 @@ namespace Valigator.Generator
 
 			var valueGenericName = dataType.Match(_ => _, () => "TValue");
 
-			return new[] { $"{sourceDefinition.GetSourceName(Option.Some(valueGenericName))} - {extension.ExtensionName}" };
+			var hasGenericParameters = dataType.Match(_ => false, () => true);
 
-			/*
-			var hasGenericParameters = extensionDefinition.DataType.Match(_ => extensionDefinition.GenericParameters.Any(), () => true);
-			
-			return _singleExtensionTemplate
+			return new[]
+			{
+				_singleExtensionTemplate
 				.Replace("__DataSource__", $"{(sourceDefinition.IsNullable ? "Nullable" : String.Empty)}DataSourceStandard")
 				.Replace("__StateValidator__", sourceDefinition.GetSourceName(Option.Some(valueGenericName)))
-				.Replace("__ValueValidator__", extensionDefinitionOne.GetValidatorName(valueGenericName))
+				.Replace("__ValueValidator__", extension.Validator.GetValidatorName(valueGenericName))
 				.Replace("__TValueType__", sourceDefinition.ValueType == ValueType.Array ? $"{valueGenericName}[]" : valueGenericName)
-				.Replace("__ExtensionName__", extensionDefinitionOne.ExtensionName)
+				.Replace("__ExtensionName__", extension.ExtensionName)
 				.Replace("__Open__", hasGenericParameters ? "<" : String.Empty)
-				.Replace("__ExtensionGenericParameters__", String.Join("", extensionDefinitionOne.GenericParameters.SelectMany(s => $"{s}, ")))
 				.Replace("__TValue__", hasGenericParameters ? valueGenericName : String.Empty)
 				.Replace("__Close__", hasGenericParameters ? ">" : String.Empty)
-				.Replace("__ExtensionParameters__", String.Join(String.Empty, extensionDefinitionOne.Parameters.Select(p => $", {p.GetTypeName(valueGenericName)} {p.Name}{p.DefaultValue.Match(v => $" = {v}", () => String.Empty)}")))
-				.Replace("__ValidatorConstruction__", extensionDefinitionOne.GetValidatorConstruction(valueGenericName));*/
+				.Replace("__ExtensionParameters__", String.Join(String.Empty, extension.Parameters.Where(p => !p.Value.HasValue()).Select(p => $", {p.GetTypeName(valueGenericName)} {p.Name}{p.DefaultValue.Match(v => $" = {v}", () => String.Empty)}")))
+				.Replace("__ValidatorConstruction__", extension.Validator.GetValidatorName(valueGenericName))
+				.Replace("__Parameters__", String.Join(", ", extension.Parameters.Select(p => p.Value.Match(v => v, () => p.Name))))
+			};
 		}
 
 		public static IEnumerable<string> GenerateExtensionTwo(SourceDefinition sourceDefinition, Option<string> dataType, ValidatorDefinition validatorOne, ExtensionDefinition extension)
