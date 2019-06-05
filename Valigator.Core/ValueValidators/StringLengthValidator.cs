@@ -36,6 +36,6 @@ namespace Valigator.Core.ValueValidators
 		}
 
 		ValidationError IValueValidator<string>.GetError(string value, bool inverted)
-			=> new ValidationError("");
+			=> new ValidationError(nameof(StringLengthValidator));
 	}
 }

@@ -45,6 +45,6 @@ namespace Valigator.Core.ValueValidators
 		}
 
 		ValidationError IValueValidator<TValue[]>.GetError(TValue[] value, bool inverted)
-			=> new ValidationError("");
+			=> new ValidationError(nameof(ItemCountValidator<TValue>));
 	}
 }

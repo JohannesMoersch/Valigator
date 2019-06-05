@@ -15,7 +15,7 @@ namespace Valigator.Core.ValueValidators
 			=> value.Length <= 1 ? true : !GetDuplicates(value).Any();
 
 		ValidationError IValueValidator<TValue[]>.GetError(TValue[] value, bool inverted)
-			=> new ValidationError("");
+			=> new ValidationError(nameof(UniqueValidator<TValue>));
 
 		private IEnumerable<TValue> GetDuplicates(TValue[] value)
 		{

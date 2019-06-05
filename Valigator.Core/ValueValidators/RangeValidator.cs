@@ -47,7 +47,7 @@ namespace Valigator.Core.ValueValidators
 		}
 
 		ValidationError IValueValidator<byte>.GetError(byte value, bool inverted)
-			=> new ValidationError("");
+			=> new ValidationError(nameof(RangeValidator_Byte));
 	}
 
 	public struct RangeValidator_SByte : IValueValidator<sbyte>
@@ -89,7 +89,7 @@ namespace Valigator.Core.ValueValidators
 		}
 
 		ValidationError IValueValidator<sbyte>.GetError(sbyte value, bool inverted)
-			=> new ValidationError("");
+			=> new ValidationError(nameof(RangeValidator_SByte));
 	}
 
 	public struct RangeValidator_Int16 : IValueValidator<short>
@@ -131,7 +131,7 @@ namespace Valigator.Core.ValueValidators
 		}
 
 		ValidationError IValueValidator<short>.GetError(short value, bool inverted)
-			=> new ValidationError("");
+			=> new ValidationError(nameof(RangeValidator_Int16));
 	}
 
 	public struct RangeValidator_UInt16 : IValueValidator<ushort>
@@ -173,7 +173,7 @@ namespace Valigator.Core.ValueValidators
 		}
 
 		ValidationError IValueValidator<ushort>.GetError(ushort value, bool inverted)
-			=> new ValidationError("");
+			=> new ValidationError(nameof(RangeValidator_UInt16));
 	}
 
 	public struct RangeValidator_Int32 : IValueValidator<int>
@@ -215,7 +215,7 @@ namespace Valigator.Core.ValueValidators
 		}
 
 		ValidationError IValueValidator<int>.GetError(int value, bool inverted)
-			=> new ValidationError("");
+			=> new ValidationError(nameof(RangeValidator_Int32));
 	}
 
 	public struct RangeValidator_UInt32 : IValueValidator<uint>
@@ -257,7 +257,7 @@ namespace Valigator.Core.ValueValidators
 		}
 
 		ValidationError IValueValidator<uint>.GetError(uint value, bool inverted)
-			=> new ValidationError("");
+			=> new ValidationError(nameof(RangeValidator_UInt32));
 	}
 
 	public struct RangeValidator_Int64 : IValueValidator<long>
@@ -299,7 +299,7 @@ namespace Valigator.Core.ValueValidators
 		}
 
 		ValidationError IValueValidator<long>.GetError(long value, bool inverted)
-			=> new ValidationError("");
+			=> new ValidationError(nameof(RangeValidator_Int64));
 	}
 
 	public struct RangeValidator_UInt64 : IValueValidator<ulong>
@@ -341,7 +341,7 @@ namespace Valigator.Core.ValueValidators
 		}
 
 		ValidationError IValueValidator<ulong>.GetError(ulong value, bool inverted)
-			=> new ValidationError("");
+			=> new ValidationError(nameof(RangeValidator_UInt64));
 	}
 
 	public struct RangeValidator_Single : IValueValidator<float>
@@ -383,7 +383,7 @@ namespace Valigator.Core.ValueValidators
 		}
 
 		ValidationError IValueValidator<float>.GetError(float value, bool inverted)
-			=> new ValidationError("");
+			=> new ValidationError(nameof(RangeValidator_Single));
 	}
 
 	public struct RangeValidator_Double : IValueValidator<double>
@@ -425,7 +425,7 @@ namespace Valigator.Core.ValueValidators
 		}
 
 		ValidationError IValueValidator<double>.GetError(double value, bool inverted)
-			=> new ValidationError("");
+			=> new ValidationError(nameof(RangeValidator_Double));
 	}
 
 	public struct RangeValidator_Decimal : IValueValidator<decimal>
@@ -467,7 +467,7 @@ namespace Valigator.Core.ValueValidators
 		}
 
 		ValidationError IValueValidator<decimal>.GetError(decimal value, bool inverted)
-			=> new ValidationError("");
+			=> new ValidationError(nameof(RangeValidator_Decimal));
 	}
 
 	public struct RangeValidator_DateTime : IValueValidator<DateTime>
@@ -509,6 +509,6 @@ namespace Valigator.Core.ValueValidators
 		}
 
 		ValidationError IValueValidator<DateTime>.GetError(DateTime value, bool inverted)
-			=> new ValidationError("");
+			=> new ValidationError(nameof(RangeValidator_DateTime));
 	}
 }
