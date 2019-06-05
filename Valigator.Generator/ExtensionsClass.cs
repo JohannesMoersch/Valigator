@@ -72,18 +72,16 @@ namespace Valigator
 				case 1:
 					foreach (var extension in nodes[0].Extensions)
 						yield return ExtensionGenerator.GenerateExtensionOne(source, node.DataType.Match(Option.Some, () => extension.DataType), extension);
-					//if (hasChildren)
-					//	yield return ExtensionGenerator.GenerateInvertExtensionTwo(source, set[0].DataType, set[0]);
 					break;
 				case 2:
 					foreach (var extension in nodes[1].Extensions)
 						yield return ExtensionGenerator.GenerateExtensionTwo(source, node.DataType.Match(Option.Some, () => extension.DataType), nodes[1].Validator, extension);
-					//if (hasChildren)
-					//	yield return ExtensionGenerator.GenerateInvertExtensionThree(source, set[1].DataType, set[0], set[1]);
+					yield return ExtensionGenerator.GenerateInvertExtensionTwo(source, node.DataType, nodes[1].Validator);
 					break;
 				case 3:
 					foreach (var extension in nodes[2].Extensions)
 						yield return ExtensionGenerator.GenerateExtensionThree(source, node.DataType.Match(Option.Some, () => extension.DataType), nodes[1].Validator, nodes[2].Validator, extension);
+					yield return ExtensionGenerator.GenerateInvertExtensionThree(source, node.DataType, nodes[1].Validator, nodes[2].Validator);
 					break;
 				default:
 					throw new Exception("Extensions of this length are not supported.");

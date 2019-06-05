@@ -58,26 +58,25 @@ namespace Valigator.Generator
 
 			return $"{sourceDefinition.GetSourceName(Option.Some(valueGenericName))} - {validatorOne.GetValidatorName(valueGenericName)} - {validatorTwo.GetValidatorName(valueGenericName)} - {extension.ExtensionName}";
 		}
-		/*
-		public static string GenerateInvertExtensionTwo(SourceDefinition sourceDefinition, Option<string> dataType, ExtensionDefinition extensionDefinitionOne)
+		
+		public static string GenerateInvertExtensionTwo(SourceDefinition sourceDefinition, Option<string> dataType, ValidatorDefinition validatorOne)
 		{
-			if (sourceDefinition.ValueType == ValueType.Value && extensionDefinitionOne.ValueType != ValueType.Value)
+			if (sourceDefinition.ValueType == ValueType.Value && validatorOne.ValueType != ValueType.Value)
 				throw new Exception("Array extensions cannot be generated for value type sources.");
 
 			var valueGenericName = dataType.Match(_ => _, () => "TValue");
 
-			return $"{sourceDefinition.GetSourceName(Option.Some(valueGenericName))} - {extensionDefinitionOne.GetValidatorName(valueGenericName)} - Not";
+			return $"{sourceDefinition.GetSourceName(Option.Some(valueGenericName))} - {validatorOne.GetValidatorName(valueGenericName)} - Not";
 		}
 
-		public static string GenerateInvertExtensionThree(SourceDefinition sourceDefinition, Option<string> dataType, ExtensionDefinition extensionDefinitionOne, ExtensionDefinition extensionDefinitionTwo)
+		public static string GenerateInvertExtensionThree(SourceDefinition sourceDefinition, Option<string> dataType, ValidatorDefinition validatorOne, ValidatorDefinition validatorTwo)
 		{
-			if (sourceDefinition.ValueType == ValueType.Value && (extensionDefinitionOne.ValueType != ValueType.Value || extensionDefinitionTwo.ValueType != ValueType.Value))
+			if (sourceDefinition.ValueType == ValueType.Value && (validatorOne.ValueType != ValueType.Value || validatorTwo.ValueType != ValueType.Value))
 				throw new Exception("Array extensions cannot be generated for value type sources.");
 
 			var valueGenericName = dataType.Match(_ => _, () => "TValue");
 
-			return $"{sourceDefinition.GetSourceName(Option.Some(valueGenericName))} - {extensionDefinitionOne.GetValidatorName(valueGenericName)} - {extensionDefinitionTwo.GetValidatorName(valueGenericName)} - Not";
+			return $"{sourceDefinition.GetSourceName(Option.Some(valueGenericName))} - {validatorOne.GetValidatorName(valueGenericName)} - {validatorTwo.GetValidatorName(valueGenericName)} - Not";
 		}
-		*/
 	}
 }
