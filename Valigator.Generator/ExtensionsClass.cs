@@ -56,7 +56,7 @@ namespace Valigator
 		private static IEnumerable<string> GenerateExtension(SourceDefinition source, ExtensionPathNode node)
 		{
 			if (!node.Extensions.Any())
-				yield break;
+				return Enumerable.Empty<string>();
 
 			var nodes = new List<ExtensionPathNode>();
 
@@ -70,19 +70,19 @@ namespace Valigator
 			switch (nodes.Count)
 			{
 				case 1:
-					foreach (var extension in nodes[0].Extensions)
-						yield return ExtensionGenerator.GenerateExtensionOne(source, node.DataType.Match(Option.Some, () => extension.DataType), extension);
-					break;
+					return nodes[0]
+						.Extensions
+						.SelectMany(extension => ExtensionGenerator.GenerateExtensionOne(source, node.DataType.Match(Option.Some, () => extension.DataType), extension));
 				case 2:
-					foreach (var extension in nodes[1].Extensions)
-						yield return ExtensionGenerator.GenerateExtensionTwo(source, node.DataType.Match(Option.Some, () => extension.DataType), nodes[1].Validator, extension);
-					yield return ExtensionGenerator.GenerateInvertExtensionTwo(source, node.DataType, nodes[1].Validator);
-					break;
+					return nodes[1]
+						.Extensions
+						.SelectMany(extension => ExtensionGenerator.GenerateExtensionTwo(source, node.DataType.Match(Option.Some, () => extension.DataType), nodes[1].Validator, extension))
+						.Concat(ExtensionGenerator.GenerateInvertExtensionTwo(source, node.DataType, nodes[1].Validator));
 				case 3:
-					foreach (var extension in nodes[2].Extensions)
-						yield return ExtensionGenerator.GenerateExtensionThree(source, node.DataType.Match(Option.Some, () => extension.DataType), nodes[1].Validator, nodes[2].Validator, extension);
-					yield return ExtensionGenerator.GenerateInvertExtensionThree(source, node.DataType, nodes[1].Validator, nodes[2].Validator);
-					break;
+					return nodes[2]
+						.Extensions
+						.SelectMany(extension => ExtensionGenerator.GenerateExtensionThree(source, node.DataType.Match(Option.Some, () => extension.DataType), nodes[1].Validator, nodes[2].Validator, extension))
+						.Concat(ExtensionGenerator.GenerateInvertExtensionThree(source, node.DataType, nodes[1].Validator, nodes[2].Validator));
 				default:
 					throw new Exception("Extensions of this length are not supported.");
 			}
