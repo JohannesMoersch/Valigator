@@ -19,7 +19,7 @@ namespace Valigator.Core.StateValidators
 			=> _item = item;
 
 		public RequiredCollectionNullableStateValidator<TValue> Nullable()
-			=> new RequiredCollectionNullableStateValidator<TValue>();
+			=> new RequiredCollectionNullableStateValidator<TValue>(_item);
 
 		IStateDescriptor IStateValidator<TValue[]>.GetDescriptor()
 			=> new RequiredCollectionStateDescriptor(false, _item.DataDescriptor);
