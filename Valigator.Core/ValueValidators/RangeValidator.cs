@@ -15,12 +15,21 @@ namespace Valigator.Core.ValueValidators
 		private readonly Option<byte> _greaterThanValue;
 		private readonly bool _greaterThanOrEqualTo;
 
-		public RangeValidator_Byte(byte? lessThan, bool lessThanOrEqualTo, byte? greaterThan, bool greaterThanOrEqualTo)
+		public RangeValidator_Byte(byte? lessThan, byte? lessThanOrEqualTo, byte? greaterThan, byte? greaterThanOrEqualTo)
 		{
-			_lessThanValue = Option.FromNullable(lessThan);
-			_lessThanOrEqualTo = lessThanOrEqualTo;
-			_greaterThanValue = Option.FromNullable(greaterThan);
-			_greaterThanOrEqualTo = greaterThanOrEqualTo;
+			if (lessThan.HasValue && lessThanOrEqualTo.HasValue)
+				throw new ArgumentOutOfRangeException(nameof(lessThan), $"{nameof(lessThan)} and {nameof(lessThanOrEqualTo)} cannot both be specified.");
+
+			if (greaterThan.HasValue && greaterThanOrEqualTo.HasValue)
+				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"{nameof(greaterThan)} and {nameof(greaterThanOrEqualTo)} cannot both be specified.");
+
+			if ((lessThan ?? lessThanOrEqualTo) <= (greaterThan ?? greaterThanOrEqualTo))
+				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"Specified range must include more than one possible value.");
+
+			_lessThanValue = Option.FromNullable(lessThan ?? lessThanOrEqualTo);
+			_lessThanOrEqualTo = lessThanOrEqualTo.HasValue;
+			_greaterThanValue = Option.FromNullable(greaterThan ?? greaterThanOrEqualTo);
+			_greaterThanOrEqualTo = greaterThanOrEqualTo.HasValue;
 		}
 
 		IValueDescriptor IValueValidator<byte>.GetDescriptor()
@@ -48,12 +57,21 @@ namespace Valigator.Core.ValueValidators
 		private readonly Option<sbyte> _greaterThanValue;
 		private readonly bool _greaterThanOrEqualTo;
 
-		public RangeValidator_SByte(sbyte? lessThan, bool lessThanOrEqualTo, sbyte? greaterThan, bool greaterThanOrEqualTo)
+		public RangeValidator_SByte(sbyte? lessThan, sbyte? lessThanOrEqualTo, sbyte? greaterThan, sbyte? greaterThanOrEqualTo)
 		{
-			_lessThanValue = Option.FromNullable(lessThan);
-			_lessThanOrEqualTo = lessThanOrEqualTo;
-			_greaterThanValue = Option.FromNullable(greaterThan);
-			_greaterThanOrEqualTo = greaterThanOrEqualTo;
+			if (lessThan.HasValue && lessThanOrEqualTo.HasValue)
+				throw new ArgumentOutOfRangeException(nameof(lessThan), $"{nameof(lessThan)} and {nameof(lessThanOrEqualTo)} cannot both be specified.");
+
+			if (greaterThan.HasValue && greaterThanOrEqualTo.HasValue)
+				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"{nameof(greaterThan)} and {nameof(greaterThanOrEqualTo)} cannot both be specified.");
+
+			if ((lessThan ?? lessThanOrEqualTo) <= (greaterThan ?? greaterThanOrEqualTo))
+				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"Specified range must include more than one possible value.");
+
+			_lessThanValue = Option.FromNullable(lessThan ?? lessThanOrEqualTo);
+			_lessThanOrEqualTo = lessThanOrEqualTo.HasValue;
+			_greaterThanValue = Option.FromNullable(greaterThan ?? greaterThanOrEqualTo);
+			_greaterThanOrEqualTo = greaterThanOrEqualTo.HasValue;
 		}
 
 		IValueDescriptor IValueValidator<sbyte>.GetDescriptor()
@@ -81,12 +99,21 @@ namespace Valigator.Core.ValueValidators
 		private readonly Option<short> _greaterThanValue;
 		private readonly bool _greaterThanOrEqualTo;
 
-		public RangeValidator_Int16(short? lessThan, bool lessThanOrEqualTo, short? greaterThan, bool greaterThanOrEqualTo)
+		public RangeValidator_Int16(short? lessThan, short? lessThanOrEqualTo, short? greaterThan, short? greaterThanOrEqualTo)
 		{
-			_lessThanValue = Option.FromNullable(lessThan);
-			_lessThanOrEqualTo = lessThanOrEqualTo;
-			_greaterThanValue = Option.FromNullable(greaterThan);
-			_greaterThanOrEqualTo = greaterThanOrEqualTo;
+			if (lessThan.HasValue && lessThanOrEqualTo.HasValue)
+				throw new ArgumentOutOfRangeException(nameof(lessThan), $"{nameof(lessThan)} and {nameof(lessThanOrEqualTo)} cannot both be specified.");
+
+			if (greaterThan.HasValue && greaterThanOrEqualTo.HasValue)
+				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"{nameof(greaterThan)} and {nameof(greaterThanOrEqualTo)} cannot both be specified.");
+
+			if ((lessThan ?? lessThanOrEqualTo) <= (greaterThan ?? greaterThanOrEqualTo))
+				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"Specified range must include more than one possible value.");
+
+			_lessThanValue = Option.FromNullable(lessThan ?? lessThanOrEqualTo);
+			_lessThanOrEqualTo = lessThanOrEqualTo.HasValue;
+			_greaterThanValue = Option.FromNullable(greaterThan ?? greaterThanOrEqualTo);
+			_greaterThanOrEqualTo = greaterThanOrEqualTo.HasValue;
 		}
 
 		IValueDescriptor IValueValidator<short>.GetDescriptor()
@@ -114,12 +141,21 @@ namespace Valigator.Core.ValueValidators
 		private readonly Option<ushort> _greaterThanValue;
 		private readonly bool _greaterThanOrEqualTo;
 
-		public RangeValidator_UInt16(ushort? lessThan, bool lessThanOrEqualTo, ushort? greaterThan, bool greaterThanOrEqualTo)
+		public RangeValidator_UInt16(ushort? lessThan, ushort? lessThanOrEqualTo, ushort? greaterThan, ushort? greaterThanOrEqualTo)
 		{
-			_lessThanValue = Option.FromNullable(lessThan);
-			_lessThanOrEqualTo = lessThanOrEqualTo;
-			_greaterThanValue = Option.FromNullable(greaterThan);
-			_greaterThanOrEqualTo = greaterThanOrEqualTo;
+			if (lessThan.HasValue && lessThanOrEqualTo.HasValue)
+				throw new ArgumentOutOfRangeException(nameof(lessThan), $"{nameof(lessThan)} and {nameof(lessThanOrEqualTo)} cannot both be specified.");
+
+			if (greaterThan.HasValue && greaterThanOrEqualTo.HasValue)
+				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"{nameof(greaterThan)} and {nameof(greaterThanOrEqualTo)} cannot both be specified.");
+
+			if ((lessThan ?? lessThanOrEqualTo) <= (greaterThan ?? greaterThanOrEqualTo))
+				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"Specified range must include more than one possible value.");
+
+			_lessThanValue = Option.FromNullable(lessThan ?? lessThanOrEqualTo);
+			_lessThanOrEqualTo = lessThanOrEqualTo.HasValue;
+			_greaterThanValue = Option.FromNullable(greaterThan ?? greaterThanOrEqualTo);
+			_greaterThanOrEqualTo = greaterThanOrEqualTo.HasValue;
 		}
 
 		IValueDescriptor IValueValidator<ushort>.GetDescriptor()
@@ -147,12 +183,21 @@ namespace Valigator.Core.ValueValidators
 		private readonly Option<int> _greaterThanValue;
 		private readonly bool _greaterThanOrEqualTo;
 
-		public RangeValidator_Int32(int? lessThan, bool lessThanOrEqualTo, int? greaterThan, bool greaterThanOrEqualTo)
+		public RangeValidator_Int32(int? lessThan, int? lessThanOrEqualTo, int? greaterThan, int? greaterThanOrEqualTo)
 		{
-			_lessThanValue = Option.FromNullable(lessThan);
-			_lessThanOrEqualTo = lessThanOrEqualTo;
-			_greaterThanValue = Option.FromNullable(greaterThan);
-			_greaterThanOrEqualTo = greaterThanOrEqualTo;
+			if (lessThan.HasValue && lessThanOrEqualTo.HasValue)
+				throw new ArgumentOutOfRangeException(nameof(lessThan), $"{nameof(lessThan)} and {nameof(lessThanOrEqualTo)} cannot both be specified.");
+
+			if (greaterThan.HasValue && greaterThanOrEqualTo.HasValue)
+				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"{nameof(greaterThan)} and {nameof(greaterThanOrEqualTo)} cannot both be specified.");
+
+			if ((lessThan ?? lessThanOrEqualTo) <= (greaterThan ?? greaterThanOrEqualTo))
+				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"Specified range must include more than one possible value.");
+
+			_lessThanValue = Option.FromNullable(lessThan ?? lessThanOrEqualTo);
+			_lessThanOrEqualTo = lessThanOrEqualTo.HasValue;
+			_greaterThanValue = Option.FromNullable(greaterThan ?? greaterThanOrEqualTo);
+			_greaterThanOrEqualTo = greaterThanOrEqualTo.HasValue;
 		}
 
 		IValueDescriptor IValueValidator<int>.GetDescriptor()
@@ -180,12 +225,21 @@ namespace Valigator.Core.ValueValidators
 		private readonly Option<uint> _greaterThanValue;
 		private readonly bool _greaterThanOrEqualTo;
 
-		public RangeValidator_UInt32(uint? lessThan, bool lessThanOrEqualTo, uint? greaterThan, bool greaterThanOrEqualTo)
+		public RangeValidator_UInt32(uint? lessThan, uint? lessThanOrEqualTo, uint? greaterThan, uint? greaterThanOrEqualTo)
 		{
-			_lessThanValue = Option.FromNullable(lessThan);
-			_lessThanOrEqualTo = lessThanOrEqualTo;
-			_greaterThanValue = Option.FromNullable(greaterThan);
-			_greaterThanOrEqualTo = greaterThanOrEqualTo;
+			if (lessThan.HasValue && lessThanOrEqualTo.HasValue)
+				throw new ArgumentOutOfRangeException(nameof(lessThan), $"{nameof(lessThan)} and {nameof(lessThanOrEqualTo)} cannot both be specified.");
+
+			if (greaterThan.HasValue && greaterThanOrEqualTo.HasValue)
+				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"{nameof(greaterThan)} and {nameof(greaterThanOrEqualTo)} cannot both be specified.");
+
+			if ((lessThan ?? lessThanOrEqualTo) <= (greaterThan ?? greaterThanOrEqualTo))
+				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"Specified range must include more than one possible value.");
+
+			_lessThanValue = Option.FromNullable(lessThan ?? lessThanOrEqualTo);
+			_lessThanOrEqualTo = lessThanOrEqualTo.HasValue;
+			_greaterThanValue = Option.FromNullable(greaterThan ?? greaterThanOrEqualTo);
+			_greaterThanOrEqualTo = greaterThanOrEqualTo.HasValue;
 		}
 
 		IValueDescriptor IValueValidator<uint>.GetDescriptor()
@@ -213,12 +267,21 @@ namespace Valigator.Core.ValueValidators
 		private readonly Option<long> _greaterThanValue;
 		private readonly bool _greaterThanOrEqualTo;
 
-		public RangeValidator_Int64(long? lessThan, bool lessThanOrEqualTo, long? greaterThan, bool greaterThanOrEqualTo)
+		public RangeValidator_Int64(long? lessThan, long? lessThanOrEqualTo, long? greaterThan, long? greaterThanOrEqualTo)
 		{
-			_lessThanValue = Option.FromNullable(lessThan);
-			_lessThanOrEqualTo = lessThanOrEqualTo;
-			_greaterThanValue = Option.FromNullable(greaterThan);
-			_greaterThanOrEqualTo = greaterThanOrEqualTo;
+			if (lessThan.HasValue && lessThanOrEqualTo.HasValue)
+				throw new ArgumentOutOfRangeException(nameof(lessThan), $"{nameof(lessThan)} and {nameof(lessThanOrEqualTo)} cannot both be specified.");
+
+			if (greaterThan.HasValue && greaterThanOrEqualTo.HasValue)
+				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"{nameof(greaterThan)} and {nameof(greaterThanOrEqualTo)} cannot both be specified.");
+
+			if ((lessThan ?? lessThanOrEqualTo) <= (greaterThan ?? greaterThanOrEqualTo))
+				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"Specified range must include more than one possible value.");
+
+			_lessThanValue = Option.FromNullable(lessThan ?? lessThanOrEqualTo);
+			_lessThanOrEqualTo = lessThanOrEqualTo.HasValue;
+			_greaterThanValue = Option.FromNullable(greaterThan ?? greaterThanOrEqualTo);
+			_greaterThanOrEqualTo = greaterThanOrEqualTo.HasValue;
 		}
 
 		IValueDescriptor IValueValidator<long>.GetDescriptor()
@@ -246,12 +309,21 @@ namespace Valigator.Core.ValueValidators
 		private readonly Option<ulong> _greaterThanValue;
 		private readonly bool _greaterThanOrEqualTo;
 
-		public RangeValidator_UInt64(ulong? lessThan, bool lessThanOrEqualTo, ulong? greaterThan, bool greaterThanOrEqualTo)
+		public RangeValidator_UInt64(ulong? lessThan, ulong? lessThanOrEqualTo, ulong? greaterThan, ulong? greaterThanOrEqualTo)
 		{
-			_lessThanValue = Option.FromNullable(lessThan);
-			_lessThanOrEqualTo = lessThanOrEqualTo;
-			_greaterThanValue = Option.FromNullable(greaterThan);
-			_greaterThanOrEqualTo = greaterThanOrEqualTo;
+			if (lessThan.HasValue && lessThanOrEqualTo.HasValue)
+				throw new ArgumentOutOfRangeException(nameof(lessThan), $"{nameof(lessThan)} and {nameof(lessThanOrEqualTo)} cannot both be specified.");
+
+			if (greaterThan.HasValue && greaterThanOrEqualTo.HasValue)
+				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"{nameof(greaterThan)} and {nameof(greaterThanOrEqualTo)} cannot both be specified.");
+
+			if ((lessThan ?? lessThanOrEqualTo) <= (greaterThan ?? greaterThanOrEqualTo))
+				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"Specified range must include more than one possible value.");
+
+			_lessThanValue = Option.FromNullable(lessThan ?? lessThanOrEqualTo);
+			_lessThanOrEqualTo = lessThanOrEqualTo.HasValue;
+			_greaterThanValue = Option.FromNullable(greaterThan ?? greaterThanOrEqualTo);
+			_greaterThanOrEqualTo = greaterThanOrEqualTo.HasValue;
 		}
 
 		IValueDescriptor IValueValidator<ulong>.GetDescriptor()
@@ -279,12 +351,21 @@ namespace Valigator.Core.ValueValidators
 		private readonly Option<float> _greaterThanValue;
 		private readonly bool _greaterThanOrEqualTo;
 
-		public RangeValidator_Single(float? lessThan, bool lessThanOrEqualTo, float? greaterThan, bool greaterThanOrEqualTo)
+		public RangeValidator_Single(float? lessThan, float? lessThanOrEqualTo, float? greaterThan, float? greaterThanOrEqualTo)
 		{
-			_lessThanValue = Option.FromNullable(lessThan);
-			_lessThanOrEqualTo = lessThanOrEqualTo;
-			_greaterThanValue = Option.FromNullable(greaterThan);
-			_greaterThanOrEqualTo = greaterThanOrEqualTo;
+			if (lessThan.HasValue && lessThanOrEqualTo.HasValue)
+				throw new ArgumentOutOfRangeException(nameof(lessThan), $"{nameof(lessThan)} and {nameof(lessThanOrEqualTo)} cannot both be specified.");
+
+			if (greaterThan.HasValue && greaterThanOrEqualTo.HasValue)
+				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"{nameof(greaterThan)} and {nameof(greaterThanOrEqualTo)} cannot both be specified.");
+
+			if ((lessThan ?? lessThanOrEqualTo) <= (greaterThan ?? greaterThanOrEqualTo))
+				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"Specified range must include more than one possible value.");
+
+			_lessThanValue = Option.FromNullable(lessThan ?? lessThanOrEqualTo);
+			_lessThanOrEqualTo = lessThanOrEqualTo.HasValue;
+			_greaterThanValue = Option.FromNullable(greaterThan ?? greaterThanOrEqualTo);
+			_greaterThanOrEqualTo = greaterThanOrEqualTo.HasValue;
 		}
 
 		IValueDescriptor IValueValidator<float>.GetDescriptor()
@@ -312,12 +393,21 @@ namespace Valigator.Core.ValueValidators
 		private readonly Option<double> _greaterThanValue;
 		private readonly bool _greaterThanOrEqualTo;
 
-		public RangeValidator_Double(double? lessThan, bool lessThanOrEqualTo, double? greaterThan, bool greaterThanOrEqualTo)
+		public RangeValidator_Double(double? lessThan, double? lessThanOrEqualTo, double? greaterThan, double? greaterThanOrEqualTo)
 		{
-			_lessThanValue = Option.FromNullable(lessThan);
-			_lessThanOrEqualTo = lessThanOrEqualTo;
-			_greaterThanValue = Option.FromNullable(greaterThan);
-			_greaterThanOrEqualTo = greaterThanOrEqualTo;
+			if (lessThan.HasValue && lessThanOrEqualTo.HasValue)
+				throw new ArgumentOutOfRangeException(nameof(lessThan), $"{nameof(lessThan)} and {nameof(lessThanOrEqualTo)} cannot both be specified.");
+
+			if (greaterThan.HasValue && greaterThanOrEqualTo.HasValue)
+				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"{nameof(greaterThan)} and {nameof(greaterThanOrEqualTo)} cannot both be specified.");
+
+			if ((lessThan ?? lessThanOrEqualTo) <= (greaterThan ?? greaterThanOrEqualTo))
+				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"Specified range must include more than one possible value.");
+
+			_lessThanValue = Option.FromNullable(lessThan ?? lessThanOrEqualTo);
+			_lessThanOrEqualTo = lessThanOrEqualTo.HasValue;
+			_greaterThanValue = Option.FromNullable(greaterThan ?? greaterThanOrEqualTo);
+			_greaterThanOrEqualTo = greaterThanOrEqualTo.HasValue;
 		}
 
 		IValueDescriptor IValueValidator<double>.GetDescriptor()
@@ -345,12 +435,21 @@ namespace Valigator.Core.ValueValidators
 		private readonly Option<decimal> _greaterThanValue;
 		private readonly bool _greaterThanOrEqualTo;
 
-		public RangeValidator_Decimal(decimal? lessThan, bool lessThanOrEqualTo, decimal? greaterThan, bool greaterThanOrEqualTo)
+		public RangeValidator_Decimal(decimal? lessThan, decimal? lessThanOrEqualTo, decimal? greaterThan, decimal? greaterThanOrEqualTo)
 		{
-			_lessThanValue = Option.FromNullable(lessThan);
-			_lessThanOrEqualTo = lessThanOrEqualTo;
-			_greaterThanValue = Option.FromNullable(greaterThan);
-			_greaterThanOrEqualTo = greaterThanOrEqualTo;
+			if (lessThan.HasValue && lessThanOrEqualTo.HasValue)
+				throw new ArgumentOutOfRangeException(nameof(lessThan), $"{nameof(lessThan)} and {nameof(lessThanOrEqualTo)} cannot both be specified.");
+
+			if (greaterThan.HasValue && greaterThanOrEqualTo.HasValue)
+				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"{nameof(greaterThan)} and {nameof(greaterThanOrEqualTo)} cannot both be specified.");
+
+			if ((lessThan ?? lessThanOrEqualTo) <= (greaterThan ?? greaterThanOrEqualTo))
+				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"Specified range must include more than one possible value.");
+
+			_lessThanValue = Option.FromNullable(lessThan ?? lessThanOrEqualTo);
+			_lessThanOrEqualTo = lessThanOrEqualTo.HasValue;
+			_greaterThanValue = Option.FromNullable(greaterThan ?? greaterThanOrEqualTo);
+			_greaterThanOrEqualTo = greaterThanOrEqualTo.HasValue;
 		}
 
 		IValueDescriptor IValueValidator<decimal>.GetDescriptor()
@@ -378,12 +477,21 @@ namespace Valigator.Core.ValueValidators
 		private readonly Option<DateTime> _greaterThanValue;
 		private readonly bool _greaterThanOrEqualTo;
 
-		public RangeValidator_DateTime(DateTime? lessThan, bool lessThanOrEqualTo, DateTime? greaterThan, bool greaterThanOrEqualTo)
+		public RangeValidator_DateTime(DateTime? lessThan, DateTime? lessThanOrEqualTo, DateTime? greaterThan, DateTime? greaterThanOrEqualTo)
 		{
-			_lessThanValue = Option.FromNullable(lessThan);
-			_lessThanOrEqualTo = lessThanOrEqualTo;
-			_greaterThanValue = Option.FromNullable(greaterThan);
-			_greaterThanOrEqualTo = greaterThanOrEqualTo;
+			if (lessThan.HasValue && lessThanOrEqualTo.HasValue)
+				throw new ArgumentOutOfRangeException(nameof(lessThan), $"{nameof(lessThan)} and {nameof(lessThanOrEqualTo)} cannot both be specified.");
+
+			if (greaterThan.HasValue && greaterThanOrEqualTo.HasValue)
+				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"{nameof(greaterThan)} and {nameof(greaterThanOrEqualTo)} cannot both be specified.");
+
+			if ((lessThan ?? lessThanOrEqualTo) <= (greaterThan ?? greaterThanOrEqualTo))
+				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"Specified range must include more than one possible value.");
+
+			_lessThanValue = Option.FromNullable(lessThan ?? lessThanOrEqualTo);
+			_lessThanOrEqualTo = lessThanOrEqualTo.HasValue;
+			_greaterThanValue = Option.FromNullable(greaterThan ?? greaterThanOrEqualTo);
+			_greaterThanOrEqualTo = greaterThanOrEqualTo.HasValue;
 		}
 
 		IValueDescriptor IValueValidator<DateTime>.GetDescriptor()
