@@ -17,6 +17,15 @@ namespace Valigator.Core.ValueValidators
 			if (!minimumItems.HasValue && !maximumItems.HasValue)
 				throw new ArgumentException("Either a minimum or a maximum item count must be set.");
 
+			if (minimumItems < 0)
+				throw new ArgumentException("Minimum cannot be less than zero.");
+
+			if (maximumItems < 1)
+				throw new ArgumentException("Maximum cannot be less than one.");
+
+			if (maximumItems < minimumItems)
+				throw new ArgumentException("Maximum cannot be less than minimum.");
+
 			_minimumItems = Option.FromNullable(minimumItems);
 			_maximumItems = Option.FromNullable(maximumItems);
 		}
