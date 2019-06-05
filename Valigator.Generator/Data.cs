@@ -36,8 +36,8 @@ namespace Valigator.Generator
 				new ValidatorDefinition(ValidatorGroups.Equals, $"EqualsValidator<{ValueReplacementString}>", ValueType.Value, Option.None<string>()),
 				new ValidatorDefinition(ValidatorGroups.InSet, $"InSetValidator<{ValueReplacementString}>", ValueType.Value, Option.None<string>()),
 				new ValidatorDefinition(ValidatorGroups.StringLength, "StringLengthValidator", ValueType.Value, Option.Some("string")),
-				new ValidatorDefinition(ValidatorGroups.ItemCount, $"ItemCountValidato<{ValueReplacementString}>", ValueType.Array, Option.None<string>()),
-				new ValidatorDefinition(ValidatorGroups.ItemCount, $"UniqueValidator<{ValueReplacementString}>", ValueType.Array, Option.None<string>())
+				new ValidatorDefinition(ValidatorGroups.ItemCount, $"ItemCountValidator<{ValueReplacementString}>", ValueType.Array, Option.None<string>()),
+				new ValidatorDefinition(ValidatorGroups.Unique, $"UniqueValidator<{ValueReplacementString}>", ValueType.Array, Option.None<string>())
 			}
 			.Concat(CreateRangeValidators())
 			.ToArray();
@@ -68,9 +68,11 @@ namespace Valigator.Generator
 				new ExtensionDefinition(Validators.First(v => v.Identifier == ValidatorGroups.Equals), "Equals", new[] { new ParameterDefinition($"{ValueReplacementString}", "value") }, false),
 				new ExtensionDefinition(Validators.First(v => v.Identifier == ValidatorGroups.InSet), "InSet", new[] { new ParameterDefinition($"params {ValueReplacementString}[]", "options", Option.None<string>()) }, false),
 				new ExtensionDefinition(Validators.First(v => v.Identifier == ValidatorGroups.InSet), "InSet", new[] { new ParameterDefinition($"ISet<{ValueReplacementString}>", "options", Option.None<string>()) }, false),
-				new ExtensionDefinition(Validators.First(v => v.Identifier == ValidatorGroups.StringLength), "Length", new[] { new ParameterDefinition($"int?", "minimumDecimalPlaces", Option.Some("null")), new ParameterDefinition($"int?", "maximumDecimalPlaces", Option.Some("null")) }, false, "string"),
+				new ExtensionDefinition(Validators.First(v => v.Identifier == ValidatorGroups.StringLength), "Length", new[] { new ParameterDefinition($"int?", "minimumLength", Option.Some("null")), new ParameterDefinition($"int?", "maximumLength", Option.Some("null")) }, false, "string"),
 				new ExtensionDefinition(Validators.First(v => v.Identifier == ValidatorGroups.Equals), "NotEmpty", new[] { new ParameterDefinition("String.Empty") }, true, "string"),
-				new ExtensionDefinition(Validators.First(v => v.Identifier == ValidatorGroups.Equals), "NotEmpty", new[] { new ParameterDefinition("Guid.Empty") }, true, "Guid")
+				new ExtensionDefinition(Validators.First(v => v.Identifier == ValidatorGroups.Equals), "NotEmpty", new[] { new ParameterDefinition("Guid.Empty") }, true, "Guid"),
+				new ExtensionDefinition(Validators.First(v => v.Identifier == ValidatorGroups.ItemCount), "ItemCount", new[] { new ParameterDefinition($"int?", "minimumItems", Option.Some("null")), new ParameterDefinition($"int?", "maximumItems", Option.Some("null")) }, false),
+				new ExtensionDefinition(Validators.First(v => v.Identifier == ValidatorGroups.Unique), "Unique", Array.Empty<ParameterDefinition>(), false)
 			}
 			.Concat(CreateRangeExtensions())
 			.ToArray();

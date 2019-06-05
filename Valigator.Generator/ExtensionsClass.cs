@@ -22,14 +22,28 @@ namespace Valigator
 ";
 
 		private static readonly string _footer =
-@"	}
+@"
+	}
 }";
 
 		public static string Generate(SourceDefinition source)
 		{
+			IEnumerable<ValidatorGroups[]> paths;
+			switch (source.ValueType)
+			{
+				case ValueType.Value:
+					paths = Data.ValueValidationPaths;
+					break;
+				case ValueType.Array:
+					paths = Data.ArrayValidationPaths;
+					break;
+				default:
+					return String.Empty;
+			}
+
 			var root = new ExtensionPathNode(null, null);
 
-			foreach (var path in Data.ValueValidationPaths)
+			foreach (var path in paths)
 				AddValidators(root, path);
 
 			var extensions = GenerateExtensions(source, root);

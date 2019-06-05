@@ -36,14 +36,17 @@ namespace Valigator.Generator
 				.Replace("__InvertOne__", $"{(invertOne ? "Inverted" : "Standard")}")
 				.Replace("__InvertTwo__", $"{(invertTwo ? "Inverted" : "Standard")}")
 				.Replace("__StateValidator__", sourceDefinition.GetSourceName(Option.Some(valueGenericName)))
-				.Replace("__ValueValidatorOne__", validatorOne?.GetValidatorName(valueGenericName) ?? String.Empty)
-				.Replace("__ValueValidatorTwo__", validatorTwo?.GetValidatorName(valueGenericName) ?? String.Empty)
-				.Replace("__NewValueValidator__", extension?.Validator.GetValidatorName(valueGenericName) ?? String.Empty)
+				.Replace("__ValueValidatorOne__", validatorOne?.GetValidatorName(GetValueForValidator(sourceDefinition, validatorOne, valueGenericName)) ?? String.Empty)
+				.Replace("__ValueValidatorTwo__", validatorTwo?.GetValidatorName(GetValueForValidator(sourceDefinition, validatorTwo, valueGenericName)) ?? String.Empty)
+				.Replace("__NewValueValidator__", extension?.Validator.GetValidatorName(GetValueForValidator(sourceDefinition, extension?.Validator, valueGenericName)) ?? String.Empty)
 				.Replace("__TValueType__", sourceDefinition.ValueType == ValueType.Array ? $"{valueGenericName}[]" : valueGenericName)
 				.Replace("__ExtensionName__", extension?.ExtensionName ?? String.Empty)
 				.Replace("__GenericParameters__", genericParameters.Any() ? $"<{String.Join(", ", genericParameters)}>" : String.Empty)
-				.Replace("__ExtensionParameters__", String.Join(String.Empty, extension?.Parameters.Where(p => !p.Value.HasValue()).Select(p => $", {p.GetTypeName(valueGenericName)} {p.Name}{p.DefaultValue.Match(v => $" = {v}", () => String.Empty)}") ?? Enumerable.Empty<string>()))
+				.Replace("__ExtensionParameters__", String.Join(String.Empty, extension?.Parameters.Where(p => !p.Value.HasValue()).Select(p => $", {p.GetTypeName(GetValueForValidator(sourceDefinition, extension?.Validator, valueGenericName))} {p.Name}{p.DefaultValue.Match(v => $" = {v}", () => String.Empty)}") ?? Enumerable.Empty<string>()))
 				.Replace("__Parameters__", String.Join(", ", extension?.Parameters.Select(p => p.Value.Match(v => v, () => p.Name)) ?? Enumerable.Empty<string>()));
+
+		private static string GetValueForValidator(SourceDefinition sourceDefinition, ValidatorDefinition validator, string valueGenericName)
+			=> sourceDefinition.ValueType == ValueType.Array && validator?.ValueType == ValueType.Value ? $"{valueGenericName}[]" : valueGenericName;
 
 		public static IEnumerable<string> GenerateExtensionOne(SourceDefinition sourceDefinition, Option<string> dataType, ExtensionDefinition extension)
 		{
