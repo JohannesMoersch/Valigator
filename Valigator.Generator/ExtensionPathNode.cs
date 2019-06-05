@@ -45,11 +45,13 @@ namespace Valigator.Generator
 				return false;
 			}
 
-			if (!_children.TryGetValue((dataType, valueValidator), out var validator))
-			{
-				validator = new ExtensionPathNode(dataType, valueValidator, this);
+			var type = dataType.Match(Option.Some, () => DataType);
 
-				_children.Add((dataType, valueValidator), validator);
+			if (!_children.TryGetValue((type, valueValidator), out var validator))
+			{
+				validator = new ExtensionPathNode(type, valueValidator, this);
+
+				_children.Add((type, valueValidator), validator);
 			}
 
 			node = validator;

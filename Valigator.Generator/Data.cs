@@ -69,6 +69,7 @@ namespace Valigator.Generator
 							new ExtensionDefinition(ValueValidators.Range, "GreaterThanOrEqualTo", $"RangeValidator_{type.Item1}", Array.Empty<string>(), new[] { new ParameterDefinition(type.Item2, "value") }, $"new RangeValidator_{type.Item1}(null, null, null, value)", ValueType.Value, type.Item2),
 							new ExtensionDefinition(ValueValidators.Range, "InRange", $"RangeValidator_{type.Item1}", Array.Empty<string>(), new[] { new ParameterDefinition($"{type.Item2}?", "lessThan", Option.Some("null")), new ParameterDefinition($"{type.Item2}?", "lessThanOrEqualTo", Option.Some("null")), new ParameterDefinition($"{type.Item2}?", "greaterThan", Option.Some("null")), new ParameterDefinition($"{type.Item2}?", "greaterThanOrEqualTo", Option.Some("null")) }, $"new RangeValidator_{type.Item1}(lessThan, lessThanOrEqualTo, greaterThan, greaterThanOrEqualTo)", ValueType.Value, type.Item2)
 						}
+						.Take(0)
 					)
 				);
 

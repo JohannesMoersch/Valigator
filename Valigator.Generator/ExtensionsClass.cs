@@ -71,41 +71,33 @@ namespace Valigator
 				current = current.Parent;
 			}
 
-			foreach (var set in GetExtensionDefinitions(extensions))
+			foreach (var set in GetExtensionDefinitions(extensions, extension.DataType))
 			{
 				switch (set.Length)
 				{
 					case 1:
-						yield return ExtensionGenerator.GenerateExtensionOne(source, set[0]);
-						if (hasChildren)
-							yield return ExtensionGenerator.GenerateInvertExtensionTwo(source, set[0]);
+						yield return ExtensionGenerator.GenerateExtensionOne(source, extension.DataType, set[0]);
+						//if (hasChildren)
+						//	yield return ExtensionGenerator.GenerateInvertExtensionTwo(source, set[0].DataType, set[0]);
 						break;
 					case 2:
-						var resultTwo = ExtensionGenerator.GenerateExtensionTwo(source, set[0], set[1]);
-						if (resultTwo.HasValue())
-							yield return resultTwo.ValueOrDefault();
-						if (hasChildren)
-						{
-							var notResult = ExtensionGenerator.GenerateInvertExtensionThree(source, set[0], set[1]);
-							if (notResult.HasValue())
-								yield return notResult.ValueOrDefault();
-						}
+						yield return ExtensionGenerator.GenerateExtensionTwo(source, extension.DataType, set[0], set[1]);
+						//if (hasChildren)
+						//	yield return ExtensionGenerator.GenerateInvertExtensionThree(source, set[1].DataType, set[0], set[1]);
 						break;
 					case 3:
-						var resultThree = ExtensionGenerator.GenerateExtensionThree(source, set[0], set[1], set[2]);
-						if (resultThree.HasValue())
-							yield return resultThree.ValueOrDefault();
+						yield return ExtensionGenerator.GenerateExtensionThree(source, extension.DataType, set[0], set[1], set[2]);
 						break;
 					default:
 						throw new Exception("Extensions of this length are not supported.");
 				}
 			}
 		}
-		private static IEnumerable<ExtensionDefinition[]> GetExtensionDefinitions(List<ValueValidators> valueValidators)
+		private static IEnumerable<ExtensionDefinition[]> GetExtensionDefinitions(List<ValueValidators> valueValidators, Option<string> dataType)
 			=>
-			from one in Data.Extensions.Where(e => e.Identifier == valueValidators.Skip(0).FirstOrDefault())
-			from two in Data.Extensions.Where(e => e.Identifier == valueValidators.Skip(1).FirstOrDefault()).DefaultIfEmpty()
-			from three in Data.Extensions.Where(e => e.Identifier == valueValidators.Skip(2).FirstOrDefault()).DefaultIfEmpty()
+			from one in Data.Extensions.Where(e => e.Identifier == valueValidators.Skip(0).FirstOrDefault() && e.DataType == dataType).Take(valueValidators.Count > 1 ? 1 : Int32.MaxValue)
+			from two in Data.Extensions.Where(e => e.Identifier == valueValidators.Skip(1).FirstOrDefault()&& e.DataType == dataType).Take(valueValidators.Count > 2 ? 1 : Int32.MaxValue).DefaultIfEmpty()
+			from three in Data.Extensions.Where(e => e.Identifier == valueValidators.Skip(2).FirstOrDefault()&& e.DataType == dataType).Take(valueValidators.Count > 3 ? 1 : Int32.MaxValue).DefaultIfEmpty()
 			select new[] { one, two, three }.OfType<ExtensionDefinition>().ToArray();
 	}
 }

@@ -13,12 +13,12 @@ namespace Valigator.Generator
 			=> stateValidator.Add(__ValidatorConstruction__);
 ";
 
-		public static string GenerateExtensionOne(SourceDefinition sourceDefinition, ExtensionDefinition extensionDefinitionOne)
+		public static string GenerateExtensionOne(SourceDefinition sourceDefinition, Option<string> dataType, ExtensionDefinition extensionDefinitionOne)
 		{
 			if (sourceDefinition.ValueType == ValueType.Value && extensionDefinitionOne.ValueType != ValueType.Value)
 				throw new Exception("Array extensions cannot be generated for value type sources.");
 
-			var valueGenericName = extensionDefinitionOne.DataType.Match(_ => _, () => "TValue");
+			var valueGenericName = dataType.Match(_ => _, () => "TValue");
 
 			return $"{sourceDefinition.GetSourceName(Option.Some(valueGenericName))} - {extensionDefinitionOne.ExtensionName}";
 
@@ -38,79 +38,44 @@ namespace Valigator.Generator
 				.Replace("__ValidatorConstruction__", extensionDefinitionOne.GetValidatorConstruction(valueGenericName));
 		}
 
-		public static Option<string> GenerateExtensionTwo(SourceDefinition sourceDefinition, ExtensionDefinition extensionDefinitionOne, ExtensionDefinition extensionDefinitionTwo)
+		public static string GenerateExtensionTwo(SourceDefinition sourceDefinition, Option<string> dataType, ExtensionDefinition extensionDefinitionOne, ExtensionDefinition extensionDefinitionTwo)
 		{
 			if (sourceDefinition.ValueType == ValueType.Value && (extensionDefinitionOne.ValueType != ValueType.Value || extensionDefinitionTwo.ValueType != ValueType.Value))
 				throw new Exception("Array extensions cannot be generated for value type sources.");
 
-			var valueGenericNameResult = GetValueGenericName(extensionDefinitionOne.DataType, extensionDefinitionTwo.DataType, default);
+			var valueGenericName = dataType.Match(_ => _, () => "TValue");
 
-			if (!valueGenericNameResult.IsSuccess())
-				return Option.None<string>();
-
-			var valueGenericName = valueGenericNameResult.Success().ValueOrDefault().Match(_ => _, () => "TValue");
-
-			return Option.Some($"{sourceDefinition.GetSourceName(Option.Some(valueGenericName))} - {extensionDefinitionOne.GetValidatorName(valueGenericName)} - {extensionDefinitionTwo.ExtensionName}");
+			return $"{sourceDefinition.GetSourceName(Option.Some(valueGenericName))} - {extensionDefinitionOne.GetValidatorName(valueGenericName)} - {extensionDefinitionTwo.ExtensionName}";
 		}
 
-		public static Option<string> GenerateExtensionThree(SourceDefinition sourceDefinition, ExtensionDefinition extensionDefinitionOne, ExtensionDefinition extensionDefinitionTwo, ExtensionDefinition extensionDefinitionThree)
+		public static string GenerateExtensionThree(SourceDefinition sourceDefinition, Option<string> dataType, ExtensionDefinition extensionDefinitionOne, ExtensionDefinition extensionDefinitionTwo, ExtensionDefinition extensionDefinitionThree)
 		{
 			if (sourceDefinition.ValueType == ValueType.Value && (extensionDefinitionOne.ValueType != ValueType.Value || extensionDefinitionTwo.ValueType != ValueType.Value || extensionDefinitionThree.ValueType != ValueType.Value))
 				throw new Exception("Array extensions cannot be generated for value type sources.");
 
-			var valueGenericNameResult = GetValueGenericName(extensionDefinitionOne.DataType, extensionDefinitionTwo.DataType, extensionDefinitionThree.DataType);
+			var valueGenericName = dataType.Match(_ => _, () => "TValue");
 
-			if (!valueGenericNameResult.IsSuccess())
-				return Option.None<string>();
-
-			var valueGenericName = valueGenericNameResult.Success().ValueOrDefault().Match(_ => _, () => "TValue");
-
-			return Option.Some($"{sourceDefinition.GetSourceName(Option.Some(valueGenericName))} - {extensionDefinitionOne.GetValidatorName(valueGenericName)} - {extensionDefinitionTwo.GetValidatorName(valueGenericName)} - {extensionDefinitionThree.ExtensionName}");
+			return $"{sourceDefinition.GetSourceName(Option.Some(valueGenericName))} - {extensionDefinitionOne.GetValidatorName(valueGenericName)} - {extensionDefinitionTwo.GetValidatorName(valueGenericName)} - {extensionDefinitionThree.ExtensionName}";
 		}
 
-		public static string GenerateInvertExtensionTwo(SourceDefinition sourceDefinition, ExtensionDefinition extensionDefinitionOne)
+		public static string GenerateInvertExtensionTwo(SourceDefinition sourceDefinition, Option<string> dataType, ExtensionDefinition extensionDefinitionOne)
 		{
 			if (sourceDefinition.ValueType == ValueType.Value && extensionDefinitionOne.ValueType != ValueType.Value)
 				throw new Exception("Array extensions cannot be generated for value type sources.");
 
-			var valueGenericName = extensionDefinitionOne.DataType.Match(_ => _, () => "TValue");
+			var valueGenericName = dataType.Match(_ => _, () => "TValue");
 
 			return $"{sourceDefinition.GetSourceName(Option.Some(valueGenericName))} - {extensionDefinitionOne.GetValidatorName(valueGenericName)} - Not";
 		}
 
-		public static Option<string> GenerateInvertExtensionThree(SourceDefinition sourceDefinition, ExtensionDefinition extensionDefinitionOne, ExtensionDefinition extensionDefinitionTwo)
+		public static string GenerateInvertExtensionThree(SourceDefinition sourceDefinition, Option<string> dataType, ExtensionDefinition extensionDefinitionOne, ExtensionDefinition extensionDefinitionTwo)
 		{
 			if (sourceDefinition.ValueType == ValueType.Value && (extensionDefinitionOne.ValueType != ValueType.Value || extensionDefinitionTwo.ValueType != ValueType.Value))
 				throw new Exception("Array extensions cannot be generated for value type sources.");
 
-			var valueGenericNameResult = GetValueGenericName(extensionDefinitionOne.DataType, extensionDefinitionTwo.DataType, default);
+			var valueGenericName = dataType.Match(_ => _, () => "TValue");
 
-			if (!valueGenericNameResult.IsSuccess())
-				return Option.None<string>();
-
-			var valueGenericName = valueGenericNameResult.Success().ValueOrDefault().Match(_ => _, () => "TValue");
-
-			return Option.Some($"{sourceDefinition.GetSourceName(Option.Some(valueGenericName))} - {extensionDefinitionOne.GetValidatorName(valueGenericName)} - {extensionDefinitionTwo.GetValidatorName(valueGenericName)} - Not");
+			return $"{sourceDefinition.GetSourceName(Option.Some(valueGenericName))} - {extensionDefinitionOne.GetValidatorName(valueGenericName)} - {extensionDefinitionTwo.GetValidatorName(valueGenericName)} - Not";
 		}
-
-		private static Result<Option<string>, Unit> GetValueGenericName(Option<string> dataTypeOne, Option<string> dataTypeTwo, Option<string> dataTypeThree)
-			=> dataTypeOne
-				.Match
-				(
-					one => dataTypeTwo
-						.Match
-						(
-							two => one == two
-								? dataTypeThree
-									.Match
-									(
-										three => one == three ? Result.Success<Option<string>, Unit>(Option.Some(one)) : Result.Failure<Option<string>, Unit>(Unit.Value),
-										() => Result.Success<Option<string>, Unit>(Option.Some(one))
-									)
-								: Result.Failure<Option<string>, Unit>(Unit.Value),
-							() => Result.Success<Option<string>, Unit>(Option.Some(one))
-						),
-					() => Result.Success<Option<string>, Unit>(Option.None<string>())
-				);
 	}
 }
