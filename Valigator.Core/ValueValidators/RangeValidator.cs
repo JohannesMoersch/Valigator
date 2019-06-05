@@ -40,10 +40,10 @@ namespace Valigator.Core.ValueValidators
 
 		bool IValueValidator<byte>.IsValid(byte value)
 		{
-			if (_lessThanValue.TryGetValue(out var lessThan) && _lessThanOrEqualTo ? value > lessThan : value >= lessThan)
+			if (_lessThanValue.TryGetValue(out var lessThan) && (_lessThanOrEqualTo ? value > lessThan : value >= lessThan))
 				return false;
 
-			if (_greaterThanValue.TryGetValue(out var greaterThan) && _greaterThanOrEqualTo ? value < greaterThan : value <= greaterThan)
+			if (_greaterThanValue.TryGetValue(out var greaterThan) && (_greaterThanOrEqualTo ? value < greaterThan : value <= greaterThan))
 				return false;
 
 			return true;
@@ -66,13 +66,13 @@ namespace Valigator.Core.ValueValidators
 				throw new ArgumentException("Either a minimum or maximum value must be set.");
 
 			if (lessThan.HasValue && lessThanOrEqualTo.HasValue)
-				throw new ArgumentOutOfRangeException(nameof(lessThan), $"{nameof(lessThan)} and {nameof(lessThanOrEqualTo)} cannot both be specified.");
+				throw new ArgumentException(nameof(lessThan), $"{nameof(lessThan)} and {nameof(lessThanOrEqualTo)} cannot both be specified.");
 
 			if (greaterThan.HasValue && greaterThanOrEqualTo.HasValue)
-				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"{nameof(greaterThan)} and {nameof(greaterThanOrEqualTo)} cannot both be specified.");
+				throw new ArgumentException(nameof(greaterThan), $"{nameof(greaterThan)} and {nameof(greaterThanOrEqualTo)} cannot both be specified.");
 
 			if ((lessThan ?? lessThanOrEqualTo) <= (greaterThan ?? greaterThanOrEqualTo))
-				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"Specified range must include more than one possible value.");
+				throw new ArgumentException(nameof(greaterThan), $"Specified range must include more than one possible value.");
 
 			_lessThanValue = Option.FromNullable(lessThan ?? lessThanOrEqualTo);
 			_lessThanOrEqualTo = lessThanOrEqualTo.HasValue;
@@ -85,10 +85,10 @@ namespace Valigator.Core.ValueValidators
 
 		bool IValueValidator<sbyte>.IsValid(sbyte value)
 		{
-			if (_lessThanValue.TryGetValue(out var lessThan) && _lessThanOrEqualTo ? value > lessThan : value >= lessThan)
+			if (_lessThanValue.TryGetValue(out var lessThan) && (_lessThanOrEqualTo ? value > lessThan : value >= lessThan))
 				return false;
 
-			if (_greaterThanValue.TryGetValue(out var greaterThan) && _greaterThanOrEqualTo ? value < greaterThan : value <= greaterThan)
+			if (_greaterThanValue.TryGetValue(out var greaterThan) && (_greaterThanOrEqualTo ? value < greaterThan : value <= greaterThan))
 				return false;
 
 			return true;
@@ -111,13 +111,13 @@ namespace Valigator.Core.ValueValidators
 				throw new ArgumentException("Either a minimum or maximum value must be set.");
 
 			if (lessThan.HasValue && lessThanOrEqualTo.HasValue)
-				throw new ArgumentOutOfRangeException(nameof(lessThan), $"{nameof(lessThan)} and {nameof(lessThanOrEqualTo)} cannot both be specified.");
+				throw new ArgumentException(nameof(lessThan), $"{nameof(lessThan)} and {nameof(lessThanOrEqualTo)} cannot both be specified.");
 
 			if (greaterThan.HasValue && greaterThanOrEqualTo.HasValue)
-				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"{nameof(greaterThan)} and {nameof(greaterThanOrEqualTo)} cannot both be specified.");
+				throw new ArgumentException(nameof(greaterThan), $"{nameof(greaterThan)} and {nameof(greaterThanOrEqualTo)} cannot both be specified.");
 
 			if ((lessThan ?? lessThanOrEqualTo) <= (greaterThan ?? greaterThanOrEqualTo))
-				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"Specified range must include more than one possible value.");
+				throw new ArgumentException(nameof(greaterThan), $"Specified range must include more than one possible value.");
 
 			_lessThanValue = Option.FromNullable(lessThan ?? lessThanOrEqualTo);
 			_lessThanOrEqualTo = lessThanOrEqualTo.HasValue;
@@ -130,10 +130,10 @@ namespace Valigator.Core.ValueValidators
 
 		bool IValueValidator<short>.IsValid(short value)
 		{
-			if (_lessThanValue.TryGetValue(out var lessThan) && _lessThanOrEqualTo ? value > lessThan : value >= lessThan)
+			if (_lessThanValue.TryGetValue(out var lessThan) && (_lessThanOrEqualTo ? value > lessThan : value >= lessThan))
 				return false;
 
-			if (_greaterThanValue.TryGetValue(out var greaterThan) && _greaterThanOrEqualTo ? value < greaterThan : value <= greaterThan)
+			if (_greaterThanValue.TryGetValue(out var greaterThan) && (_greaterThanOrEqualTo ? value < greaterThan : value <= greaterThan))
 				return false;
 
 			return true;
@@ -156,13 +156,13 @@ namespace Valigator.Core.ValueValidators
 				throw new ArgumentException("Either a minimum or maximum value must be set.");
 
 			if (lessThan.HasValue && lessThanOrEqualTo.HasValue)
-				throw new ArgumentOutOfRangeException(nameof(lessThan), $"{nameof(lessThan)} and {nameof(lessThanOrEqualTo)} cannot both be specified.");
+				throw new ArgumentException(nameof(lessThan), $"{nameof(lessThan)} and {nameof(lessThanOrEqualTo)} cannot both be specified.");
 
 			if (greaterThan.HasValue && greaterThanOrEqualTo.HasValue)
-				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"{nameof(greaterThan)} and {nameof(greaterThanOrEqualTo)} cannot both be specified.");
+				throw new ArgumentException(nameof(greaterThan), $"{nameof(greaterThan)} and {nameof(greaterThanOrEqualTo)} cannot both be specified.");
 
 			if ((lessThan ?? lessThanOrEqualTo) <= (greaterThan ?? greaterThanOrEqualTo))
-				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"Specified range must include more than one possible value.");
+				throw new ArgumentException(nameof(greaterThan), $"Specified range must include more than one possible value.");
 
 			_lessThanValue = Option.FromNullable(lessThan ?? lessThanOrEqualTo);
 			_lessThanOrEqualTo = lessThanOrEqualTo.HasValue;
@@ -175,10 +175,10 @@ namespace Valigator.Core.ValueValidators
 
 		bool IValueValidator<ushort>.IsValid(ushort value)
 		{
-			if (_lessThanValue.TryGetValue(out var lessThan) && _lessThanOrEqualTo ? value > lessThan : value >= lessThan)
+			if (_lessThanValue.TryGetValue(out var lessThan) && (_lessThanOrEqualTo ? value > lessThan : value >= lessThan))
 				return false;
 
-			if (_greaterThanValue.TryGetValue(out var greaterThan) && _greaterThanOrEqualTo ? value < greaterThan : value <= greaterThan)
+			if (_greaterThanValue.TryGetValue(out var greaterThan) && (_greaterThanOrEqualTo ? value < greaterThan : value <= greaterThan))
 				return false;
 
 			return true;
@@ -201,13 +201,13 @@ namespace Valigator.Core.ValueValidators
 				throw new ArgumentException("Either a minimum or maximum value must be set.");
 
 			if (lessThan.HasValue && lessThanOrEqualTo.HasValue)
-				throw new ArgumentOutOfRangeException(nameof(lessThan), $"{nameof(lessThan)} and {nameof(lessThanOrEqualTo)} cannot both be specified.");
+				throw new ArgumentException(nameof(lessThan), $"{nameof(lessThan)} and {nameof(lessThanOrEqualTo)} cannot both be specified.");
 
 			if (greaterThan.HasValue && greaterThanOrEqualTo.HasValue)
-				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"{nameof(greaterThan)} and {nameof(greaterThanOrEqualTo)} cannot both be specified.");
+				throw new ArgumentException(nameof(greaterThan), $"{nameof(greaterThan)} and {nameof(greaterThanOrEqualTo)} cannot both be specified.");
 
 			if ((lessThan ?? lessThanOrEqualTo) <= (greaterThan ?? greaterThanOrEqualTo))
-				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"Specified range must include more than one possible value.");
+				throw new ArgumentException(nameof(greaterThan), $"Specified range must include more than one possible value.");
 
 			_lessThanValue = Option.FromNullable(lessThan ?? lessThanOrEqualTo);
 			_lessThanOrEqualTo = lessThanOrEqualTo.HasValue;
@@ -246,13 +246,13 @@ namespace Valigator.Core.ValueValidators
 				throw new ArgumentException("Either a minimum or maximum value must be set.");
 
 			if (lessThan.HasValue && lessThanOrEqualTo.HasValue)
-				throw new ArgumentOutOfRangeException(nameof(lessThan), $"{nameof(lessThan)} and {nameof(lessThanOrEqualTo)} cannot both be specified.");
+				throw new ArgumentException(nameof(lessThan), $"{nameof(lessThan)} and {nameof(lessThanOrEqualTo)} cannot both be specified.");
 
 			if (greaterThan.HasValue && greaterThanOrEqualTo.HasValue)
-				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"{nameof(greaterThan)} and {nameof(greaterThanOrEqualTo)} cannot both be specified.");
+				throw new ArgumentException(nameof(greaterThan), $"{nameof(greaterThan)} and {nameof(greaterThanOrEqualTo)} cannot both be specified.");
 
 			if ((lessThan ?? lessThanOrEqualTo) <= (greaterThan ?? greaterThanOrEqualTo))
-				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"Specified range must include more than one possible value.");
+				throw new ArgumentException(nameof(greaterThan), $"Specified range must include more than one possible value.");
 
 			_lessThanValue = Option.FromNullable(lessThan ?? lessThanOrEqualTo);
 			_lessThanOrEqualTo = lessThanOrEqualTo.HasValue;
@@ -265,10 +265,10 @@ namespace Valigator.Core.ValueValidators
 
 		bool IValueValidator<uint>.IsValid(uint value)
 		{
-			if (_lessThanValue.TryGetValue(out var lessThan) && _lessThanOrEqualTo ? value > lessThan : value >= lessThan)
+			if (_lessThanValue.TryGetValue(out var lessThan) && (_lessThanOrEqualTo ? value > lessThan : value >= lessThan))
 				return false;
 
-			if (_greaterThanValue.TryGetValue(out var greaterThan) && _greaterThanOrEqualTo ? value < greaterThan : value <= greaterThan)
+			if (_greaterThanValue.TryGetValue(out var greaterThan) && (_greaterThanOrEqualTo ? value < greaterThan : value <= greaterThan))
 				return false;
 
 			return true;
@@ -291,13 +291,13 @@ namespace Valigator.Core.ValueValidators
 				throw new ArgumentException("Either a minimum or maximum value must be set.");
 
 			if (lessThan.HasValue && lessThanOrEqualTo.HasValue)
-				throw new ArgumentOutOfRangeException(nameof(lessThan), $"{nameof(lessThan)} and {nameof(lessThanOrEqualTo)} cannot both be specified.");
+				throw new ArgumentException(nameof(lessThan), $"{nameof(lessThan)} and {nameof(lessThanOrEqualTo)} cannot both be specified.");
 
 			if (greaterThan.HasValue && greaterThanOrEqualTo.HasValue)
-				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"{nameof(greaterThan)} and {nameof(greaterThanOrEqualTo)} cannot both be specified.");
+				throw new ArgumentException(nameof(greaterThan), $"{nameof(greaterThan)} and {nameof(greaterThanOrEqualTo)} cannot both be specified.");
 
 			if ((lessThan ?? lessThanOrEqualTo) <= (greaterThan ?? greaterThanOrEqualTo))
-				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"Specified range must include more than one possible value.");
+				throw new ArgumentException(nameof(greaterThan), $"Specified range must include more than one possible value.");
 
 			_lessThanValue = Option.FromNullable(lessThan ?? lessThanOrEqualTo);
 			_lessThanOrEqualTo = lessThanOrEqualTo.HasValue;
@@ -310,10 +310,10 @@ namespace Valigator.Core.ValueValidators
 
 		bool IValueValidator<long>.IsValid(long value)
 		{
-			if (_lessThanValue.TryGetValue(out var lessThan) && _lessThanOrEqualTo ? value > lessThan : value >= lessThan)
+			if (_lessThanValue.TryGetValue(out var lessThan) && (_lessThanOrEqualTo ? value > lessThan : value >= lessThan))
 				return false;
 
-			if (_greaterThanValue.TryGetValue(out var greaterThan) && _greaterThanOrEqualTo ? value < greaterThan : value <= greaterThan)
+			if (_greaterThanValue.TryGetValue(out var greaterThan) && (_greaterThanOrEqualTo ? value < greaterThan : value <= greaterThan))
 				return false;
 
 			return true;
@@ -336,13 +336,13 @@ namespace Valigator.Core.ValueValidators
 				throw new ArgumentException("Either a minimum or maximum value must be set.");
 
 			if (lessThan.HasValue && lessThanOrEqualTo.HasValue)
-				throw new ArgumentOutOfRangeException(nameof(lessThan), $"{nameof(lessThan)} and {nameof(lessThanOrEqualTo)} cannot both be specified.");
+				throw new ArgumentException(nameof(lessThan), $"{nameof(lessThan)} and {nameof(lessThanOrEqualTo)} cannot both be specified.");
 
 			if (greaterThan.HasValue && greaterThanOrEqualTo.HasValue)
-				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"{nameof(greaterThan)} and {nameof(greaterThanOrEqualTo)} cannot both be specified.");
+				throw new ArgumentException(nameof(greaterThan), $"{nameof(greaterThan)} and {nameof(greaterThanOrEqualTo)} cannot both be specified.");
 
 			if ((lessThan ?? lessThanOrEqualTo) <= (greaterThan ?? greaterThanOrEqualTo))
-				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"Specified range must include more than one possible value.");
+				throw new ArgumentException(nameof(greaterThan), $"Specified range must include more than one possible value.");
 
 			_lessThanValue = Option.FromNullable(lessThan ?? lessThanOrEqualTo);
 			_lessThanOrEqualTo = lessThanOrEqualTo.HasValue;
@@ -355,10 +355,10 @@ namespace Valigator.Core.ValueValidators
 
 		bool IValueValidator<ulong>.IsValid(ulong value)
 		{
-			if (_lessThanValue.TryGetValue(out var lessThan) && _lessThanOrEqualTo ? value > lessThan : value >= lessThan)
+			if (_lessThanValue.TryGetValue(out var lessThan) && (_lessThanOrEqualTo ? value > lessThan : value >= lessThan))
 				return false;
 
-			if (_greaterThanValue.TryGetValue(out var greaterThan) && _greaterThanOrEqualTo ? value < greaterThan : value <= greaterThan)
+			if (_greaterThanValue.TryGetValue(out var greaterThan) && (_greaterThanOrEqualTo ? value < greaterThan : value <= greaterThan))
 				return false;
 
 			return true;
@@ -381,13 +381,13 @@ namespace Valigator.Core.ValueValidators
 				throw new ArgumentException("Either a minimum or maximum value must be set.");
 
 			if (lessThan.HasValue && lessThanOrEqualTo.HasValue)
-				throw new ArgumentOutOfRangeException(nameof(lessThan), $"{nameof(lessThan)} and {nameof(lessThanOrEqualTo)} cannot both be specified.");
+				throw new ArgumentException(nameof(lessThan), $"{nameof(lessThan)} and {nameof(lessThanOrEqualTo)} cannot both be specified.");
 
 			if (greaterThan.HasValue && greaterThanOrEqualTo.HasValue)
-				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"{nameof(greaterThan)} and {nameof(greaterThanOrEqualTo)} cannot both be specified.");
+				throw new ArgumentException(nameof(greaterThan), $"{nameof(greaterThan)} and {nameof(greaterThanOrEqualTo)} cannot both be specified.");
 
 			if ((lessThan ?? lessThanOrEqualTo) <= (greaterThan ?? greaterThanOrEqualTo))
-				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"Specified range must include more than one possible value.");
+				throw new ArgumentException(nameof(greaterThan), $"Specified range must include more than one possible value.");
 
 			_lessThanValue = Option.FromNullable(lessThan ?? lessThanOrEqualTo);
 			_lessThanOrEqualTo = lessThanOrEqualTo.HasValue;
@@ -400,10 +400,10 @@ namespace Valigator.Core.ValueValidators
 
 		bool IValueValidator<float>.IsValid(float value)
 		{
-			if (_lessThanValue.TryGetValue(out var lessThan) && _lessThanOrEqualTo ? value > lessThan : value >= lessThan)
+			if (_lessThanValue.TryGetValue(out var lessThan) && (_lessThanOrEqualTo ? value > lessThan : value >= lessThan))
 				return false;
 
-			if (_greaterThanValue.TryGetValue(out var greaterThan) && _greaterThanOrEqualTo ? value < greaterThan : value <= greaterThan)
+			if (_greaterThanValue.TryGetValue(out var greaterThan) && (_greaterThanOrEqualTo ? value < greaterThan : value <= greaterThan))
 				return false;
 
 			return true;
@@ -426,13 +426,13 @@ namespace Valigator.Core.ValueValidators
 				throw new ArgumentException("Either a minimum or maximum value must be set.");
 
 			if (lessThan.HasValue && lessThanOrEqualTo.HasValue)
-				throw new ArgumentOutOfRangeException(nameof(lessThan), $"{nameof(lessThan)} and {nameof(lessThanOrEqualTo)} cannot both be specified.");
+				throw new ArgumentException(nameof(lessThan), $"{nameof(lessThan)} and {nameof(lessThanOrEqualTo)} cannot both be specified.");
 
 			if (greaterThan.HasValue && greaterThanOrEqualTo.HasValue)
-				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"{nameof(greaterThan)} and {nameof(greaterThanOrEqualTo)} cannot both be specified.");
+				throw new ArgumentException(nameof(greaterThan), $"{nameof(greaterThan)} and {nameof(greaterThanOrEqualTo)} cannot both be specified.");
 
 			if ((lessThan ?? lessThanOrEqualTo) <= (greaterThan ?? greaterThanOrEqualTo))
-				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"Specified range must include more than one possible value.");
+				throw new ArgumentException(nameof(greaterThan), $"Specified range must include more than one possible value.");
 
 			_lessThanValue = Option.FromNullable(lessThan ?? lessThanOrEqualTo);
 			_lessThanOrEqualTo = lessThanOrEqualTo.HasValue;
@@ -445,10 +445,10 @@ namespace Valigator.Core.ValueValidators
 
 		bool IValueValidator<double>.IsValid(double value)
 		{
-			if (_lessThanValue.TryGetValue(out var lessThan) && _lessThanOrEqualTo ? value > lessThan : value >= lessThan)
+			if (_lessThanValue.TryGetValue(out var lessThan) && (_lessThanOrEqualTo ? value > lessThan : value >= lessThan))
 				return false;
 
-			if (_greaterThanValue.TryGetValue(out var greaterThan) && _greaterThanOrEqualTo ? value < greaterThan : value <= greaterThan)
+			if (_greaterThanValue.TryGetValue(out var greaterThan) && (_greaterThanOrEqualTo ? value < greaterThan : value <= greaterThan))
 				return false;
 
 			return true;
@@ -471,13 +471,13 @@ namespace Valigator.Core.ValueValidators
 				throw new ArgumentException("Either a minimum or maximum value must be set.");
 
 			if (lessThan.HasValue && lessThanOrEqualTo.HasValue)
-				throw new ArgumentOutOfRangeException(nameof(lessThan), $"{nameof(lessThan)} and {nameof(lessThanOrEqualTo)} cannot both be specified.");
+				throw new ArgumentException(nameof(lessThan), $"{nameof(lessThan)} and {nameof(lessThanOrEqualTo)} cannot both be specified.");
 
 			if (greaterThan.HasValue && greaterThanOrEqualTo.HasValue)
-				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"{nameof(greaterThan)} and {nameof(greaterThanOrEqualTo)} cannot both be specified.");
+				throw new ArgumentException(nameof(greaterThan), $"{nameof(greaterThan)} and {nameof(greaterThanOrEqualTo)} cannot both be specified.");
 
 			if ((lessThan ?? lessThanOrEqualTo) <= (greaterThan ?? greaterThanOrEqualTo))
-				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"Specified range must include more than one possible value.");
+				throw new ArgumentException(nameof(greaterThan), $"Specified range must include more than one possible value.");
 
 			_lessThanValue = Option.FromNullable(lessThan ?? lessThanOrEqualTo);
 			_lessThanOrEqualTo = lessThanOrEqualTo.HasValue;
@@ -490,10 +490,10 @@ namespace Valigator.Core.ValueValidators
 
 		bool IValueValidator<decimal>.IsValid(decimal value)
 		{
-			if (_lessThanValue.TryGetValue(out var lessThan) && _lessThanOrEqualTo ? value > lessThan : value >= lessThan)
+			if (_lessThanValue.TryGetValue(out var lessThan) && (_lessThanOrEqualTo ? value > lessThan : value >= lessThan))
 				return false;
 
-			if (_greaterThanValue.TryGetValue(out var greaterThan) && _greaterThanOrEqualTo ? value < greaterThan : value <= greaterThan)
+			if (_greaterThanValue.TryGetValue(out var greaterThan) && (_greaterThanOrEqualTo ? value < greaterThan : value <= greaterThan))
 				return false;
 
 			return true;
@@ -516,13 +516,13 @@ namespace Valigator.Core.ValueValidators
 				throw new ArgumentException("Either a minimum or maximum value must be set.");
 
 			if (lessThan.HasValue && lessThanOrEqualTo.HasValue)
-				throw new ArgumentOutOfRangeException(nameof(lessThan), $"{nameof(lessThan)} and {nameof(lessThanOrEqualTo)} cannot both be specified.");
+				throw new ArgumentException(nameof(lessThan), $"{nameof(lessThan)} and {nameof(lessThanOrEqualTo)} cannot both be specified.");
 
 			if (greaterThan.HasValue && greaterThanOrEqualTo.HasValue)
-				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"{nameof(greaterThan)} and {nameof(greaterThanOrEqualTo)} cannot both be specified.");
+				throw new ArgumentException(nameof(greaterThan), $"{nameof(greaterThan)} and {nameof(greaterThanOrEqualTo)} cannot both be specified.");
 
 			if ((lessThan ?? lessThanOrEqualTo) <= (greaterThan ?? greaterThanOrEqualTo))
-				throw new ArgumentOutOfRangeException(nameof(greaterThan), $"Specified range must include more than one possible value.");
+				throw new ArgumentException(nameof(greaterThan), $"Specified range must include more than one possible value.");
 
 			_lessThanValue = Option.FromNullable(lessThan ?? lessThanOrEqualTo);
 			_lessThanOrEqualTo = lessThanOrEqualTo.HasValue;
@@ -535,10 +535,10 @@ namespace Valigator.Core.ValueValidators
 
 		bool IValueValidator<DateTime>.IsValid(DateTime value)
 		{
-			if (_lessThanValue.TryGetValue(out var lessThan) && _lessThanOrEqualTo ? value > lessThan : value >= lessThan)
+			if (_lessThanValue.TryGetValue(out var lessThan) && (_lessThanOrEqualTo ? value > lessThan : value >= lessThan))
 				return false;
 
-			if (_greaterThanValue.TryGetValue(out var greaterThan) && _greaterThanOrEqualTo ? value < greaterThan : value <= greaterThan)
+			if (_greaterThanValue.TryGetValue(out var greaterThan) && (_greaterThanOrEqualTo ? value < greaterThan : value <= greaterThan))
 				return false;
 
 			return true;

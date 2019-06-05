@@ -15,7 +15,7 @@ namespace Valigator.Tests
 
 		public Data<Stuff> Three { get; set; } = Data.Defaulted<Stuff>(() => new Stuff());
 
-		public Data<DateTime> Test { get; set; } = Data.Required<DateTime>().InRange();
+		public Data<DateTime> Test { get; set; } = Data.Required<DateTime>().InRange(DateTime.Now);
 	}
 
 	public class Stuff
