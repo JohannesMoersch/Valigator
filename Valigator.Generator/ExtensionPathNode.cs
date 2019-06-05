@@ -8,57 +8,47 @@ namespace Valigator.Generator
 {
 	public class ExtensionPathNode
 	{
-		private class NodeComparer : IComparer<(Option<string> dataType, ValueValidators valueValidator)>
-		{
-			public int Compare((Option<string> dataType, ValueValidators valueValidator) x, (Option<string> dataType, ValueValidators valueValidator) y)
-			{
-				var typeComparison = x.dataType.Match(xType => y.dataType.Match(yType => xType.CompareTo(yType), () => 1), () => y.dataType.Match(_ => -1, () => 0));
+		public ValidatorDefinition Validator { get; }
 
-				if (typeComparison == 0)
-					return x.valueValidator.CompareTo(y.valueValidator);
 
-				return typeComparison;
-			}
-		}
-
-		public ValueValidators ValueValidator { get; }
-
-		public Option<string> DataType { get; }
-
-		private SortedList<(Option<string> dataType, ValueValidators valueValidator), ExtensionPathNode> _children = new SortedList<(Option<string>, ValueValidators), ExtensionPathNode>(new NodeComparer());
+		private Dictionary<ValidatorDefinition, ExtensionPathNode> _children = new Dictionary<ValidatorDefinition, ExtensionPathNode>();
 		public IEnumerable<ExtensionPathNode> Children => _children.Values;
+
+		private HashSet<ExtensionDefinition> _extensions = new HashSet<ExtensionDefinition>();
+		public IEnumerable<ExtensionDefinition> Extensions => _extensions;
 
 		public ExtensionPathNode Parent { get; }
 
-		public ExtensionPathNode(Option<string> dataType, ValueValidators valueValidator, ExtensionPathNode parent)
+		public Option<string> DataType => Validator?.DataType.Match(Option.Some, () => Parent?.DataType ?? default) ?? default;
+
+		public ExtensionPathNode(ValidatorDefinition validator, ExtensionPathNode parent)
 		{
-			DataType = dataType;
-			ValueValidator = valueValidator;
+			Validator = validator;
 			Parent = parent;
 		}
 
-		public bool TryGetOrAddChild(Option<string> dataType, ValueValidators valueValidator, out ExtensionPathNode node)
+		public bool TryGetOrAddChild(ExtensionDefinition extension, out ExtensionPathNode node)
 		{
-			if (!DataType.Match(value => dataType.Match(newValue => newValue == value, () => true), () => true))
+			if (!DataType.Match(value => extension.DataType.Match(newValue => newValue == value, () => true), () => true))
 			{
 				node = null;
 				return false;
 			}
 
-			var type = dataType.Match(Option.Some, () => DataType);
+			_extensions.Add(extension);
 
-			if (!_children.TryGetValue((type, valueValidator), out var validator))
+			if (!_children.TryGetValue(extension.Validator, out var child))
 			{
-				validator = new ExtensionPathNode(type, valueValidator, this);
+				child = new ExtensionPathNode(extension.Validator, this);
 
-				_children.Add((type, valueValidator), validator);
+				_children.Add(extension.Validator, child);
 			}
 
-			node = validator;
+			node = child;
 			return true;
 		}
 
 		public override string ToString()
-			=> $"{ValueValidator}<{DataType}>";
+			=> $"{Validator.Identifier}{DataType.Match(type => $"<{type}>", () => String.Empty)}";
 	}
 }

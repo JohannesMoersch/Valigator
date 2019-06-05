@@ -7,37 +7,23 @@ namespace Valigator.Generator
 {
 	public class ExtensionDefinition
 	{
-		public ExtensionDefinition(ValueValidators identifier, string extensionName, string validatorName, string[] genericParameters, ParameterDefinition[] parameters, string validatorConstruction, ValueType valueType, string dataType = null)
+		public ExtensionDefinition(ValidatorDefinition validator, string extensionName, ParameterDefinition[] parameters, string dataType = null)
 		{
-			Identifier = identifier;
+			Validator = validator;
 			ExtensionName = extensionName ?? throw new ArgumentNullException(nameof(extensionName));
-			_validatorName = validatorName ?? throw new ArgumentNullException(nameof(validatorName));
-			GenericParameters = genericParameters ?? throw new ArgumentNullException(nameof(genericParameters));
 			Parameters = parameters ?? throw new ArgumentNullException(nameof(parameters));
-			_validatorConstruction = validatorConstruction ?? throw new ArgumentNullException(nameof(validatorConstruction));
-			ValueType = valueType;
 			DataType = Option.FromNullable(dataType);
+
+			if (DataType.Match(value => Validator.DataType.Match(newValue => newValue != value, () => false), () => Validator.DataType.Match(_ => true, () => false)))
+				throw new ArgumentException("Datatype of validator is incompatible with datatype of extension.");
 		}
 
-		private readonly string _validatorName;
-		private readonly string _validatorConstruction;
-
-		public ValueValidators Identifier { get; }
+		public ValidatorDefinition Validator { get; }
 
 		public string ExtensionName { get; }
 
-		public string[] GenericParameters { get; }
-
 		public ParameterDefinition[] Parameters { get; }
 
-		public ValueType ValueType { get; }
-
 		public Option<string> DataType { get; }
-
-		public string GetValidatorName(string valueTypeParameterName)
-			=> _validatorName.Replace(Data.ValueReplacementString, valueTypeParameterName);
-
-		public string GetValidatorConstruction(string valueTypeParameterName)
-			=> _validatorConstruction.Replace(Data.ValueReplacementString, valueTypeParameterName);
 	}
 }

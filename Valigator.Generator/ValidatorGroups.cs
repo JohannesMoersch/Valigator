@@ -4,9 +4,8 @@ using System.Text;
 
 namespace Valigator.Generator
 {
-	public enum ValueValidators
+	public enum ValidatorGroups
 	{
-		Root,
 		Custom,
 		Equals,
 		InSet,

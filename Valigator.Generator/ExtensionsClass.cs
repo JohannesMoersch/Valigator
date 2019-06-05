@@ -26,7 +26,7 @@ namespace Valigator
 
 		public static string Generate(SourceDefinition source)
 		{
-			var root = new ExtensionPathNode(Option.None<string>(), ValueValidators.Root, null);
+			var root = new ExtensionPathNode(null, null);
 
 			foreach (var path in Data.ValueValidationPaths)
 				AddValidators(root, path);
@@ -36,68 +36,58 @@ namespace Valigator
 			return String.Join(Environment.NewLine, new[] { _header.Replace("__StateValidator__", source.GetSourceName(Option.None<string>())) }.Concat(extensions).Append(_footer));
 		}
 
-		private static void AddValidators(ExtensionPathNode current, IEnumerable<ValueValidators> validators)
+		private static void AddValidators(ExtensionPathNode current, IEnumerable<ValidatorGroups> validators)
 		{
 			if (!validators.Any())
 				return;
 
 			var validator = validators.First();
-			foreach (var match in Data.Extensions.Where(e => e.Identifier == validator))
+			foreach (var extension in Data.Extensions.Where(e => e.Validator.Identifier == validator))
 			{
-				if (current.TryGetOrAddChild(match.DataType, validator, out var node))
+				if (current.TryGetOrAddChild(extension, out var node))
 					AddValidators(node, validators.Skip(1));
 			}
 		}
 
-		private static IEnumerable<string> GenerateExtensions(SourceDefinition source, ExtensionPathNode extension)
+		private static IEnumerable<string> GenerateExtensions(SourceDefinition source, ExtensionPathNode node)
+			=> GenerateExtension(source, node)
+				.Concat(node.Children.SelectMany(child => GenerateExtensions(source, child)));
+
+		private static IEnumerable<string> GenerateExtension(SourceDefinition source, ExtensionPathNode node)
 		{
-			var childExtensions = extension.Children.SelectMany(child => GenerateExtensions(source, child)).ToArray();
+			if (!node.Extensions.Any())
+				yield break;
 
-			if (extension.ValueValidator == ValueValidators.Root)
-				return childExtensions;
+			var nodes = new List<ExtensionPathNode>();
 
-			return GenerateExtension(source, extension, childExtensions.Any())
-				.Concat(childExtensions);
-		}
-
-		private static IEnumerable<string> GenerateExtension(SourceDefinition source, ExtensionPathNode extension, bool hasChildren)
-		{
-			var extensions = new List<ValueValidators>();
-
-			var current = extension;
-			while (current.ValueValidator != ValueValidators.Root)
+			var current = node;
+			while (current != null)
 			{
-				extensions.Insert(0, current.ValueValidator);
+				nodes.Insert(0, current);
 				current = current.Parent;
 			}
 
-			foreach (var set in GetExtensionDefinitions(extensions, extension.DataType))
+			switch (nodes.Count)
 			{
-				switch (set.Length)
-				{
-					case 1:
-						yield return ExtensionGenerator.GenerateExtensionOne(source, extension.DataType, set[0]);
-						//if (hasChildren)
-						//	yield return ExtensionGenerator.GenerateInvertExtensionTwo(source, set[0].DataType, set[0]);
-						break;
-					case 2:
-						yield return ExtensionGenerator.GenerateExtensionTwo(source, extension.DataType, set[0], set[1]);
-						//if (hasChildren)
-						//	yield return ExtensionGenerator.GenerateInvertExtensionThree(source, set[1].DataType, set[0], set[1]);
-						break;
-					case 3:
-						yield return ExtensionGenerator.GenerateExtensionThree(source, extension.DataType, set[0], set[1], set[2]);
-						break;
-					default:
-						throw new Exception("Extensions of this length are not supported.");
-				}
+				case 1:
+					foreach (var extension in nodes[0].Extensions)
+						yield return ExtensionGenerator.GenerateExtensionOne(source, node.DataType.Match(Option.Some, () => extension.DataType), extension);
+					//if (hasChildren)
+					//	yield return ExtensionGenerator.GenerateInvertExtensionTwo(source, set[0].DataType, set[0]);
+					break;
+				case 2:
+					foreach (var extension in nodes[1].Extensions)
+						yield return ExtensionGenerator.GenerateExtensionTwo(source, node.DataType.Match(Option.Some, () => extension.DataType), nodes[1].Validator, extension);
+					//if (hasChildren)
+					//	yield return ExtensionGenerator.GenerateInvertExtensionThree(source, set[1].DataType, set[0], set[1]);
+					break;
+				case 3:
+					foreach (var extension in nodes[2].Extensions)
+						yield return ExtensionGenerator.GenerateExtensionThree(source, node.DataType.Match(Option.Some, () => extension.DataType), nodes[1].Validator, nodes[2].Validator, extension);
+					break;
+				default:
+					throw new Exception("Extensions of this length are not supported.");
 			}
 		}
-		private static IEnumerable<ExtensionDefinition[]> GetExtensionDefinitions(List<ValueValidators> valueValidators, Option<string> dataType)
-			=>
-			from one in Data.Extensions.Where(e => e.Identifier == valueValidators.Skip(0).FirstOrDefault() && e.DataType == dataType).Take(valueValidators.Count > 1 ? 1 : Int32.MaxValue)
-			from two in Data.Extensions.Where(e => e.Identifier == valueValidators.Skip(1).FirstOrDefault()&& e.DataType == dataType).Take(valueValidators.Count > 2 ? 1 : Int32.MaxValue).DefaultIfEmpty()
-			from three in Data.Extensions.Where(e => e.Identifier == valueValidators.Skip(2).FirstOrDefault()&& e.DataType == dataType).Take(valueValidators.Count > 3 ? 1 : Int32.MaxValue).DefaultIfEmpty()
-			select new[] { one, two, three }.OfType<ExtensionDefinition>().ToArray();
 	}
 }
