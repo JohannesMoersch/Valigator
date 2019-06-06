@@ -10,6 +10,7 @@
     <Product>Valigator</Product>
     <PackageProjectUrl>https://github.com/JohannesMoersch/Valigator</PackageProjectUrl>
     <PackageTags>validation</PackageTags>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
