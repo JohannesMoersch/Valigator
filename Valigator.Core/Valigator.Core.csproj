@@ -10,7 +10,8 @@
 		<PackageTags>validation</PackageTags>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<Copyright>Copyright © 2019 Johannes Moersch</Copyright>
-		<Version>0.12.0</Version>
+		<Version>0.13.0</Version>
+		<Product>Valigator</Product>
   </PropertyGroup>
 
   <ItemGroup>
