@@ -47,7 +47,7 @@ namespace Valigator.Newtonsoft.Json
 		private object Read<TValue>(JsonReader reader, Data<Option<Option<TValue>[]>> existingValue, JsonSerializer serializer)
 		{
 			if (reader.TokenType == JsonToken.Null)
-				existingValue.WithValue(Option.None<Option<TValue>[]>());
+				return existingValue.WithValue(Option.None<Option<TValue>[]>());
 
 			var values = new List<Option<TValue>>();
 
@@ -89,6 +89,26 @@ namespace Valigator.Newtonsoft.Json
 			}
 
 			writer.WriteEndArray();
+		}
+
+		private void Write<TValue>(JsonWriter writer, Data<Option<Option<TValue>[]>> value, JsonSerializer serializer)
+		{
+			if (value.Value.Match(_ => true, () => false))
+			{
+				writer.WriteStartArray();
+
+				foreach (var item in value.Value.Match(_ => _, () => default))
+				{
+					if (item.Match(_ => true, () => false))
+						serializer.Serialize(writer, item.Match(_ => _, () => default), typeof(TValue));
+					else
+						serializer.Serialize(writer, null);
+				}
+
+				writer.WriteEndArray();
+			}
+			else
+				serializer.Serialize(writer, null);
 		}
 	}
 }
