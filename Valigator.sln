@@ -7,7 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Valigator.Core", "Valigator
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Valigator.Tests", "Valigator.Tests\Valigator.Tests.csproj", "{4955C6DA-6393-4121-8749-17BF2C1B2303}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Valigator.Generator", "Valigator.Generator\Valigator.Generator.csproj", "{EFC4561D-301D-4426-832B-1EA63B30315C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Valigator.Generator", "Valigator.Generator\Valigator.Generator.csproj", "{EFC4561D-301D-4426-832B-1EA63B30315C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Valigator.Newtonsoft.Json", "Valigator.Newtonsoft.Json\Valigator.Newtonsoft.Json.csproj", "{B7482DE6-5F9E-4430-8AD4-E0516C1D16FC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{EFC4561D-301D-4426-832B-1EA63B30315C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EFC4561D-301D-4426-832B-1EA63B30315C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EFC4561D-301D-4426-832B-1EA63B30315C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B7482DE6-5F9E-4430-8AD4-E0516C1D16FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7482DE6-5F9E-4430-8AD4-E0516C1D16FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7482DE6-5F9E-4430-8AD4-E0516C1D16FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7482DE6-5F9E-4430-8AD4-E0516C1D16FC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
