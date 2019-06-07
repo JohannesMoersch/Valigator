@@ -8,7 +8,7 @@ using Valigator.Core;
 
 namespace Valigator.AspNetCore
 {
-	public class ValigatorFilter : IActionFilter, IOrderedFilter
+	public class ValigatorActionFilter : IActionFilter, IOrderedFilter
 	{
 		public int Order => -2500;
 
