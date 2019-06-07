@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Version>0.13.0</Version>
+    <Authors>Johannes Moersch</Authors>
+    <Company>Johannes Moersch</Company>
+    <Product>Valigator</Product>
+    <Description>This package adds support for valigator to ASP.NET Core.</Description>
+    <Copyright>Copyright © 2019 Johannes Moersch</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/JohannesMoersch/Valigator</PackageProjectUrl>
+    <PackageTags>validation</PackageTags>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Formatters.Json" Version="2.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Valigator.Core\Valigator.Core.csproj" />
+    <ProjectReference Include="..\Valigator.Newtonsoft.Json\Valigator.Newtonsoft.Json.csproj" />
+  </ItemGroup>
+
+</Project>
