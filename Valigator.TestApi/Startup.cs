@@ -29,7 +29,7 @@ namespace Valigator.TestApi
 			services
 				.AddMvc()
 				.SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
-				.AddValigator();
+				.AddValigator(error => throw new Exception());
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
