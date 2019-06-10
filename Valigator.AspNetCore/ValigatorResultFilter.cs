@@ -1,21 +1,20 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Functional;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Valigator.Core;
 
 namespace Valigator.AspNetCore
 {
-	public class ValigatorResultFilter : IAsyncResultFilter
+	public class ValigatorResultFilter : IResultFilter
 	{
 		private readonly Func<ValidationError[], IActionResult> _resultErrorCreator;
 
-		public ValigatorResultFilter(Func<ValidationError[], IActionResult> resultErrorCreator)
-		{
-			_resultErrorCreator = resultErrorCreator;
-		}
+		public ValigatorResultFilter(Func<ValidationError[], IActionResult> resultErrorCreator) 
+			=> _resultErrorCreator = resultErrorCreator;
 
-		public async Task OnResultExecutionAsync(ResultExecutingContext context, ResultExecutionDelegate next)
+		public void OnResultExecuting(ResultExecutingContext context)
 		{
 			object toValidate = null;
 			if (context.Result is ObjectResult objectResult && objectResult.Value != null)
@@ -32,16 +31,18 @@ namespace Valigator.AspNetCore
 			if (toValidate != null)
 			{
 				// Perform validation
-				await Model
+				Model
 					.Verify(toValidate)
-					.Match(async _ => await next.Invoke(), errors =>
+					.Match(_ => _, errors =>
 					{
 						context.Result = _resultErrorCreator?.Invoke(errors);
-						return Task.CompletedTask;
+						return Unit.Value;
 					});
 			}
-			else
-				await next.Invoke();
+		}
+
+		public void OnResultExecuted(ResultExecutedContext context)
+		{
 		}
 	}
 }

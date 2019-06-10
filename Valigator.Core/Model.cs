@@ -6,8 +6,9 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using Functional;
+using Valigator.Core;
 
-namespace Valigator.Core
+namespace Valigator
 {
 	public static class Model
 	{

@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
+using Valigator.Core;
 using Valigator.Core.StateValidators;
 
-namespace Valigator.Core
+namespace Valigator
 {
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static class CollectionFactoryExtensions

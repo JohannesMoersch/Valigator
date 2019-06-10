@@ -14,7 +14,7 @@ namespace Valigator
 			=> builder
 				.AddMvcOptions(options =>
 				{
-					options.Filters.Add(new ValigatorActionFilter());
+					options.Filters.Add(new ValigatorActionFilter(resultErrorCreator));
 					options.Filters.Add(new ValigatorResultFilter(resultErrorCreator));
 				})
 				.AddJsonOptions(options => options.SerializerSettings.Converters.Add(new ValigatorConverter()));
