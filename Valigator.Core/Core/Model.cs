@@ -112,7 +112,9 @@ namespace Valigator.Core
 
 			var getSuccess = Expression.Call(methods.getSuccess, result);
 
-			var getFailure = Expression.Call(methods.getFailure, result);
+			var addPathsToErrorsMethod = _addPathsToErrorsMethod ?? (_addPathsToErrorsMethod = typeof(Model<object>).GetMethod(nameof(AddPropertyToErrors), BindingFlags.NonPublic | BindingFlags.Static));
+
+			var getFailure = Expression.Call(addPathsToErrorsMethod, Expression.Call(methods.getFailure, result), Expression.Constant(property.Name, typeof(string)));
 
 			var onSuccess = Expression.Block(Expression.Assign(dataProperty, getSuccess), Expression.Constant(null, typeof(ValidationError[])));
 
@@ -158,5 +160,18 @@ namespace Valigator.Core
 
 		private static ValidationError[] GetFailure<TValue>(Result<Data<TValue>, ValidationError[]> result)
 			=> result.Match(_ => default, _ => _);
+
+		private static MethodInfo _addPathsToErrorsMethod;
+
+		private static ValidationError[] AddPropertyToErrors(ValidationError[] errors, string propertyName)
+		{
+			if (errors != null)
+			{
+				foreach (var error in errors)
+					error.Path.AddProperty(propertyName);
+			}
+
+			return errors;
+		}
 	}
 }

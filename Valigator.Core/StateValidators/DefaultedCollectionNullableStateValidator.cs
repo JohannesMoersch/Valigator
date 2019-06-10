@@ -41,7 +41,7 @@ namespace Valigator.Core.StateValidators
 		Result<Option<TValue[]>, ValidationError[]> IStateValidator<Option<TValue[]>>.Validate(object model, bool isSet, Option<TValue[]> value)
 			=> isSet
 				? (value.TryGetValue(out var v) ? _item.VerifyCollection(model, v).Select(Option.Some) : Result.Success<Option<TValue[]>, ValidationError[]>(value))
-				: Result.Success<Option<TValue[]>, ValidationError[]>(Option.Some(GetDefaultValue()));
+				: _item.VerifyCollection(model, GetDefaultValue()).Match(success => Result.Success<Option<TValue[]>, ValidationError[]>(Option.Some(success)), Result.Failure<Option<TValue[]>, ValidationError[]>);
 
 		public static implicit operator Data<Option<TValue[]>>(DefaultedCollectionNullableStateValidator<TValue> stateValidator)
 			=> stateValidator.Data;

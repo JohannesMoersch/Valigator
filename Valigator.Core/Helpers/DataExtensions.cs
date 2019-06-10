@@ -16,15 +16,26 @@ namespace Valigator.Core.Helpers
 			for (int i = 0; i < value.Length; ++i)
 			{
 				if (!data.WithValue(value[i]).Verify(model).TryGetValue(out var success, out var failure))
-					(errors = (errors ?? new List<ValidationError>())).AddRange(failure);
-
-				result[i] = success;
+					(errors = (errors ?? new List<ValidationError>())).AddRange(AddIndexToErrors(failure, i));
+				else
+					result[i] = success;
 			}
 
 			if (errors != null)
 				return Result.Failure<TValue[], ValidationError[]>(errors.ToArray());
 
 			return Result.Success<TValue[], ValidationError[]>(result);
+		}
+
+		private static ValidationError[] AddIndexToErrors(ValidationError[] errors, int index)
+		{
+			if (errors != null)
+			{
+				foreach (var error in errors)
+					error.Path.AddIndex(index);
+			}
+
+			return errors;
 		}
 	}
 }
