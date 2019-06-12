@@ -24,6 +24,11 @@ namespace Valigator.TestApi.Controllers
 		public Data<int> A { get; set; } = Data.Defaulted<int>(5).LessThan(0);
 	}
 
+	public class Test : ValidateAttribute, ValidateAttribute.IValidateType<int>
+	{
+		public Data<int> GetData() => throw new NotImplementedException();
+	}
+
 	[Route("api/[controller]")]
 	[ApiController]
 	public class ValuesController : ControllerBase
