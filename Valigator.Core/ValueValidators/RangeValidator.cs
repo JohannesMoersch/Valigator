@@ -15,7 +15,7 @@ namespace Valigator.Core.ValueValidators
 		private readonly Option<byte> _greaterThanValue;
 		private readonly bool _greaterThanOrEqualTo;
 
-		public RangeValidator_Byte(byte? lessThan, byte? lessThanOrEqualTo, byte? greaterThan, byte? greaterThanOrEqualTo)
+		public RangeValidator_Byte(byte? greaterThan, byte? greaterThanOrEqualTo, byte? lessThan, byte? lessThanOrEqualTo)
 		{
 			if (!(lessThan ?? lessThanOrEqualTo).HasValue && !(greaterThan ?? greaterThanOrEqualTo).HasValue)
 				throw new ArgumentException("Either a minimum or maximum value must be set.");
@@ -60,7 +60,7 @@ namespace Valigator.Core.ValueValidators
 		private readonly Option<sbyte> _greaterThanValue;
 		private readonly bool _greaterThanOrEqualTo;
 
-		public RangeValidator_SByte(sbyte? lessThan, sbyte? lessThanOrEqualTo, sbyte? greaterThan, sbyte? greaterThanOrEqualTo)
+		public RangeValidator_SByte(sbyte? greaterThan, sbyte? greaterThanOrEqualTo, sbyte? lessThan, sbyte? lessThanOrEqualTo)
 		{
 			if (!(lessThan ?? lessThanOrEqualTo).HasValue && !(greaterThan ?? greaterThanOrEqualTo).HasValue)
 				throw new ArgumentException("Either a minimum or maximum value must be set.");
@@ -105,7 +105,7 @@ namespace Valigator.Core.ValueValidators
 		private readonly Option<short> _greaterThanValue;
 		private readonly bool _greaterThanOrEqualTo;
 
-		public RangeValidator_Int16(short? lessThan, short? lessThanOrEqualTo, short? greaterThan, short? greaterThanOrEqualTo)
+		public RangeValidator_Int16(short? greaterThan, short? greaterThanOrEqualTo, short? lessThan, short? lessThanOrEqualTo)
 		{
 			if (!(lessThan ?? lessThanOrEqualTo).HasValue && !(greaterThan ?? greaterThanOrEqualTo).HasValue)
 				throw new ArgumentException("Either a minimum or maximum value must be set.");
@@ -150,7 +150,7 @@ namespace Valigator.Core.ValueValidators
 		private readonly Option<ushort> _greaterThanValue;
 		private readonly bool _greaterThanOrEqualTo;
 
-		public RangeValidator_UInt16(ushort? lessThan, ushort? lessThanOrEqualTo, ushort? greaterThan, ushort? greaterThanOrEqualTo)
+		public RangeValidator_UInt16(ushort? greaterThan, ushort? greaterThanOrEqualTo, ushort? lessThan, ushort? lessThanOrEqualTo)
 		{
 			if (!(lessThan ?? lessThanOrEqualTo).HasValue && !(greaterThan ?? greaterThanOrEqualTo).HasValue)
 				throw new ArgumentException("Either a minimum or maximum value must be set.");
@@ -195,7 +195,7 @@ namespace Valigator.Core.ValueValidators
 		private readonly Option<int> _greaterThanValue;
 		private readonly bool _greaterThanOrEqualTo;
 
-		public RangeValidator_Int32(int? lessThan, int? lessThanOrEqualTo, int? greaterThan, int? greaterThanOrEqualTo)
+		public RangeValidator_Int32(int? greaterThan, int? greaterThanOrEqualTo, int? lessThan, int? lessThanOrEqualTo)
 		{
 			if (!(lessThan ?? lessThanOrEqualTo).HasValue && !(greaterThan ?? greaterThanOrEqualTo).HasValue)
 				throw new ArgumentException("Either a minimum or maximum value must be set.");
@@ -240,7 +240,7 @@ namespace Valigator.Core.ValueValidators
 		private readonly Option<uint> _greaterThanValue;
 		private readonly bool _greaterThanOrEqualTo;
 
-		public RangeValidator_UInt32(uint? lessThan, uint? lessThanOrEqualTo, uint? greaterThan, uint? greaterThanOrEqualTo)
+		public RangeValidator_UInt32(uint? greaterThan, uint? greaterThanOrEqualTo, uint? lessThan, uint? lessThanOrEqualTo)
 		{
 			if (!(lessThan ?? lessThanOrEqualTo).HasValue && !(greaterThan ?? greaterThanOrEqualTo).HasValue)
 				throw new ArgumentException("Either a minimum or maximum value must be set.");
@@ -285,7 +285,7 @@ namespace Valigator.Core.ValueValidators
 		private readonly Option<long> _greaterThanValue;
 		private readonly bool _greaterThanOrEqualTo;
 
-		public RangeValidator_Int64(long? lessThan, long? lessThanOrEqualTo, long? greaterThan, long? greaterThanOrEqualTo)
+		public RangeValidator_Int64(long? greaterThan, long? greaterThanOrEqualTo, long? lessThan, long? lessThanOrEqualTo)
 		{
 			if (!(lessThan ?? lessThanOrEqualTo).HasValue && !(greaterThan ?? greaterThanOrEqualTo).HasValue)
 				throw new ArgumentException("Either a minimum or maximum value must be set.");
@@ -330,7 +330,7 @@ namespace Valigator.Core.ValueValidators
 		private readonly Option<ulong> _greaterThanValue;
 		private readonly bool _greaterThanOrEqualTo;
 
-		public RangeValidator_UInt64(ulong? lessThan, ulong? lessThanOrEqualTo, ulong? greaterThan, ulong? greaterThanOrEqualTo)
+		public RangeValidator_UInt64(ulong? greaterThan, ulong? greaterThanOrEqualTo, ulong? lessThan, ulong? lessThanOrEqualTo)
 		{
 			if (!(lessThan ?? lessThanOrEqualTo).HasValue && !(greaterThan ?? greaterThanOrEqualTo).HasValue)
 				throw new ArgumentException("Either a minimum or maximum value must be set.");
@@ -375,7 +375,7 @@ namespace Valigator.Core.ValueValidators
 		private readonly Option<float> _greaterThanValue;
 		private readonly bool _greaterThanOrEqualTo;
 
-		public RangeValidator_Single(float? lessThan, float? lessThanOrEqualTo, float? greaterThan, float? greaterThanOrEqualTo)
+		public RangeValidator_Single(float? greaterThan, float? greaterThanOrEqualTo, float? lessThan, float? lessThanOrEqualTo)
 		{
 			if (!(lessThan ?? lessThanOrEqualTo).HasValue && !(greaterThan ?? greaterThanOrEqualTo).HasValue)
 				throw new ArgumentException("Either a minimum or maximum value must be set.");
@@ -420,7 +420,7 @@ namespace Valigator.Core.ValueValidators
 		private readonly Option<double> _greaterThanValue;
 		private readonly bool _greaterThanOrEqualTo;
 
-		public RangeValidator_Double(double? lessThan, double? lessThanOrEqualTo, double? greaterThan, double? greaterThanOrEqualTo)
+		public RangeValidator_Double(double? greaterThan, double? greaterThanOrEqualTo, double? lessThan, double? lessThanOrEqualTo)
 		{
 			if (!(lessThan ?? lessThanOrEqualTo).HasValue && !(greaterThan ?? greaterThanOrEqualTo).HasValue)
 				throw new ArgumentException("Either a minimum or maximum value must be set.");
@@ -465,7 +465,7 @@ namespace Valigator.Core.ValueValidators
 		private readonly Option<decimal> _greaterThanValue;
 		private readonly bool _greaterThanOrEqualTo;
 
-		public RangeValidator_Decimal(decimal? lessThan, decimal? lessThanOrEqualTo, decimal? greaterThan, decimal? greaterThanOrEqualTo)
+		public RangeValidator_Decimal(decimal? greaterThan, decimal? greaterThanOrEqualTo, decimal? lessThan, decimal? lessThanOrEqualTo)
 		{
 			if (!(lessThan ?? lessThanOrEqualTo).HasValue && !(greaterThan ?? greaterThanOrEqualTo).HasValue)
 				throw new ArgumentException("Either a minimum or maximum value must be set.");
@@ -510,7 +510,7 @@ namespace Valigator.Core.ValueValidators
 		private readonly Option<DateTime> _greaterThanValue;
 		private readonly bool _greaterThanOrEqualTo;
 
-		public RangeValidator_DateTime(DateTime? lessThan, DateTime? lessThanOrEqualTo, DateTime? greaterThan, DateTime? greaterThanOrEqualTo)
+		public RangeValidator_DateTime(DateTime? greaterThan, DateTime? greaterThanOrEqualTo, DateTime? lessThan, DateTime? lessThanOrEqualTo)
 		{
 			if (!(lessThan ?? lessThanOrEqualTo).HasValue && !(greaterThan ?? greaterThanOrEqualTo).HasValue)
 				throw new ArgumentException("Either a minimum or maximum value must be set.");

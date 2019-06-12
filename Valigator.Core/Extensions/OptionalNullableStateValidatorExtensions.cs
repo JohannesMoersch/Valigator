@@ -15,7 +15,7 @@ namespace Valigator
 		public static NullableDataSourceStandard<OptionalNullableStateValidator<TValue>, CustomValidator<TValue>, TValue> Assert<TValue>(this OptionalNullableStateValidator<TValue> source, string description, Func<TValue, bool> validator)
 			=> source.Add(new CustomValidator<TValue>(description, validator));
 
-		public static NullableDataSourceStandard<OptionalNullableStateValidator<TValue>, EqualsValidator<TValue>, TValue> Equals<TValue>(this OptionalNullableStateValidator<TValue> source, TValue value)
+		public static NullableDataSourceStandard<OptionalNullableStateValidator<TValue>, EqualsValidator<TValue>, TValue> EqualTo<TValue>(this OptionalNullableStateValidator<TValue> source, TValue value)
 			=> source.Add(new EqualsValidator<TValue>(value));
 
 		public static NullableDataSourceStandard<OptionalNullableStateValidator<string>, EqualsValidator<string>, string> NotEmpty(this OptionalNullableStateValidator<string> source)
@@ -78,8 +78,8 @@ namespace Valigator
 		public static NullableDataSourceStandard<OptionalNullableStateValidator<byte>, RangeValidator_Byte, byte> GreaterThanOrEqualTo(this OptionalNullableStateValidator<byte> source, byte value)
 			=> source.Add(new RangeValidator_Byte(null, null, null, value));
 
-		public static NullableDataSourceStandard<OptionalNullableStateValidator<byte>, RangeValidator_Byte, byte> InRange(this OptionalNullableStateValidator<byte> source, byte? lessThan = null, byte? lessThanOrEqualTo = null, byte? greaterThan = null, byte? greaterThanOrEqualTo = null)
-			=> source.Add(new RangeValidator_Byte(lessThan, lessThanOrEqualTo, greaterThan, greaterThanOrEqualTo));
+		public static NullableDataSourceStandard<OptionalNullableStateValidator<byte>, RangeValidator_Byte, byte> InRange(this OptionalNullableStateValidator<byte> source, byte? greaterThan = null, byte? greaterThanOrEqualTo = null, byte? lessThan = null, byte? lessThanOrEqualTo = null)
+			=> source.Add(new RangeValidator_Byte(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
 		public static NullableDataSourceStandard<OptionalNullableStateValidator<sbyte>, RangeValidator_SByte, sbyte> LessThan(this OptionalNullableStateValidator<sbyte> source, sbyte value)
 			=> source.Add(new RangeValidator_SByte(value, null, null, null));
@@ -93,8 +93,8 @@ namespace Valigator
 		public static NullableDataSourceStandard<OptionalNullableStateValidator<sbyte>, RangeValidator_SByte, sbyte> GreaterThanOrEqualTo(this OptionalNullableStateValidator<sbyte> source, sbyte value)
 			=> source.Add(new RangeValidator_SByte(null, null, null, value));
 
-		public static NullableDataSourceStandard<OptionalNullableStateValidator<sbyte>, RangeValidator_SByte, sbyte> InRange(this OptionalNullableStateValidator<sbyte> source, sbyte? lessThan = null, sbyte? lessThanOrEqualTo = null, sbyte? greaterThan = null, sbyte? greaterThanOrEqualTo = null)
-			=> source.Add(new RangeValidator_SByte(lessThan, lessThanOrEqualTo, greaterThan, greaterThanOrEqualTo));
+		public static NullableDataSourceStandard<OptionalNullableStateValidator<sbyte>, RangeValidator_SByte, sbyte> InRange(this OptionalNullableStateValidator<sbyte> source, sbyte? greaterThan = null, sbyte? greaterThanOrEqualTo = null, sbyte? lessThan = null, sbyte? lessThanOrEqualTo = null)
+			=> source.Add(new RangeValidator_SByte(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
 		public static NullableDataSourceStandard<OptionalNullableStateValidator<short>, RangeValidator_Int16, short> LessThan(this OptionalNullableStateValidator<short> source, short value)
 			=> source.Add(new RangeValidator_Int16(value, null, null, null));
@@ -108,8 +108,8 @@ namespace Valigator
 		public static NullableDataSourceStandard<OptionalNullableStateValidator<short>, RangeValidator_Int16, short> GreaterThanOrEqualTo(this OptionalNullableStateValidator<short> source, short value)
 			=> source.Add(new RangeValidator_Int16(null, null, null, value));
 
-		public static NullableDataSourceStandard<OptionalNullableStateValidator<short>, RangeValidator_Int16, short> InRange(this OptionalNullableStateValidator<short> source, short? lessThan = null, short? lessThanOrEqualTo = null, short? greaterThan = null, short? greaterThanOrEqualTo = null)
-			=> source.Add(new RangeValidator_Int16(lessThan, lessThanOrEqualTo, greaterThan, greaterThanOrEqualTo));
+		public static NullableDataSourceStandard<OptionalNullableStateValidator<short>, RangeValidator_Int16, short> InRange(this OptionalNullableStateValidator<short> source, short? greaterThan = null, short? greaterThanOrEqualTo = null, short? lessThan = null, short? lessThanOrEqualTo = null)
+			=> source.Add(new RangeValidator_Int16(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
 		public static NullableDataSourceStandard<OptionalNullableStateValidator<ushort>, RangeValidator_UInt16, ushort> LessThan(this OptionalNullableStateValidator<ushort> source, ushort value)
 			=> source.Add(new RangeValidator_UInt16(value, null, null, null));
@@ -123,8 +123,8 @@ namespace Valigator
 		public static NullableDataSourceStandard<OptionalNullableStateValidator<ushort>, RangeValidator_UInt16, ushort> GreaterThanOrEqualTo(this OptionalNullableStateValidator<ushort> source, ushort value)
 			=> source.Add(new RangeValidator_UInt16(null, null, null, value));
 
-		public static NullableDataSourceStandard<OptionalNullableStateValidator<ushort>, RangeValidator_UInt16, ushort> InRange(this OptionalNullableStateValidator<ushort> source, ushort? lessThan = null, ushort? lessThanOrEqualTo = null, ushort? greaterThan = null, ushort? greaterThanOrEqualTo = null)
-			=> source.Add(new RangeValidator_UInt16(lessThan, lessThanOrEqualTo, greaterThan, greaterThanOrEqualTo));
+		public static NullableDataSourceStandard<OptionalNullableStateValidator<ushort>, RangeValidator_UInt16, ushort> InRange(this OptionalNullableStateValidator<ushort> source, ushort? greaterThan = null, ushort? greaterThanOrEqualTo = null, ushort? lessThan = null, ushort? lessThanOrEqualTo = null)
+			=> source.Add(new RangeValidator_UInt16(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
 		public static NullableDataSourceStandard<OptionalNullableStateValidator<int>, RangeValidator_Int32, int> LessThan(this OptionalNullableStateValidator<int> source, int value)
 			=> source.Add(new RangeValidator_Int32(value, null, null, null));
@@ -138,8 +138,8 @@ namespace Valigator
 		public static NullableDataSourceStandard<OptionalNullableStateValidator<int>, RangeValidator_Int32, int> GreaterThanOrEqualTo(this OptionalNullableStateValidator<int> source, int value)
 			=> source.Add(new RangeValidator_Int32(null, null, null, value));
 
-		public static NullableDataSourceStandard<OptionalNullableStateValidator<int>, RangeValidator_Int32, int> InRange(this OptionalNullableStateValidator<int> source, int? lessThan = null, int? lessThanOrEqualTo = null, int? greaterThan = null, int? greaterThanOrEqualTo = null)
-			=> source.Add(new RangeValidator_Int32(lessThan, lessThanOrEqualTo, greaterThan, greaterThanOrEqualTo));
+		public static NullableDataSourceStandard<OptionalNullableStateValidator<int>, RangeValidator_Int32, int> InRange(this OptionalNullableStateValidator<int> source, int? greaterThan = null, int? greaterThanOrEqualTo = null, int? lessThan = null, int? lessThanOrEqualTo = null)
+			=> source.Add(new RangeValidator_Int32(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
 		public static NullableDataSourceStandard<OptionalNullableStateValidator<uint>, RangeValidator_UInt32, uint> LessThan(this OptionalNullableStateValidator<uint> source, uint value)
 			=> source.Add(new RangeValidator_UInt32(value, null, null, null));
@@ -153,8 +153,8 @@ namespace Valigator
 		public static NullableDataSourceStandard<OptionalNullableStateValidator<uint>, RangeValidator_UInt32, uint> GreaterThanOrEqualTo(this OptionalNullableStateValidator<uint> source, uint value)
 			=> source.Add(new RangeValidator_UInt32(null, null, null, value));
 
-		public static NullableDataSourceStandard<OptionalNullableStateValidator<uint>, RangeValidator_UInt32, uint> InRange(this OptionalNullableStateValidator<uint> source, uint? lessThan = null, uint? lessThanOrEqualTo = null, uint? greaterThan = null, uint? greaterThanOrEqualTo = null)
-			=> source.Add(new RangeValidator_UInt32(lessThan, lessThanOrEqualTo, greaterThan, greaterThanOrEqualTo));
+		public static NullableDataSourceStandard<OptionalNullableStateValidator<uint>, RangeValidator_UInt32, uint> InRange(this OptionalNullableStateValidator<uint> source, uint? greaterThan = null, uint? greaterThanOrEqualTo = null, uint? lessThan = null, uint? lessThanOrEqualTo = null)
+			=> source.Add(new RangeValidator_UInt32(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
 		public static NullableDataSourceStandard<OptionalNullableStateValidator<long>, RangeValidator_Int64, long> LessThan(this OptionalNullableStateValidator<long> source, long value)
 			=> source.Add(new RangeValidator_Int64(value, null, null, null));
@@ -168,8 +168,8 @@ namespace Valigator
 		public static NullableDataSourceStandard<OptionalNullableStateValidator<long>, RangeValidator_Int64, long> GreaterThanOrEqualTo(this OptionalNullableStateValidator<long> source, long value)
 			=> source.Add(new RangeValidator_Int64(null, null, null, value));
 
-		public static NullableDataSourceStandard<OptionalNullableStateValidator<long>, RangeValidator_Int64, long> InRange(this OptionalNullableStateValidator<long> source, long? lessThan = null, long? lessThanOrEqualTo = null, long? greaterThan = null, long? greaterThanOrEqualTo = null)
-			=> source.Add(new RangeValidator_Int64(lessThan, lessThanOrEqualTo, greaterThan, greaterThanOrEqualTo));
+		public static NullableDataSourceStandard<OptionalNullableStateValidator<long>, RangeValidator_Int64, long> InRange(this OptionalNullableStateValidator<long> source, long? greaterThan = null, long? greaterThanOrEqualTo = null, long? lessThan = null, long? lessThanOrEqualTo = null)
+			=> source.Add(new RangeValidator_Int64(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
 		public static NullableDataSourceStandard<OptionalNullableStateValidator<ulong>, RangeValidator_UInt64, ulong> LessThan(this OptionalNullableStateValidator<ulong> source, ulong value)
 			=> source.Add(new RangeValidator_UInt64(value, null, null, null));
@@ -183,8 +183,8 @@ namespace Valigator
 		public static NullableDataSourceStandard<OptionalNullableStateValidator<ulong>, RangeValidator_UInt64, ulong> GreaterThanOrEqualTo(this OptionalNullableStateValidator<ulong> source, ulong value)
 			=> source.Add(new RangeValidator_UInt64(null, null, null, value));
 
-		public static NullableDataSourceStandard<OptionalNullableStateValidator<ulong>, RangeValidator_UInt64, ulong> InRange(this OptionalNullableStateValidator<ulong> source, ulong? lessThan = null, ulong? lessThanOrEqualTo = null, ulong? greaterThan = null, ulong? greaterThanOrEqualTo = null)
-			=> source.Add(new RangeValidator_UInt64(lessThan, lessThanOrEqualTo, greaterThan, greaterThanOrEqualTo));
+		public static NullableDataSourceStandard<OptionalNullableStateValidator<ulong>, RangeValidator_UInt64, ulong> InRange(this OptionalNullableStateValidator<ulong> source, ulong? greaterThan = null, ulong? greaterThanOrEqualTo = null, ulong? lessThan = null, ulong? lessThanOrEqualTo = null)
+			=> source.Add(new RangeValidator_UInt64(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
 		public static NullableDataSourceStandard<OptionalNullableStateValidator<float>, RangeValidator_Single, float> LessThan(this OptionalNullableStateValidator<float> source, float value)
 			=> source.Add(new RangeValidator_Single(value, null, null, null));
@@ -198,8 +198,8 @@ namespace Valigator
 		public static NullableDataSourceStandard<OptionalNullableStateValidator<float>, RangeValidator_Single, float> GreaterThanOrEqualTo(this OptionalNullableStateValidator<float> source, float value)
 			=> source.Add(new RangeValidator_Single(null, null, null, value));
 
-		public static NullableDataSourceStandard<OptionalNullableStateValidator<float>, RangeValidator_Single, float> InRange(this OptionalNullableStateValidator<float> source, float? lessThan = null, float? lessThanOrEqualTo = null, float? greaterThan = null, float? greaterThanOrEqualTo = null)
-			=> source.Add(new RangeValidator_Single(lessThan, lessThanOrEqualTo, greaterThan, greaterThanOrEqualTo));
+		public static NullableDataSourceStandard<OptionalNullableStateValidator<float>, RangeValidator_Single, float> InRange(this OptionalNullableStateValidator<float> source, float? greaterThan = null, float? greaterThanOrEqualTo = null, float? lessThan = null, float? lessThanOrEqualTo = null)
+			=> source.Add(new RangeValidator_Single(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
 		public static NullableDataSourceStandard<OptionalNullableStateValidator<double>, RangeValidator_Double, double> LessThan(this OptionalNullableStateValidator<double> source, double value)
 			=> source.Add(new RangeValidator_Double(value, null, null, null));
@@ -213,8 +213,8 @@ namespace Valigator
 		public static NullableDataSourceStandard<OptionalNullableStateValidator<double>, RangeValidator_Double, double> GreaterThanOrEqualTo(this OptionalNullableStateValidator<double> source, double value)
 			=> source.Add(new RangeValidator_Double(null, null, null, value));
 
-		public static NullableDataSourceStandard<OptionalNullableStateValidator<double>, RangeValidator_Double, double> InRange(this OptionalNullableStateValidator<double> source, double? lessThan = null, double? lessThanOrEqualTo = null, double? greaterThan = null, double? greaterThanOrEqualTo = null)
-			=> source.Add(new RangeValidator_Double(lessThan, lessThanOrEqualTo, greaterThan, greaterThanOrEqualTo));
+		public static NullableDataSourceStandard<OptionalNullableStateValidator<double>, RangeValidator_Double, double> InRange(this OptionalNullableStateValidator<double> source, double? greaterThan = null, double? greaterThanOrEqualTo = null, double? lessThan = null, double? lessThanOrEqualTo = null)
+			=> source.Add(new RangeValidator_Double(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
 		public static NullableDataSourceStandard<OptionalNullableStateValidator<decimal>, RangeValidator_Decimal, decimal> LessThan(this OptionalNullableStateValidator<decimal> source, decimal value)
 			=> source.Add(new RangeValidator_Decimal(value, null, null, null));
@@ -228,8 +228,8 @@ namespace Valigator
 		public static NullableDataSourceStandard<OptionalNullableStateValidator<decimal>, RangeValidator_Decimal, decimal> GreaterThanOrEqualTo(this OptionalNullableStateValidator<decimal> source, decimal value)
 			=> source.Add(new RangeValidator_Decimal(null, null, null, value));
 
-		public static NullableDataSourceStandard<OptionalNullableStateValidator<decimal>, RangeValidator_Decimal, decimal> InRange(this OptionalNullableStateValidator<decimal> source, decimal? lessThan = null, decimal? lessThanOrEqualTo = null, decimal? greaterThan = null, decimal? greaterThanOrEqualTo = null)
-			=> source.Add(new RangeValidator_Decimal(lessThan, lessThanOrEqualTo, greaterThan, greaterThanOrEqualTo));
+		public static NullableDataSourceStandard<OptionalNullableStateValidator<decimal>, RangeValidator_Decimal, decimal> InRange(this OptionalNullableStateValidator<decimal> source, decimal? greaterThan = null, decimal? greaterThanOrEqualTo = null, decimal? lessThan = null, decimal? lessThanOrEqualTo = null)
+			=> source.Add(new RangeValidator_Decimal(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
 		public static NullableDataSourceStandard<OptionalNullableStateValidator<DateTime>, RangeValidator_DateTime, DateTime> LessThan(this OptionalNullableStateValidator<DateTime> source, DateTime value)
 			=> source.Add(new RangeValidator_DateTime(value, null, null, null));
@@ -243,8 +243,8 @@ namespace Valigator
 		public static NullableDataSourceStandard<OptionalNullableStateValidator<DateTime>, RangeValidator_DateTime, DateTime> GreaterThanOrEqualTo(this OptionalNullableStateValidator<DateTime> source, DateTime value)
 			=> source.Add(new RangeValidator_DateTime(null, null, null, value));
 
-		public static NullableDataSourceStandard<OptionalNullableStateValidator<DateTime>, RangeValidator_DateTime, DateTime> InRange(this OptionalNullableStateValidator<DateTime> source, DateTime? lessThan = null, DateTime? lessThanOrEqualTo = null, DateTime? greaterThan = null, DateTime? greaterThanOrEqualTo = null)
-			=> source.Add(new RangeValidator_DateTime(lessThan, lessThanOrEqualTo, greaterThan, greaterThanOrEqualTo));
+		public static NullableDataSourceStandard<OptionalNullableStateValidator<DateTime>, RangeValidator_DateTime, DateTime> InRange(this OptionalNullableStateValidator<DateTime> source, DateTime? greaterThan = null, DateTime? greaterThanOrEqualTo = null, DateTime? lessThan = null, DateTime? lessThanOrEqualTo = null)
+			=> source.Add(new RangeValidator_DateTime(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
 		public static NullableDataSourceStandard<OptionalNullableStateValidator<string>, StringLengthValidator, string> Length(this OptionalNullableStateValidator<string> source, int? minimumLength = null, int? maximumLength = null)
 			=> source.Add(new StringLengthValidator(minimumLength, maximumLength));
@@ -307,11 +307,11 @@ namespace Valigator
 		public static NullableDataSourceInvertedStandard<OptionalNullableStateValidator<decimal>, PrecisionValidator, RangeValidator_Decimal, decimal> GreaterThanOrEqualTo(this NullableDataSourceInverted<OptionalNullableStateValidator<decimal>, PrecisionValidator, decimal> source, decimal value)
 			=> source.Add(new RangeValidator_Decimal(null, null, null, value));
 
-		public static NullableDataSourceStandardStandard<OptionalNullableStateValidator<decimal>, PrecisionValidator, RangeValidator_Decimal, decimal> InRange(this NullableDataSourceStandard<OptionalNullableStateValidator<decimal>, PrecisionValidator, decimal> source, decimal? lessThan = null, decimal? lessThanOrEqualTo = null, decimal? greaterThan = null, decimal? greaterThanOrEqualTo = null)
-			=> source.Add(new RangeValidator_Decimal(lessThan, lessThanOrEqualTo, greaterThan, greaterThanOrEqualTo));
+		public static NullableDataSourceStandardStandard<OptionalNullableStateValidator<decimal>, PrecisionValidator, RangeValidator_Decimal, decimal> InRange(this NullableDataSourceStandard<OptionalNullableStateValidator<decimal>, PrecisionValidator, decimal> source, decimal? greaterThan = null, decimal? greaterThanOrEqualTo = null, decimal? lessThan = null, decimal? lessThanOrEqualTo = null)
+			=> source.Add(new RangeValidator_Decimal(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
-		public static NullableDataSourceInvertedStandard<OptionalNullableStateValidator<decimal>, PrecisionValidator, RangeValidator_Decimal, decimal> InRange(this NullableDataSourceInverted<OptionalNullableStateValidator<decimal>, PrecisionValidator, decimal> source, decimal? lessThan = null, decimal? lessThanOrEqualTo = null, decimal? greaterThan = null, decimal? greaterThanOrEqualTo = null)
-			=> source.Add(new RangeValidator_Decimal(lessThan, lessThanOrEqualTo, greaterThan, greaterThanOrEqualTo));
+		public static NullableDataSourceInvertedStandard<OptionalNullableStateValidator<decimal>, PrecisionValidator, RangeValidator_Decimal, decimal> InRange(this NullableDataSourceInverted<OptionalNullableStateValidator<decimal>, PrecisionValidator, decimal> source, decimal? greaterThan = null, decimal? greaterThanOrEqualTo = null, decimal? lessThan = null, decimal? lessThanOrEqualTo = null)
+			=> source.Add(new RangeValidator_Decimal(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
 		public static NullableDataSourceStandardInverted<OptionalNullableStateValidator<decimal>, PrecisionValidator, TValueValidator, decimal> Not<TValueValidator>(this NullableDataSourceStandard<OptionalNullableStateValidator<decimal>, PrecisionValidator, decimal> source, Func<NullableDataSourceStandard<OptionalNullableStateValidator<decimal>, PrecisionValidator, decimal>, NullableDataSourceStandardStandard<OptionalNullableStateValidator<decimal>, PrecisionValidator, TValueValidator, decimal>> validatorFactory)
 			where TValueValidator : IValueValidator<decimal>
