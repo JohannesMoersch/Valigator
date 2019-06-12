@@ -20,6 +20,10 @@ namespace Valigator.AspNetCore
 
 		public void OnActionExecuting(ActionExecutingContext context)
 		{
+			foreach (var parameter in context.ActionDescriptor.Parameters)
+			{
+			}
+
 			foreach (var kvp in context.ActionArguments)
 			{
 				Model
