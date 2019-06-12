@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using FluentAssertions;
+using Valigator.AspNetCore;
 using Xunit;
 
 namespace Valigator.Tests.AspNetCore
@@ -19,5 +20,16 @@ namespace Valigator.Tests.AspNetCore
 			=> new TestValidateAttribute()
 				.Verify(typeof(int), 0)
 				.AssertSuccess();
+
+		[Fact]
+		public void Test2()
+			=> Assert.Throws<ValidateAttributeDoesNotSupportTypeException>(() => new TestValidateAttribute().Verify(typeof(float), 1.0f));
+
+		[Fact]
+		public void Test3()
+		{
+			var descriptor = new TestValidateAttribute()
+				.GetDescriptor(typeof(int));
+		}
 	}
 }
