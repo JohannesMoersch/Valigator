@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Valigator.AspNetCore\Valigator.AspNetCore.csproj" />
     <ProjectReference Include="..\Valigator.Core\Valigator.Core.csproj" />
     <ProjectReference Include="..\Valigator.Newtonsoft.Json\Valigator.Newtonsoft.Json.csproj" />
   </ItemGroup>
