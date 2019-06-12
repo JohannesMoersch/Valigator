@@ -10,11 +10,11 @@ namespace Valigator
 {
 	public static class MvcBuilderExtensions
 	{
-		public static IMvcBuilder AddValigator(this IMvcBuilder builder, Func<ValidationError[], IActionResult> resultErrorCreator)
+		public static IMvcBuilder AddValigator(this IMvcBuilder builder, Func<ValidationError[], IActionResult> inputErrorCreater, Func<ValidationError[], IActionResult> resultErrorCreator)
 			=> builder
 				.AddMvcOptions(options =>
 				{
-					options.Filters.Add(new ValigatorActionFilter(resultErrorCreator));
+					options.Filters.Add(new ValigatorActionFilter(inputErrorCreater));
 					options.Filters.Add(new ValigatorResultFilter(resultErrorCreator));
 				})
 				.AddJsonOptions(options => options.SerializerSettings.Converters.Add(new ValigatorConverter()));

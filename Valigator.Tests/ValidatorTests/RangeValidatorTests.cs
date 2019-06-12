@@ -25,84 +25,84 @@ namespace Valigator.Tests.ValidatorTests
 
 			[Fact]
 			public void BelowLessThanValue()
-				=> new RangeValidator_Byte(10, null, null, null)
+				=> new RangeValidator_Byte(null, null, 10, null)
 					.IsValid((byte)9)
 					.Should()
 					.BeTrue();
 
 			[Fact]
 			public void EqualsLessThanValue()
-				=> new RangeValidator_Byte(10, null, null, null)
+				=> new RangeValidator_Byte(null, null, 10, null)
 					.IsValid((byte)10)
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void AboveLessThanValue()
-				=> new RangeValidator_Byte(10, null, null, null)
+				=> new RangeValidator_Byte(null, null, 10, null)
 					.IsValid((byte)11)
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void BelowLessThanOrEqualToValue()
-				=> new RangeValidator_Byte(null, 10, null, null)
+				=> new RangeValidator_Byte(null, null, null, 10)
 					.IsValid((byte)9)
 					.Should()
 					.BeTrue();
 
 			[Fact]
 			public void EqualsLessThanOrEqualToValue()
-				=> new RangeValidator_Byte(null, 10, null, null)
+				=> new RangeValidator_Byte(null, null, null, 10)
 					.IsValid((byte)10)
 					.Should()
 					.BeTrue();
 
 			[Fact]
 			public void AboveLessThanOrEqualToValue()
-				=> new RangeValidator_Byte(null, 10, null, null)
+				=> new RangeValidator_Byte(null, null, null, 10)
 					.IsValid((byte)11)
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void BelowGreaterThanValue()
-				=> new RangeValidator_Byte(null, null, 10, null)
+				=> new RangeValidator_Byte(10, null, null, null)
 					.IsValid((byte)9)
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void EqualsGreaterThanValue()
-				=> new RangeValidator_Byte(null, null, 10, null)
+				=> new RangeValidator_Byte(10, null, null, null)
 					.IsValid((byte)10)
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void AboveGreaterThanValue()
-				=> new RangeValidator_Byte(null, null, 10, null)
+				=> new RangeValidator_Byte(10, null, null, null)
 					.IsValid((byte)11)
 					.Should()
 					.BeTrue();
 
 			[Fact]
 			public void BelowGreaterThanOrEqualToValue()
-				=> new RangeValidator_Byte(null, null, null, 10)
+				=> new RangeValidator_Byte(null, 10, null, null)
 					.IsValid((byte)9)
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void EqualsGreaterThanOrEqualToValue()
-				=> new RangeValidator_Byte(null, null, null, 10)
+				=> new RangeValidator_Byte(null, 10, null, null)
 					.IsValid((byte)10)
 					.Should()
 					.BeTrue();
 
 			[Fact]
 			public void AboveGreaterThanOrEqualToValue()
-				=> new RangeValidator_Byte(null, null, null, 10)
+				=> new RangeValidator_Byte(null, 10, null, null)
 					.IsValid((byte)11)
 					.Should()
 					.BeTrue();
@@ -124,84 +124,84 @@ namespace Valigator.Tests.ValidatorTests
 
 			[Fact]
 			public void BelowLessThanValue()
-				=> new RangeValidator_SByte(10, null, null, null)
+				=> new RangeValidator_SByte(null, null, 10, null)
 					.IsValid((sbyte)9)
 					.Should()
 					.BeTrue();
 
 			[Fact]
 			public void EqualsLessThanValue()
-				=> new RangeValidator_SByte(10, null, null, null)
+				=> new RangeValidator_SByte(null, null, 10, null)
 					.IsValid((sbyte)10)
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void AboveLessThanValue()
-				=> new RangeValidator_SByte(10, null, null, null)
+				=> new RangeValidator_SByte(null, null, 10, null)
 					.IsValid((sbyte)11)
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void BelowLessThanOrEqualToValue()
-				=> new RangeValidator_SByte(null, 10, null, null)
+				=> new RangeValidator_SByte(null, null, null, 10)
 					.IsValid((sbyte)9)
 					.Should()
 					.BeTrue();
 
 			[Fact]
 			public void EqualsLessThanOrEqualToValue()
-				=> new RangeValidator_SByte(null, 10, null, null)
+				=> new RangeValidator_SByte(null, null, null, 10)
 					.IsValid((sbyte)10)
 					.Should()
 					.BeTrue();
 
 			[Fact]
 			public void AboveLessThanOrEqualToValue()
-				=> new RangeValidator_SByte(null, 10, null, null)
+				=> new RangeValidator_SByte(null, null, null, 10)
 					.IsValid((sbyte)11)
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void BelowGreaterThanValue()
-				=> new RangeValidator_SByte(null, null, 10, null)
+				=> new RangeValidator_SByte(10, null, null, null)
 					.IsValid((sbyte)9)
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void EqualsGreaterThanValue()
-				=> new RangeValidator_SByte(null, null, 10, null)
+				=> new RangeValidator_SByte(10, null, null, null)
 					.IsValid((sbyte)10)
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void AboveGreaterThanValue()
-				=> new RangeValidator_SByte(null, null, 10, null)
+				=> new RangeValidator_SByte(10, null, null, null)
 					.IsValid((sbyte)11)
 					.Should()
 					.BeTrue();
 
 			[Fact]
 			public void BelowGreaterThanOrEqualToValue()
-				=> new RangeValidator_SByte(null, null, null, 10)
+				=> new RangeValidator_SByte(null, 10, null, null)
 					.IsValid((sbyte)9)
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void EqualsGreaterThanOrEqualToValue()
-				=> new RangeValidator_SByte(null, null, null, 10)
+				=> new RangeValidator_SByte(null, 10, null, null)
 					.IsValid((sbyte)10)
 					.Should()
 					.BeTrue();
 
 			[Fact]
 			public void AboveGreaterThanOrEqualToValue()
-				=> new RangeValidator_SByte(null, null, null, 10)
+				=> new RangeValidator_SByte(null, 10, null, null)
 					.IsValid((sbyte)11)
 					.Should()
 					.BeTrue();
@@ -223,84 +223,84 @@ namespace Valigator.Tests.ValidatorTests
 
 			[Fact]
 			public void BelowLessThanValue()
-				=> new RangeValidator_Int16(10, null, null, null)
+				=> new RangeValidator_Int16(null, null, 10, null)
 					.IsValid((short)9)
 					.Should()
 					.BeTrue();
 
 			[Fact]
 			public void EqualsLessThanValue()
-				=> new RangeValidator_Int16(10, null, null, null)
+				=> new RangeValidator_Int16(null, null, 10, null)
 					.IsValid((short)10)
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void AboveLessThanValue()
-				=> new RangeValidator_Int16(10, null, null, null)
+				=> new RangeValidator_Int16(null, null, 10, null)
 					.IsValid((short)11)
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void BelowLessThanOrEqualToValue()
-				=> new RangeValidator_Int16(null, 10, null, null)
+				=> new RangeValidator_Int16(null, null, null, 10)
 					.IsValid((short)9)
 					.Should()
 					.BeTrue();
 
 			[Fact]
 			public void EqualsLessThanOrEqualToValue()
-				=> new RangeValidator_Int16(null, 10, null, null)
+				=> new RangeValidator_Int16(null, null, null, 10)
 					.IsValid((short)10)
 					.Should()
 					.BeTrue();
 
 			[Fact]
 			public void AboveLessThanOrEqualToValue()
-				=> new RangeValidator_Int16(null, 10, null, null)
+				=> new RangeValidator_Int16(null, null, null, 10)
 					.IsValid((short)11)
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void BelowGreaterThanValue()
-				=> new RangeValidator_Int16(null, null, 10, null)
+				=> new RangeValidator_Int16(10, null, null, null)
 					.IsValid((short)9)
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void EqualsGreaterThanValue()
-				=> new RangeValidator_Int16(null, null, 10, null)
+				=> new RangeValidator_Int16(10, null, null, null)
 					.IsValid((short)10)
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void AboveGreaterThanValue()
-				=> new RangeValidator_Int16(null, null, 10, null)
+				=> new RangeValidator_Int16(10, null, null, null)
 					.IsValid((short)11)
 					.Should()
 					.BeTrue();
 
 			[Fact]
 			public void BelowGreaterThanOrEqualToValue()
-				=> new RangeValidator_Int16(null, null, null, 10)
+				=> new RangeValidator_Int16(null, 10, null, null)
 					.IsValid((short)9)
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void EqualsGreaterThanOrEqualToValue()
-				=> new RangeValidator_Int16(null, null, null, 10)
+				=> new RangeValidator_Int16(null, 10, null, null)
 					.IsValid((short)10)
 					.Should()
 					.BeTrue();
 
 			[Fact]
 			public void AboveGreaterThanOrEqualToValue()
-				=> new RangeValidator_Int16(null, null, null, 10)
+				=> new RangeValidator_Int16(null, 10, null, null)
 					.IsValid((short)11)
 					.Should()
 					.BeTrue();
@@ -322,84 +322,84 @@ namespace Valigator.Tests.ValidatorTests
 
 			[Fact]
 			public void BelowLessThanValue()
-				=> new RangeValidator_UInt16(10, null, null, null)
+				=> new RangeValidator_UInt16(null, null, 10, null)
 					.IsValid((ushort)9)
 					.Should()
 					.BeTrue();
 
 			[Fact]
 			public void EqualsLessThanValue()
-				=> new RangeValidator_UInt16(10, null, null, null)
+				=> new RangeValidator_UInt16(null, null, 10, null)
 					.IsValid((ushort)10)
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void AboveLessThanValue()
-				=> new RangeValidator_UInt16(10, null, null, null)
+				=> new RangeValidator_UInt16(null, null, 10, null)
 					.IsValid((ushort)11)
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void BelowLessThanOrEqualToValue()
-				=> new RangeValidator_UInt16(null, 10, null, null)
+				=> new RangeValidator_UInt16(null, null, null, 10)
 					.IsValid((ushort)9)
 					.Should()
 					.BeTrue();
 
 			[Fact]
 			public void EqualsLessThanOrEqualToValue()
-				=> new RangeValidator_UInt16(null, 10, null, null)
+				=> new RangeValidator_UInt16(null, null, null, 10)
 					.IsValid((ushort)10)
 					.Should()
 					.BeTrue();
 
 			[Fact]
 			public void AboveLessThanOrEqualToValue()
-				=> new RangeValidator_UInt16(null, 10, null, null)
+				=> new RangeValidator_UInt16(null, null, null, 10)
 					.IsValid((ushort)11)
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void BelowGreaterThanValue()
-				=> new RangeValidator_UInt16(null, null, 10, null)
+				=> new RangeValidator_UInt16(10, null, null, null)
 					.IsValid((ushort)9)
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void EqualsGreaterThanValue()
-				=> new RangeValidator_UInt16(null, null, 10, null)
+				=> new RangeValidator_UInt16(10, null, null, null)
 					.IsValid((ushort)10)
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void AboveGreaterThanValue()
-				=> new RangeValidator_UInt16(null, null, 10, null)
+				=> new RangeValidator_UInt16(10, null, null, null)
 					.IsValid((ushort)11)
 					.Should()
 					.BeTrue();
 
 			[Fact]
 			public void BelowGreaterThanOrEqualToValue()
-				=> new RangeValidator_UInt16(null, null, null, 10)
+				=> new RangeValidator_UInt16(null, 10, null, null)
 					.IsValid((ushort)9)
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void EqualsGreaterThanOrEqualToValue()
-				=> new RangeValidator_UInt16(null, null, null, 10)
+				=> new RangeValidator_UInt16(null, 10, null, null)
 					.IsValid((ushort)10)
 					.Should()
 					.BeTrue();
 
 			[Fact]
 			public void AboveGreaterThanOrEqualToValue()
-				=> new RangeValidator_UInt16(null, null, null, 10)
+				=> new RangeValidator_UInt16(null, 10, null, null)
 					.IsValid((ushort)11)
 					.Should()
 					.BeTrue();
@@ -421,84 +421,84 @@ namespace Valigator.Tests.ValidatorTests
 
 			[Fact]
 			public void BelowLessThanValue()
-				=> new RangeValidator_Int32(10, null, null, null)
+				=> new RangeValidator_Int32(null, null, 10, null)
 					.IsValid((int)9)
 					.Should()
 					.BeTrue();
 
 			[Fact]
 			public void EqualsLessThanValue()
-				=> new RangeValidator_Int32(10, null, null, null)
+				=> new RangeValidator_Int32(null, null, 10, null)
 					.IsValid((int)10)
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void AboveLessThanValue()
-				=> new RangeValidator_Int32(10, null, null, null)
+				=> new RangeValidator_Int32(null, null, 10, null)
 					.IsValid((int)11)
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void BelowLessThanOrEqualToValue()
-				=> new RangeValidator_Int32(null, 10, null, null)
+				=> new RangeValidator_Int32(null, null, null, 10)
 					.IsValid((int)9)
 					.Should()
 					.BeTrue();
 
 			[Fact]
 			public void EqualsLessThanOrEqualToValue()
-				=> new RangeValidator_Int32(null, 10, null, null)
+				=> new RangeValidator_Int32(null, null, null, 10)
 					.IsValid((int)10)
 					.Should()
 					.BeTrue();
 
 			[Fact]
 			public void AboveLessThanOrEqualToValue()
-				=> new RangeValidator_Int32(null, 10, null, null)
+				=> new RangeValidator_Int32(null, null, null, 10)
 					.IsValid((int)11)
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void BelowGreaterThanValue()
-				=> new RangeValidator_Int32(null, null, 10, null)
+				=> new RangeValidator_Int32(10, null, null, null)
 					.IsValid((int)9)
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void EqualsGreaterThanValue()
-				=> new RangeValidator_Int32(null, null, 10, null)
+				=> new RangeValidator_Int32(10, null, null, null)
 					.IsValid((int)10)
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void AboveGreaterThanValue()
-				=> new RangeValidator_Int32(null, null, 10, null)
+				=> new RangeValidator_Int32(10, null, null, null)
 					.IsValid((int)11)
 					.Should()
 					.BeTrue();
 
 			[Fact]
 			public void BelowGreaterThanOrEqualToValue()
-				=> new RangeValidator_Int32(null, null, null, 10)
+				=> new RangeValidator_Int32(null, 10, null, null)
 					.IsValid((int)9)
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void EqualsGreaterThanOrEqualToValue()
-				=> new RangeValidator_Int32(null, null, null, 10)
+				=> new RangeValidator_Int32(null, 10, null, null)
 					.IsValid((int)10)
 					.Should()
 					.BeTrue();
 
 			[Fact]
 			public void AboveGreaterThanOrEqualToValue()
-				=> new RangeValidator_Int32(null, null, null, 10)
+				=> new RangeValidator_Int32(null, 10, null, null)
 					.IsValid((int)11)
 					.Should()
 					.BeTrue();
@@ -520,84 +520,84 @@ namespace Valigator.Tests.ValidatorTests
 
 			[Fact]
 			public void BelowLessThanValue()
-				=> new RangeValidator_UInt32(10, null, null, null)
+				=> new RangeValidator_UInt32(null, null, 10, null)
 					.IsValid((uint)9)
 					.Should()
 					.BeTrue();
 
 			[Fact]
 			public void EqualsLessThanValue()
-				=> new RangeValidator_UInt32(10, null, null, null)
+				=> new RangeValidator_UInt32(null, null, 10, null)
 					.IsValid((uint)10)
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void AboveLessThanValue()
-				=> new RangeValidator_UInt32(10, null, null, null)
+				=> new RangeValidator_UInt32(null, null, 10, null)
 					.IsValid((uint)11)
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void BelowLessThanOrEqualToValue()
-				=> new RangeValidator_UInt32(null, 10, null, null)
+				=> new RangeValidator_UInt32(null, null, null, 10)
 					.IsValid((uint)9)
 					.Should()
 					.BeTrue();
 
 			[Fact]
 			public void EqualsLessThanOrEqualToValue()
-				=> new RangeValidator_UInt32(null, 10, null, null)
+				=> new RangeValidator_UInt32(null, null, null, 10)
 					.IsValid((uint)10)
 					.Should()
 					.BeTrue();
 
 			[Fact]
 			public void AboveLessThanOrEqualToValue()
-				=> new RangeValidator_UInt32(null, 10, null, null)
+				=> new RangeValidator_UInt32(null, null, null, 10)
 					.IsValid((uint)11)
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void BelowGreaterThanValue()
-				=> new RangeValidator_UInt32(null, null, 10, null)
+				=> new RangeValidator_UInt32(10, null, null, null)
 					.IsValid((uint)9)
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void EqualsGreaterThanValue()
-				=> new RangeValidator_UInt32(null, null, 10, null)
+				=> new RangeValidator_UInt32(10, null, null, null)
 					.IsValid((uint)10)
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void AboveGreaterThanValue()
-				=> new RangeValidator_UInt32(null, null, 10, null)
+				=> new RangeValidator_UInt32(10, null, null, null)
 					.IsValid((uint)11)
 					.Should()
 					.BeTrue();
 
 			[Fact]
 			public void BelowGreaterThanOrEqualToValue()
-				=> new RangeValidator_UInt32(null, null, null, 10)
+				=> new RangeValidator_UInt32(null, 10, null, null)
 					.IsValid((uint)9)
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void EqualsGreaterThanOrEqualToValue()
-				=> new RangeValidator_UInt32(null, null, null, 10)
+				=> new RangeValidator_UInt32(null, 10, null, null)
 					.IsValid((uint)10)
 					.Should()
 					.BeTrue();
 
 			[Fact]
 			public void AboveGreaterThanOrEqualToValue()
-				=> new RangeValidator_UInt32(null, null, null, 10)
+				=> new RangeValidator_UInt32(null, 10, null, null)
 					.IsValid((uint)11)
 					.Should()
 					.BeTrue();
@@ -619,84 +619,84 @@ namespace Valigator.Tests.ValidatorTests
 
 			[Fact]
 			public void BelowLessThanValue()
-				=> new RangeValidator_Int64(10, null, null, null)
+				=> new RangeValidator_Int64(null, null, 10, null)
 					.IsValid((long)9)
 					.Should()
 					.BeTrue();
 
 			[Fact]
 			public void EqualsLessThanValue()
-				=> new RangeValidator_Int64(10, null, null, null)
+				=> new RangeValidator_Int64(null, null, 10, null)
 					.IsValid((long)10)
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void AboveLessThanValue()
-				=> new RangeValidator_Int64(10, null, null, null)
+				=> new RangeValidator_Int64(null, null, 10, null)
 					.IsValid((long)11)
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void BelowLessThanOrEqualToValue()
-				=> new RangeValidator_Int64(null, 10, null, null)
+				=> new RangeValidator_Int64(null, null, null, 10)
 					.IsValid((long)9)
 					.Should()
 					.BeTrue();
 
 			[Fact]
 			public void EqualsLessThanOrEqualToValue()
-				=> new RangeValidator_Int64(null, 10, null, null)
+				=> new RangeValidator_Int64(null, null, null, 10)
 					.IsValid((long)10)
 					.Should()
 					.BeTrue();
 
 			[Fact]
 			public void AboveLessThanOrEqualToValue()
-				=> new RangeValidator_Int64(null, 10, null, null)
+				=> new RangeValidator_Int64(null, null, null, 10)
 					.IsValid((long)11)
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void BelowGreaterThanValue()
-				=> new RangeValidator_Int64(null, null, 10, null)
+				=> new RangeValidator_Int64(10, null, null, null)
 					.IsValid((long)9)
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void EqualsGreaterThanValue()
-				=> new RangeValidator_Int64(null, null, 10, null)
+				=> new RangeValidator_Int64(10, null, null, null)
 					.IsValid((long)10)
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void AboveGreaterThanValue()
-				=> new RangeValidator_Int64(null, null, 10, null)
+				=> new RangeValidator_Int64(10, null, null, null)
 					.IsValid((long)11)
 					.Should()
 					.BeTrue();
 
 			[Fact]
 			public void BelowGreaterThanOrEqualToValue()
-				=> new RangeValidator_Int64(null, null, null, 10)
+				=> new RangeValidator_Int64(null, 10, null, null)
 					.IsValid((long)9)
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void EqualsGreaterThanOrEqualToValue()
-				=> new RangeValidator_Int64(null, null, null, 10)
+				=> new RangeValidator_Int64(null, 10, null, null)
 					.IsValid((long)10)
 					.Should()
 					.BeTrue();
 
 			[Fact]
 			public void AboveGreaterThanOrEqualToValue()
-				=> new RangeValidator_Int64(null, null, null, 10)
+				=> new RangeValidator_Int64(null, 10, null, null)
 					.IsValid((long)11)
 					.Should()
 					.BeTrue();
@@ -718,84 +718,84 @@ namespace Valigator.Tests.ValidatorTests
 
 			[Fact]
 			public void BelowLessThanValue()
-				=> new RangeValidator_UInt64(10, null, null, null)
+				=> new RangeValidator_UInt64(null, null, 10, null)
 					.IsValid((ulong)9)
 					.Should()
 					.BeTrue();
 
 			[Fact]
 			public void EqualsLessThanValue()
-				=> new RangeValidator_UInt64(10, null, null, null)
+				=> new RangeValidator_UInt64(null, null, 10, null)
 					.IsValid((ulong)10)
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void AboveLessThanValue()
-				=> new RangeValidator_UInt64(10, null, null, null)
+				=> new RangeValidator_UInt64(null, null, 10, null)
 					.IsValid((ulong)11)
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void BelowLessThanOrEqualToValue()
-				=> new RangeValidator_UInt64(null, 10, null, null)
+				=> new RangeValidator_UInt64(null, null, null, 10)
 					.IsValid((ulong)9)
 					.Should()
 					.BeTrue();
 
 			[Fact]
 			public void EqualsLessThanOrEqualToValue()
-				=> new RangeValidator_UInt64(null, 10, null, null)
+				=> new RangeValidator_UInt64(null, null, null, 10)
 					.IsValid((ulong)10)
 					.Should()
 					.BeTrue();
 
 			[Fact]
 			public void AboveLessThanOrEqualToValue()
-				=> new RangeValidator_UInt64(null, 10, null, null)
+				=> new RangeValidator_UInt64(null, null, null, 10)
 					.IsValid((ulong)11)
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void BelowGreaterThanValue()
-				=> new RangeValidator_UInt64(null, null, 10, null)
+				=> new RangeValidator_UInt64(10, null, null, null)
 					.IsValid((ulong)9)
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void EqualsGreaterThanValue()
-				=> new RangeValidator_UInt64(null, null, 10, null)
+				=> new RangeValidator_UInt64(10, null, null, null)
 					.IsValid((ulong)10)
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void AboveGreaterThanValue()
-				=> new RangeValidator_UInt64(null, null, 10, null)
+				=> new RangeValidator_UInt64(10, null, null, null)
 					.IsValid((ulong)11)
 					.Should()
 					.BeTrue();
 
 			[Fact]
 			public void BelowGreaterThanOrEqualToValue()
-				=> new RangeValidator_UInt64(null, null, null, 10)
+				=> new RangeValidator_UInt64(null, 10, null, null)
 					.IsValid((ulong)9)
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void EqualsGreaterThanOrEqualToValue()
-				=> new RangeValidator_UInt64(null, null, null, 10)
+				=> new RangeValidator_UInt64(null, 10, null, null)
 					.IsValid((ulong)10)
 					.Should()
 					.BeTrue();
 
 			[Fact]
 			public void AboveGreaterThanOrEqualToValue()
-				=> new RangeValidator_UInt64(null, null, null, 10)
+				=> new RangeValidator_UInt64(null, 10, null, null)
 					.IsValid((ulong)11)
 					.Should()
 					.BeTrue();
@@ -817,84 +817,84 @@ namespace Valigator.Tests.ValidatorTests
 
 			[Fact]
 			public void BelowLessThanValue()
-				=> new RangeValidator_Single(10, null, null, null)
+				=> new RangeValidator_Single(null, null, 10, null)
 					.IsValid((float)9)
 					.Should()
 					.BeTrue();
 
 			[Fact]
 			public void EqualsLessThanValue()
-				=> new RangeValidator_Single(10, null, null, null)
+				=> new RangeValidator_Single(null, null, 10, null)
 					.IsValid((float)10)
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void AboveLessThanValue()
-				=> new RangeValidator_Single(10, null, null, null)
+				=> new RangeValidator_Single(null, null, 10, null)
 					.IsValid((float)11)
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void BelowLessThanOrEqualToValue()
-				=> new RangeValidator_Single(null, 10, null, null)
+				=> new RangeValidator_Single(null, null, null, 10)
 					.IsValid((float)9)
 					.Should()
 					.BeTrue();
 
 			[Fact]
 			public void EqualsLessThanOrEqualToValue()
-				=> new RangeValidator_Single(null, 10, null, null)
+				=> new RangeValidator_Single(null, null, null, 10)
 					.IsValid((float)10)
 					.Should()
 					.BeTrue();
 
 			[Fact]
 			public void AboveLessThanOrEqualToValue()
-				=> new RangeValidator_Single(null, 10, null, null)
+				=> new RangeValidator_Single(null, null, null, 10)
 					.IsValid((float)11)
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void BelowGreaterThanValue()
-				=> new RangeValidator_Single(null, null, 10, null)
+				=> new RangeValidator_Single(10, null, null, null)
 					.IsValid((float)9)
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void EqualsGreaterThanValue()
-				=> new RangeValidator_Single(null, null, 10, null)
+				=> new RangeValidator_Single(10, null, null, null)
 					.IsValid((float)10)
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void AboveGreaterThanValue()
-				=> new RangeValidator_Single(null, null, 10, null)
+				=> new RangeValidator_Single(10, null, null, null)
 					.IsValid((float)11)
 					.Should()
 					.BeTrue();
 
 			[Fact]
 			public void BelowGreaterThanOrEqualToValue()
-				=> new RangeValidator_Single(null, null, null, 10)
+				=> new RangeValidator_Single(null, 10, null, null)
 					.IsValid((float)9)
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void EqualsGreaterThanOrEqualToValue()
-				=> new RangeValidator_Single(null, null, null, 10)
+				=> new RangeValidator_Single(null, 10, null, null)
 					.IsValid((float)10)
 					.Should()
 					.BeTrue();
 
 			[Fact]
 			public void AboveGreaterThanOrEqualToValue()
-				=> new RangeValidator_Single(null, null, null, 10)
+				=> new RangeValidator_Single(null, 10, null, null)
 					.IsValid((float)11)
 					.Should()
 					.BeTrue();
@@ -916,84 +916,84 @@ namespace Valigator.Tests.ValidatorTests
 
 			[Fact]
 			public void BelowLessThanValue()
-				=> new RangeValidator_Double(10, null, null, null)
+				=> new RangeValidator_Double(null, null, 10, null)
 					.IsValid((double)9)
 					.Should()
 					.BeTrue();
 
 			[Fact]
 			public void EqualsLessThanValue()
-				=> new RangeValidator_Double(10, null, null, null)
+				=> new RangeValidator_Double(null, null, 10, null)
 					.IsValid((double)10)
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void AboveLessThanValue()
-				=> new RangeValidator_Double(10, null, null, null)
+				=> new RangeValidator_Double(null, null, 10, null)
 					.IsValid((double)11)
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void BelowLessThanOrEqualToValue()
-				=> new RangeValidator_Double(null, 10, null, null)
+				=> new RangeValidator_Double(null, null, null, 10)
 					.IsValid((double)9)
 					.Should()
 					.BeTrue();
 
 			[Fact]
 			public void EqualsLessThanOrEqualToValue()
-				=> new RangeValidator_Double(null, 10, null, null)
+				=> new RangeValidator_Double(null, null, null, 10)
 					.IsValid((double)10)
 					.Should()
 					.BeTrue();
 
 			[Fact]
 			public void AboveLessThanOrEqualToValue()
-				=> new RangeValidator_Double(null, 10, null, null)
+				=> new RangeValidator_Double(null, null, null, 10)
 					.IsValid((double)11)
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void BelowGreaterThanValue()
-				=> new RangeValidator_Double(null, null, 10, null)
+				=> new RangeValidator_Double(10, null, null, null)
 					.IsValid((double)9)
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void EqualsGreaterThanValue()
-				=> new RangeValidator_Double(null, null, 10, null)
+				=> new RangeValidator_Double(10, null, null, null)
 					.IsValid((double)10)
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void AboveGreaterThanValue()
-				=> new RangeValidator_Double(null, null, 10, null)
+				=> new RangeValidator_Double(10, null, null, null)
 					.IsValid((double)11)
 					.Should()
 					.BeTrue();
 
 			[Fact]
 			public void BelowGreaterThanOrEqualToValue()
-				=> new RangeValidator_Double(null, null, null, 10)
+				=> new RangeValidator_Double(null, 10, null, null)
 					.IsValid((double)9)
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void EqualsGreaterThanOrEqualToValue()
-				=> new RangeValidator_Double(null, null, null, 10)
+				=> new RangeValidator_Double(null, 10, null, null)
 					.IsValid((double)10)
 					.Should()
 					.BeTrue();
 
 			[Fact]
 			public void AboveGreaterThanOrEqualToValue()
-				=> new RangeValidator_Double(null, null, null, 10)
+				=> new RangeValidator_Double(null, 10, null, null)
 					.IsValid((double)11)
 					.Should()
 					.BeTrue();
@@ -1015,84 +1015,84 @@ namespace Valigator.Tests.ValidatorTests
 
 			[Fact]
 			public void BelowLessThanValue()
-				=> new RangeValidator_Decimal(10, null, null, null)
+				=> new RangeValidator_Decimal(null, null, 10, null)
 					.IsValid((decimal)9)
 					.Should()
 					.BeTrue();
 
 			[Fact]
 			public void EqualsLessThanValue()
-				=> new RangeValidator_Decimal(10, null, null, null)
+				=> new RangeValidator_Decimal(null, null, 10, null)
 					.IsValid((decimal)10)
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void AboveLessThanValue()
-				=> new RangeValidator_Decimal(10, null, null, null)
+				=> new RangeValidator_Decimal(null, null, 10, null)
 					.IsValid((decimal)11)
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void BelowLessThanOrEqualToValue()
-				=> new RangeValidator_Decimal(null, 10, null, null)
+				=> new RangeValidator_Decimal(null, null, null, 10)
 					.IsValid((decimal)9)
 					.Should()
 					.BeTrue();
 
 			[Fact]
 			public void EqualsLessThanOrEqualToValue()
-				=> new RangeValidator_Decimal(null, 10, null, null)
+				=> new RangeValidator_Decimal(null, null, null, 10)
 					.IsValid((decimal)10)
 					.Should()
 					.BeTrue();
 
 			[Fact]
 			public void AboveLessThanOrEqualToValue()
-				=> new RangeValidator_Decimal(null, 10, null, null)
+				=> new RangeValidator_Decimal(null, null, null, 10)
 					.IsValid((decimal)11)
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void BelowGreaterThanValue()
-				=> new RangeValidator_Decimal(null, null, 10, null)
+				=> new RangeValidator_Decimal(10, null, null, null)
 					.IsValid((decimal)9)
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void EqualsGreaterThanValue()
-				=> new RangeValidator_Decimal(null, null, 10, null)
+				=> new RangeValidator_Decimal(10, null, null, null)
 					.IsValid((decimal)10)
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void AboveGreaterThanValue()
-				=> new RangeValidator_Decimal(null, null, 10, null)
+				=> new RangeValidator_Decimal(10, null, null, null)
 					.IsValid((decimal)11)
 					.Should()
 					.BeTrue();
 
 			[Fact]
 			public void BelowGreaterThanOrEqualToValue()
-				=> new RangeValidator_Decimal(null, null, null, 10)
+				=> new RangeValidator_Decimal(null, 10, null, null)
 					.IsValid((decimal)9)
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void EqualsGreaterThanOrEqualToValue()
-				=> new RangeValidator_Decimal(null, null, null, 10)
+				=> new RangeValidator_Decimal(null, 10, null, null)
 					.IsValid((decimal)10)
 					.Should()
 					.BeTrue();
 
 			[Fact]
 			public void AboveGreaterThanOrEqualToValue()
-				=> new RangeValidator_Decimal(null, null, null, 10)
+				=> new RangeValidator_Decimal(null, 10, null, null)
 					.IsValid((decimal)11)
 					.Should()
 					.BeTrue();
@@ -1114,84 +1114,84 @@ namespace Valigator.Tests.ValidatorTests
 
 			[Fact]
 			public void BelowLessThanValue()
-				=> new RangeValidator_DateTime(new DateTime(2000, 1, 1, 12, 0, 0), null, null, null)
+				=> new RangeValidator_DateTime(null, null, new DateTime(2000, 1, 1, 12, 0, 0), null)
 					.IsValid(new DateTime(1999, 1, 1, 12, 0, 0))
 					.Should()
 					.BeTrue();
 
 			[Fact]
 			public void EqualsLessThanValue()
-				=> new RangeValidator_DateTime(new DateTime(2000, 1, 1, 12, 0, 0), null, null, null)
+				=> new RangeValidator_DateTime(null, null, new DateTime(2000, 1, 1, 12, 0, 0), null)
 					.IsValid(new DateTime(2000, 1, 1, 12, 0, 0))
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void AboveLessThanValue()
-				=> new RangeValidator_DateTime(new DateTime(2000, 1, 1, 12, 0, 0), null, null, null)
+				=> new RangeValidator_DateTime(null, null, new DateTime(2000, 1, 1, 12, 0, 0), null)
 					.IsValid(new DateTime(2010, 1, 1, 12, 0, 0))
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void BelowLessThanOrEqualToValue()
-				=> new RangeValidator_DateTime(null, new DateTime(2000, 1, 1, 12, 0, 0), null, null)
+				=> new RangeValidator_DateTime(null, null, null, new DateTime(2000, 1, 1, 12, 0, 0))
 					.IsValid(new DateTime(1999, 1, 1, 12, 0, 0))
 					.Should()
 					.BeTrue();
 
 			[Fact]
 			public void EqualsLessThanOrEqualToValue()
-				=> new RangeValidator_DateTime(null, new DateTime(2000, 1, 1, 12, 0, 0), null, null)
+				=> new RangeValidator_DateTime(null, null, null, new DateTime(2000, 1, 1, 12, 0, 0))
 					.IsValid(new DateTime(2000, 1, 1, 12, 0, 0))
 					.Should()
 					.BeTrue();
 
 			[Fact]
 			public void AboveLessThanOrEqualToValue()
-				=> new RangeValidator_DateTime(null, new DateTime(2000, 1, 1, 12, 0, 0), null, null)
+				=> new RangeValidator_DateTime(null, null, null, new DateTime(2000, 1, 1, 12, 0, 0))
 					.IsValid(new DateTime(2010, 1, 1, 12, 0, 0))
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void BelowGreaterThanValue()
-				=> new RangeValidator_DateTime(null, null, new DateTime(2000, 1, 1, 12, 0, 0), null)
+				=> new RangeValidator_DateTime(new DateTime(2000, 1, 1, 12, 0, 0), null, null, null)
 					.IsValid(new DateTime(1999, 1, 1, 12, 0, 0))
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void EqualsGreaterThanValue()
-				=> new RangeValidator_DateTime(null, null, new DateTime(2000, 1, 1, 12, 0, 0), null)
+				=> new RangeValidator_DateTime(new DateTime(2000, 1, 1, 12, 0, 0), null, null, null)
 					.IsValid(new DateTime(2000, 1, 1, 12, 0, 0))
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void AboveGreaterThanValue()
-				=> new RangeValidator_DateTime(null, null, new DateTime(2000, 1, 1, 12, 0, 0), null)
+				=> new RangeValidator_DateTime(new DateTime(2000, 1, 1, 12, 0, 0), null, null, null)
 					.IsValid(new DateTime(2010, 1, 1, 12, 0, 0))
 					.Should()
 					.BeTrue();
 
 			[Fact]
 			public void BelowGreaterThanOrEqualToValue()
-				=> new RangeValidator_DateTime(null, null, null, new DateTime(2000, 1, 1, 12, 0, 0))
+				=> new RangeValidator_DateTime(null, new DateTime(2000, 1, 1, 12, 0, 0), null, null)
 					.IsValid(new DateTime(1999, 1, 1, 12, 0, 0))
 					.Should()
 					.BeFalse();
 
 			[Fact]
 			public void EqualsGreaterThanOrEqualToValue()
-				=> new RangeValidator_DateTime(null, null, null, new DateTime(2000, 1, 1, 12, 0, 0))
+				=> new RangeValidator_DateTime(null, new DateTime(2000, 1, 1, 12, 0, 0), null, null)
 					.IsValid(new DateTime(2000, 1, 1, 12, 0, 0))
 					.Should()
 					.BeTrue();
 
 			[Fact]
 			public void AboveGreaterThanOrEqualToValue()
-				=> new RangeValidator_DateTime(null, null, null, new DateTime(2000, 1, 1, 12, 0, 0))
+				=> new RangeValidator_DateTime(null, new DateTime(2000, 1, 1, 12, 0, 0), null, null)
 					.IsValid(new DateTime(2010, 1, 1, 12, 0, 0))
 					.Should()
 					.BeTrue();
