@@ -45,6 +45,6 @@ namespace Valigator.Core.ValueValidators
 		}
 
 		ValidationError IValueValidator<string>.GetError(string value, bool inverted)
-			=> new ValidationError(nameof(StringLengthValidator));
+			=> new ValidationError(nameof(StringLengthValidator), (this as IValueValidator<string>).GetDescriptor());
 	}
 }

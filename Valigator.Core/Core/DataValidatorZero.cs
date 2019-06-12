@@ -10,7 +10,7 @@ namespace Valigator.Core
 	public class DataValidator<TStateValidator, TValue> : IDataValidator<TValue>
 		where TStateValidator : IStateValidator<TValue>
 	{
-		public DataDescriptor DataDescriptor => new DataDescriptor(typeof(TValue), _stateValidator.GetDescriptor(), Array.Empty<IValueDescriptor>());
+		public DataDescriptor DataDescriptor => new DataDescriptor(typeof(TValue), _stateValidator.GetDescriptor(), _stateValidator.GetImplicitValueDescriptors());
 
 		private readonly TStateValidator _stateValidator;
 

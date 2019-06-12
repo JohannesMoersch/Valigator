@@ -24,6 +24,6 @@ namespace Valigator.Core.ValueValidators
 			=> _validator.Invoke(value);
 
 		ValidationError IValueValidator<TValue>.GetError(TValue value, bool inverted)
-			=> new ValidationError(_description);
+			=> new ValidationError(_description, (this as IValueValidator<TValue>).GetDescriptor());
 	}
 }

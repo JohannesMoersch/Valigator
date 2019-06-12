@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Functional;
 using Valigator.Core.StateDescriptors;
+using Valigator.Core.ValueDescriptors;
 using Valigator.Core.ValueValidators;
 
 namespace Valigator.Core.StateValidators
@@ -19,9 +20,12 @@ namespace Valigator.Core.StateValidators
 		IStateDescriptor IStateValidator<Option<TValue>>.GetDescriptor()
 			=> new OptionalStateDescriptor(false);
 
+		IValueDescriptor[] IStateValidator<Option<TValue>>.GetImplicitValueDescriptors()
+			=> new[] { new NotNullDescriptor() };
+
 		Result<Option<TValue>, ValidationError[]> IStateValidator<Option<TValue>>.Validate(object model, bool isSet, Option<TValue> value)
 			=> isSet
-				? value.Match(some => Result.Success<Option<TValue>, ValidationError[]>(Option.Some(some)), () => Result.Failure<Option<TValue>, ValidationError[]>(new[] { new ValidationError("") }))
+				? value.Match(some => Result.Success<Option<TValue>, ValidationError[]>(Option.Some(some)), () => Result.Failure<Option<TValue>, ValidationError[]>(new[] { new ValidationError("", new NotNullDescriptor()) }))
 				: Result.Success<Option<TValue>, ValidationError[]>(Option.None<TValue>());
 			
 

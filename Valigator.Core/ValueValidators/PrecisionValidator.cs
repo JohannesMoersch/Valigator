@@ -51,6 +51,6 @@ namespace Valigator.Core.ValueValidators
 			=> Math.Max((decimalValue - Math.Truncate(decimalValue)).ToString().Length - 2, 0);
 
 		ValidationError IValueValidator<decimal>.GetError(decimal value, bool inverted)
-			=> new ValidationError(nameof(PrecisionValidator));
+			=> new ValidationError(nameof(PrecisionValidator), (this as IValueValidator<decimal>).GetDescriptor());
 	}
 }

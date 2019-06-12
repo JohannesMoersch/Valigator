@@ -4,6 +4,7 @@ using System.Text;
 using Functional;
 using Valigator.Core.Helpers;
 using Valigator.Core.StateDescriptors;
+using Valigator.Core.ValueDescriptors;
 using Valigator.Core.ValueValidators;
 
 namespace Valigator.Core.StateValidators
@@ -19,6 +20,9 @@ namespace Valigator.Core.StateValidators
 
 		IStateDescriptor IStateValidator<Option<TValue[]>>.GetDescriptor()
 			=> new OptionalCollectionStateDescriptor(true, _item.DataDescriptor);
+
+		IValueDescriptor[] IStateValidator<Option<TValue[]>>.GetImplicitValueDescriptors()
+			=> Array.Empty<IValueDescriptor>();
 
 		Result<Option<TValue[]>, ValidationError[]> IStateValidator<Option<TValue[]>>.Validate(object model, bool isSet, Option<TValue[]> value)
 			=> isSet

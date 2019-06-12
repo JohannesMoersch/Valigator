@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Valigator.Core;
+using Valigator.Core.ValueDescriptors;
 
 namespace Valigator
 {
@@ -11,7 +12,12 @@ namespace Valigator
 
 		public Path Path { get; } = new Path();
 
-		public ValidationError(string message)
-			=> Message = message;
+		public IValueDescriptor ValueDescriptor { get; }
+
+		public ValidationError(string message, IValueDescriptor valueDescriptor)
+		{
+			Message = message;
+			ValueDescriptor = valueDescriptor;
+		}
 	}
 }

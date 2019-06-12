@@ -4,6 +4,7 @@ using System.Text;
 using Functional;
 using Valigator.Core.Helpers;
 using Valigator.Core.StateDescriptors;
+using Valigator.Core.ValueDescriptors;
 using Valigator.Core.ValueValidators;
 
 namespace Valigator.Core.StateValidators
@@ -56,10 +57,13 @@ namespace Valigator.Core.StateValidators
 		IStateDescriptor IStateValidator<TValue>.GetDescriptor()
 			=> new DefaultedStateDescriptor(false, GetDefaultValue());
 
+		IValueDescriptor[] IStateValidator<TValue>.GetImplicitValueDescriptors()
+			=> new[] { new NotNullDescriptor() };
+
 		Result<TValue, ValidationError[]> IStateValidator<TValue>.Validate(object model, bool isSet, TValue value)
 			=> !isSet || value != null
 				? Result.Success<TValue, ValidationError[]>(isSet ? value : GetDefaultValue())
-				: Result.Failure<TValue, ValidationError[]>(new[] { new ValidationError("Value cannot be null.") });
+				: Result.Failure<TValue, ValidationError[]>(new[] { new ValidationError("Value cannot be null.", new NotNullDescriptor()) });
 
 		public static implicit operator Data<TValue>(DefaultedStateValidator<TValue> stateValidator)
 			=> stateValidator.Data;

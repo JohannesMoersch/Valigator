@@ -33,6 +33,6 @@ namespace Valigator.Core.ValueValidators
 				: _optionSet.Contains(value);
 
 		ValidationError IValueValidator<TValue>.GetError(TValue value, bool inverted)
-			=> new ValidationError(nameof(InSetValidator<TValue>));
+			=> new ValidationError(nameof(InSetValidator<TValue>), (this as IValueValidator<TValue>).GetDescriptor());
 	}
 }

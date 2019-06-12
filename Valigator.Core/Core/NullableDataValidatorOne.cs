@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Functional;
 using Valigator.Core.Helpers;
@@ -11,7 +12,7 @@ namespace Valigator.Core
 		where TStateValidator : IStateValidator<Option<TValue>>
 		where TValueValidatorOne : IValueValidator<TValue>
 	{
-		public DataDescriptor DataDescriptor => new DataDescriptor(typeof(TValue), _stateValidator.GetDescriptor(), new[] { _valueValidatorOne.GetDescriptor() });
+		public DataDescriptor DataDescriptor => new DataDescriptor(typeof(TValue), _stateValidator.GetDescriptor(), _stateValidator.GetImplicitValueDescriptors().Append(_valueValidatorOne.GetDescriptor()).ToArray());
 
 		private readonly TStateValidator _stateValidator;
 
