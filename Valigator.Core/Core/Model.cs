@@ -57,23 +57,23 @@ namespace Valigator.Core
 		}
 
 		private static object _verifyModelLockObj = new object();
-		private static Func<TModel, ValidationError[][]> _verifyModel;
+		private static Func<TModel, ValidationError[][]> _verifyMethod;
 
 		public static Result<Unit, ValidationError[]> Verify(TModel model)
 		{
 			if (typeof(TModel).IsPrimitive || typeof(TModel).IsArray)
 				return Result.Unit<ValidationError[]>();
 
-			if (_verifyModel == null)
+			if (_verifyMethod == null)
 			{
 				lock (_verifyModelLockObj)
 				{
-					if (_verifyModel == null)
-						_verifyModel = CreateVerifyFunction();
+					if (_verifyMethod == null)
+						_verifyMethod = CreateVerifyFunction();
 				}
 			}
 
-			var validationErrors = _verifyModel
+			var validationErrors = _verifyMethod
 				.Invoke(model)
 				.OfType<ValidationError[]>()
 				.SelectMany(_ => _)
@@ -104,28 +104,28 @@ namespace Valigator.Core
 
 			var dataProperty = Expression.Property(modelExpression, property);
 
-			var result = Expression.Variable(typeof(Result<,>).MakeGenericType(property.PropertyType, typeof(ValidationError[])), "result");
+			var verifiedData = Expression.Assign(dataProperty, Expression.Call(dataProperty, methods.verify, modelExpression));
 
-			var assignedResult = Expression.Assign(result, Expression.Call(dataProperty, methods.verify, modelExpression));
+			var result = Expression.Variable(typeof(Result<,>).MakeGenericType(property.PropertyType.GetGenericArguments()[0], typeof(ValidationError[])), "result");
+
+			var assignedResult = Expression.Assign(result, Expression.Call(verifiedData, methods.tryGetValue));
 
 			var isSuccess = Expression.Call(methods.isSuccess, result);
-
-			var getSuccess = Expression.Call(methods.getSuccess, result);
 
 			var addPathsToErrorsMethod = _addPathsToErrorsMethod ?? (_addPathsToErrorsMethod = typeof(Model<object>).GetMethod(nameof(AddPropertyToErrors), BindingFlags.NonPublic | BindingFlags.Static));
 
 			var getFailure = Expression.Call(addPathsToErrorsMethod, Expression.Call(methods.getFailure, result), Expression.Constant(property.Name, typeof(string)));
 
-			var onSuccess = Expression.Block(Expression.Assign(dataProperty, getSuccess), Expression.Constant(null, typeof(ValidationError[])));
+			var onSuccess = Expression.Constant(null, typeof(ValidationError[]));
 
 			var condition = Expression.Condition(isSuccess, onSuccess, getFailure, typeof(ValidationError[]));
 
 			return Expression.Block(new[] { result }, assignedResult, condition);
 		}
 
-		private static readonly ConcurrentDictionary<Type, (MethodInfo verify, MethodInfo isSuccess, MethodInfo getSuccess, MethodInfo getFailure)> _getVerifySupportMethods = new ConcurrentDictionary<Type, (MethodInfo verify, MethodInfo isSuccess, MethodInfo getSuccess, MethodInfo getFailure)>();
+		private static readonly ConcurrentDictionary<Type, (MethodInfo verify, MethodInfo tryGetValue, MethodInfo isSuccess, MethodInfo getFailure)> _getVerifySupportMethods = new ConcurrentDictionary<Type, (MethodInfo verify, MethodInfo tryGetValue, MethodInfo isSuccess, MethodInfo getFailure)>();
 
-		private static (MethodInfo verify, MethodInfo isSuccess, MethodInfo getSuccess, MethodInfo getFailure) GetVerifySupportMethods(Type dataType)
+		private static (MethodInfo verify, MethodInfo tryGetValue, MethodInfo isSuccess, MethodInfo getFailure) GetVerifySupportMethods(Type dataType)
 		{
 			if (!_getVerifySupportMethods.TryGetValue(dataType, out var methods))
 			{
@@ -137,28 +137,25 @@ namespace Valigator.Core
 			return methods;
 		}
 
-		private static (MethodInfo verify, MethodInfo isSuccess, MethodInfo getSuccess, MethodInfo getFailure) CreateVerifySupportMethods(Type dataType)
+		private static (MethodInfo verify, MethodInfo tryGetValue, MethodInfo isSuccess, MethodInfo getFailure) CreateVerifySupportMethods(Type dataType)
 		{
 			var valueType = dataType.GetGenericArguments()[0];
 
 			var verify = dataType.GetMethod(nameof(Data<object>.Verify), new[] { typeof(object) });
 
-			var isSuccess = typeof(Model<TModel>).GetMethod(nameof(IsSuccess), BindingFlags.NonPublic | BindingFlags.Static).MakeGenericMethod(valueType);
+			var tryGetValue = dataType.GetMethod(nameof(Data<object>.TryGetValue), Type.EmptyTypes);
 
-			var getSuccess = typeof(Model<TModel>).GetMethod(nameof(GetSuccess), BindingFlags.NonPublic | BindingFlags.Static).MakeGenericMethod(valueType);
+			var isSuccess = typeof(Model<TModel>).GetMethod(nameof(IsSuccess), BindingFlags.NonPublic | BindingFlags.Static).MakeGenericMethod(valueType);
 
 			var getFailure = typeof(Model<TModel>).GetMethod(nameof(GetFailure), BindingFlags.NonPublic | BindingFlags.Static).MakeGenericMethod(valueType);
 
-			return (verify, isSuccess, getSuccess, getFailure);
+			return (verify, tryGetValue, isSuccess, getFailure);
 		}
 
-		private static bool IsSuccess<TValue>(Result<Data<TValue>, ValidationError[]> result)
+		private static bool IsSuccess<TValue>(Result<TValue, ValidationError[]> result)
 			=> result.Match(_ => true, _ => false);
 
-		private static Data<TValue> GetSuccess<TValue>(Result<Data<TValue>, ValidationError[]> result)
-			=> result.Match(_ => _, _ => default);
-
-		private static ValidationError[] GetFailure<TValue>(Result<Data<TValue>, ValidationError[]> result)
+		private static ValidationError[] GetFailure<TValue>(Result<TValue, ValidationError[]> result)
 			=> result.Match(_ => default, _ => _);
 
 		private static MethodInfo _addPathsToErrorsMethod;

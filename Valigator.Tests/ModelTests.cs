@@ -30,7 +30,9 @@ namespace Valigator.Tests
 		{
 			var descriptors = Model.GetPropertyDescriptors(new TestModel());
 
-			var result = Model.Verify(new TestModel());
+			var model = new TestModel();
+
+			var result = Model.Verify(model);
 		}
 	}
 }

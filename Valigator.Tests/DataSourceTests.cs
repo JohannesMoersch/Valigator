@@ -21,9 +21,10 @@ namespace Valigator.Tests
 				.Data
 				.WithValue(10)
 				.Verify(new object())
+				.TryGetValue()
 				.Match
 				(
-					s => success ? s.Value.Should().Be(10) : throw new Exception("Expected failure but found success."),
+					s => success ? s.Should().Be(10) : throw new Exception("Expected failure but found success."),
 					f => !success ? f.Should().NotBeNull() as object : throw new Exception("Expected success but found failure.")
 				);
 
@@ -35,9 +36,10 @@ namespace Valigator.Tests
 				.Data
 				.WithValue(10)
 				.Verify(new object())
+				.TryGetValue()
 				.Match
 				(
-					s => success ? s.Value.Should().Be(10) : throw new Exception("Expected failure but found success."),
+					s => success ? s.Should().Be(10) : throw new Exception("Expected failure but found success."),
 					f => !success ? f.Should().NotBeNull() as object : throw new Exception("Expected success but found failure.")
 				);
 
@@ -51,9 +53,10 @@ namespace Valigator.Tests
 				.Data
 				.WithValue(10)
 				.Verify(new object())
+				.TryGetValue()
 				.Match
 				(
-					s => success ? s.Value.Should().Be(10) : throw new Exception("Expected failure but found success."),
+					s => success ? s.Should().Be(10) : throw new Exception("Expected failure but found success."),
 					f => !success ? f.Should().NotBeNull() as object : throw new Exception("Expected success but found failure.")
 				);
 
@@ -67,9 +70,10 @@ namespace Valigator.Tests
 				.Data
 				.WithValue(10)
 				.Verify(new object())
+				.TryGetValue()
 				.Match
 				(
-					s => success ? s.Value.Should().Be(10) : throw new Exception("Expected failure but found success."),
+					s => success ? s.Should().Be(10) : throw new Exception("Expected failure but found success."),
 					f => !success ? f.Should().NotBeNull() as object : throw new Exception("Expected success but found failure.")
 				);
 
@@ -83,9 +87,10 @@ namespace Valigator.Tests
 				.Data
 				.WithValue(10)
 				.Verify(new object())
+				.TryGetValue()
 				.Match
 				(
-					s => success ? s.Value.Should().Be(10) : throw new Exception("Expected failure but found success."),
+					s => success ? s.Should().Be(10) : throw new Exception("Expected failure but found success."),
 					f => !success ? f.Should().NotBeNull() as object : throw new Exception("Expected success but found failure.")
 				);
 
@@ -99,9 +104,10 @@ namespace Valigator.Tests
 				.Data
 				.WithValue(10)
 				.Verify(new object())
+				.TryGetValue()
 				.Match
 				(
-					s => success ? s.Value.Should().Be(10) : throw new Exception("Expected failure but found success."),
+					s => success ? s.Should().Be(10) : throw new Exception("Expected failure but found success."),
 					f => !success ? f.Should().NotBeNull() as object : throw new Exception("Expected success but found failure.")
 				);
 
@@ -119,9 +125,10 @@ namespace Valigator.Tests
 				.Data
 				.WithValue(10)
 				.Verify(new object())
+				.TryGetValue()
 				.Match
 				(
-					s => success ? s.Value.Should().Be(10) : throw new Exception("Expected failure but found success."),
+					s => success ? s.Should().Be(10) : throw new Exception("Expected failure but found success."),
 					f => !success ? f.Should().NotBeNull() as object : throw new Exception("Expected success but found failure.")
 				);
 
@@ -139,9 +146,10 @@ namespace Valigator.Tests
 				.Data
 				.WithValue(10)
 				.Verify(new object())
+				.TryGetValue()
 				.Match
 				(
-					s => success ? s.Value.Should().Be(10) : throw new Exception("Expected failure but found success."),
+					s => success ? s.Should().Be(10) : throw new Exception("Expected failure but found success."),
 					f => !success ? f.Should().NotBeNull() as object : throw new Exception("Expected success but found failure.")
 				);
 
@@ -159,9 +167,10 @@ namespace Valigator.Tests
 				.Data
 				.WithValue(10)
 				.Verify(new object())
+				.TryGetValue()
 				.Match
 				(
-					s => success ? s.Value.Should().Be(10) : throw new Exception("Expected failure but found success."),
+					s => success ? s.Should().Be(10) : throw new Exception("Expected failure but found success."),
 					f => !success ? f.Should().NotBeNull() as object : throw new Exception("Expected success but found failure.")
 				);
 
@@ -179,9 +188,10 @@ namespace Valigator.Tests
 				.Data
 				.WithValue(10)
 				.Verify(new object())
+				.TryGetValue()
 				.Match
 				(
-					s => success ? s.Value.Should().Be(10) : throw new Exception("Expected failure but found success."),
+					s => success ? s.Should().Be(10) : throw new Exception("Expected failure but found success."),
 					f => !success ? f.Should().NotBeNull() as object : throw new Exception("Expected success but found failure.")
 				);
 
@@ -199,9 +209,10 @@ namespace Valigator.Tests
 				.Data
 				.WithValue(10)
 				.Verify(new object())
+				.TryGetValue()
 				.Match
 				(
-					s => success ? s.Value.Should().Be(10) : throw new Exception("Expected failure but found success."),
+					s => success ? s.Should().Be(10) : throw new Exception("Expected failure but found success."),
 					f => !success ? f.Should().NotBeNull() as object : throw new Exception("Expected success but found failure.")
 				);
 
@@ -219,9 +230,10 @@ namespace Valigator.Tests
 				.Data
 				.WithValue(10)
 				.Verify(new object())
+				.TryGetValue()
 				.Match
 				(
-					s => success ? s.Value.Should().Be(10) : throw new Exception("Expected failure but found success."),
+					s => success ? s.Should().Be(10) : throw new Exception("Expected failure but found success."),
 					f => !success ? f.Should().NotBeNull() as object : throw new Exception("Expected success but found failure.")
 				);
 
@@ -239,9 +251,10 @@ namespace Valigator.Tests
 				.Data
 				.WithValue(10)
 				.Verify(new object())
+				.TryGetValue()
 				.Match
 				(
-					s => success ? s.Value.Should().Be(10) : throw new Exception("Expected failure but found success."),
+					s => success ? s.Should().Be(10) : throw new Exception("Expected failure but found success."),
 					f => !success ? f.Should().NotBeNull() as object : throw new Exception("Expected success but found failure.")
 				);
 
@@ -259,9 +272,10 @@ namespace Valigator.Tests
 				.Data
 				.WithValue(10)
 				.Verify(new object())
+				.TryGetValue()
 				.Match
 				(
-					s => success ? s.Value.Should().Be(10) : throw new Exception("Expected failure but found success."),
+					s => success ? s.Should().Be(10) : throw new Exception("Expected failure but found success."),
 					f => !success ? f.Should().NotBeNull() as object : throw new Exception("Expected success but found failure.")
 				);
 	}

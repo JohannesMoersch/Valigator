@@ -63,7 +63,7 @@ namespace Valigator.Core.StateValidators
 		Result<TValue, ValidationError[]> IStateValidator<TValue>.Validate(object model, bool isSet, TValue value)
 			=> !isSet || value != null
 				? Result.Success<TValue, ValidationError[]>(isSet ? value : GetDefaultValue())
-				: Result.Failure<TValue, ValidationError[]>(new[] { new ValidationError("Value cannot be null.", new NotNullDescriptor()) });
+				: Result.Failure<TValue, ValidationError[]>(new[] { ValidationErrors.NotNull() });
 
 		public static implicit operator Data<TValue>(DefaultedStateValidator<TValue> stateValidator)
 			=> stateValidator.Data;

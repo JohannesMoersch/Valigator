@@ -16,6 +16,7 @@ namespace Valigator.Tests
 				.Data
 				.WithValue(5)
 				.Verify(new object())
+				.TryGetValue()
 				.AssertSuccess()
 				.Value
 				.Should()
@@ -28,6 +29,7 @@ namespace Valigator.Tests
 				.Data
 				.WithValue(null)
 				.Verify(new object())
+				.TryGetValue()
 				.AssertFailure();
 
 		[Fact]
@@ -36,6 +38,7 @@ namespace Valigator.Tests
 				.Required<int?>()
 				.Data
 				.Verify(new object())
+				.TryGetValue()
 				.AssertFailure();
 
 		[Fact]
@@ -46,8 +49,8 @@ namespace Valigator.Tests
 				.Data
 				.WithValue(5)
 				.Verify(new object())
+				.TryGetValue()
 				.AssertSuccess()
-				.Value
 				.AssertSome()
 				.Should()
 				.Be(5);
@@ -60,8 +63,8 @@ namespace Valigator.Tests
 				.Data
 				.WithValue(null)
 				.Verify(new object())
+				.TryGetValue()
 				.AssertSuccess()
-				.Value
 				.AssertNone();
 
 		[Fact]
@@ -71,6 +74,7 @@ namespace Valigator.Tests
 				.Nullable()
 				.Data
 				.Verify(new object())
+				.TryGetValue()
 				.AssertFailure();
 
 		[Fact]
@@ -80,8 +84,8 @@ namespace Valigator.Tests
 				.Data
 				.WithValue(5)
 				.Verify(new object())
+				.TryGetValue()
 				.AssertSuccess()
-				.Value
 				.AssertSome()
 				.Should()
 				.Be(5);
@@ -93,6 +97,7 @@ namespace Valigator.Tests
 				.Data
 				.WithValue(null)
 				.Verify(new object())
+				.TryGetValue()
 				.AssertFailure();
 
 		[Fact]
@@ -101,8 +106,8 @@ namespace Valigator.Tests
 				.Optional<int>()
 				.Data
 				.Verify(new object())
+				.TryGetValue()
 				.AssertSuccess()
-				.Value
 				.AssertNone();
 
 
@@ -114,8 +119,8 @@ namespace Valigator.Tests
 				.Data
 				.WithValue(5)
 				.Verify(new object())
+				.TryGetValue()
 				.AssertSuccess()
-				.Value
 				.AssertSome()
 				.Should()
 				.Be(5);
@@ -128,8 +133,8 @@ namespace Valigator.Tests
 				.Data
 				.WithValue(null)
 				.Verify(new object())
+				.TryGetValue()
 				.AssertSuccess()
-				.Value
 				.AssertNone();
 
 		[Fact]
@@ -139,8 +144,8 @@ namespace Valigator.Tests
 				.Nullable()
 				.Data
 				.Verify(new object())
+				.TryGetValue()
 				.AssertSuccess()
-				.Value
 				.AssertNone();
 
 		[Fact]
@@ -150,6 +155,7 @@ namespace Valigator.Tests
 				.Data
 				.WithValue(5)
 				.Verify(new object())
+				.TryGetValue()
 				.AssertSuccess()
 				.Value
 				.Should()
@@ -162,6 +168,7 @@ namespace Valigator.Tests
 				.Data
 				.WithValue(null)
 				.Verify(new object())
+				.TryGetValue()
 				.AssertFailure();
 
 		[Fact]
@@ -170,8 +177,8 @@ namespace Valigator.Tests
 				.Defaulted<int?>(10)
 				.Data
 				.Verify(new object())
+				.TryGetValue()
 				.AssertSuccess()
-				.Value
 				.Should()
 				.Be(10);
 
@@ -183,8 +190,8 @@ namespace Valigator.Tests
 				.Data
 				.WithValue(5)
 				.Verify(new object())
+				.TryGetValue()
 				.AssertSuccess()
-				.Value
 				.AssertSome()
 				.Should()
 				.Be(5);
@@ -197,8 +204,8 @@ namespace Valigator.Tests
 				.Data
 				.WithValue(null)
 				.Verify(new object())
+				.TryGetValue()
 				.AssertSuccess()
-				.Value
 				.AssertNone();
 
 		[Fact]
@@ -208,8 +215,8 @@ namespace Valigator.Tests
 				.Nullable()
 				.Data
 				.Verify(new object())
+				.TryGetValue()
 				.AssertSuccess()
-				.Value
 				.AssertSome()
 				.Should()
 				.Be(10);

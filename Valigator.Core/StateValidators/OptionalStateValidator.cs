@@ -25,7 +25,7 @@ namespace Valigator.Core.StateValidators
 
 		Result<Option<TValue>, ValidationError[]> IStateValidator<Option<TValue>>.Validate(object model, bool isSet, Option<TValue> value)
 			=> isSet
-				? value.Match(some => Result.Success<Option<TValue>, ValidationError[]>(Option.Some(some)), () => Result.Failure<Option<TValue>, ValidationError[]>(new[] { new ValidationError("", new NotNullDescriptor()) }))
+				? value.Match(some => Result.Success<Option<TValue>, ValidationError[]>(Option.Some(some)), () => Result.Failure<Option<TValue>, ValidationError[]>(new[] { ValidationErrors.NotNull() }))
 				: Result.Success<Option<TValue>, ValidationError[]>(Option.None<TValue>());
 			
 

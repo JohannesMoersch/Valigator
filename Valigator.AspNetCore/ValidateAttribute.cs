@@ -79,9 +79,10 @@ namespace Valigator
 			=> data
 				.WithValue((TValue)value)
 				.Verify(_obj)
+				.TryGetValue()
 				.Match
 				(
-					v => Result.Success<object, ValidationError[]>(v.Value),
+					v => Result.Success<object, ValidationError[]>(v),
 					Result.Failure<object, ValidationError[]>
 				);
 
