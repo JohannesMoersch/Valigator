@@ -26,7 +26,7 @@ namespace Valigator.TestApi.Controllers
 
 	public class TestAttribute : ValidateAttribute, ValidateAttribute.IValidateType<int>
 	{
-		public Data<int> GetData() => Data.Required<int>().InRange(greaterThan: 5, lessThan: 10);
+		public Data<int> GetData() => Data.Defaulted<int>(7).InRange(greaterThan: 5, lessThan: 10);
 	}
 
 	[Route("api/[controller]")]
@@ -42,7 +42,7 @@ namespace Valigator.TestApi.Controllers
 
 		// GET api/values/5
 		[HttpGet("{id}")]
-		public ActionResult<string> Get([Test][FromRoute(Name = "id")]int value, [Test][FromQuery(Name = "other")]int stuff = 10)
+		public ActionResult<string> Get([Test][FromRoute(Name = "id")]int value, [Test][FromQuery(Name = "other")]int stuff, [Test][FromQuery]int things = 7)
 		{
 			return "value";
 		}

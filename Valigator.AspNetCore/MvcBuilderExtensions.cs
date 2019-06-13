@@ -10,7 +10,7 @@ namespace Valigator
 {
 	public static class MvcBuilderExtensions
 	{
-		public static IMvcBuilder AddValigator(this IMvcBuilder builder, Func<ValidationError[], IActionResult> inputErrorCreater, Func<ValidationError[], IActionResult> resultErrorCreator)
+		public static IMvcBuilder AddValigator(this IMvcBuilder builder, Func<ModelError[], IActionResult> inputErrorCreater, Func<ValidationError[], IActionResult> resultErrorCreator)
 			=> builder
 				.AddMvcOptions(options =>
 				{

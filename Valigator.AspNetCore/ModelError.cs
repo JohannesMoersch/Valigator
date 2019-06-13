@@ -7,13 +7,13 @@ namespace Valigator.AspNetCore
 {
 	public class ModelError
 	{
-		public Option<string> Name { get; }
+		public string Name { get; }
 
 		public ModelSource Source { get; }
 
 		public ValidationError ValidationError { get; }
 
-		public ModelError(Option<string> name, ModelSource source, ValidationError validationError)
+		public ModelError(string name, ModelSource source, ValidationError validationError)
 		{
 			Name = name;
 			Source = source;

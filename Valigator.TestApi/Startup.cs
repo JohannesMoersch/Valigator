@@ -29,7 +29,7 @@ namespace Valigator.TestApi
 			services
 				.AddMvc()
 				.SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
-				.AddValigator(errors => new JsonResult(errors.Select(e => new { Path = e.Path.ToString(), Message = e.Message }).ToArray()), errors => new JsonResult(errors.Select(e => new { Path = e.Path.ToString(), Message = e.Message }).ToArray()));
+				.AddValigator(errors => new JsonResult(errors), errors => new JsonResult(errors.Select(e => new { Path = e.Path.ToString(), Message = e.Message }).ToArray()));
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
