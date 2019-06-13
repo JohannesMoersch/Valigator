@@ -7,7 +7,7 @@ namespace Valigator
 {
 	public struct Data<TValue>
 	{
-		private enum State
+		private enum State : byte
 		{
 			Uninitialized,
 			UnSet,
@@ -16,11 +16,11 @@ namespace Valigator
 			Invalid
 		}
 
+		private readonly TValue _value;
+
 		private readonly State _state;
 
 		private readonly IDataValidator<TValue> _dataValidator;
-
-		private readonly TValue _value;
 
 		private readonly ValidationError[] _validationErrors;
 
@@ -75,7 +75,12 @@ namespace Valigator
 			=> new Data<TValue>(State.Invalid, default, _dataValidator, validationErrors);
 
 		public Result<TValue, ValidationError[]> TryGetValue()
-			=> Result.Create(_state == State.Valid, Value, _validationErrors);
+		{
+			if (_state == State.Invalid)
+				return Result.Failure<TValue, ValidationError[]>(_validationErrors);
+
+			return Result.Success<TValue, ValidationError[]>(Value);
+		}
 
 		public Data<TValue> Verify(object model)
 		{
@@ -85,7 +90,7 @@ namespace Valigator
 			if (_state == State.Uninitialized)
 				throw new DataNotInitializedException();
 
-			if (_state == State.Valid)
+			if (_state == State.Valid || _state == State.Invalid)
 				throw new DataAlreadyVerifiedException();
 
 			if (_dataValidator.Validate(model, _state == State.Set, _value).TryGetValue(out var success, out var failure))

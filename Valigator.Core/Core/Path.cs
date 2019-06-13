@@ -25,10 +25,10 @@ namespace Valigator.Core
 		internal Path(int index) 
 			=> _index = index;
 
-		internal Path AddProperty(string property)
+		public Path AddProperty(string property)
 			=> Root._parent = new Path(property);
 
-		internal Path AddIndex(int index)
+		public Path AddIndex(int index)
 			=> Root._parent = new Path(index);
 
 		public override string ToString()

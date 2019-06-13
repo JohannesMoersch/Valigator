@@ -31,7 +31,7 @@ namespace Valigator.Tests
 
 		[Fact]
 		public void ValueSetAndVerified()
-			=> Data.Required<int>().Data.WithValue(5).Verify(new object()).AssertSuccess().Value.Should().Be(5);
+			=> Data.Required<int>().Data.WithValue(5).Verify(new object()).TryGetValue().AssertSuccess().Should().Be(5);
 
 		[Fact]
 		public void ValueAlreadySet()
@@ -39,7 +39,7 @@ namespace Valigator.Tests
 
 		[Fact]
 		public void ValueAlreadyVerified()
-			=> Assert.Throws<DataAlreadyVerifiedException>(() => Data.Required<int>().Data.WithValue(5).Verify(new object()).AssertSuccess().Verify(new object()));
+			=> Assert.Throws<DataAlreadyVerifiedException>(() => Data.Required<int>().Data.WithValue(5).Verify(new object()).Verify(new object()));
 
 		[Fact]
 		public void ValueNotInitializedGetDataDescriptor()
@@ -55,6 +55,6 @@ namespace Valigator.Tests
 
 		[Fact]
 		public void ValueSetAndVerifiedGetDataDescriptor()
-			=> Data.Required<int>().Data.WithValue(5).Verify(new object()).AssertSuccess().DataDescriptor.Should().NotBeNull();
+			=> Data.Required<int>().Data.WithValue(5).Verify(new object()).DataDescriptor.Should().NotBeNull();
 	}
 }
