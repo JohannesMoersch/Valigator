@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>0.17.0</Version>
+    <Version>0.18.0</Version>
     <Description>This package adds support for serializing and deserializing valigator types to Newtonsoft.Json.</Description>
     <Copyright>Copyright © 2019 Johannes Moersch</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
