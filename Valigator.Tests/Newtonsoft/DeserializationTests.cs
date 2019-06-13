@@ -25,15 +25,15 @@ namespace Valigator.Tests.Newtonsoft
 
 			public Data<Option<Option<SmallClass>[]>> CollectionB { get; set; } = Data.Collection<SmallClass>(o => o.Nullable()).Required().Nullable();
 
-			public Data<Option<Option<SmallClass>[]>> CollectionC { get; set; } = Data.Collection<SmallClass>(o => o.Nullable()).Required().Nullable();
+			public Data<int[]> CollectionC { get; set; } = Data.Collection<int>().Required();
 		}
 
 		[Fact]
 		public void Stuff()
 		{
-			var model = JsonConvert.DeserializeObject<TestModel>("{\"Things\": 15, \"Stuff\": null, \"CollectionA\": [ { \"A\": 5 }, null ], \"CollectionB\": null, \"CollectionC\": [ { \"A\": 5 }, null ]}", new ValigatorConverter());
+			var model = JsonConvert.DeserializeObject<TestModel>("{\"Things\": 15, \"Stuff\": null, \"CollectionA\": [ { \"A\": 5 }, null ], \"CollectionB\": null, \"CollectionC\": [ 5, 3 ]}", new ValigatorConverter());
 
-			Model.Verify(model);
+			var errors = Model.Verify(model);
 
 			var json = JsonConvert.SerializeObject(model, new ValigatorConverter());
 		}

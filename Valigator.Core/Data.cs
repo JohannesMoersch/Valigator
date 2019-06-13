@@ -7,34 +7,25 @@ namespace Valigator
 {
 	public struct Data<TValue>
 	{
-		private enum State : byte
-		{
-			Uninitialized,
-			UnSet,
-			Set,
-			Valid,
-			Invalid
-		}
-
 		private readonly TValue _value;
-
-		private readonly State _state;
 
 		private readonly IDataValidator<TValue> _dataValidator;
 
 		private readonly ValidationError[] _validationErrors;
 
+		public DataState State { get; }
+
 		public TValue Value
 		{
 			get
 			{
-				if (_state == State.Uninitialized)
+				if (State == DataState.Uninitialized)
 					throw new DataNotInitializedException();
 
-				if (_state == State.UnSet || _state == State.Set)
+				if (State == DataState.UnSet || State == DataState.Set)
 					throw new DataNotVerifiedException();
 
-				if (_state == State.Invalid)
+				if (State == DataState.Invalid)
 					throw new DataFailedVerificationException();
 
 				return _value;
@@ -42,19 +33,19 @@ namespace Valigator
 		}
 
 		public DataDescriptor DataDescriptor
-			=> _state != State.Uninitialized ? _dataValidator.DataDescriptor : throw new DataNotInitializedException();
+			=> State != DataState.Uninitialized ? _dataValidator.DataDescriptor : throw new DataNotInitializedException();
 
 		public Data(IDataValidator<TValue> dataValidator)
 		{
-			_state = State.UnSet;
+			State = DataState.UnSet;
 			_dataValidator = dataValidator ?? throw new ArgumentNullException(nameof(dataValidator));
 			_value = default;
 			_validationErrors = null;
 		}
 
-		private Data(State state, TValue value, IDataValidator<TValue> dataValidator, ValidationError[] validationErrors)
+		private Data(DataState state, TValue value, IDataValidator<TValue> dataValidator, ValidationError[] validationErrors)
 		{
-			_state = state;
+			State = state;
 			_dataValidator = dataValidator;
 			_value = value;
 			_validationErrors = validationErrors;
@@ -62,21 +53,21 @@ namespace Valigator
 
 		public Data<TValue> WithValue(TValue value)
 		{
-			if (_state == State.UnSet)
-				return new Data<TValue>(State.Set, value, _dataValidator, null);
+			if (State == DataState.UnSet)
+				return new Data<TValue>(DataState.Set, value, _dataValidator, null);
 
-			if (_state == State.Uninitialized)
+			if (State == DataState.Uninitialized)
 				throw new DataNotInitializedException();
 
 			throw new DataAlreadySetException();
 		}
 
 		public Data<TValue> WithErrors(params ValidationError[] validationErrors)
-			=> new Data<TValue>(State.Invalid, default, _dataValidator, validationErrors);
+			=> new Data<TValue>(DataState.Invalid, default, _dataValidator, validationErrors);
 
 		public Result<TValue, ValidationError[]> TryGetValue()
 		{
-			if (_state == State.Invalid)
+			if (State == DataState.Invalid)
 				return Result.Failure<TValue, ValidationError[]>(_validationErrors);
 
 			return Result.Success<TValue, ValidationError[]>(Value);
@@ -87,14 +78,14 @@ namespace Valigator
 			if (model == null)
 				throw new ArgumentNullException(nameof(model));
 
-			if (_state == State.Uninitialized)
+			if (State == DataState.Uninitialized)
 				throw new DataNotInitializedException();
 
-			if (_state == State.Valid || _state == State.Invalid)
+			if (State == DataState.Valid || State == DataState.Invalid)
 				throw new DataAlreadyVerifiedException();
 
-			if (_dataValidator.Validate(model, _state == State.Set, _value).TryGetValue(out var success, out var failure))
-				return new Data<TValue>(State.Valid, success, _dataValidator, null);
+			if (_dataValidator.Validate(model, State == DataState.Set, _value).TryGetValue(out var success, out var failure))
+				return new Data<TValue>(DataState.Valid, success, _dataValidator, null);
 			else
 				return WithErrors(failure);
 		}
