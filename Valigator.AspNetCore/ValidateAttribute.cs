@@ -20,7 +20,7 @@ namespace Valigator
 
 		private static readonly object _obj = new object();
 
-		private static readonly ConcurrentDictionary<Type, Func<ValidateAttribute, object, Result<object, ValidationError[]>>> _verifyMethods = new ConcurrentDictionary<Type, Func<ValidateAttribute, object, Result<object, ValidationError[]>>>();
+		private static readonly ConcurrentDictionary<Type, Func<ValidateAttribute, bool, object, Result<object, ValidationError[]>>> _verifyMethods = new ConcurrentDictionary<Type, Func<ValidateAttribute, bool, object, Result<object, ValidationError[]>>>();
 
 		private static readonly ConcurrentDictionary<Type, Func<ValidateAttribute, DataDescriptor>> _getDescriptorMethods = new ConcurrentDictionary<Type, Func<ValidateAttribute, DataDescriptor>>();
 
@@ -52,9 +52,14 @@ namespace Valigator
 		public Result<object, ValidationError[]> Verify(Type type, object value)
 			=> _verifyMethods
 				.GetOrAdd(type, t => GenerateVerifyMethod(type))
-				.Invoke(this, value);
+				.Invoke(this, true, value);
 
-		private static Func<ValidateAttribute, object, Result<object, ValidationError[]>> GenerateVerifyMethod(Type type)
+		public Result<object, ValidationError[]> Verify(Type type)
+			=> _verifyMethods
+				.GetOrAdd(type, t => GenerateVerifyMethod(type))
+				.Invoke(this, false, null);
+
+		private static Func<ValidateAttribute, bool, object, Result<object, ValidationError[]>> GenerateVerifyMethod(Type type)
 		{
 			var validateType = typeof(IValidateType<>).MakeGenericType(type);
 
@@ -63,21 +68,21 @@ namespace Valigator
 			var verifyMethod = typeof(ValidateAttribute).GetMethod("Verify", BindingFlags.NonPublic | BindingFlags.Static).MakeGenericMethod(type);
 
 			var attributeParameter = Expression.Parameter(typeof(ValidateAttribute), "attribute");
+			var isSetParameter = Expression.Parameter(typeof(bool), "isSet");
 			var valueParameter = Expression.Parameter(typeof(object), "value");
 
 			var validate = Expression.Call(validateMethod, attributeParameter);
 
 			var data = Expression.Call(Expression.Convert(attributeParameter, validateType), getDataMethod);
-			var verified = Expression.Call(verifyMethod, data, valueParameter);
+			var verified = Expression.Call(verifyMethod, data, isSetParameter, valueParameter);
 
 			var block = Expression.Block(validate, verified);
 
-			return Expression.Lambda<Func<ValidateAttribute, object, Result<object, ValidationError[]>>>(block, attributeParameter, valueParameter).Compile();
+			return Expression.Lambda<Func<ValidateAttribute, bool, object, Result<object, ValidationError[]>>>(block, attributeParameter, isSetParameter, valueParameter).Compile();
 		}
 
-		private static Result<object, ValidationError[]> Verify<TValue>(Data<TValue> data, object value)
-			=> data
-				.WithValue((TValue)value)
+		private static Result<object, ValidationError[]> Verify<TValue>(Data<TValue> data, bool isSet, object value)
+			=> (isSet ? data.WithValue((TValue)value) : data)
 				.Verify(_obj)
 				.TryGetValue()
 				.Match

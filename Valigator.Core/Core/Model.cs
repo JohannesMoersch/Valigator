@@ -104,11 +104,17 @@ namespace Valigator.Core
 
 			var dataProperty = Expression.Property(modelExpression, property);
 
+			var isValid = Expression.Equal(Expression.Property(dataProperty, nameof(Data<object>.State)), Expression.Constant(DataState.Valid, typeof(DataState)));
+
+			var isInvalid = Expression.Equal(Expression.Property(dataProperty, nameof(Data<object>.State)), Expression.Constant(DataState.Invalid, typeof(DataState)));
+
 			var verifiedData = Expression.Assign(dataProperty, Expression.Call(dataProperty, methods.verify, modelExpression));
+
+			var data = Expression.Condition(Expression.OrElse(isValid, isInvalid), dataProperty, verifiedData);
 
 			var result = Expression.Variable(typeof(Result<,>).MakeGenericType(property.PropertyType.GetGenericArguments()[0], typeof(ValidationError[])), "result");
 
-			var assignedResult = Expression.Assign(result, Expression.Call(verifiedData, methods.tryGetValue));
+			var assignedResult = Expression.Assign(result, Expression.Call(data, methods.tryGetValue));
 
 			var isSuccess = Expression.Call(methods.isSuccess, result);
 
