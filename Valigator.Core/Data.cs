@@ -9,9 +9,7 @@ namespace Valigator
 	{
 		private readonly TValue _value;
 
-		private readonly IDataValidator<TValue> _dataValidator;
-
-		private readonly ValidationError[] _validationErrors;
+		private readonly IDataValidatorOrErrors<TValue> _dataValidator;
 
 		public DataState State { get; }
 
@@ -35,26 +33,24 @@ namespace Valigator
 		public DataDescriptor DataDescriptor
 			=> State != DataState.Uninitialized ? _dataValidator.DataDescriptor : throw new DataNotInitializedException();
 
-		public Data(IDataValidator<TValue> dataValidator)
+		public Data(IDataValidatorOrErrors<TValue> dataValidator)
 		{
 			State = DataState.UnSet;
 			_dataValidator = dataValidator ?? throw new ArgumentNullException(nameof(dataValidator));
 			_value = default;
-			_validationErrors = null;
 		}
 
-		private Data(DataState state, TValue value, IDataValidator<TValue> dataValidator, ValidationError[] validationErrors)
+		private Data(DataState state, TValue value, IDataValidatorOrErrors<TValue> dataValidator)
 		{
 			State = state;
 			_dataValidator = dataValidator;
 			_value = value;
-			_validationErrors = validationErrors;
 		}
 
 		public Data<TValue> WithValue(TValue value)
 		{
 			if (State == DataState.UnSet)
-				return new Data<TValue>(DataState.Set, value, _dataValidator, null);
+				return new Data<TValue>(DataState.Set, value, _dataValidator);
 
 			if (State == DataState.Uninitialized)
 				throw new DataNotInitializedException();
@@ -63,12 +59,12 @@ namespace Valigator
 		}
 
 		public Data<TValue> WithErrors(params ValidationError[] validationErrors)
-			=> new Data<TValue>(DataState.Invalid, default, _dataValidator, validationErrors);
+			=> new Data<TValue>(DataState.Invalid, default, new DataValidatorAndErrors<TValue>(_dataValidator, validationErrors));
 
 		public Result<TValue, ValidationError[]> TryGetValue()
 		{
 			if (State == DataState.Invalid)
-				return Result.Failure<TValue, ValidationError[]>(_validationErrors);
+				return Result.Failure<TValue, ValidationError[]>(_dataValidator.GetErrors().Match(_ => _, () => default));
 
 			return Result.Success<TValue, ValidationError[]>(Value);
 		}
@@ -85,7 +81,7 @@ namespace Valigator
 				throw new DataAlreadyVerifiedException();
 
 			if (_dataValidator.Validate(model, State == DataState.Set, _value).TryGetValue(out var success, out var failure))
-				return new Data<TValue>(DataState.Valid, success, _dataValidator, null);
+				return new Data<TValue>(DataState.Valid, success, _dataValidator);
 			else
 				return WithErrors(failure);
 		}

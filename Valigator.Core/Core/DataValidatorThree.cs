@@ -8,7 +8,7 @@ using Valigator.Core.ValueDescriptors;
 
 namespace Valigator.Core
 {
-	public class DataValidator<TStateValidator, TValueValidatorOne, TValueValidatorTwo, TValueValidatorThree, TValue> : IDataValidator<TValue>
+	public class DataValidator<TStateValidator, TValueValidatorOne, TValueValidatorTwo, TValueValidatorThree, TValue> : IDataValidatorOrErrors<TValue>
 		where TStateValidator : IStateValidator<TValue>
 		where TValueValidatorOne : IValueValidator<TValue>
 		where TValueValidatorTwo : IValueValidator<TValue>
@@ -52,5 +52,8 @@ namespace Valigator.Core
 
 			return Result.Failure<TValue, ValidationError[]>(failure);
 		}
+
+		public Option<ValidationError[]> GetErrors()
+			=> Option.None<ValidationError[]>();
 	}
 }

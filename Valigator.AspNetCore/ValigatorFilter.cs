@@ -28,14 +28,14 @@ namespace Valigator.AspNetCore
 			{
 				var validateAttributes = GetValidateAttributes(parameter);
 
-				if (!validateAttributes.Any())
-					continue;
-
 				var (isSet, value) = GetValueForParameter(context, parameter);
 
-				var (verifiedValue, errors) = VerifyValueForParameter(parameter, validateAttributes, isSet, value);
+				IEnumerable<ValidationError> errors = null;
 
-				context.ActionArguments[parameter.Name] = verifiedValue;
+				if (validateAttributes.Any())
+					(context.ActionArguments[parameter.Name], errors) = VerifyValueForParameter(parameter, validateAttributes, isSet, value);
+				else if (isSet)
+					errors = Model.Verify(value).Match(_ => null, _ => _);
 
 				if (errors != null)
 					(modelErrors ?? (modelErrors = new List<ModelError>())).AddRange(CreateModelErrorsForParameter(parameter, errors));

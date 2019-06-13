@@ -42,7 +42,7 @@ namespace Valigator.TestApi.Controllers
 
 		// GET api/values/5
 		[HttpGet("{id}")]
-		public ActionResult<string> Get([Test][FromRoute(Name = "id")]int value, [Test][FromQuery(Name = "other")]int stuff, [Test][FromQuery]int things = 7)
+		public ActionResult<string> Get([Test][FromRoute(Name = "id")]int value, [Test][FromQuery(Name = "other")]int stuff, [FromQuery]Stuff things)
 		{
 			return "value";
 		}
