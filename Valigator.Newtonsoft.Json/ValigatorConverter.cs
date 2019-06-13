@@ -3,11 +3,17 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Functional;
 using Newtonsoft.Json;
+using Valigator.Core;
 
 namespace Valigator.Newtonsoft.Json
 {
 	public class ValigatorConverter : JsonConverter
 	{
+		private class SupportsNull<TValue>
+		{
+			public static bool Value { get; } = typeof(TValue).IsClass || (typeof(TValue).IsConstructedGenericType && typeof(TValue).GetGenericTypeDefinition() == typeof(Option<>));
+		}
+
 		private readonly static ConcurrentDictionary<Type, bool> _typeCache = new ConcurrentDictionary<Type, bool>();
 
 		public override bool CanConvert(Type objectType)
@@ -17,20 +23,36 @@ namespace Valigator.Newtonsoft.Json
 			=> Read(reader, (dynamic)existingValue, serializer);
 
 		private object Read<TValue>(JsonReader reader, Data<TValue> existingValue, JsonSerializer serializer)
-			=> existingValue.WithValue(serializer.Deserialize<TValue>(reader));
+		{
+			if (reader.TokenType == JsonToken.Null && !SupportsNull<TValue>.Value)
+				return existingValue.WithErrors(ValidationErrors.NotNull());
+
+			return existingValue.WithValue(serializer.Deserialize<TValue>(reader));
+		}
 
 		private object Read<TValue>(JsonReader reader, Data<Option<TValue>> existingValue, JsonSerializer serializer)
 		{
-			Option<TValue> value = default;
+			if (reader.TokenType == JsonToken.Null)
+				return existingValue.WithValue(Option.None<TValue>());
 
-			if (reader.TokenType != JsonToken.Null)
-				value = Option.Some(serializer.Deserialize<TValue>(reader));
+			var value = serializer.Deserialize<TValue>(reader);
 
-			return existingValue.WithValue(value);
+			return existingValue.WithValue();
+		}
+
+		private object Read<TValue>(JsonReader reader, Data<TValue[]> existingValue, JsonSerializer serializer)
+		{
+			if (reader.TokenType == JsonToken.Null)
+				return existingValue.WithNull();
+
+			return existingValue.WithValue(serializer.Deserialize<TValue>(reader));
 		}
 
 		private object Read<TValue>(JsonReader reader, Data<Option<TValue>[]> existingValue, JsonSerializer serializer)
 		{
+			if (reader.TokenType == JsonToken.Null)
+				return existingValue.WithNull();
+
 			var values = new List<Option<TValue>>();
 
 			while (reader.Read() && reader.TokenType != JsonToken.EndArray)

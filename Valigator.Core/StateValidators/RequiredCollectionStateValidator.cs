@@ -30,7 +30,7 @@ namespace Valigator.Core.StateValidators
 
 		Result<TValue[], ValidationError[]> IStateValidator<TValue[]>.Validate(object model, bool isSet, TValue[] value)
 			=> isSet
-				? (value != null ? _item.VerifyCollection(model, value) : Result.Failure<TValue[], ValidationError[]>(new[] { new ValidationError("", new NotNullDescriptor()) }))
+				? (value != null ? _item.VerifyCollection(model, value) : Result.Failure<TValue[], ValidationError[]>(new[] { ValidationErrors.NotNull() }))
 				: Result.Failure<TValue[], ValidationError[]>(new[] { new ValidationError("", new RequiredDescriptor()) });
 
 		public static implicit operator Data<TValue[]>(RequiredCollectionStateValidator<TValue> stateValidator)

@@ -30,7 +30,7 @@ namespace Valigator.Core.StateValidators
 
 		Result<Option<TValue[]>, ValidationError[]> IStateValidator<Option<TValue[]>>.Validate(object model, bool isSet, Option<TValue[]> value)
 			=> isSet
-				? (value.TryGetValue(out var v) ? _item.VerifyCollection(model, v).Select(Option.Some) : Result.Failure<Option<TValue[]>, ValidationError[]>(new[] { new ValidationError("", new NotNullDescriptor()) }))
+				? (value.TryGetValue(out var v) ? _item.VerifyCollection(model, v).Select(Option.Some) : Result.Failure<Option<TValue[]>, ValidationError[]>(new[] { ValidationErrors.NotNull() }))
 				: Result.Success<Option<TValue[]>, ValidationError[]>(Option.None<TValue[]>());
 
 		public static implicit operator Data<Option<TValue[]>>(OptionalCollectionStateValidator<TValue> stateValidator)

@@ -15,10 +15,10 @@ namespace Valigator.Core.Helpers
 
 			for (int i = 0; i < value.Length; ++i)
 			{
-				if (!data.WithValue(value[i]).Verify(model).TryGetValue(out var success, out var failure))
-					(errors = (errors ?? new List<ValidationError>())).AddRange(AddIndexToErrors(failure, i));
-				else
+				if (data.WithValue(value[i]).Verify(model).TryGetValue().TryGetValue(out var success, out var failure))
 					result[i] = success;
+				else
+					(errors = (errors ?? new List<ValidationError>())).AddRange(AddIndexToErrors(failure, i));
 			}
 
 			if (errors != null)
