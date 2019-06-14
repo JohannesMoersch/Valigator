@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Valigator;
 
+[assembly: ApiController]
 namespace Valigator.TestApi
 {
 	public class Startup
