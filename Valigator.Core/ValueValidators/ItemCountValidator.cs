@@ -31,7 +31,7 @@ namespace Valigator.Core.ValueValidators
 		}
 
 		IValueDescriptor IValueValidator<TValue[]>.GetDescriptor()
-			=> new StringLengthDescriptor(_minimumItems, _maximumItems);
+			=> new ItemCountDescriptor(_minimumItems, _maximumItems);
 
 		bool IValueValidator<TValue[]>.IsValid(TValue[] value)
 		{
