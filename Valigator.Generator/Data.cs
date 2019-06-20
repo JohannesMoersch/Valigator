@@ -44,21 +44,27 @@ namespace Valigator.Generator
 
 		private static IEnumerable<ValidatorDefinition> CreateRangeValidators()
 			=> new[]
-				{
-					("Byte", "byte"),
-					("SByte", "sbyte"),
-					("Int16", "short"),
-					("UInt16", "ushort"),
-					("Int32", "int"),
-					("UInt32", "uint"),
-					("Int64", "long"),
-					("UInt64", "ulong"),
-					("Single", "float"),
-					("Double", "double"),
-					("Decimal", "decimal"),
-					("DateTime", "DateTime")
-				}
-				.Select(type => new ValidatorDefinition(ValidatorGroups.Range, $"RangeValidator_{type.Item1}", ValueType.Value, Option.Some(type.Item2)));
+			{
+				("Byte", "byte", true, true),
+				("SByte", "sbyte", true, true),
+				("Int16", "short", true, true),
+				("UInt16", "ushort", true, true),
+				("Int32", "int", true, true),
+				("UInt32", "uint", true, true),
+				("Int64", "long", true, true),
+				("UInt64", "ulong", true, true),
+				("Single", "float", true, false),
+				("Double", "double", true, false),
+				("Decimal", "decimal", true, false),
+				("DateTime", "DateTime", true, false)
+			}
+			.Select<(string, string, bool, bool), (string typeName, string alias, bool range, bool multipleOf)>(_ => _)
+			.SelectMany(type => new[]
+			{
+				Option.Create(type.range, () => new ValidatorDefinition(ValidatorGroups.Range, $"RangeValidator_{type.typeName}", ValueType.Value, Option.Some(type.alias))),
+				Option.Create(type.multipleOf, () => new ValidatorDefinition(ValidatorGroups.MultipleOf, $"MultipleOfValidator_{type.typeName}", ValueType.Value, Option.Some(type.alias)))
+			})
+			.WhereSome();
 
 		public static ExtensionDefinition[] Extensions { get; }
 			= new[]
@@ -80,31 +86,31 @@ namespace Valigator.Generator
 		private static IEnumerable<ExtensionDefinition> CreateRangeExtensions()
 			=> new[]
 				{
-					("Byte", "byte", true),
-					("SByte", "sbyte", true),
-					("Int16", "short", true),
-					("UInt16", "ushort", true),
-					("Int32", "int", true),
-					("UInt32", "uint", true),
-					("Int64", "long", true),
-					("UInt64", "ulong", true),
-					("Single", "float", true),
-					("Double", "double", true),
-					("Decimal", "decimal", true),
-					("DateTime", "DateTime", false)
+					("Byte", "byte", true, true, true),
+					("SByte", "sbyte", true, true, true),
+					("Int16", "short", true, true, true),
+					("UInt16", "ushort", true, true, true),
+					("Int32", "int", true, true, true),
+					("UInt32", "uint", true, true, true),
+					("Int64", "long", true, true, true),
+					("UInt64", "ulong", true, true, true),
+					("Single", "float", true, true, false),
+					("Double", "double", true, true, false),
+					("Decimal", "decimal", true, true, false),
+					("DateTime", "DateTime", true, false, false)
 				}
-				.SelectMany(type =>
-					(type.Item3 ? new[] { new ExtensionDefinition(Validators.First(v => v.Identifier == ValidatorGroups.Equals), "NotZero", new[] { new ParameterDefinition("0") }, true, type.Item2) } : Array.Empty<ExtensionDefinition>())
-					.Concat(new[]
-						{
-							new ExtensionDefinition(Validators.First(v => v.Identifier == ValidatorGroups.Range && v.DataType.ValueOrDefault() == type.Item2), "GreaterThan", new[] { new ParameterDefinition(type.Item2, "value"), new ParameterDefinition("null"), new ParameterDefinition("null"), new ParameterDefinition("null") }, false, type.Item2),
-							new ExtensionDefinition(Validators.First(v => v.Identifier == ValidatorGroups.Range && v.DataType.ValueOrDefault() == type.Item2), "GreaterThanOrEqualTo", new[] { new ParameterDefinition("null"), new ParameterDefinition(type.Item2, "value"), new ParameterDefinition("null"), new ParameterDefinition("null") }, false, type.Item2),
-							new ExtensionDefinition(Validators.First(v => v.Identifier == ValidatorGroups.Range && v.DataType.ValueOrDefault() == type.Item2), "LessThan", new[] { new ParameterDefinition("null"), new ParameterDefinition("null"), new ParameterDefinition(type.Item2, "value"), new ParameterDefinition("null") }, false, type.Item2),
-							new ExtensionDefinition(Validators.First(v => v.Identifier == ValidatorGroups.Range && v.DataType.ValueOrDefault() == type.Item2), "LessThanOrEqualTo",new[] { new ParameterDefinition("null"), new ParameterDefinition("null"), new ParameterDefinition("null"), new ParameterDefinition(type.Item2, "value") }, false, type.Item2),
-							new ExtensionDefinition(Validators.First(v => v.Identifier == ValidatorGroups.Range && v.DataType.ValueOrDefault() == type.Item2), "InRange", new[] { new ParameterDefinition($"{type.Item2}?", "greaterThan", Option.Some("null")), new ParameterDefinition($"{type.Item2}?", "greaterThanOrEqualTo", Option.Some("null")), new ParameterDefinition($"{type.Item2}?", "lessThan", Option.Some("null")), new ParameterDefinition($"{type.Item2}?", "lessThanOrEqualTo", Option.Some("null")) }, false, type.Item2)
-						}
-					)
-				);
+				.Select<(string, string, bool, bool, bool), (string typeName, string alias, bool range, bool notZero, bool multipleOf)>(_ => _)
+				.SelectMany(type => new[]
+				{
+					Option.Create(type.range, () => new ExtensionDefinition(Validators.First(v => v.Identifier == ValidatorGroups.Range && v.DataType.ValueOrDefault() == type.alias), "GreaterThan", new[] { new ParameterDefinition(type.alias, "value"), new ParameterDefinition("null"), new ParameterDefinition("null"), new ParameterDefinition("null") }, false, type.alias)),
+					Option.Create(type.range, () => new ExtensionDefinition(Validators.First(v => v.Identifier == ValidatorGroups.Range && v.DataType.ValueOrDefault() == type.alias), "GreaterThanOrEqualTo", new[] { new ParameterDefinition("null"), new ParameterDefinition(type.alias, "value"), new ParameterDefinition("null"), new ParameterDefinition("null") }, false, type.alias)),
+					Option.Create(type.range, () => new ExtensionDefinition(Validators.First(v => v.Identifier == ValidatorGroups.Range && v.DataType.ValueOrDefault() == type.alias), "LessThan", new[] { new ParameterDefinition("null"), new ParameterDefinition("null"), new ParameterDefinition(type.alias, "value"), new ParameterDefinition("null") }, false, type.alias)),
+					Option.Create(type.range, () => new ExtensionDefinition(Validators.First(v => v.Identifier == ValidatorGroups.Range && v.DataType.ValueOrDefault() == type.alias), "LessThanOrEqualTo",new[] { new ParameterDefinition("null"), new ParameterDefinition("null"), new ParameterDefinition("null"), new ParameterDefinition(type.alias, "value") }, false, type.alias)),
+					Option.Create(type.range, () => new ExtensionDefinition(Validators.First(v => v.Identifier == ValidatorGroups.Range && v.DataType.ValueOrDefault() == type.alias), "InRange", new[] { new ParameterDefinition($"{type.alias}?", "greaterThan", Option.Some("null")), new ParameterDefinition($"{type.alias}?", "greaterThanOrEqualTo", Option.Some("null")), new ParameterDefinition($"{type.alias}?", "lessThan", Option.Some("null")), new ParameterDefinition($"{type.alias}?", "lessThanOrEqualTo", Option.Some("null")) }, false, type.alias)),
+					Option.Create(type.notZero, () => new ExtensionDefinition(Validators.First(v => v.Identifier == ValidatorGroups.Equals), "NotZero", new[] { new ParameterDefinition("0") }, true, type.alias)),
+					Option.Create(type.multipleOf, () => new ExtensionDefinition(Validators.First(v => v.Identifier == ValidatorGroups.MultipleOf && v.DataType.ValueOrDefault() == type.alias), "MultipleOf", new[] { new ParameterDefinition(type.alias, "divisor") }, false, type.alias))
+				})
+				.WhereSome();
 
 		public static IEnumerable<ValidatorGroups[]> ValueValidationPaths { get; }
 			= new[]
@@ -112,10 +118,13 @@ namespace Valigator.Generator
 				new[] { ValidatorGroups.Custom },
 				new[] { ValidatorGroups.Equals, ValidatorGroups.Custom },
 				new[] { ValidatorGroups.InSet, ValidatorGroups.Custom },
+				new[] { ValidatorGroups.MultipleOf, ValidatorGroups.Custom },
+				new[] { ValidatorGroups.MultipleOf, ValidatorGroups.Range, ValidatorGroups.Custom },
 				new[] { ValidatorGroups.Precision, ValidatorGroups.Custom },
 				new[] { ValidatorGroups.Precision, ValidatorGroups.Range, ValidatorGroups.Custom },
 				new[] { ValidatorGroups.Range, ValidatorGroups.Custom },
 				new[] { ValidatorGroups.Range, ValidatorGroups.Precision, ValidatorGroups.Custom },
+				new[] { ValidatorGroups.Range, ValidatorGroups.MultipleOf, ValidatorGroups.Custom },
 				new[] { ValidatorGroups.StringLength, ValidatorGroups.Custom }
 			};
 

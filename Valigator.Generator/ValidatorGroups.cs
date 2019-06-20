@@ -13,6 +13,7 @@ namespace Valigator.Generator
 		Precision,
 		Range,
 		StringLength,
-		Unique
+		Unique,
+		MultipleOf
 	}
 }
