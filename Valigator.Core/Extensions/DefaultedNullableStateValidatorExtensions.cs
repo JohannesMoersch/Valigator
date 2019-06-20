@@ -18,44 +18,44 @@ namespace Valigator
 		public static NullableDataSourceStandard<DefaultedNullableStateValidator<TValue>, EqualsValidator<TValue>, TValue> EqualTo<TValue>(this DefaultedNullableStateValidator<TValue> source, TValue value)
 			=> source.Add(new EqualsValidator<TValue>(value));
 
-		public static NullableDataSourceStandard<DefaultedNullableStateValidator<string>, EqualsValidator<string>, string> NotEmpty(this DefaultedNullableStateValidator<string> source)
-			=> source.Add(new EqualsValidator<string>(String.Empty));
+		public static NullableDataSourceInverted<DefaultedNullableStateValidator<string>, EqualsValidator<string>, string> NotEmpty(this DefaultedNullableStateValidator<string> source)
+			=> source.Not(s => s.Add(new EqualsValidator<string>(String.Empty)));
 
-		public static NullableDataSourceStandard<DefaultedNullableStateValidator<Guid>, EqualsValidator<Guid>, Guid> NotEmpty(this DefaultedNullableStateValidator<Guid> source)
-			=> source.Add(new EqualsValidator<Guid>(Guid.Empty));
+		public static NullableDataSourceInverted<DefaultedNullableStateValidator<Guid>, EqualsValidator<Guid>, Guid> NotEmpty(this DefaultedNullableStateValidator<Guid> source)
+			=> source.Not(s => s.Add(new EqualsValidator<Guid>(Guid.Empty)));
 
-		public static NullableDataSourceStandard<DefaultedNullableStateValidator<byte>, EqualsValidator<byte>, byte> NotZero(this DefaultedNullableStateValidator<byte> source)
-			=> source.Add(new EqualsValidator<byte>(0));
+		public static NullableDataSourceInverted<DefaultedNullableStateValidator<byte>, EqualsValidator<byte>, byte> NotZero(this DefaultedNullableStateValidator<byte> source)
+			=> source.Not(s => s.Add(new EqualsValidator<byte>(0)));
 
-		public static NullableDataSourceStandard<DefaultedNullableStateValidator<sbyte>, EqualsValidator<sbyte>, sbyte> NotZero(this DefaultedNullableStateValidator<sbyte> source)
-			=> source.Add(new EqualsValidator<sbyte>(0));
+		public static NullableDataSourceInverted<DefaultedNullableStateValidator<sbyte>, EqualsValidator<sbyte>, sbyte> NotZero(this DefaultedNullableStateValidator<sbyte> source)
+			=> source.Not(s => s.Add(new EqualsValidator<sbyte>(0)));
 
-		public static NullableDataSourceStandard<DefaultedNullableStateValidator<short>, EqualsValidator<short>, short> NotZero(this DefaultedNullableStateValidator<short> source)
-			=> source.Add(new EqualsValidator<short>(0));
+		public static NullableDataSourceInverted<DefaultedNullableStateValidator<short>, EqualsValidator<short>, short> NotZero(this DefaultedNullableStateValidator<short> source)
+			=> source.Not(s => s.Add(new EqualsValidator<short>(0)));
 
-		public static NullableDataSourceStandard<DefaultedNullableStateValidator<ushort>, EqualsValidator<ushort>, ushort> NotZero(this DefaultedNullableStateValidator<ushort> source)
-			=> source.Add(new EqualsValidator<ushort>(0));
+		public static NullableDataSourceInverted<DefaultedNullableStateValidator<ushort>, EqualsValidator<ushort>, ushort> NotZero(this DefaultedNullableStateValidator<ushort> source)
+			=> source.Not(s => s.Add(new EqualsValidator<ushort>(0)));
 
-		public static NullableDataSourceStandard<DefaultedNullableStateValidator<int>, EqualsValidator<int>, int> NotZero(this DefaultedNullableStateValidator<int> source)
-			=> source.Add(new EqualsValidator<int>(0));
+		public static NullableDataSourceInverted<DefaultedNullableStateValidator<int>, EqualsValidator<int>, int> NotZero(this DefaultedNullableStateValidator<int> source)
+			=> source.Not(s => s.Add(new EqualsValidator<int>(0)));
 
-		public static NullableDataSourceStandard<DefaultedNullableStateValidator<uint>, EqualsValidator<uint>, uint> NotZero(this DefaultedNullableStateValidator<uint> source)
-			=> source.Add(new EqualsValidator<uint>(0));
+		public static NullableDataSourceInverted<DefaultedNullableStateValidator<uint>, EqualsValidator<uint>, uint> NotZero(this DefaultedNullableStateValidator<uint> source)
+			=> source.Not(s => s.Add(new EqualsValidator<uint>(0)));
 
-		public static NullableDataSourceStandard<DefaultedNullableStateValidator<long>, EqualsValidator<long>, long> NotZero(this DefaultedNullableStateValidator<long> source)
-			=> source.Add(new EqualsValidator<long>(0));
+		public static NullableDataSourceInverted<DefaultedNullableStateValidator<long>, EqualsValidator<long>, long> NotZero(this DefaultedNullableStateValidator<long> source)
+			=> source.Not(s => s.Add(new EqualsValidator<long>(0)));
 
-		public static NullableDataSourceStandard<DefaultedNullableStateValidator<ulong>, EqualsValidator<ulong>, ulong> NotZero(this DefaultedNullableStateValidator<ulong> source)
-			=> source.Add(new EqualsValidator<ulong>(0));
+		public static NullableDataSourceInverted<DefaultedNullableStateValidator<ulong>, EqualsValidator<ulong>, ulong> NotZero(this DefaultedNullableStateValidator<ulong> source)
+			=> source.Not(s => s.Add(new EqualsValidator<ulong>(0)));
 
-		public static NullableDataSourceStandard<DefaultedNullableStateValidator<float>, EqualsValidator<float>, float> NotZero(this DefaultedNullableStateValidator<float> source)
-			=> source.Add(new EqualsValidator<float>(0));
+		public static NullableDataSourceInverted<DefaultedNullableStateValidator<float>, EqualsValidator<float>, float> NotZero(this DefaultedNullableStateValidator<float> source)
+			=> source.Not(s => s.Add(new EqualsValidator<float>(0)));
 
-		public static NullableDataSourceStandard<DefaultedNullableStateValidator<double>, EqualsValidator<double>, double> NotZero(this DefaultedNullableStateValidator<double> source)
-			=> source.Add(new EqualsValidator<double>(0));
+		public static NullableDataSourceInverted<DefaultedNullableStateValidator<double>, EqualsValidator<double>, double> NotZero(this DefaultedNullableStateValidator<double> source)
+			=> source.Not(s => s.Add(new EqualsValidator<double>(0)));
 
-		public static NullableDataSourceStandard<DefaultedNullableStateValidator<decimal>, EqualsValidator<decimal>, decimal> NotZero(this DefaultedNullableStateValidator<decimal> source)
-			=> source.Add(new EqualsValidator<decimal>(0));
+		public static NullableDataSourceInverted<DefaultedNullableStateValidator<decimal>, EqualsValidator<decimal>, decimal> NotZero(this DefaultedNullableStateValidator<decimal> source)
+			=> source.Not(s => s.Add(new EqualsValidator<decimal>(0)));
 
 		public static NullableDataSourceStandard<DefaultedNullableStateValidator<TValue>, InSetValidator<TValue>, TValue> InSet<TValue>(this DefaultedNullableStateValidator<TValue> source, params TValue[] options)
 			=> source.Add(new InSetValidator<TValue>(options));

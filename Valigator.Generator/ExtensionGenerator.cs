@@ -9,16 +9,16 @@ namespace Valigator.Generator
 	public static class ExtensionGenerator
 	{
 		private static readonly string _singleExtensionTemplate =
-@"		public static __Nullable__DataSourceStandard<__StateValidator__, __NewValueValidator__, __TValueType__> __ExtensionName____GenericParameters__(this __StateValidator__ source__ExtensionParameters__)
-			=> source.Add(new __NewValueValidator__(__Parameters__));";
+@"		public static __Nullable__DataSource__Inverted__<__StateValidator__, __NewValueValidator__, __TValueType__> __ExtensionName____GenericParameters__(this __StateValidator__ source__ExtensionParameters__)
+			=> source__NotOpen__.Add(new __NewValueValidator__(__Parameters__))__NotClose__;";
 
 		private static readonly string _doubleExtensionTemplate =
-@"		public static __Nullable__DataSource__InvertOne__Standard<__StateValidator__, __ValueValidatorOne__, __NewValueValidator__, __TValueType__> __ExtensionName____GenericParameters__(this __Nullable__DataSource__InvertOne__<__StateValidator__, __ValueValidatorOne__, __TValueType__> source__ExtensionParameters__)
-			=> source.Add(new __NewValueValidator__(__Parameters__));";
+@"		public static __Nullable__DataSource__InvertOne____Inverted__<__StateValidator__, __ValueValidatorOne__, __NewValueValidator__, __TValueType__> __ExtensionName____GenericParameters__(this __Nullable__DataSource__InvertOne__<__StateValidator__, __ValueValidatorOne__, __TValueType__> source__ExtensionParameters__)
+			=> source__NotOpen__.Add(new __NewValueValidator__(__Parameters__))__NotClose__;";
 
 		private static readonly string _tripleExtensionTemplate =
-@"		public static __Nullable__DataSource__InvertOne____InvertTwo__Standard<__StateValidator__, __ValueValidatorOne__, __ValueValidatorTwo__, __NewValueValidator__, __TValueType__> __ExtensionName____GenericParameters__(this __Nullable__DataSource__InvertOne____InvertTwo__<__StateValidator__, __ValueValidatorOne__, __ValueValidatorTwo__, __TValueType__> source__ExtensionParameters__)
-			=> source.Add(new __NewValueValidator__(__Parameters__));";
+@"		public static __Nullable__DataSource__InvertOne____InvertTwo____Inverted__<__StateValidator__, __ValueValidatorOne__, __ValueValidatorTwo__, __NewValueValidator__, __TValueType__> __ExtensionName____GenericParameters__(this __Nullable__DataSource__InvertOne____InvertTwo__<__StateValidator__, __ValueValidatorOne__, __ValueValidatorTwo__, __TValueType__> source__ExtensionParameters__)
+			=> source__NotOpen__.Add(new __NewValueValidator__(__Parameters__))__NotClose__;";
 
 		private static readonly string _singleNotTemplate =
 @"		public static __Nullable__DataSourceInverted<__StateValidator__, TValueValidator, __TValueType__> Not__GenericParameters__(this __StateValidator__ source, Func<__StateValidator__, __Nullable__DataSourceStandard<__StateValidator__, TValueValidator, __TValueType__>> validatorFactory)
@@ -35,11 +35,16 @@ namespace Valigator.Generator
 			where TValueValidator : IValueValidator<__TValueType__>
 			=> validatorFactory.Invoke(source).InvertThree();";
 
+		private static readonly string _notModifier = @".Not(s => s";
+
 		private static string PopulateTemplate(string template, SourceDefinition sourceDefinition, string valueGenericName, string[] genericParameters, ValidatorDefinition validatorOne, ValidatorDefinition validatorTwo, ExtensionDefinition extension, bool invertOne, bool invertTwo)
 			=> template
 				.Replace("__Nullable__", $"{(sourceDefinition.IsNullable ? "Nullable" : String.Empty)}")
 				.Replace("__InvertOne__", $"{(invertOne ? "Inverted" : "Standard")}")
 				.Replace("__InvertTwo__", $"{(invertTwo ? "Inverted" : "Standard")}")
+				.Replace("__Inverted__", $"{((extension?.Invert ?? false) ? "Inverted" : "Standard")}")
+				.Replace("__NotOpen__", $"{((extension?.Invert ?? false) ? _notModifier : String.Empty)}")
+				.Replace("__NotClose__", $"{((extension?.Invert ?? false) ? ")" : String.Empty)}")
 				.Replace("__StateValidator__", sourceDefinition.GetSourceName(Option.Some(valueGenericName)))
 				.Replace("__ValueValidatorOne__", validatorOne?.GetValidatorName(GetValueForValidator(sourceDefinition, validatorOne, valueGenericName)) ?? String.Empty)
 				.Replace("__ValueValidatorTwo__", validatorTwo?.GetValidatorName(GetValueForValidator(sourceDefinition, validatorTwo, valueGenericName)) ?? String.Empty)
