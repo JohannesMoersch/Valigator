@@ -28,12 +28,16 @@ namespace Valigator.Core
 		{
 			if (_stateValidator.Validate(model, isSet, value).TryGetValue(out var success, out var failure))
 			{
-				if (!_valueValidatorOne.IsValid(success))
-					return Result.Failure<TValue, ValidationError[]>(new[] { _valueValidatorOne.GetError(success, false) });
+				var oneValid = _valueValidatorOne.IsValid(success);
 
-				return Model<TValue>
-					.Verify(success)
-					.Select(_ => success);
+				IEnumerable<ValidationError> errors = null;
+				if (!oneValid)
+					errors = new[] { !oneValid ? _valueValidatorOne.GetError(success, false) : null }.OfType<ValidationError>();
+
+				if (Model<TValue>.Verify(success).TryGetValue(out var _, out var modelErrors))
+					return errors == null ? Result.Success<TValue, ValidationError[]>(success) : Result.Failure<TValue, ValidationError[]>(errors.ToArray());
+
+				return Result.Failure<TValue, ValidationError[]>(modelErrors.Concat(errors ?? Enumerable.Empty<ValidationError>()).ToArray());
 			}
 
 			return Result.Failure<TValue, ValidationError[]>(failure);

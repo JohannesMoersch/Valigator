@@ -36,18 +36,18 @@ namespace Valigator.Core
 		{
 			if (_stateValidator.Validate(model, isSet, value).TryGetValue(out var success, out var failure))
 			{
-				if (!_valueValidatorOne.IsValid(success))
-					return Result.Failure<TValue, ValidationError[]>(new[] { _valueValidatorOne.GetError(success, false) });
+				var oneValid = _valueValidatorOne.IsValid(success);
+				var twoValid = _valueValidatorTwo.IsValid(success);
+				var threeValid = _valueValidatorThree.IsValid(success);
 
-				if (!_valueValidatorTwo.IsValid(success))
-					return Result.Failure<TValue, ValidationError[]>(new[] { _valueValidatorTwo.GetError(success, false) });
+				IEnumerable<ValidationError> errors = null;
+				if (!oneValid || !twoValid || !threeValid)
+					errors = new[] { !oneValid ? _valueValidatorOne.GetError(success, false) : null, !twoValid ? _valueValidatorTwo.GetError(success, false) : null, !threeValid ? _valueValidatorThree.GetError(success, false) : null }.OfType<ValidationError>();
 
-				if (!_valueValidatorThree.IsValid(success))
-					return Result.Failure<TValue, ValidationError[]>(new[] { _valueValidatorThree.GetError(success, false) });
+				if (Model<TValue>.Verify(success).TryGetValue(out var _, out var modelErrors))
+					return errors == null ? Result.Success<TValue, ValidationError[]>(success) : Result.Failure<TValue, ValidationError[]>(errors.ToArray());
 
-				return Model<TValue>
-					.Verify(success)
-					.Select(_ => success);
+				return Result.Failure<TValue, ValidationError[]>(modelErrors.Concat(errors ?? Enumerable.Empty<ValidationError>()).ToArray());
 			}
 
 			return Result.Failure<TValue, ValidationError[]>(failure);

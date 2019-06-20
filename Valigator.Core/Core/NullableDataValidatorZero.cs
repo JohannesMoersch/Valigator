@@ -24,9 +24,10 @@ namespace Valigator.Core
 				if (!success.TryGetValue(out var some))
 					return Result.Success<Option<TValue>, ValidationError[]>(success);
 
-				return Model<TValue>
-					.Verify(some)
-					.Select(_ => success);
+				if (Model<TValue>.Verify(some).TryGetValue(out var _, out var modelErrors))
+					return Result.Success<Option<TValue>, ValidationError[]>(success);
+
+				return Result.Failure<Option<TValue>, ValidationError[]>(modelErrors);
 			}
 
 			return Result.Failure<Option<TValue>, ValidationError[]>(failure);

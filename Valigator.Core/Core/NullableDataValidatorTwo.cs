@@ -35,15 +35,17 @@ namespace Valigator.Core
 				if (!success.TryGetValue(out var some))
 					return Result.Success<Option<TValue>, ValidationError[]>(success);
 
-				if (!_valueValidatorOne.IsValid(some))
-					return Result.Failure<Option<TValue>, ValidationError[]>(new[] { _valueValidatorOne.GetError(some, false) });
+				var oneValid = _valueValidatorOne.IsValid(some);
+				var twoValid = _valueValidatorTwo.IsValid(some);
 
-				if (!_valueValidatorTwo.IsValid(some))
-					return Result.Failure<Option<TValue>, ValidationError[]>(new[] { _valueValidatorTwo.GetError(some, false) });
+				IEnumerable<ValidationError> errors = null;
+				if (!oneValid || !twoValid)
+					errors = new[] { !oneValid ? _valueValidatorOne.GetError(some, false) : null, !twoValid ? _valueValidatorTwo.GetError(some, false) : null }.OfType<ValidationError>();
 
-				return Model<TValue>
-					.Verify(some)
-					.Select(_ => success);
+				if (Model<TValue>.Verify(some).TryGetValue(out var _, out var modelErrors))
+					return errors == null ? Result.Success<Option<TValue>, ValidationError[]>(success) : Result.Failure<Option<TValue>, ValidationError[]>(errors.ToArray());
+
+				return Result.Failure<Option<TValue>, ValidationError[]>(modelErrors.Concat(errors ?? Enumerable.Empty<ValidationError>()).ToArray());
 			}
 
 			return Result.Failure<Option<TValue>, ValidationError[]>(failure);

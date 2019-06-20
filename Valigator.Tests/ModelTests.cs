@@ -15,7 +15,7 @@ namespace Valigator.Tests
 
 		public Data<Stuff> Three { get; set; } = Data.Defaulted<Stuff>(() => new Stuff());
 
-		public Data<DateTime> Test { get; set; } = Data.Required<DateTime>().InRange(DateTime.Now);
+		public Data<DateTime> Test { get; set; } = Data.Required<DateTime>().InRange(greaterThan: DateTime.Now).Assert("", _ => false);
 	}
 
 	public class Stuff
@@ -31,6 +31,7 @@ namespace Valigator.Tests
 			var descriptors = Model.GetPropertyDescriptors(new TestModel());
 
 			var model = new TestModel();
+			model.Test = model.Test.WithValue(DateTime.Now.AddDays(-1));
 
 			var result = Model.Verify(model);
 		}
