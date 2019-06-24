@@ -26,12 +26,13 @@ namespace Valigator.Core
 
 		private readonly Func<TSource, TValue> _mapper;
 
-		public NullableDataValidator(TStateValidator stateValidator, TValueValidatorOne valueValidatorOne, TValueValidatorTwo valueValidatorTwo, TValueValidatorThree valueValidatorThree)
+		public NullableDataValidator(TStateValidator stateValidator, TValueValidatorOne valueValidatorOne, TValueValidatorTwo valueValidatorTwo, TValueValidatorThree valueValidatorThree, Func<TSource, TValue> mapper)
 		{
 			_stateValidator = stateValidator;
 			_valueValidatorOne = valueValidatorOne;
 			_valueValidatorTwo = valueValidatorTwo;
 			_valueValidatorThree = valueValidatorThree;
+			_mapper = mapper;
 		}
 
 		public Result<Option<TSource>, ValidationError[]> Validate(object model, bool isSet, Option<TSource> value)

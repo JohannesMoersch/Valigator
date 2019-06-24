@@ -12,22 +12,23 @@ namespace Valigator.Core
 		private readonly TStateValidator _stateValidator;
 		private readonly TValueValidatorOne _valueValidatorOne;
 
-		public TValueValidatorOne ValueValidator => _valueValidatorOne;
+		private readonly Func<TSource, TValue> _mapper;
 
-		public Data<Option<TSource>> Data => new Data<Option<TSource>>(new NullableDataValidator<TStateValidator, TValueValidatorOne, TSource, TValue>(_stateValidator, _valueValidatorOne));
+		public Data<Option<TSource>> Data => new Data<Option<TSource>>(new NullableDataValidator<TStateValidator, TValueValidatorOne, TSource, TValue>(_stateValidator, _valueValidatorOne, _mapper));
 
-		public NullableDataSourceStandard(TStateValidator stateValidator, TValueValidatorOne valueValidatorOne)
+		public NullableDataSourceStandard(TStateValidator stateValidator, TValueValidatorOne valueValidatorOne, Func<TSource, TValue> mapper)
 		{
 			_stateValidator = stateValidator;
 			_valueValidatorOne = valueValidatorOne;
+			_mapper = mapper;
 		}
 
 		internal NullableDataSourceInverted<TStateValidator, TValueValidatorOne, TSource, TValue> InvertOne()
-			=> new NullableDataSourceInverted<TStateValidator, TValueValidatorOne, TSource, TValue>(_stateValidator, _valueValidatorOne);
+			=> new NullableDataSourceInverted<TStateValidator, TValueValidatorOne, TSource, TValue>(_stateValidator, _valueValidatorOne, _mapper);
 
 		internal NullableDataSourceStandardStandard<TStateValidator, TValueValidatorOne, TValueValidatorTwo, TSource, TValue> Add<TValueValidatorTwo>(TValueValidatorTwo valueValidator)
 			where TValueValidatorTwo : IValueValidator<TValue>
-			=> new NullableDataSourceStandardStandard<TStateValidator, TValueValidatorOne, TValueValidatorTwo, TSource, TValue>(_stateValidator, _valueValidatorOne, valueValidator);
+			=> new NullableDataSourceStandardStandard<TStateValidator, TValueValidatorOne, TValueValidatorTwo, TSource, TValue>(_stateValidator, _valueValidatorOne, valueValidator, _mapper);
 
 		public static implicit operator Data<Option<TSource>>(NullableDataSourceStandard<TStateValidator, TValueValidatorOne, TSource, TValue> dataSource)
 			=> dataSource.Data;

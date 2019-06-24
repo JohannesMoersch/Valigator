@@ -20,10 +20,11 @@ namespace Valigator.Core
 
 		private readonly Func<TSource, TValue> _mapper;
 
-		public DataValidator(TStateValidator stateValidator, TValueValidatorOne valueValidatorOne)
+		public DataValidator(TStateValidator stateValidator, TValueValidatorOne valueValidatorOne, Func<TSource, TValue> mapper)
 		{
 			_stateValidator = stateValidator;
 			_valueValidatorOne = valueValidatorOne;
+			_mapper = mapper;
 		}
 
 		public Result<TSource, ValidationError[]> Validate(object model, bool isSet, TSource value)

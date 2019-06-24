@@ -11,22 +11,23 @@ namespace Valigator.Core
 		private readonly TStateValidator _stateValidator;
 		private readonly TValueValidatorOne _valueValidatorOne;
 
-		internal TValueValidatorOne ValueValidator => _valueValidatorOne;
+		private readonly Func<TSource, TValue> _mapper;
 
-		public Data<TSource> Data => new Data<TSource>(new DataValidator<TStateValidator, TValueValidatorOne, TSource, TValue>(_stateValidator, _valueValidatorOne));
+		public Data<TSource> Data => new Data<TSource>(new DataValidator<TStateValidator, TValueValidatorOne, TSource, TValue>(_stateValidator, _valueValidatorOne, _mapper));
 
-		public DataSourceStandard(TStateValidator stateValidator, TValueValidatorOne valueValidatorOne)
+		public DataSourceStandard(TStateValidator stateValidator, TValueValidatorOne valueValidatorOne, Func<TSource, TValue> mapper)
 		{
 			_stateValidator = stateValidator;
 			_valueValidatorOne = valueValidatorOne;
+			_mapper = mapper;
 		}
 
 		internal DataSourceInverted<TStateValidator, TValueValidatorOne, TSource, TValue> InvertOne()
-			=> new DataSourceInverted<TStateValidator, TValueValidatorOne, TSource, TValue>(_stateValidator, _valueValidatorOne);
+			=> new DataSourceInverted<TStateValidator, TValueValidatorOne, TSource, TValue>(_stateValidator, _valueValidatorOne, _mapper);
 
 		internal DataSourceStandardStandard<TStateValidator, TValueValidatorOne, TValueValidatorTwo, TSource, TValue> Add<TValueValidatorTwo>(TValueValidatorTwo valueValidator)
 			where TValueValidatorTwo : IValueValidator<TValue>
-			=> new DataSourceStandardStandard<TStateValidator, TValueValidatorOne, TValueValidatorTwo, TSource, TValue>(_stateValidator, _valueValidatorOne, valueValidator);
+			=> new DataSourceStandardStandard<TStateValidator, TValueValidatorOne, TValueValidatorTwo, TSource, TValue>(_stateValidator, _valueValidatorOne, valueValidator, _mapper);
 
 		public static implicit operator Data<TSource>(DataSourceStandard<TStateValidator, TValueValidatorOne, TSource, TValue> dataSource)
 			=> dataSource.Data;
