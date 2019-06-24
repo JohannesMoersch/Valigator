@@ -6,8 +6,8 @@ using Valigator.Core.ValueValidators;
 
 namespace Valigator.Core
 {
-	public struct NullableDataSourceInvertedStandardInverted<TStateValidator, TValueValidatorOne, TValueValidatorTwo, TValueValidatorThree, TValue>
-		where TStateValidator : IStateValidator<Option<TValue>>
+	public struct NullableDataSourceInvertedStandardInverted<TStateValidator, TValueValidatorOne, TValueValidatorTwo, TValueValidatorThree, TSource, TValue>
+		where TStateValidator : IStateValidator<Option<TSource>>
 		where TValueValidatorOne : IValueValidator<TValue>
 		where TValueValidatorTwo : IValueValidator<TValue>
 		where TValueValidatorThree : IValueValidator<TValue>
@@ -17,7 +17,7 @@ namespace Valigator.Core
 		private readonly TValueValidatorTwo _valueValidatorTwo;
 		private readonly TValueValidatorThree _valueValidatorThree;
 
-		public Data<Option<TValue>> Data => new Data<Option<TValue>>(new NullableDataValidator<TStateValidator, InvertValidator<TValueValidatorOne, TValue>, TValueValidatorTwo, InvertValidator<TValueValidatorThree, TValue>, TValue>(_stateValidator, new InvertValidator<TValueValidatorOne, TValue>(_valueValidatorOne), _valueValidatorTwo, new InvertValidator<TValueValidatorThree, TValue>(_valueValidatorThree)));
+		public Data<Option<TSource>> Data => new Data<Option<TSource>>(new NullableDataValidator<TStateValidator, InvertValidator<TValueValidatorOne, TValue>, TValueValidatorTwo, InvertValidator<TValueValidatorThree, TValue>, TSource, TValue>(_stateValidator, new InvertValidator<TValueValidatorOne, TValue>(_valueValidatorOne), _valueValidatorTwo, new InvertValidator<TValueValidatorThree, TValue>(_valueValidatorThree)));
 
 		public NullableDataSourceInvertedStandardInverted(TStateValidator stateValidator, TValueValidatorOne valueValidatorOne, TValueValidatorTwo valueValidatorTwo, TValueValidatorThree valueValidatorThree)
 		{
@@ -27,7 +27,7 @@ namespace Valigator.Core
 			_valueValidatorThree = valueValidatorThree;
 		}
 
-		public static implicit operator Data<Option<TValue>>(NullableDataSourceInvertedStandardInverted<TStateValidator, TValueValidatorOne, TValueValidatorTwo, TValueValidatorThree, TValue> dataSource)
+		public static implicit operator Data<Option<TSource>>(NullableDataSourceInvertedStandardInverted<TStateValidator, TValueValidatorOne, TValueValidatorTwo, TValueValidatorThree, TSource, TValue> dataSource)
 			=> dataSource.Data;
 	}
 }

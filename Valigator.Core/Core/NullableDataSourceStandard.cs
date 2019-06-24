@@ -5,8 +5,8 @@ using Functional;
 
 namespace Valigator.Core
 {
-	public struct NullableDataSourceStandard<TStateValidator, TValueValidatorOne, TValue>
-		where TStateValidator : IStateValidator<Option<TValue>>
+	public struct NullableDataSourceStandard<TStateValidator, TValueValidatorOne, TSource, TValue>
+		where TStateValidator : IStateValidator<Option<TSource>>
 		where TValueValidatorOne : IValueValidator<TValue>
 	{
 		private readonly TStateValidator _stateValidator;
@@ -14,7 +14,7 @@ namespace Valigator.Core
 
 		public TValueValidatorOne ValueValidator => _valueValidatorOne;
 
-		public Data<Option<TValue>> Data => new Data<Option<TValue>>(new NullableDataValidator<TStateValidator, TValueValidatorOne, TValue>(_stateValidator, _valueValidatorOne));
+		public Data<Option<TSource>> Data => new Data<Option<TSource>>(new NullableDataValidator<TStateValidator, TValueValidatorOne, TSource, TValue>(_stateValidator, _valueValidatorOne));
 
 		public NullableDataSourceStandard(TStateValidator stateValidator, TValueValidatorOne valueValidatorOne)
 		{
@@ -22,14 +22,14 @@ namespace Valigator.Core
 			_valueValidatorOne = valueValidatorOne;
 		}
 
-		internal NullableDataSourceInverted<TStateValidator, TValueValidatorOne, TValue> InvertOne()
-			=> new NullableDataSourceInverted<TStateValidator, TValueValidatorOne, TValue>(_stateValidator, _valueValidatorOne);
+		internal NullableDataSourceInverted<TStateValidator, TValueValidatorOne, TSource, TValue> InvertOne()
+			=> new NullableDataSourceInverted<TStateValidator, TValueValidatorOne, TSource, TValue>(_stateValidator, _valueValidatorOne);
 
-		internal NullableDataSourceStandardStandard<TStateValidator, TValueValidatorOne, TValueValidatorTwo, TValue> Add<TValueValidatorTwo>(TValueValidatorTwo valueValidator)
+		internal NullableDataSourceStandardStandard<TStateValidator, TValueValidatorOne, TValueValidatorTwo, TSource, TValue> Add<TValueValidatorTwo>(TValueValidatorTwo valueValidator)
 			where TValueValidatorTwo : IValueValidator<TValue>
-			=> new NullableDataSourceStandardStandard<TStateValidator, TValueValidatorOne, TValueValidatorTwo, TValue>(_stateValidator, _valueValidatorOne, valueValidator);
+			=> new NullableDataSourceStandardStandard<TStateValidator, TValueValidatorOne, TValueValidatorTwo, TSource, TValue>(_stateValidator, _valueValidatorOne, valueValidator);
 
-		public static implicit operator Data<Option<TValue>>(NullableDataSourceStandard<TStateValidator, TValueValidatorOne, TValue> dataSource)
+		public static implicit operator Data<Option<TSource>>(NullableDataSourceStandard<TStateValidator, TValueValidatorOne, TSource, TValue> dataSource)
 			=> dataSource.Data;
 	}
 }

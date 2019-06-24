@@ -8,8 +8,8 @@ using Valigator.Core.ValueDescriptors;
 
 namespace Valigator.Core
 {
-	public class DataValidator<TStateValidator, TValueValidatorOne, TValue> : IDataValidatorOrErrors<TValue>
-		where TStateValidator : IStateValidator<TValue>
+	public class DataValidator<TStateValidator, TValueValidatorOne, TSource, TValue> : IDataValidatorOrErrors<TSource>
+		where TStateValidator : IStateValidator<TSource>
 		where TValueValidatorOne : IValueValidator<TValue>
 	{
 		public DataDescriptor DataDescriptor => new DataDescriptor(typeof(TValue), _stateValidator.GetDescriptor(), _stateValidator.GetImplicitValueDescriptors().Append(_valueValidatorOne.GetDescriptor()).ToArray());
@@ -18,29 +18,33 @@ namespace Valigator.Core
 
 		private readonly TValueValidatorOne _valueValidatorOne;
 
+		private readonly Func<TSource, TValue> _mapper;
+
 		public DataValidator(TStateValidator stateValidator, TValueValidatorOne valueValidatorOne)
 		{
 			_stateValidator = stateValidator;
 			_valueValidatorOne = valueValidatorOne;
 		}
 
-		public Result<TValue, ValidationError[]> Validate(object model, bool isSet, TValue value)
+		public Result<TSource, ValidationError[]> Validate(object model, bool isSet, TSource value)
 		{
 			if (_stateValidator.Validate(model, isSet, value).TryGetValue(out var success, out var failure))
 			{
-				var oneValid = _valueValidatorOne.IsValid(success);
+				var mappedValue = _mapper.Invoke(success);
+
+				var oneValid = _valueValidatorOne.IsValid(mappedValue);
 
 				IEnumerable<ValidationError> errors = null;
 				if (!oneValid)
-					errors = new[] { !oneValid ? _valueValidatorOne.GetError(success, false) : null }.OfType<ValidationError>();
+					errors = new[] { !oneValid ? _valueValidatorOne.GetError(mappedValue, false) : null }.OfType<ValidationError>();
 
-				if (Model<TValue>.Verify(success).TryGetValue(out var _, out var modelErrors))
-					return errors == null ? Result.Success<TValue, ValidationError[]>(success) : Result.Failure<TValue, ValidationError[]>(errors.ToArray());
+				if (Model<TSource>.Verify(success).TryGetValue(out var _, out var modelErrors))
+					return errors == null ? Result.Success<TSource, ValidationError[]>(success) : Result.Failure<TSource, ValidationError[]>(errors.ToArray());
 
-				return Result.Failure<TValue, ValidationError[]>(modelErrors.Concat(errors ?? Enumerable.Empty<ValidationError>()).ToArray());
+				return Result.Failure<TSource, ValidationError[]>(modelErrors.Concat(errors ?? Enumerable.Empty<ValidationError>()).ToArray());
 			}
 
-			return Result.Failure<TValue, ValidationError[]>(failure);
+			return Result.Failure<TSource, ValidationError[]>(failure);
 		}
 
 		public Option<ValidationError[]> GetErrors()
