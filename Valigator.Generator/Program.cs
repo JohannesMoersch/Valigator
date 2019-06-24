@@ -7,7 +7,7 @@ namespace Valigator.Generator
 {
 	class Program
 	{
-		static void Main(string[] args)
+		static void Main()
 		{
 			foreach (var source in Data.Sources)
 			{

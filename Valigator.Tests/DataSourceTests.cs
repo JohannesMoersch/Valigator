@@ -17,7 +17,7 @@ namespace Valigator.Tests
 		[InlineData(false, false)]
 		[InlineData(true, true)]
 		public void Standard(bool one, bool success)
-			=> new DataSourceStandard<RequiredStateValidator<int>, CustomValidator<int>, int>(default, new CustomValidator<int>("", _ => one))
+			=> new DataSourceStandard<RequiredStateValidator<int>, CustomValidator<int>, int, int>(default, new CustomValidator<int>("", _ => one), _ => _)
 				.Data
 				.WithValue(10)
 				.Verify(new object())
@@ -32,7 +32,7 @@ namespace Valigator.Tests
 		[InlineData(false, true)]
 		[InlineData(true, false)]
 		public void Inverted(bool one, bool success)
-			=> new DataSourceInverted<RequiredStateValidator<int>, CustomValidator<int>, int>(default, new CustomValidator<int>("", _ => one))
+			=> new DataSourceInverted<RequiredStateValidator<int>, CustomValidator<int>, int, int>(default, new CustomValidator<int>("", _ => one), _ => _)
 				.Data
 				.WithValue(10)
 				.Verify(new object())
@@ -49,7 +49,7 @@ namespace Valigator.Tests
 		[InlineData(true, false, false)]
 		[InlineData(true, true, true)]
 		public void StandardStandard(bool one, bool two, bool success)
-			=> new DataSourceStandardStandard<RequiredStateValidator<int>, CustomValidator<int>, CustomValidator<int>, int>(default, new CustomValidator<int>("", _ => one), new CustomValidator<int>("", _ => two))
+			=> new DataSourceStandardStandard<RequiredStateValidator<int>, CustomValidator<int>, CustomValidator<int>, int, int>(default, new CustomValidator<int>("", _ => one), new CustomValidator<int>("", _ => two), _ => _)
 				.Data
 				.WithValue(10)
 				.Verify(new object())
@@ -66,7 +66,7 @@ namespace Valigator.Tests
 		[InlineData(true, false, true)]
 		[InlineData(true, true, false)]
 		public void StandardInverted(bool one, bool two, bool success)
-			=> new DataSourceStandardInverted<RequiredStateValidator<int>, CustomValidator<int>, CustomValidator<int>, int>(default, new CustomValidator<int>("", _ => one), new CustomValidator<int>("", _ => two))
+			=> new DataSourceStandardInverted<RequiredStateValidator<int>, CustomValidator<int>, CustomValidator<int>, int, int>(default, new CustomValidator<int>("", _ => one), new CustomValidator<int>("", _ => two), _ => _)
 				.Data
 				.WithValue(10)
 				.Verify(new object())
@@ -83,7 +83,7 @@ namespace Valigator.Tests
 		[InlineData(true, false, false)]
 		[InlineData(true, true, false)]
 		public void InvertedStandard(bool one, bool two, bool success)
-			=> new DataSourceInvertedStandard<RequiredStateValidator<int>, CustomValidator<int>, CustomValidator<int>, int>(default, new CustomValidator<int>("", _ => one), new CustomValidator<int>("", _ => two))
+			=> new DataSourceInvertedStandard<RequiredStateValidator<int>, CustomValidator<int>, CustomValidator<int>, int, int>(default, new CustomValidator<int>("", _ => one), new CustomValidator<int>("", _ => two), _ => _)
 				.Data
 				.WithValue(10)
 				.Verify(new object())
@@ -100,7 +100,7 @@ namespace Valigator.Tests
 		[InlineData(true, false, false)]
 		[InlineData(true, true, false)]
 		public void InvertedInverted(bool one, bool two, bool success)
-			=> new DataSourceInvertedInverted<RequiredStateValidator<int>, CustomValidator<int>, CustomValidator<int>, int>(default, new CustomValidator<int>("", _ => one), new CustomValidator<int>("", _ => two))
+			=> new DataSourceInvertedInverted<RequiredStateValidator<int>, CustomValidator<int>, CustomValidator<int>, int, int>(default, new CustomValidator<int>("", _ => one), new CustomValidator<int>("", _ => two), _ => _)
 				.Data
 				.WithValue(10)
 				.Verify(new object())
@@ -121,7 +121,7 @@ namespace Valigator.Tests
 		[InlineData(true, true, false, false)]
 		[InlineData(true, true, true, true)]
 		public void StandardStandardStandard(bool one, bool two, bool three, bool success)
-			=> new DataSourceStandardStandardStandard<RequiredStateValidator<int>, CustomValidator<int>, CustomValidator<int>, CustomValidator<int>, int>(default, new CustomValidator<int>("", _ => one), new CustomValidator<int>("", _ => two), new CustomValidator<int>("", _ => three))
+			=> new DataSourceStandardStandardStandard<RequiredStateValidator<int>, CustomValidator<int>, CustomValidator<int>, CustomValidator<int>, int, int>(default, new CustomValidator<int>("", _ => one), new CustomValidator<int>("", _ => two), new CustomValidator<int>("", _ => three), _ => _)
 				.Data
 				.WithValue(10)
 				.Verify(new object())
@@ -142,7 +142,7 @@ namespace Valigator.Tests
 		[InlineData(true, true, false, true)]
 		[InlineData(true, true, true, false)]
 		public void StandardStandardInverted(bool one, bool two, bool three, bool success)
-			=> new DataSourceStandardStandardInverted<RequiredStateValidator<int>, CustomValidator<int>, CustomValidator<int>, CustomValidator<int>, int>(default, new CustomValidator<int>("", _ => one), new CustomValidator<int>("", _ => two), new CustomValidator<int>("", _ => three))
+			=> new DataSourceStandardStandardInverted<RequiredStateValidator<int>, CustomValidator<int>, CustomValidator<int>, CustomValidator<int>, int, int>(default, new CustomValidator<int>("", _ => one), new CustomValidator<int>("", _ => two), new CustomValidator<int>("", _ => three), _ => _)
 				.Data
 				.WithValue(10)
 				.Verify(new object())
@@ -163,7 +163,7 @@ namespace Valigator.Tests
 		[InlineData(true, true, false, false)]
 		[InlineData(true, true, true, false)]
 		public void StandardInvertedStandard(bool one, bool two, bool three, bool success)
-			=> new DataSourceStandardInvertedStandard<RequiredStateValidator<int>, CustomValidator<int>, CustomValidator<int>, CustomValidator<int>, int>(default, new CustomValidator<int>("", _ => one), new CustomValidator<int>("", _ => two), new CustomValidator<int>("", _ => three))
+			=> new DataSourceStandardInvertedStandard<RequiredStateValidator<int>, CustomValidator<int>, CustomValidator<int>, CustomValidator<int>, int, int>(default, new CustomValidator<int>("", _ => one), new CustomValidator<int>("", _ => two), new CustomValidator<int>("", _ => three), _ => _)
 				.Data
 				.WithValue(10)
 				.Verify(new object())
@@ -184,7 +184,7 @@ namespace Valigator.Tests
 		[InlineData(true, true, false, false)]
 		[InlineData(true, true, true, false)]
 		public void StandardInvertedInverted(bool one, bool two, bool three, bool success)
-			=> new DataSourceStandardInvertedInverted<RequiredStateValidator<int>, CustomValidator<int>, CustomValidator<int>, CustomValidator<int>, int>(default, new CustomValidator<int>("", _ => one), new CustomValidator<int>("", _ => two), new CustomValidator<int>("", _ => three))
+			=> new DataSourceStandardInvertedInverted<RequiredStateValidator<int>, CustomValidator<int>, CustomValidator<int>, CustomValidator<int>, int, int>(default, new CustomValidator<int>("", _ => one), new CustomValidator<int>("", _ => two), new CustomValidator<int>("", _ => three), _ => _)
 				.Data
 				.WithValue(10)
 				.Verify(new object())
@@ -205,7 +205,7 @@ namespace Valigator.Tests
 		[InlineData(true, true, false, false)]
 		[InlineData(true, true, true, false)]
 		public void InvertedStandardStandard(bool one, bool two, bool three, bool success)
-			=> new DataSourceInvertedStandardStandard<RequiredStateValidator<int>, CustomValidator<int>, CustomValidator<int>, CustomValidator<int>, int>(default, new CustomValidator<int>("", _ => one), new CustomValidator<int>("", _ => two), new CustomValidator<int>("", _ => three))
+			=> new DataSourceInvertedStandardStandard<RequiredStateValidator<int>, CustomValidator<int>, CustomValidator<int>, CustomValidator<int>, int, int>(default, new CustomValidator<int>("", _ => one), new CustomValidator<int>("", _ => two), new CustomValidator<int>("", _ => three), _ => _)
 				.Data
 				.WithValue(10)
 				.Verify(new object())
@@ -226,7 +226,7 @@ namespace Valigator.Tests
 		[InlineData(true, true, false, false)]
 		[InlineData(true, true, true, false)]
 		public void InvertedStandardInverted(bool one, bool two, bool three, bool success)
-			=> new DataSourceInvertedStandardInverted<RequiredStateValidator<int>, CustomValidator<int>, CustomValidator<int>, CustomValidator<int>, int>(default, new CustomValidator<int>("", _ => one), new CustomValidator<int>("", _ => two), new CustomValidator<int>("", _ => three))
+			=> new DataSourceInvertedStandardInverted<RequiredStateValidator<int>, CustomValidator<int>, CustomValidator<int>, CustomValidator<int>, int, int>(default, new CustomValidator<int>("", _ => one), new CustomValidator<int>("", _ => two), new CustomValidator<int>("", _ => three), _ => _)
 				.Data
 				.WithValue(10)
 				.Verify(new object())
@@ -247,7 +247,7 @@ namespace Valigator.Tests
 		[InlineData(true, true, false, false)]
 		[InlineData(true, true, true, false)]
 		public void InvertedInvertedStandard(bool one, bool two, bool three, bool success)
-			=> new DataSourceInvertedInvertedStandard<RequiredStateValidator<int>, CustomValidator<int>, CustomValidator<int>, CustomValidator<int>, int>(default, new CustomValidator<int>("", _ => one), new CustomValidator<int>("", _ => two), new CustomValidator<int>("", _ => three))
+			=> new DataSourceInvertedInvertedStandard<RequiredStateValidator<int>, CustomValidator<int>, CustomValidator<int>, CustomValidator<int>, int, int>(default, new CustomValidator<int>("", _ => one), new CustomValidator<int>("", _ => two), new CustomValidator<int>("", _ => three), _ => _)
 				.Data
 				.WithValue(10)
 				.Verify(new object())
@@ -268,7 +268,7 @@ namespace Valigator.Tests
 		[InlineData(true, true, false, false)]
 		[InlineData(true, true, true, false)]
 		public void InvertedInvertedInverted(bool one, bool two, bool three, bool success)
-			=> new DataSourceInvertedInvertedInverted<RequiredStateValidator<int>, CustomValidator<int>, CustomValidator<int>, CustomValidator<int>, int>(default, new CustomValidator<int>("", _ => one), new CustomValidator<int>("", _ => two), new CustomValidator<int>("", _ => three))
+			=> new DataSourceInvertedInvertedInverted<RequiredStateValidator<int>, CustomValidator<int>, CustomValidator<int>, CustomValidator<int>, int, int>(default, new CustomValidator<int>("", _ => one), new CustomValidator<int>("", _ => two), new CustomValidator<int>("", _ => three), _ => _)
 				.Data
 				.WithValue(10)
 				.Verify(new object())

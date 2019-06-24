@@ -15,7 +15,14 @@ namespace Valigator.Tests
 
 		public Data<Stuff> Three { get; set; } = Data.Defaulted<Stuff>(() => new Stuff());
 
+		public Data<Wrapper> Four { get; set; } = Data.Required<Wrapper>().Map(wrapper => wrapper.A).GreaterThan(1);
+
 		public Data<DateTime> Test { get; set; } = Data.Required<DateTime>().InRange(greaterThan: DateTime.Now).Assert("", _ => false);
+	}
+
+	public class Wrapper
+	{
+		public int A { get; set; }
 	}
 
 	public class Stuff
@@ -32,6 +39,7 @@ namespace Valigator.Tests
 
 			var model = new TestModel();
 			model.Test = model.Test.WithValue(DateTime.Now.AddDays(-1));
+			model.Four = model.Four.WithValue(new Wrapper() { A = -5 });
 
 			var result = Model.Verify(model);
 		}

@@ -7,27 +7,27 @@ using Valigator.Core.ValueDescriptors;
 
 namespace Valigator.Core
 {
-	public class DataValidator<TStateValidator, TValue> : IDataValidatorOrErrors<TValue>
-		where TStateValidator : IStateValidator<TValue>
+	public class DataValidator<TStateValidator, TSource> : IDataValidatorOrErrors<TSource>
+		where TStateValidator : IStateValidator<TSource>
 	{
-		public DataDescriptor DataDescriptor => new DataDescriptor(typeof(TValue), _stateValidator.GetDescriptor(), _stateValidator.GetImplicitValueDescriptors());
+		public DataDescriptor DataDescriptor => new DataDescriptor(typeof(TSource), _stateValidator.GetDescriptor(), _stateValidator.GetImplicitValueDescriptors());
 
 		private readonly TStateValidator _stateValidator;
 
 		public DataValidator(TStateValidator stateValidator) 
 			=> _stateValidator = stateValidator;
 
-		public Result<TValue, ValidationError[]> Validate(object model, bool isSet, TValue value)
+		public Result<TSource, ValidationError[]> Validate(object model, bool isSet, TSource value)
 		{
 			if (_stateValidator.Validate(model, isSet, value).TryGetValue(out var success, out var failure))
 			{
-				if (Model<TValue>.Verify(success).TryGetValue(out var _, out var modelErrors))
-					return Result.Success<TValue, ValidationError[]>(success);
+				if (Model<TSource>.Verify(success).TryGetValue(out var _, out var modelErrors))
+					return Result.Success<TSource, ValidationError[]>(success);
 
-				return Result.Failure<TValue, ValidationError[]>(modelErrors);
+				return Result.Failure<TSource, ValidationError[]>(modelErrors);
 			}
 
-			return Result.Failure<TValue, ValidationError[]>(failure);
+			return Result.Failure<TSource, ValidationError[]>(failure);
 		}
 
 		public Option<ValidationError[]> GetErrors()
