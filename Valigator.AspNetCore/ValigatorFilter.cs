@@ -112,7 +112,7 @@ namespace Valigator.AspNetCore
 		private IEnumerable<ModelError> CreateModelErrorsForParameter(ControllerParameterDescriptor parameter, IEnumerable<ValidationError> validationErrors)
 		{
 			var name = parameter.BindingInfo?.BinderModelName ?? parameter.Name ?? String.Empty;
-			var source = ConvertBindingSourceToModelSource(parameter.BindingInfo.BindingSource);
+			var source = ConvertBindingSourceToModelSource(parameter.BindingInfo?.BindingSource);
 
 			return validationErrors.Select(error => new ModelError(name, source, error));
 		}
