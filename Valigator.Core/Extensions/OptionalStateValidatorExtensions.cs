@@ -8,1432 +8,1432 @@ namespace Valigator
 {
 	public static class OptionalStateValidatorExtensions
 	{
-		public static NullableDataSourceInverted<OptionalStateValidator<TValue>, TValueValidator, TValue> Not<TValueValidator, TValue>(this OptionalStateValidator<TValue> source, Func<OptionalStateValidator<TValue>, NullableDataSourceStandard<OptionalStateValidator<TValue>, TValueValidator, TValue>> validatorFactory)
+		public static NullableDataSourceInverted<OptionalStateValidator<TSource>, TValueValidator, TSource, TValue> Not<TSource, TValueValidator, TValue>(this OptionalStateValidator<TSource> source, Func<OptionalStateValidator<TSource>, NullableDataSourceStandard<OptionalStateValidator<TSource>, TValueValidator, TSource, TValue>> validatorFactory)
 			where TValueValidator : IValueValidator<TValue>
 			=> validatorFactory.Invoke(source).InvertOne();
 
-		public static NullableDataSourceStandard<OptionalStateValidator<TValue>, CustomValidator<TValue>, TValue> Assert<TValue>(this OptionalStateValidator<TValue> source, string description, Func<TValue, bool> validator)
+		public static NullableDataSourceStandard<OptionalStateValidator<TValue>, CustomValidator<TValue>, TValue, TValue> Assert<TValue>(this OptionalStateValidator<TValue> source, string description, Func<TValue, bool> validator)
 			=> source.Add(new CustomValidator<TValue>(description, validator));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<TValue>, EqualsValidator<TValue>, TValue> EqualTo<TValue>(this OptionalStateValidator<TValue> source, TValue value)
+		public static NullableDataSourceStandard<OptionalStateValidator<TValue>, EqualsValidator<TValue>, TValue, TValue> EqualTo<TValue>(this OptionalStateValidator<TValue> source, TValue value)
 			=> source.Add(new EqualsValidator<TValue>(value));
 
-		public static NullableDataSourceInverted<OptionalStateValidator<string>, EqualsValidator<string>, string> NotEmpty(this OptionalStateValidator<string> source)
+		public static NullableDataSourceInverted<OptionalStateValidator<string>, EqualsValidator<string>, string, string> NotEmpty(this OptionalStateValidator<string> source)
 			=> source.Not(s => s.Add(new EqualsValidator<string>(String.Empty)));
 
-		public static NullableDataSourceInverted<OptionalStateValidator<Guid>, EqualsValidator<Guid>, Guid> NotEmpty(this OptionalStateValidator<Guid> source)
+		public static NullableDataSourceInverted<OptionalStateValidator<Guid>, EqualsValidator<Guid>, Guid, Guid> NotEmpty(this OptionalStateValidator<Guid> source)
 			=> source.Not(s => s.Add(new EqualsValidator<Guid>(Guid.Empty)));
 
-		public static NullableDataSourceInverted<OptionalStateValidator<byte>, EqualsValidator<byte>, byte> NotZero(this OptionalStateValidator<byte> source)
+		public static NullableDataSourceInverted<OptionalStateValidator<byte>, EqualsValidator<byte>, byte, byte> NotZero(this OptionalStateValidator<byte> source)
 			=> source.Not(s => s.Add(new EqualsValidator<byte>(0)));
 
-		public static NullableDataSourceInverted<OptionalStateValidator<sbyte>, EqualsValidator<sbyte>, sbyte> NotZero(this OptionalStateValidator<sbyte> source)
+		public static NullableDataSourceInverted<OptionalStateValidator<sbyte>, EqualsValidator<sbyte>, sbyte, sbyte> NotZero(this OptionalStateValidator<sbyte> source)
 			=> source.Not(s => s.Add(new EqualsValidator<sbyte>(0)));
 
-		public static NullableDataSourceInverted<OptionalStateValidator<short>, EqualsValidator<short>, short> NotZero(this OptionalStateValidator<short> source)
+		public static NullableDataSourceInverted<OptionalStateValidator<short>, EqualsValidator<short>, short, short> NotZero(this OptionalStateValidator<short> source)
 			=> source.Not(s => s.Add(new EqualsValidator<short>(0)));
 
-		public static NullableDataSourceInverted<OptionalStateValidator<ushort>, EqualsValidator<ushort>, ushort> NotZero(this OptionalStateValidator<ushort> source)
+		public static NullableDataSourceInverted<OptionalStateValidator<ushort>, EqualsValidator<ushort>, ushort, ushort> NotZero(this OptionalStateValidator<ushort> source)
 			=> source.Not(s => s.Add(new EqualsValidator<ushort>(0)));
 
-		public static NullableDataSourceInverted<OptionalStateValidator<int>, EqualsValidator<int>, int> NotZero(this OptionalStateValidator<int> source)
+		public static NullableDataSourceInverted<OptionalStateValidator<int>, EqualsValidator<int>, int, int> NotZero(this OptionalStateValidator<int> source)
 			=> source.Not(s => s.Add(new EqualsValidator<int>(0)));
 
-		public static NullableDataSourceInverted<OptionalStateValidator<uint>, EqualsValidator<uint>, uint> NotZero(this OptionalStateValidator<uint> source)
+		public static NullableDataSourceInverted<OptionalStateValidator<uint>, EqualsValidator<uint>, uint, uint> NotZero(this OptionalStateValidator<uint> source)
 			=> source.Not(s => s.Add(new EqualsValidator<uint>(0)));
 
-		public static NullableDataSourceInverted<OptionalStateValidator<long>, EqualsValidator<long>, long> NotZero(this OptionalStateValidator<long> source)
+		public static NullableDataSourceInverted<OptionalStateValidator<long>, EqualsValidator<long>, long, long> NotZero(this OptionalStateValidator<long> source)
 			=> source.Not(s => s.Add(new EqualsValidator<long>(0)));
 
-		public static NullableDataSourceInverted<OptionalStateValidator<ulong>, EqualsValidator<ulong>, ulong> NotZero(this OptionalStateValidator<ulong> source)
+		public static NullableDataSourceInverted<OptionalStateValidator<ulong>, EqualsValidator<ulong>, ulong, ulong> NotZero(this OptionalStateValidator<ulong> source)
 			=> source.Not(s => s.Add(new EqualsValidator<ulong>(0)));
 
-		public static NullableDataSourceInverted<OptionalStateValidator<float>, EqualsValidator<float>, float> NotZero(this OptionalStateValidator<float> source)
+		public static NullableDataSourceInverted<OptionalStateValidator<float>, EqualsValidator<float>, float, float> NotZero(this OptionalStateValidator<float> source)
 			=> source.Not(s => s.Add(new EqualsValidator<float>(0)));
 
-		public static NullableDataSourceInverted<OptionalStateValidator<double>, EqualsValidator<double>, double> NotZero(this OptionalStateValidator<double> source)
+		public static NullableDataSourceInverted<OptionalStateValidator<double>, EqualsValidator<double>, double, double> NotZero(this OptionalStateValidator<double> source)
 			=> source.Not(s => s.Add(new EqualsValidator<double>(0)));
 
-		public static NullableDataSourceInverted<OptionalStateValidator<decimal>, EqualsValidator<decimal>, decimal> NotZero(this OptionalStateValidator<decimal> source)
+		public static NullableDataSourceInverted<OptionalStateValidator<decimal>, EqualsValidator<decimal>, decimal, decimal> NotZero(this OptionalStateValidator<decimal> source)
 			=> source.Not(s => s.Add(new EqualsValidator<decimal>(0)));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<TValue>, InSetValidator<TValue>, TValue> InSet<TValue>(this OptionalStateValidator<TValue> source, params TValue[] options)
+		public static NullableDataSourceStandard<OptionalStateValidator<TValue>, InSetValidator<TValue>, TValue, TValue> InSet<TValue>(this OptionalStateValidator<TValue> source, params TValue[] options)
 			=> source.Add(new InSetValidator<TValue>(options));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<TValue>, InSetValidator<TValue>, TValue> InSet<TValue>(this OptionalStateValidator<TValue> source, ISet<TValue> options)
+		public static NullableDataSourceStandard<OptionalStateValidator<TValue>, InSetValidator<TValue>, TValue, TValue> InSet<TValue>(this OptionalStateValidator<TValue> source, ISet<TValue> options)
 			=> source.Add(new InSetValidator<TValue>(options));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<byte>, MultipleOfValidator_Byte, byte> MultipleOf(this OptionalStateValidator<byte> source, byte divisor)
+		public static NullableDataSourceStandard<OptionalStateValidator<byte>, MultipleOfValidator_Byte, byte, byte> MultipleOf(this OptionalStateValidator<byte> source, byte divisor)
 			=> source.Add(new MultipleOfValidator_Byte(divisor));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<sbyte>, MultipleOfValidator_SByte, sbyte> MultipleOf(this OptionalStateValidator<sbyte> source, sbyte divisor)
+		public static NullableDataSourceStandard<OptionalStateValidator<sbyte>, MultipleOfValidator_SByte, sbyte, sbyte> MultipleOf(this OptionalStateValidator<sbyte> source, sbyte divisor)
 			=> source.Add(new MultipleOfValidator_SByte(divisor));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<short>, MultipleOfValidator_Int16, short> MultipleOf(this OptionalStateValidator<short> source, short divisor)
+		public static NullableDataSourceStandard<OptionalStateValidator<short>, MultipleOfValidator_Int16, short, short> MultipleOf(this OptionalStateValidator<short> source, short divisor)
 			=> source.Add(new MultipleOfValidator_Int16(divisor));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<ushort>, MultipleOfValidator_UInt16, ushort> MultipleOf(this OptionalStateValidator<ushort> source, ushort divisor)
+		public static NullableDataSourceStandard<OptionalStateValidator<ushort>, MultipleOfValidator_UInt16, ushort, ushort> MultipleOf(this OptionalStateValidator<ushort> source, ushort divisor)
 			=> source.Add(new MultipleOfValidator_UInt16(divisor));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<int>, MultipleOfValidator_Int32, int> MultipleOf(this OptionalStateValidator<int> source, int divisor)
+		public static NullableDataSourceStandard<OptionalStateValidator<int>, MultipleOfValidator_Int32, int, int> MultipleOf(this OptionalStateValidator<int> source, int divisor)
 			=> source.Add(new MultipleOfValidator_Int32(divisor));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<uint>, MultipleOfValidator_UInt32, uint> MultipleOf(this OptionalStateValidator<uint> source, uint divisor)
+		public static NullableDataSourceStandard<OptionalStateValidator<uint>, MultipleOfValidator_UInt32, uint, uint> MultipleOf(this OptionalStateValidator<uint> source, uint divisor)
 			=> source.Add(new MultipleOfValidator_UInt32(divisor));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<long>, MultipleOfValidator_Int64, long> MultipleOf(this OptionalStateValidator<long> source, long divisor)
+		public static NullableDataSourceStandard<OptionalStateValidator<long>, MultipleOfValidator_Int64, long, long> MultipleOf(this OptionalStateValidator<long> source, long divisor)
 			=> source.Add(new MultipleOfValidator_Int64(divisor));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<ulong>, MultipleOfValidator_UInt64, ulong> MultipleOf(this OptionalStateValidator<ulong> source, ulong divisor)
+		public static NullableDataSourceStandard<OptionalStateValidator<ulong>, MultipleOfValidator_UInt64, ulong, ulong> MultipleOf(this OptionalStateValidator<ulong> source, ulong divisor)
 			=> source.Add(new MultipleOfValidator_UInt64(divisor));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<decimal>, PrecisionValidator, decimal> Precision(this OptionalStateValidator<decimal> source, decimal? minimumDecimalPlaces = null, decimal? maximumDecimalPlaces = null)
+		public static NullableDataSourceStandard<OptionalStateValidator<decimal>, PrecisionValidator, decimal, decimal> Precision(this OptionalStateValidator<decimal> source, decimal? minimumDecimalPlaces = null, decimal? maximumDecimalPlaces = null)
 			=> source.Add(new PrecisionValidator(minimumDecimalPlaces, maximumDecimalPlaces));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<byte>, RangeValidator_Byte, byte> GreaterThan(this OptionalStateValidator<byte> source, byte value)
+		public static NullableDataSourceStandard<OptionalStateValidator<byte>, RangeValidator_Byte, byte, byte> GreaterThan(this OptionalStateValidator<byte> source, byte value)
 			=> source.Add(new RangeValidator_Byte(value, null, null, null));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<byte>, RangeValidator_Byte, byte> GreaterThanOrEqualTo(this OptionalStateValidator<byte> source, byte value)
+		public static NullableDataSourceStandard<OptionalStateValidator<byte>, RangeValidator_Byte, byte, byte> GreaterThanOrEqualTo(this OptionalStateValidator<byte> source, byte value)
 			=> source.Add(new RangeValidator_Byte(null, value, null, null));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<byte>, RangeValidator_Byte, byte> LessThan(this OptionalStateValidator<byte> source, byte value)
+		public static NullableDataSourceStandard<OptionalStateValidator<byte>, RangeValidator_Byte, byte, byte> LessThan(this OptionalStateValidator<byte> source, byte value)
 			=> source.Add(new RangeValidator_Byte(null, null, value, null));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<byte>, RangeValidator_Byte, byte> LessThanOrEqualTo(this OptionalStateValidator<byte> source, byte value)
+		public static NullableDataSourceStandard<OptionalStateValidator<byte>, RangeValidator_Byte, byte, byte> LessThanOrEqualTo(this OptionalStateValidator<byte> source, byte value)
 			=> source.Add(new RangeValidator_Byte(null, null, null, value));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<byte>, RangeValidator_Byte, byte> InRange(this OptionalStateValidator<byte> source, byte? greaterThan = null, byte? greaterThanOrEqualTo = null, byte? lessThan = null, byte? lessThanOrEqualTo = null)
+		public static NullableDataSourceStandard<OptionalStateValidator<byte>, RangeValidator_Byte, byte, byte> InRange(this OptionalStateValidator<byte> source, byte? greaterThan = null, byte? greaterThanOrEqualTo = null, byte? lessThan = null, byte? lessThanOrEqualTo = null)
 			=> source.Add(new RangeValidator_Byte(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<sbyte>, RangeValidator_SByte, sbyte> GreaterThan(this OptionalStateValidator<sbyte> source, sbyte value)
+		public static NullableDataSourceStandard<OptionalStateValidator<sbyte>, RangeValidator_SByte, sbyte, sbyte> GreaterThan(this OptionalStateValidator<sbyte> source, sbyte value)
 			=> source.Add(new RangeValidator_SByte(value, null, null, null));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<sbyte>, RangeValidator_SByte, sbyte> GreaterThanOrEqualTo(this OptionalStateValidator<sbyte> source, sbyte value)
+		public static NullableDataSourceStandard<OptionalStateValidator<sbyte>, RangeValidator_SByte, sbyte, sbyte> GreaterThanOrEqualTo(this OptionalStateValidator<sbyte> source, sbyte value)
 			=> source.Add(new RangeValidator_SByte(null, value, null, null));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<sbyte>, RangeValidator_SByte, sbyte> LessThan(this OptionalStateValidator<sbyte> source, sbyte value)
+		public static NullableDataSourceStandard<OptionalStateValidator<sbyte>, RangeValidator_SByte, sbyte, sbyte> LessThan(this OptionalStateValidator<sbyte> source, sbyte value)
 			=> source.Add(new RangeValidator_SByte(null, null, value, null));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<sbyte>, RangeValidator_SByte, sbyte> LessThanOrEqualTo(this OptionalStateValidator<sbyte> source, sbyte value)
+		public static NullableDataSourceStandard<OptionalStateValidator<sbyte>, RangeValidator_SByte, sbyte, sbyte> LessThanOrEqualTo(this OptionalStateValidator<sbyte> source, sbyte value)
 			=> source.Add(new RangeValidator_SByte(null, null, null, value));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<sbyte>, RangeValidator_SByte, sbyte> InRange(this OptionalStateValidator<sbyte> source, sbyte? greaterThan = null, sbyte? greaterThanOrEqualTo = null, sbyte? lessThan = null, sbyte? lessThanOrEqualTo = null)
+		public static NullableDataSourceStandard<OptionalStateValidator<sbyte>, RangeValidator_SByte, sbyte, sbyte> InRange(this OptionalStateValidator<sbyte> source, sbyte? greaterThan = null, sbyte? greaterThanOrEqualTo = null, sbyte? lessThan = null, sbyte? lessThanOrEqualTo = null)
 			=> source.Add(new RangeValidator_SByte(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<short>, RangeValidator_Int16, short> GreaterThan(this OptionalStateValidator<short> source, short value)
+		public static NullableDataSourceStandard<OptionalStateValidator<short>, RangeValidator_Int16, short, short> GreaterThan(this OptionalStateValidator<short> source, short value)
 			=> source.Add(new RangeValidator_Int16(value, null, null, null));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<short>, RangeValidator_Int16, short> GreaterThanOrEqualTo(this OptionalStateValidator<short> source, short value)
+		public static NullableDataSourceStandard<OptionalStateValidator<short>, RangeValidator_Int16, short, short> GreaterThanOrEqualTo(this OptionalStateValidator<short> source, short value)
 			=> source.Add(new RangeValidator_Int16(null, value, null, null));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<short>, RangeValidator_Int16, short> LessThan(this OptionalStateValidator<short> source, short value)
+		public static NullableDataSourceStandard<OptionalStateValidator<short>, RangeValidator_Int16, short, short> LessThan(this OptionalStateValidator<short> source, short value)
 			=> source.Add(new RangeValidator_Int16(null, null, value, null));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<short>, RangeValidator_Int16, short> LessThanOrEqualTo(this OptionalStateValidator<short> source, short value)
+		public static NullableDataSourceStandard<OptionalStateValidator<short>, RangeValidator_Int16, short, short> LessThanOrEqualTo(this OptionalStateValidator<short> source, short value)
 			=> source.Add(new RangeValidator_Int16(null, null, null, value));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<short>, RangeValidator_Int16, short> InRange(this OptionalStateValidator<short> source, short? greaterThan = null, short? greaterThanOrEqualTo = null, short? lessThan = null, short? lessThanOrEqualTo = null)
+		public static NullableDataSourceStandard<OptionalStateValidator<short>, RangeValidator_Int16, short, short> InRange(this OptionalStateValidator<short> source, short? greaterThan = null, short? greaterThanOrEqualTo = null, short? lessThan = null, short? lessThanOrEqualTo = null)
 			=> source.Add(new RangeValidator_Int16(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<ushort>, RangeValidator_UInt16, ushort> GreaterThan(this OptionalStateValidator<ushort> source, ushort value)
+		public static NullableDataSourceStandard<OptionalStateValidator<ushort>, RangeValidator_UInt16, ushort, ushort> GreaterThan(this OptionalStateValidator<ushort> source, ushort value)
 			=> source.Add(new RangeValidator_UInt16(value, null, null, null));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<ushort>, RangeValidator_UInt16, ushort> GreaterThanOrEqualTo(this OptionalStateValidator<ushort> source, ushort value)
+		public static NullableDataSourceStandard<OptionalStateValidator<ushort>, RangeValidator_UInt16, ushort, ushort> GreaterThanOrEqualTo(this OptionalStateValidator<ushort> source, ushort value)
 			=> source.Add(new RangeValidator_UInt16(null, value, null, null));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<ushort>, RangeValidator_UInt16, ushort> LessThan(this OptionalStateValidator<ushort> source, ushort value)
+		public static NullableDataSourceStandard<OptionalStateValidator<ushort>, RangeValidator_UInt16, ushort, ushort> LessThan(this OptionalStateValidator<ushort> source, ushort value)
 			=> source.Add(new RangeValidator_UInt16(null, null, value, null));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<ushort>, RangeValidator_UInt16, ushort> LessThanOrEqualTo(this OptionalStateValidator<ushort> source, ushort value)
+		public static NullableDataSourceStandard<OptionalStateValidator<ushort>, RangeValidator_UInt16, ushort, ushort> LessThanOrEqualTo(this OptionalStateValidator<ushort> source, ushort value)
 			=> source.Add(new RangeValidator_UInt16(null, null, null, value));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<ushort>, RangeValidator_UInt16, ushort> InRange(this OptionalStateValidator<ushort> source, ushort? greaterThan = null, ushort? greaterThanOrEqualTo = null, ushort? lessThan = null, ushort? lessThanOrEqualTo = null)
+		public static NullableDataSourceStandard<OptionalStateValidator<ushort>, RangeValidator_UInt16, ushort, ushort> InRange(this OptionalStateValidator<ushort> source, ushort? greaterThan = null, ushort? greaterThanOrEqualTo = null, ushort? lessThan = null, ushort? lessThanOrEqualTo = null)
 			=> source.Add(new RangeValidator_UInt16(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<int>, RangeValidator_Int32, int> GreaterThan(this OptionalStateValidator<int> source, int value)
+		public static NullableDataSourceStandard<OptionalStateValidator<int>, RangeValidator_Int32, int, int> GreaterThan(this OptionalStateValidator<int> source, int value)
 			=> source.Add(new RangeValidator_Int32(value, null, null, null));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<int>, RangeValidator_Int32, int> GreaterThanOrEqualTo(this OptionalStateValidator<int> source, int value)
+		public static NullableDataSourceStandard<OptionalStateValidator<int>, RangeValidator_Int32, int, int> GreaterThanOrEqualTo(this OptionalStateValidator<int> source, int value)
 			=> source.Add(new RangeValidator_Int32(null, value, null, null));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<int>, RangeValidator_Int32, int> LessThan(this OptionalStateValidator<int> source, int value)
+		public static NullableDataSourceStandard<OptionalStateValidator<int>, RangeValidator_Int32, int, int> LessThan(this OptionalStateValidator<int> source, int value)
 			=> source.Add(new RangeValidator_Int32(null, null, value, null));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<int>, RangeValidator_Int32, int> LessThanOrEqualTo(this OptionalStateValidator<int> source, int value)
+		public static NullableDataSourceStandard<OptionalStateValidator<int>, RangeValidator_Int32, int, int> LessThanOrEqualTo(this OptionalStateValidator<int> source, int value)
 			=> source.Add(new RangeValidator_Int32(null, null, null, value));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<int>, RangeValidator_Int32, int> InRange(this OptionalStateValidator<int> source, int? greaterThan = null, int? greaterThanOrEqualTo = null, int? lessThan = null, int? lessThanOrEqualTo = null)
+		public static NullableDataSourceStandard<OptionalStateValidator<int>, RangeValidator_Int32, int, int> InRange(this OptionalStateValidator<int> source, int? greaterThan = null, int? greaterThanOrEqualTo = null, int? lessThan = null, int? lessThanOrEqualTo = null)
 			=> source.Add(new RangeValidator_Int32(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<uint>, RangeValidator_UInt32, uint> GreaterThan(this OptionalStateValidator<uint> source, uint value)
+		public static NullableDataSourceStandard<OptionalStateValidator<uint>, RangeValidator_UInt32, uint, uint> GreaterThan(this OptionalStateValidator<uint> source, uint value)
 			=> source.Add(new RangeValidator_UInt32(value, null, null, null));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<uint>, RangeValidator_UInt32, uint> GreaterThanOrEqualTo(this OptionalStateValidator<uint> source, uint value)
+		public static NullableDataSourceStandard<OptionalStateValidator<uint>, RangeValidator_UInt32, uint, uint> GreaterThanOrEqualTo(this OptionalStateValidator<uint> source, uint value)
 			=> source.Add(new RangeValidator_UInt32(null, value, null, null));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<uint>, RangeValidator_UInt32, uint> LessThan(this OptionalStateValidator<uint> source, uint value)
+		public static NullableDataSourceStandard<OptionalStateValidator<uint>, RangeValidator_UInt32, uint, uint> LessThan(this OptionalStateValidator<uint> source, uint value)
 			=> source.Add(new RangeValidator_UInt32(null, null, value, null));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<uint>, RangeValidator_UInt32, uint> LessThanOrEqualTo(this OptionalStateValidator<uint> source, uint value)
+		public static NullableDataSourceStandard<OptionalStateValidator<uint>, RangeValidator_UInt32, uint, uint> LessThanOrEqualTo(this OptionalStateValidator<uint> source, uint value)
 			=> source.Add(new RangeValidator_UInt32(null, null, null, value));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<uint>, RangeValidator_UInt32, uint> InRange(this OptionalStateValidator<uint> source, uint? greaterThan = null, uint? greaterThanOrEqualTo = null, uint? lessThan = null, uint? lessThanOrEqualTo = null)
+		public static NullableDataSourceStandard<OptionalStateValidator<uint>, RangeValidator_UInt32, uint, uint> InRange(this OptionalStateValidator<uint> source, uint? greaterThan = null, uint? greaterThanOrEqualTo = null, uint? lessThan = null, uint? lessThanOrEqualTo = null)
 			=> source.Add(new RangeValidator_UInt32(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<long>, RangeValidator_Int64, long> GreaterThan(this OptionalStateValidator<long> source, long value)
+		public static NullableDataSourceStandard<OptionalStateValidator<long>, RangeValidator_Int64, long, long> GreaterThan(this OptionalStateValidator<long> source, long value)
 			=> source.Add(new RangeValidator_Int64(value, null, null, null));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<long>, RangeValidator_Int64, long> GreaterThanOrEqualTo(this OptionalStateValidator<long> source, long value)
+		public static NullableDataSourceStandard<OptionalStateValidator<long>, RangeValidator_Int64, long, long> GreaterThanOrEqualTo(this OptionalStateValidator<long> source, long value)
 			=> source.Add(new RangeValidator_Int64(null, value, null, null));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<long>, RangeValidator_Int64, long> LessThan(this OptionalStateValidator<long> source, long value)
+		public static NullableDataSourceStandard<OptionalStateValidator<long>, RangeValidator_Int64, long, long> LessThan(this OptionalStateValidator<long> source, long value)
 			=> source.Add(new RangeValidator_Int64(null, null, value, null));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<long>, RangeValidator_Int64, long> LessThanOrEqualTo(this OptionalStateValidator<long> source, long value)
+		public static NullableDataSourceStandard<OptionalStateValidator<long>, RangeValidator_Int64, long, long> LessThanOrEqualTo(this OptionalStateValidator<long> source, long value)
 			=> source.Add(new RangeValidator_Int64(null, null, null, value));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<long>, RangeValidator_Int64, long> InRange(this OptionalStateValidator<long> source, long? greaterThan = null, long? greaterThanOrEqualTo = null, long? lessThan = null, long? lessThanOrEqualTo = null)
+		public static NullableDataSourceStandard<OptionalStateValidator<long>, RangeValidator_Int64, long, long> InRange(this OptionalStateValidator<long> source, long? greaterThan = null, long? greaterThanOrEqualTo = null, long? lessThan = null, long? lessThanOrEqualTo = null)
 			=> source.Add(new RangeValidator_Int64(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<ulong>, RangeValidator_UInt64, ulong> GreaterThan(this OptionalStateValidator<ulong> source, ulong value)
+		public static NullableDataSourceStandard<OptionalStateValidator<ulong>, RangeValidator_UInt64, ulong, ulong> GreaterThan(this OptionalStateValidator<ulong> source, ulong value)
 			=> source.Add(new RangeValidator_UInt64(value, null, null, null));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<ulong>, RangeValidator_UInt64, ulong> GreaterThanOrEqualTo(this OptionalStateValidator<ulong> source, ulong value)
+		public static NullableDataSourceStandard<OptionalStateValidator<ulong>, RangeValidator_UInt64, ulong, ulong> GreaterThanOrEqualTo(this OptionalStateValidator<ulong> source, ulong value)
 			=> source.Add(new RangeValidator_UInt64(null, value, null, null));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<ulong>, RangeValidator_UInt64, ulong> LessThan(this OptionalStateValidator<ulong> source, ulong value)
+		public static NullableDataSourceStandard<OptionalStateValidator<ulong>, RangeValidator_UInt64, ulong, ulong> LessThan(this OptionalStateValidator<ulong> source, ulong value)
 			=> source.Add(new RangeValidator_UInt64(null, null, value, null));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<ulong>, RangeValidator_UInt64, ulong> LessThanOrEqualTo(this OptionalStateValidator<ulong> source, ulong value)
+		public static NullableDataSourceStandard<OptionalStateValidator<ulong>, RangeValidator_UInt64, ulong, ulong> LessThanOrEqualTo(this OptionalStateValidator<ulong> source, ulong value)
 			=> source.Add(new RangeValidator_UInt64(null, null, null, value));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<ulong>, RangeValidator_UInt64, ulong> InRange(this OptionalStateValidator<ulong> source, ulong? greaterThan = null, ulong? greaterThanOrEqualTo = null, ulong? lessThan = null, ulong? lessThanOrEqualTo = null)
+		public static NullableDataSourceStandard<OptionalStateValidator<ulong>, RangeValidator_UInt64, ulong, ulong> InRange(this OptionalStateValidator<ulong> source, ulong? greaterThan = null, ulong? greaterThanOrEqualTo = null, ulong? lessThan = null, ulong? lessThanOrEqualTo = null)
 			=> source.Add(new RangeValidator_UInt64(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<float>, RangeValidator_Single, float> GreaterThan(this OptionalStateValidator<float> source, float value)
+		public static NullableDataSourceStandard<OptionalStateValidator<float>, RangeValidator_Single, float, float> GreaterThan(this OptionalStateValidator<float> source, float value)
 			=> source.Add(new RangeValidator_Single(value, null, null, null));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<float>, RangeValidator_Single, float> GreaterThanOrEqualTo(this OptionalStateValidator<float> source, float value)
+		public static NullableDataSourceStandard<OptionalStateValidator<float>, RangeValidator_Single, float, float> GreaterThanOrEqualTo(this OptionalStateValidator<float> source, float value)
 			=> source.Add(new RangeValidator_Single(null, value, null, null));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<float>, RangeValidator_Single, float> LessThan(this OptionalStateValidator<float> source, float value)
+		public static NullableDataSourceStandard<OptionalStateValidator<float>, RangeValidator_Single, float, float> LessThan(this OptionalStateValidator<float> source, float value)
 			=> source.Add(new RangeValidator_Single(null, null, value, null));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<float>, RangeValidator_Single, float> LessThanOrEqualTo(this OptionalStateValidator<float> source, float value)
+		public static NullableDataSourceStandard<OptionalStateValidator<float>, RangeValidator_Single, float, float> LessThanOrEqualTo(this OptionalStateValidator<float> source, float value)
 			=> source.Add(new RangeValidator_Single(null, null, null, value));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<float>, RangeValidator_Single, float> InRange(this OptionalStateValidator<float> source, float? greaterThan = null, float? greaterThanOrEqualTo = null, float? lessThan = null, float? lessThanOrEqualTo = null)
+		public static NullableDataSourceStandard<OptionalStateValidator<float>, RangeValidator_Single, float, float> InRange(this OptionalStateValidator<float> source, float? greaterThan = null, float? greaterThanOrEqualTo = null, float? lessThan = null, float? lessThanOrEqualTo = null)
 			=> source.Add(new RangeValidator_Single(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<double>, RangeValidator_Double, double> GreaterThan(this OptionalStateValidator<double> source, double value)
+		public static NullableDataSourceStandard<OptionalStateValidator<double>, RangeValidator_Double, double, double> GreaterThan(this OptionalStateValidator<double> source, double value)
 			=> source.Add(new RangeValidator_Double(value, null, null, null));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<double>, RangeValidator_Double, double> GreaterThanOrEqualTo(this OptionalStateValidator<double> source, double value)
+		public static NullableDataSourceStandard<OptionalStateValidator<double>, RangeValidator_Double, double, double> GreaterThanOrEqualTo(this OptionalStateValidator<double> source, double value)
 			=> source.Add(new RangeValidator_Double(null, value, null, null));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<double>, RangeValidator_Double, double> LessThan(this OptionalStateValidator<double> source, double value)
+		public static NullableDataSourceStandard<OptionalStateValidator<double>, RangeValidator_Double, double, double> LessThan(this OptionalStateValidator<double> source, double value)
 			=> source.Add(new RangeValidator_Double(null, null, value, null));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<double>, RangeValidator_Double, double> LessThanOrEqualTo(this OptionalStateValidator<double> source, double value)
+		public static NullableDataSourceStandard<OptionalStateValidator<double>, RangeValidator_Double, double, double> LessThanOrEqualTo(this OptionalStateValidator<double> source, double value)
 			=> source.Add(new RangeValidator_Double(null, null, null, value));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<double>, RangeValidator_Double, double> InRange(this OptionalStateValidator<double> source, double? greaterThan = null, double? greaterThanOrEqualTo = null, double? lessThan = null, double? lessThanOrEqualTo = null)
+		public static NullableDataSourceStandard<OptionalStateValidator<double>, RangeValidator_Double, double, double> InRange(this OptionalStateValidator<double> source, double? greaterThan = null, double? greaterThanOrEqualTo = null, double? lessThan = null, double? lessThanOrEqualTo = null)
 			=> source.Add(new RangeValidator_Double(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<decimal>, RangeValidator_Decimal, decimal> GreaterThan(this OptionalStateValidator<decimal> source, decimal value)
+		public static NullableDataSourceStandard<OptionalStateValidator<decimal>, RangeValidator_Decimal, decimal, decimal> GreaterThan(this OptionalStateValidator<decimal> source, decimal value)
 			=> source.Add(new RangeValidator_Decimal(value, null, null, null));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<decimal>, RangeValidator_Decimal, decimal> GreaterThanOrEqualTo(this OptionalStateValidator<decimal> source, decimal value)
+		public static NullableDataSourceStandard<OptionalStateValidator<decimal>, RangeValidator_Decimal, decimal, decimal> GreaterThanOrEqualTo(this OptionalStateValidator<decimal> source, decimal value)
 			=> source.Add(new RangeValidator_Decimal(null, value, null, null));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<decimal>, RangeValidator_Decimal, decimal> LessThan(this OptionalStateValidator<decimal> source, decimal value)
+		public static NullableDataSourceStandard<OptionalStateValidator<decimal>, RangeValidator_Decimal, decimal, decimal> LessThan(this OptionalStateValidator<decimal> source, decimal value)
 			=> source.Add(new RangeValidator_Decimal(null, null, value, null));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<decimal>, RangeValidator_Decimal, decimal> LessThanOrEqualTo(this OptionalStateValidator<decimal> source, decimal value)
+		public static NullableDataSourceStandard<OptionalStateValidator<decimal>, RangeValidator_Decimal, decimal, decimal> LessThanOrEqualTo(this OptionalStateValidator<decimal> source, decimal value)
 			=> source.Add(new RangeValidator_Decimal(null, null, null, value));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<decimal>, RangeValidator_Decimal, decimal> InRange(this OptionalStateValidator<decimal> source, decimal? greaterThan = null, decimal? greaterThanOrEqualTo = null, decimal? lessThan = null, decimal? lessThanOrEqualTo = null)
+		public static NullableDataSourceStandard<OptionalStateValidator<decimal>, RangeValidator_Decimal, decimal, decimal> InRange(this OptionalStateValidator<decimal> source, decimal? greaterThan = null, decimal? greaterThanOrEqualTo = null, decimal? lessThan = null, decimal? lessThanOrEqualTo = null)
 			=> source.Add(new RangeValidator_Decimal(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<DateTime>, RangeValidator_DateTime, DateTime> GreaterThan(this OptionalStateValidator<DateTime> source, DateTime value)
+		public static NullableDataSourceStandard<OptionalStateValidator<DateTime>, RangeValidator_DateTime, DateTime, DateTime> GreaterThan(this OptionalStateValidator<DateTime> source, DateTime value)
 			=> source.Add(new RangeValidator_DateTime(value, null, null, null));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<DateTime>, RangeValidator_DateTime, DateTime> GreaterThanOrEqualTo(this OptionalStateValidator<DateTime> source, DateTime value)
+		public static NullableDataSourceStandard<OptionalStateValidator<DateTime>, RangeValidator_DateTime, DateTime, DateTime> GreaterThanOrEqualTo(this OptionalStateValidator<DateTime> source, DateTime value)
 			=> source.Add(new RangeValidator_DateTime(null, value, null, null));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<DateTime>, RangeValidator_DateTime, DateTime> LessThan(this OptionalStateValidator<DateTime> source, DateTime value)
+		public static NullableDataSourceStandard<OptionalStateValidator<DateTime>, RangeValidator_DateTime, DateTime, DateTime> LessThan(this OptionalStateValidator<DateTime> source, DateTime value)
 			=> source.Add(new RangeValidator_DateTime(null, null, value, null));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<DateTime>, RangeValidator_DateTime, DateTime> LessThanOrEqualTo(this OptionalStateValidator<DateTime> source, DateTime value)
+		public static NullableDataSourceStandard<OptionalStateValidator<DateTime>, RangeValidator_DateTime, DateTime, DateTime> LessThanOrEqualTo(this OptionalStateValidator<DateTime> source, DateTime value)
 			=> source.Add(new RangeValidator_DateTime(null, null, null, value));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<DateTime>, RangeValidator_DateTime, DateTime> InRange(this OptionalStateValidator<DateTime> source, DateTime? greaterThan = null, DateTime? greaterThanOrEqualTo = null, DateTime? lessThan = null, DateTime? lessThanOrEqualTo = null)
+		public static NullableDataSourceStandard<OptionalStateValidator<DateTime>, RangeValidator_DateTime, DateTime, DateTime> InRange(this OptionalStateValidator<DateTime> source, DateTime? greaterThan = null, DateTime? greaterThanOrEqualTo = null, DateTime? lessThan = null, DateTime? lessThanOrEqualTo = null)
 			=> source.Add(new RangeValidator_DateTime(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
-		public static NullableDataSourceStandard<OptionalStateValidator<string>, StringLengthValidator, string> Length(this OptionalStateValidator<string> source, int? minimumLength = null, int? maximumLength = null)
+		public static NullableDataSourceStandard<OptionalStateValidator<string>, StringLengthValidator, string, string> Length(this OptionalStateValidator<string> source, int? minimumLength = null, int? maximumLength = null)
 			=> source.Add(new StringLengthValidator(minimumLength, maximumLength));
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<TValue>, EqualsValidator<TValue>, CustomValidator<TValue>, TValue> Assert<TValue>(this NullableDataSourceStandard<OptionalStateValidator<TValue>, EqualsValidator<TValue>, TValue> source, string description, Func<TValue, bool> validator)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, EqualsValidator<TValue>, CustomValidator<TValue>, TSource, TValue> Assert<TSource, TValue>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, EqualsValidator<TValue>, TSource, TValue> source, string description, Func<TValue, bool> validator)
 			=> source.Add(new CustomValidator<TValue>(description, validator));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TValue>, EqualsValidator<TValue>, CustomValidator<TValue>, TValue> Assert<TValue>(this NullableDataSourceInverted<OptionalStateValidator<TValue>, EqualsValidator<TValue>, TValue> source, string description, Func<TValue, bool> validator)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, EqualsValidator<TValue>, CustomValidator<TValue>, TSource, TValue> Assert<TSource, TValue>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, EqualsValidator<TValue>, TSource, TValue> source, string description, Func<TValue, bool> validator)
 			=> source.Add(new CustomValidator<TValue>(description, validator));
 
-		public static NullableDataSourceStandardInverted<OptionalStateValidator<TValue>, EqualsValidator<TValue>, TValueValidator, TValue> Not<TValueValidator, TValue>(this NullableDataSourceStandard<OptionalStateValidator<TValue>, EqualsValidator<TValue>, TValue> source, Func<NullableDataSourceStandard<OptionalStateValidator<TValue>, EqualsValidator<TValue>, TValue>, NullableDataSourceStandardStandard<OptionalStateValidator<TValue>, EqualsValidator<TValue>, TValueValidator, TValue>> validatorFactory)
+		public static NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, EqualsValidator<TValue>, TValueValidator, TSource, TValue> Not<TSource, TValueValidator, TValue>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, EqualsValidator<TValue>, TSource, TValue> source, Func<NullableDataSourceStandard<OptionalStateValidator<TSource>, EqualsValidator<TValue>, TSource, TValue>, NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, EqualsValidator<TValue>, TValueValidator, TSource, TValue>> validatorFactory)
 			where TValueValidator : IValueValidator<TValue>
 			=> validatorFactory.Invoke(source).InvertTwo();
 
-		public static NullableDataSourceInvertedInverted<OptionalStateValidator<TValue>, EqualsValidator<TValue>, TValueValidator, TValue> Not<TValueValidator, TValue>(this NullableDataSourceInverted<OptionalStateValidator<TValue>, EqualsValidator<TValue>, TValue> source, Func<NullableDataSourceInverted<OptionalStateValidator<TValue>, EqualsValidator<TValue>, TValue>, NullableDataSourceInvertedStandard<OptionalStateValidator<TValue>, EqualsValidator<TValue>, TValueValidator, TValue>> validatorFactory)
+		public static NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, EqualsValidator<TValue>, TValueValidator, TSource, TValue> Not<TSource, TValueValidator, TValue>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, EqualsValidator<TValue>, TSource, TValue> source, Func<NullableDataSourceInverted<OptionalStateValidator<TSource>, EqualsValidator<TValue>, TSource, TValue>, NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, EqualsValidator<TValue>, TValueValidator, TSource, TValue>> validatorFactory)
 			where TValueValidator : IValueValidator<TValue>
 			=> validatorFactory.Invoke(source).InvertTwo();
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<TValue>, InSetValidator<TValue>, CustomValidator<TValue>, TValue> Assert<TValue>(this NullableDataSourceStandard<OptionalStateValidator<TValue>, InSetValidator<TValue>, TValue> source, string description, Func<TValue, bool> validator)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, InSetValidator<TValue>, CustomValidator<TValue>, TSource, TValue> Assert<TSource, TValue>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, InSetValidator<TValue>, TSource, TValue> source, string description, Func<TValue, bool> validator)
 			=> source.Add(new CustomValidator<TValue>(description, validator));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TValue>, InSetValidator<TValue>, CustomValidator<TValue>, TValue> Assert<TValue>(this NullableDataSourceInverted<OptionalStateValidator<TValue>, InSetValidator<TValue>, TValue> source, string description, Func<TValue, bool> validator)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, InSetValidator<TValue>, CustomValidator<TValue>, TSource, TValue> Assert<TSource, TValue>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, InSetValidator<TValue>, TSource, TValue> source, string description, Func<TValue, bool> validator)
 			=> source.Add(new CustomValidator<TValue>(description, validator));
 
-		public static NullableDataSourceStandardInverted<OptionalStateValidator<TValue>, InSetValidator<TValue>, TValueValidator, TValue> Not<TValueValidator, TValue>(this NullableDataSourceStandard<OptionalStateValidator<TValue>, InSetValidator<TValue>, TValue> source, Func<NullableDataSourceStandard<OptionalStateValidator<TValue>, InSetValidator<TValue>, TValue>, NullableDataSourceStandardStandard<OptionalStateValidator<TValue>, InSetValidator<TValue>, TValueValidator, TValue>> validatorFactory)
+		public static NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, InSetValidator<TValue>, TValueValidator, TSource, TValue> Not<TSource, TValueValidator, TValue>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, InSetValidator<TValue>, TSource, TValue> source, Func<NullableDataSourceStandard<OptionalStateValidator<TSource>, InSetValidator<TValue>, TSource, TValue>, NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, InSetValidator<TValue>, TValueValidator, TSource, TValue>> validatorFactory)
 			where TValueValidator : IValueValidator<TValue>
 			=> validatorFactory.Invoke(source).InvertTwo();
 
-		public static NullableDataSourceInvertedInverted<OptionalStateValidator<TValue>, InSetValidator<TValue>, TValueValidator, TValue> Not<TValueValidator, TValue>(this NullableDataSourceInverted<OptionalStateValidator<TValue>, InSetValidator<TValue>, TValue> source, Func<NullableDataSourceInverted<OptionalStateValidator<TValue>, InSetValidator<TValue>, TValue>, NullableDataSourceInvertedStandard<OptionalStateValidator<TValue>, InSetValidator<TValue>, TValueValidator, TValue>> validatorFactory)
+		public static NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, InSetValidator<TValue>, TValueValidator, TSource, TValue> Not<TSource, TValueValidator, TValue>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, InSetValidator<TValue>, TSource, TValue> source, Func<NullableDataSourceInverted<OptionalStateValidator<TSource>, InSetValidator<TValue>, TSource, TValue>, NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, InSetValidator<TValue>, TValueValidator, TSource, TValue>> validatorFactory)
 			where TValueValidator : IValueValidator<TValue>
 			=> validatorFactory.Invoke(source).InvertTwo();
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<byte>, MultipleOfValidator_Byte, CustomValidator<byte>, byte> Assert(this NullableDataSourceStandard<OptionalStateValidator<byte>, MultipleOfValidator_Byte, byte> source, string description, Func<byte, bool> validator)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Byte, CustomValidator<byte>, TSource, byte> Assert<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Byte, TSource, byte> source, string description, Func<byte, bool> validator)
 			=> source.Add(new CustomValidator<byte>(description, validator));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<byte>, MultipleOfValidator_Byte, CustomValidator<byte>, byte> Assert(this NullableDataSourceInverted<OptionalStateValidator<byte>, MultipleOfValidator_Byte, byte> source, string description, Func<byte, bool> validator)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Byte, CustomValidator<byte>, TSource, byte> Assert<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Byte, TSource, byte> source, string description, Func<byte, bool> validator)
 			=> source.Add(new CustomValidator<byte>(description, validator));
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<byte>, MultipleOfValidator_Byte, RangeValidator_Byte, byte> GreaterThan(this NullableDataSourceStandard<OptionalStateValidator<byte>, MultipleOfValidator_Byte, byte> source, byte value)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Byte, RangeValidator_Byte, TSource, byte> GreaterThan<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Byte, TSource, byte> source, byte value)
 			=> source.Add(new RangeValidator_Byte(value, null, null, null));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<byte>, MultipleOfValidator_Byte, RangeValidator_Byte, byte> GreaterThan(this NullableDataSourceInverted<OptionalStateValidator<byte>, MultipleOfValidator_Byte, byte> source, byte value)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Byte, RangeValidator_Byte, TSource, byte> GreaterThan<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Byte, TSource, byte> source, byte value)
 			=> source.Add(new RangeValidator_Byte(value, null, null, null));
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<byte>, MultipleOfValidator_Byte, RangeValidator_Byte, byte> GreaterThanOrEqualTo(this NullableDataSourceStandard<OptionalStateValidator<byte>, MultipleOfValidator_Byte, byte> source, byte value)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Byte, RangeValidator_Byte, TSource, byte> GreaterThanOrEqualTo<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Byte, TSource, byte> source, byte value)
 			=> source.Add(new RangeValidator_Byte(null, value, null, null));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<byte>, MultipleOfValidator_Byte, RangeValidator_Byte, byte> GreaterThanOrEqualTo(this NullableDataSourceInverted<OptionalStateValidator<byte>, MultipleOfValidator_Byte, byte> source, byte value)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Byte, RangeValidator_Byte, TSource, byte> GreaterThanOrEqualTo<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Byte, TSource, byte> source, byte value)
 			=> source.Add(new RangeValidator_Byte(null, value, null, null));
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<byte>, MultipleOfValidator_Byte, RangeValidator_Byte, byte> LessThan(this NullableDataSourceStandard<OptionalStateValidator<byte>, MultipleOfValidator_Byte, byte> source, byte value)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Byte, RangeValidator_Byte, TSource, byte> LessThan<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Byte, TSource, byte> source, byte value)
 			=> source.Add(new RangeValidator_Byte(null, null, value, null));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<byte>, MultipleOfValidator_Byte, RangeValidator_Byte, byte> LessThan(this NullableDataSourceInverted<OptionalStateValidator<byte>, MultipleOfValidator_Byte, byte> source, byte value)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Byte, RangeValidator_Byte, TSource, byte> LessThan<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Byte, TSource, byte> source, byte value)
 			=> source.Add(new RangeValidator_Byte(null, null, value, null));
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<byte>, MultipleOfValidator_Byte, RangeValidator_Byte, byte> LessThanOrEqualTo(this NullableDataSourceStandard<OptionalStateValidator<byte>, MultipleOfValidator_Byte, byte> source, byte value)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Byte, RangeValidator_Byte, TSource, byte> LessThanOrEqualTo<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Byte, TSource, byte> source, byte value)
 			=> source.Add(new RangeValidator_Byte(null, null, null, value));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<byte>, MultipleOfValidator_Byte, RangeValidator_Byte, byte> LessThanOrEqualTo(this NullableDataSourceInverted<OptionalStateValidator<byte>, MultipleOfValidator_Byte, byte> source, byte value)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Byte, RangeValidator_Byte, TSource, byte> LessThanOrEqualTo<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Byte, TSource, byte> source, byte value)
 			=> source.Add(new RangeValidator_Byte(null, null, null, value));
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<byte>, MultipleOfValidator_Byte, RangeValidator_Byte, byte> InRange(this NullableDataSourceStandard<OptionalStateValidator<byte>, MultipleOfValidator_Byte, byte> source, byte? greaterThan = null, byte? greaterThanOrEqualTo = null, byte? lessThan = null, byte? lessThanOrEqualTo = null)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Byte, RangeValidator_Byte, TSource, byte> InRange<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Byte, TSource, byte> source, byte? greaterThan = null, byte? greaterThanOrEqualTo = null, byte? lessThan = null, byte? lessThanOrEqualTo = null)
 			=> source.Add(new RangeValidator_Byte(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<byte>, MultipleOfValidator_Byte, RangeValidator_Byte, byte> InRange(this NullableDataSourceInverted<OptionalStateValidator<byte>, MultipleOfValidator_Byte, byte> source, byte? greaterThan = null, byte? greaterThanOrEqualTo = null, byte? lessThan = null, byte? lessThanOrEqualTo = null)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Byte, RangeValidator_Byte, TSource, byte> InRange<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Byte, TSource, byte> source, byte? greaterThan = null, byte? greaterThanOrEqualTo = null, byte? lessThan = null, byte? lessThanOrEqualTo = null)
 			=> source.Add(new RangeValidator_Byte(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
-		public static NullableDataSourceStandardInverted<OptionalStateValidator<byte>, MultipleOfValidator_Byte, TValueValidator, byte> Not<TValueValidator>(this NullableDataSourceStandard<OptionalStateValidator<byte>, MultipleOfValidator_Byte, byte> source, Func<NullableDataSourceStandard<OptionalStateValidator<byte>, MultipleOfValidator_Byte, byte>, NullableDataSourceStandardStandard<OptionalStateValidator<byte>, MultipleOfValidator_Byte, TValueValidator, byte>> validatorFactory)
+		public static NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Byte, TValueValidator, TSource, byte> Not<TSource, TValueValidator>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Byte, TSource, byte> source, Func<NullableDataSourceStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Byte, TSource, byte>, NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Byte, TValueValidator, TSource, byte>> validatorFactory)
 			where TValueValidator : IValueValidator<byte>
 			=> validatorFactory.Invoke(source).InvertTwo();
 
-		public static NullableDataSourceInvertedInverted<OptionalStateValidator<byte>, MultipleOfValidator_Byte, TValueValidator, byte> Not<TValueValidator>(this NullableDataSourceInverted<OptionalStateValidator<byte>, MultipleOfValidator_Byte, byte> source, Func<NullableDataSourceInverted<OptionalStateValidator<byte>, MultipleOfValidator_Byte, byte>, NullableDataSourceInvertedStandard<OptionalStateValidator<byte>, MultipleOfValidator_Byte, TValueValidator, byte>> validatorFactory)
+		public static NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Byte, TValueValidator, TSource, byte> Not<TSource, TValueValidator>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Byte, TSource, byte> source, Func<NullableDataSourceInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Byte, TSource, byte>, NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Byte, TValueValidator, TSource, byte>> validatorFactory)
 			where TValueValidator : IValueValidator<byte>
 			=> validatorFactory.Invoke(source).InvertTwo();
 
-		public static NullableDataSourceStandardStandardStandard<OptionalStateValidator<byte>, MultipleOfValidator_Byte, RangeValidator_Byte, CustomValidator<byte>, byte> Assert(this NullableDataSourceStandardStandard<OptionalStateValidator<byte>, MultipleOfValidator_Byte, RangeValidator_Byte, byte> source, string description, Func<byte, bool> validator)
+		public static NullableDataSourceStandardStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Byte, RangeValidator_Byte, CustomValidator<byte>, TSource, byte> Assert<TSource>(this NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Byte, RangeValidator_Byte, TSource, byte> source, string description, Func<byte, bool> validator)
 			=> source.Add(new CustomValidator<byte>(description, validator));
 
-		public static NullableDataSourceInvertedStandardStandard<OptionalStateValidator<byte>, MultipleOfValidator_Byte, RangeValidator_Byte, CustomValidator<byte>, byte> Assert(this NullableDataSourceInvertedStandard<OptionalStateValidator<byte>, MultipleOfValidator_Byte, RangeValidator_Byte, byte> source, string description, Func<byte, bool> validator)
+		public static NullableDataSourceInvertedStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Byte, RangeValidator_Byte, CustomValidator<byte>, TSource, byte> Assert<TSource>(this NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Byte, RangeValidator_Byte, TSource, byte> source, string description, Func<byte, bool> validator)
 			=> source.Add(new CustomValidator<byte>(description, validator));
 
-		public static NullableDataSourceStandardInvertedStandard<OptionalStateValidator<byte>, MultipleOfValidator_Byte, RangeValidator_Byte, CustomValidator<byte>, byte> Assert(this NullableDataSourceStandardInverted<OptionalStateValidator<byte>, MultipleOfValidator_Byte, RangeValidator_Byte, byte> source, string description, Func<byte, bool> validator)
+		public static NullableDataSourceStandardInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Byte, RangeValidator_Byte, CustomValidator<byte>, TSource, byte> Assert<TSource>(this NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Byte, RangeValidator_Byte, TSource, byte> source, string description, Func<byte, bool> validator)
 			=> source.Add(new CustomValidator<byte>(description, validator));
 
-		public static NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<byte>, MultipleOfValidator_Byte, RangeValidator_Byte, CustomValidator<byte>, byte> Assert(this NullableDataSourceInvertedInverted<OptionalStateValidator<byte>, MultipleOfValidator_Byte, RangeValidator_Byte, byte> source, string description, Func<byte, bool> validator)
+		public static NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Byte, RangeValidator_Byte, CustomValidator<byte>, TSource, byte> Assert<TSource>(this NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Byte, RangeValidator_Byte, TSource, byte> source, string description, Func<byte, bool> validator)
 			=> source.Add(new CustomValidator<byte>(description, validator));
 
-		public static NullableDataSourceStandardStandardInverted<OptionalStateValidator<byte>, MultipleOfValidator_Byte, RangeValidator_Byte, TValueValidator, byte> Not<TValueValidator>(this NullableDataSourceStandardStandard<OptionalStateValidator<byte>, MultipleOfValidator_Byte, RangeValidator_Byte, byte> source, Func<NullableDataSourceStandardStandard<OptionalStateValidator<byte>, MultipleOfValidator_Byte, RangeValidator_Byte, byte>, NullableDataSourceStandardStandardStandard<OptionalStateValidator<byte>, MultipleOfValidator_Byte, RangeValidator_Byte, TValueValidator, byte>> validatorFactory)
+		public static NullableDataSourceStandardStandardInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Byte, RangeValidator_Byte, TValueValidator, TSource, byte> Not<TSource, TValueValidator>(this NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Byte, RangeValidator_Byte, TSource, byte> source, Func<NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Byte, RangeValidator_Byte, TSource, byte>, NullableDataSourceStandardStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Byte, RangeValidator_Byte, TValueValidator, TSource, byte>> validatorFactory)
 			where TValueValidator : IValueValidator<byte>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceInvertedStandardInverted<OptionalStateValidator<byte>, MultipleOfValidator_Byte, RangeValidator_Byte, TValueValidator, byte> Not<TValueValidator>(this NullableDataSourceInvertedStandard<OptionalStateValidator<byte>, MultipleOfValidator_Byte, RangeValidator_Byte, byte> source, Func<NullableDataSourceInvertedStandard<OptionalStateValidator<byte>, MultipleOfValidator_Byte, RangeValidator_Byte, byte>, NullableDataSourceInvertedStandardStandard<OptionalStateValidator<byte>, MultipleOfValidator_Byte, RangeValidator_Byte, TValueValidator, byte>> validatorFactory)
+		public static NullableDataSourceInvertedStandardInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Byte, RangeValidator_Byte, TValueValidator, TSource, byte> Not<TSource, TValueValidator>(this NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Byte, RangeValidator_Byte, TSource, byte> source, Func<NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Byte, RangeValidator_Byte, TSource, byte>, NullableDataSourceInvertedStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Byte, RangeValidator_Byte, TValueValidator, TSource, byte>> validatorFactory)
 			where TValueValidator : IValueValidator<byte>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceStandardInvertedInverted<OptionalStateValidator<byte>, MultipleOfValidator_Byte, RangeValidator_Byte, TValueValidator, byte> Not<TValueValidator>(this NullableDataSourceStandardInverted<OptionalStateValidator<byte>, MultipleOfValidator_Byte, RangeValidator_Byte, byte> source, Func<NullableDataSourceStandardInverted<OptionalStateValidator<byte>, MultipleOfValidator_Byte, RangeValidator_Byte, byte>, NullableDataSourceStandardInvertedStandard<OptionalStateValidator<byte>, MultipleOfValidator_Byte, RangeValidator_Byte, TValueValidator, byte>> validatorFactory)
+		public static NullableDataSourceStandardInvertedInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Byte, RangeValidator_Byte, TValueValidator, TSource, byte> Not<TSource, TValueValidator>(this NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Byte, RangeValidator_Byte, TSource, byte> source, Func<NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Byte, RangeValidator_Byte, TSource, byte>, NullableDataSourceStandardInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Byte, RangeValidator_Byte, TValueValidator, TSource, byte>> validatorFactory)
 			where TValueValidator : IValueValidator<byte>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceInvertedInvertedInverted<OptionalStateValidator<byte>, MultipleOfValidator_Byte, RangeValidator_Byte, TValueValidator, byte> Not<TValueValidator>(this NullableDataSourceInvertedInverted<OptionalStateValidator<byte>, MultipleOfValidator_Byte, RangeValidator_Byte, byte> source, Func<NullableDataSourceInvertedInverted<OptionalStateValidator<byte>, MultipleOfValidator_Byte, RangeValidator_Byte, byte>, NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<byte>, MultipleOfValidator_Byte, RangeValidator_Byte, TValueValidator, byte>> validatorFactory)
+		public static NullableDataSourceInvertedInvertedInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Byte, RangeValidator_Byte, TValueValidator, TSource, byte> Not<TSource, TValueValidator>(this NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Byte, RangeValidator_Byte, TSource, byte> source, Func<NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Byte, RangeValidator_Byte, TSource, byte>, NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Byte, RangeValidator_Byte, TValueValidator, TSource, byte>> validatorFactory)
 			where TValueValidator : IValueValidator<byte>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<sbyte>, MultipleOfValidator_SByte, CustomValidator<sbyte>, sbyte> Assert(this NullableDataSourceStandard<OptionalStateValidator<sbyte>, MultipleOfValidator_SByte, sbyte> source, string description, Func<sbyte, bool> validator)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_SByte, CustomValidator<sbyte>, TSource, sbyte> Assert<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, MultipleOfValidator_SByte, TSource, sbyte> source, string description, Func<sbyte, bool> validator)
 			=> source.Add(new CustomValidator<sbyte>(description, validator));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<sbyte>, MultipleOfValidator_SByte, CustomValidator<sbyte>, sbyte> Assert(this NullableDataSourceInverted<OptionalStateValidator<sbyte>, MultipleOfValidator_SByte, sbyte> source, string description, Func<sbyte, bool> validator)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_SByte, CustomValidator<sbyte>, TSource, sbyte> Assert<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, MultipleOfValidator_SByte, TSource, sbyte> source, string description, Func<sbyte, bool> validator)
 			=> source.Add(new CustomValidator<sbyte>(description, validator));
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<sbyte>, MultipleOfValidator_SByte, RangeValidator_SByte, sbyte> GreaterThan(this NullableDataSourceStandard<OptionalStateValidator<sbyte>, MultipleOfValidator_SByte, sbyte> source, sbyte value)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_SByte, RangeValidator_SByte, TSource, sbyte> GreaterThan<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, MultipleOfValidator_SByte, TSource, sbyte> source, sbyte value)
 			=> source.Add(new RangeValidator_SByte(value, null, null, null));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<sbyte>, MultipleOfValidator_SByte, RangeValidator_SByte, sbyte> GreaterThan(this NullableDataSourceInverted<OptionalStateValidator<sbyte>, MultipleOfValidator_SByte, sbyte> source, sbyte value)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_SByte, RangeValidator_SByte, TSource, sbyte> GreaterThan<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, MultipleOfValidator_SByte, TSource, sbyte> source, sbyte value)
 			=> source.Add(new RangeValidator_SByte(value, null, null, null));
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<sbyte>, MultipleOfValidator_SByte, RangeValidator_SByte, sbyte> GreaterThanOrEqualTo(this NullableDataSourceStandard<OptionalStateValidator<sbyte>, MultipleOfValidator_SByte, sbyte> source, sbyte value)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_SByte, RangeValidator_SByte, TSource, sbyte> GreaterThanOrEqualTo<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, MultipleOfValidator_SByte, TSource, sbyte> source, sbyte value)
 			=> source.Add(new RangeValidator_SByte(null, value, null, null));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<sbyte>, MultipleOfValidator_SByte, RangeValidator_SByte, sbyte> GreaterThanOrEqualTo(this NullableDataSourceInverted<OptionalStateValidator<sbyte>, MultipleOfValidator_SByte, sbyte> source, sbyte value)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_SByte, RangeValidator_SByte, TSource, sbyte> GreaterThanOrEqualTo<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, MultipleOfValidator_SByte, TSource, sbyte> source, sbyte value)
 			=> source.Add(new RangeValidator_SByte(null, value, null, null));
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<sbyte>, MultipleOfValidator_SByte, RangeValidator_SByte, sbyte> LessThan(this NullableDataSourceStandard<OptionalStateValidator<sbyte>, MultipleOfValidator_SByte, sbyte> source, sbyte value)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_SByte, RangeValidator_SByte, TSource, sbyte> LessThan<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, MultipleOfValidator_SByte, TSource, sbyte> source, sbyte value)
 			=> source.Add(new RangeValidator_SByte(null, null, value, null));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<sbyte>, MultipleOfValidator_SByte, RangeValidator_SByte, sbyte> LessThan(this NullableDataSourceInverted<OptionalStateValidator<sbyte>, MultipleOfValidator_SByte, sbyte> source, sbyte value)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_SByte, RangeValidator_SByte, TSource, sbyte> LessThan<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, MultipleOfValidator_SByte, TSource, sbyte> source, sbyte value)
 			=> source.Add(new RangeValidator_SByte(null, null, value, null));
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<sbyte>, MultipleOfValidator_SByte, RangeValidator_SByte, sbyte> LessThanOrEqualTo(this NullableDataSourceStandard<OptionalStateValidator<sbyte>, MultipleOfValidator_SByte, sbyte> source, sbyte value)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_SByte, RangeValidator_SByte, TSource, sbyte> LessThanOrEqualTo<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, MultipleOfValidator_SByte, TSource, sbyte> source, sbyte value)
 			=> source.Add(new RangeValidator_SByte(null, null, null, value));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<sbyte>, MultipleOfValidator_SByte, RangeValidator_SByte, sbyte> LessThanOrEqualTo(this NullableDataSourceInverted<OptionalStateValidator<sbyte>, MultipleOfValidator_SByte, sbyte> source, sbyte value)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_SByte, RangeValidator_SByte, TSource, sbyte> LessThanOrEqualTo<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, MultipleOfValidator_SByte, TSource, sbyte> source, sbyte value)
 			=> source.Add(new RangeValidator_SByte(null, null, null, value));
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<sbyte>, MultipleOfValidator_SByte, RangeValidator_SByte, sbyte> InRange(this NullableDataSourceStandard<OptionalStateValidator<sbyte>, MultipleOfValidator_SByte, sbyte> source, sbyte? greaterThan = null, sbyte? greaterThanOrEqualTo = null, sbyte? lessThan = null, sbyte? lessThanOrEqualTo = null)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_SByte, RangeValidator_SByte, TSource, sbyte> InRange<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, MultipleOfValidator_SByte, TSource, sbyte> source, sbyte? greaterThan = null, sbyte? greaterThanOrEqualTo = null, sbyte? lessThan = null, sbyte? lessThanOrEqualTo = null)
 			=> source.Add(new RangeValidator_SByte(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<sbyte>, MultipleOfValidator_SByte, RangeValidator_SByte, sbyte> InRange(this NullableDataSourceInverted<OptionalStateValidator<sbyte>, MultipleOfValidator_SByte, sbyte> source, sbyte? greaterThan = null, sbyte? greaterThanOrEqualTo = null, sbyte? lessThan = null, sbyte? lessThanOrEqualTo = null)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_SByte, RangeValidator_SByte, TSource, sbyte> InRange<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, MultipleOfValidator_SByte, TSource, sbyte> source, sbyte? greaterThan = null, sbyte? greaterThanOrEqualTo = null, sbyte? lessThan = null, sbyte? lessThanOrEqualTo = null)
 			=> source.Add(new RangeValidator_SByte(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
-		public static NullableDataSourceStandardInverted<OptionalStateValidator<sbyte>, MultipleOfValidator_SByte, TValueValidator, sbyte> Not<TValueValidator>(this NullableDataSourceStandard<OptionalStateValidator<sbyte>, MultipleOfValidator_SByte, sbyte> source, Func<NullableDataSourceStandard<OptionalStateValidator<sbyte>, MultipleOfValidator_SByte, sbyte>, NullableDataSourceStandardStandard<OptionalStateValidator<sbyte>, MultipleOfValidator_SByte, TValueValidator, sbyte>> validatorFactory)
+		public static NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, MultipleOfValidator_SByte, TValueValidator, TSource, sbyte> Not<TSource, TValueValidator>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, MultipleOfValidator_SByte, TSource, sbyte> source, Func<NullableDataSourceStandard<OptionalStateValidator<TSource>, MultipleOfValidator_SByte, TSource, sbyte>, NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_SByte, TValueValidator, TSource, sbyte>> validatorFactory)
 			where TValueValidator : IValueValidator<sbyte>
 			=> validatorFactory.Invoke(source).InvertTwo();
 
-		public static NullableDataSourceInvertedInverted<OptionalStateValidator<sbyte>, MultipleOfValidator_SByte, TValueValidator, sbyte> Not<TValueValidator>(this NullableDataSourceInverted<OptionalStateValidator<sbyte>, MultipleOfValidator_SByte, sbyte> source, Func<NullableDataSourceInverted<OptionalStateValidator<sbyte>, MultipleOfValidator_SByte, sbyte>, NullableDataSourceInvertedStandard<OptionalStateValidator<sbyte>, MultipleOfValidator_SByte, TValueValidator, sbyte>> validatorFactory)
+		public static NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, MultipleOfValidator_SByte, TValueValidator, TSource, sbyte> Not<TSource, TValueValidator>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, MultipleOfValidator_SByte, TSource, sbyte> source, Func<NullableDataSourceInverted<OptionalStateValidator<TSource>, MultipleOfValidator_SByte, TSource, sbyte>, NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_SByte, TValueValidator, TSource, sbyte>> validatorFactory)
 			where TValueValidator : IValueValidator<sbyte>
 			=> validatorFactory.Invoke(source).InvertTwo();
 
-		public static NullableDataSourceStandardStandardStandard<OptionalStateValidator<sbyte>, MultipleOfValidator_SByte, RangeValidator_SByte, CustomValidator<sbyte>, sbyte> Assert(this NullableDataSourceStandardStandard<OptionalStateValidator<sbyte>, MultipleOfValidator_SByte, RangeValidator_SByte, sbyte> source, string description, Func<sbyte, bool> validator)
+		public static NullableDataSourceStandardStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_SByte, RangeValidator_SByte, CustomValidator<sbyte>, TSource, sbyte> Assert<TSource>(this NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_SByte, RangeValidator_SByte, TSource, sbyte> source, string description, Func<sbyte, bool> validator)
 			=> source.Add(new CustomValidator<sbyte>(description, validator));
 
-		public static NullableDataSourceInvertedStandardStandard<OptionalStateValidator<sbyte>, MultipleOfValidator_SByte, RangeValidator_SByte, CustomValidator<sbyte>, sbyte> Assert(this NullableDataSourceInvertedStandard<OptionalStateValidator<sbyte>, MultipleOfValidator_SByte, RangeValidator_SByte, sbyte> source, string description, Func<sbyte, bool> validator)
+		public static NullableDataSourceInvertedStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_SByte, RangeValidator_SByte, CustomValidator<sbyte>, TSource, sbyte> Assert<TSource>(this NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_SByte, RangeValidator_SByte, TSource, sbyte> source, string description, Func<sbyte, bool> validator)
 			=> source.Add(new CustomValidator<sbyte>(description, validator));
 
-		public static NullableDataSourceStandardInvertedStandard<OptionalStateValidator<sbyte>, MultipleOfValidator_SByte, RangeValidator_SByte, CustomValidator<sbyte>, sbyte> Assert(this NullableDataSourceStandardInverted<OptionalStateValidator<sbyte>, MultipleOfValidator_SByte, RangeValidator_SByte, sbyte> source, string description, Func<sbyte, bool> validator)
+		public static NullableDataSourceStandardInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_SByte, RangeValidator_SByte, CustomValidator<sbyte>, TSource, sbyte> Assert<TSource>(this NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, MultipleOfValidator_SByte, RangeValidator_SByte, TSource, sbyte> source, string description, Func<sbyte, bool> validator)
 			=> source.Add(new CustomValidator<sbyte>(description, validator));
 
-		public static NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<sbyte>, MultipleOfValidator_SByte, RangeValidator_SByte, CustomValidator<sbyte>, sbyte> Assert(this NullableDataSourceInvertedInverted<OptionalStateValidator<sbyte>, MultipleOfValidator_SByte, RangeValidator_SByte, sbyte> source, string description, Func<sbyte, bool> validator)
+		public static NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_SByte, RangeValidator_SByte, CustomValidator<sbyte>, TSource, sbyte> Assert<TSource>(this NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, MultipleOfValidator_SByte, RangeValidator_SByte, TSource, sbyte> source, string description, Func<sbyte, bool> validator)
 			=> source.Add(new CustomValidator<sbyte>(description, validator));
 
-		public static NullableDataSourceStandardStandardInverted<OptionalStateValidator<sbyte>, MultipleOfValidator_SByte, RangeValidator_SByte, TValueValidator, sbyte> Not<TValueValidator>(this NullableDataSourceStandardStandard<OptionalStateValidator<sbyte>, MultipleOfValidator_SByte, RangeValidator_SByte, sbyte> source, Func<NullableDataSourceStandardStandard<OptionalStateValidator<sbyte>, MultipleOfValidator_SByte, RangeValidator_SByte, sbyte>, NullableDataSourceStandardStandardStandard<OptionalStateValidator<sbyte>, MultipleOfValidator_SByte, RangeValidator_SByte, TValueValidator, sbyte>> validatorFactory)
+		public static NullableDataSourceStandardStandardInverted<OptionalStateValidator<TSource>, MultipleOfValidator_SByte, RangeValidator_SByte, TValueValidator, TSource, sbyte> Not<TSource, TValueValidator>(this NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_SByte, RangeValidator_SByte, TSource, sbyte> source, Func<NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_SByte, RangeValidator_SByte, TSource, sbyte>, NullableDataSourceStandardStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_SByte, RangeValidator_SByte, TValueValidator, TSource, sbyte>> validatorFactory)
 			where TValueValidator : IValueValidator<sbyte>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceInvertedStandardInverted<OptionalStateValidator<sbyte>, MultipleOfValidator_SByte, RangeValidator_SByte, TValueValidator, sbyte> Not<TValueValidator>(this NullableDataSourceInvertedStandard<OptionalStateValidator<sbyte>, MultipleOfValidator_SByte, RangeValidator_SByte, sbyte> source, Func<NullableDataSourceInvertedStandard<OptionalStateValidator<sbyte>, MultipleOfValidator_SByte, RangeValidator_SByte, sbyte>, NullableDataSourceInvertedStandardStandard<OptionalStateValidator<sbyte>, MultipleOfValidator_SByte, RangeValidator_SByte, TValueValidator, sbyte>> validatorFactory)
+		public static NullableDataSourceInvertedStandardInverted<OptionalStateValidator<TSource>, MultipleOfValidator_SByte, RangeValidator_SByte, TValueValidator, TSource, sbyte> Not<TSource, TValueValidator>(this NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_SByte, RangeValidator_SByte, TSource, sbyte> source, Func<NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_SByte, RangeValidator_SByte, TSource, sbyte>, NullableDataSourceInvertedStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_SByte, RangeValidator_SByte, TValueValidator, TSource, sbyte>> validatorFactory)
 			where TValueValidator : IValueValidator<sbyte>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceStandardInvertedInverted<OptionalStateValidator<sbyte>, MultipleOfValidator_SByte, RangeValidator_SByte, TValueValidator, sbyte> Not<TValueValidator>(this NullableDataSourceStandardInverted<OptionalStateValidator<sbyte>, MultipleOfValidator_SByte, RangeValidator_SByte, sbyte> source, Func<NullableDataSourceStandardInverted<OptionalStateValidator<sbyte>, MultipleOfValidator_SByte, RangeValidator_SByte, sbyte>, NullableDataSourceStandardInvertedStandard<OptionalStateValidator<sbyte>, MultipleOfValidator_SByte, RangeValidator_SByte, TValueValidator, sbyte>> validatorFactory)
+		public static NullableDataSourceStandardInvertedInverted<OptionalStateValidator<TSource>, MultipleOfValidator_SByte, RangeValidator_SByte, TValueValidator, TSource, sbyte> Not<TSource, TValueValidator>(this NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, MultipleOfValidator_SByte, RangeValidator_SByte, TSource, sbyte> source, Func<NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, MultipleOfValidator_SByte, RangeValidator_SByte, TSource, sbyte>, NullableDataSourceStandardInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_SByte, RangeValidator_SByte, TValueValidator, TSource, sbyte>> validatorFactory)
 			where TValueValidator : IValueValidator<sbyte>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceInvertedInvertedInverted<OptionalStateValidator<sbyte>, MultipleOfValidator_SByte, RangeValidator_SByte, TValueValidator, sbyte> Not<TValueValidator>(this NullableDataSourceInvertedInverted<OptionalStateValidator<sbyte>, MultipleOfValidator_SByte, RangeValidator_SByte, sbyte> source, Func<NullableDataSourceInvertedInverted<OptionalStateValidator<sbyte>, MultipleOfValidator_SByte, RangeValidator_SByte, sbyte>, NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<sbyte>, MultipleOfValidator_SByte, RangeValidator_SByte, TValueValidator, sbyte>> validatorFactory)
+		public static NullableDataSourceInvertedInvertedInverted<OptionalStateValidator<TSource>, MultipleOfValidator_SByte, RangeValidator_SByte, TValueValidator, TSource, sbyte> Not<TSource, TValueValidator>(this NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, MultipleOfValidator_SByte, RangeValidator_SByte, TSource, sbyte> source, Func<NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, MultipleOfValidator_SByte, RangeValidator_SByte, TSource, sbyte>, NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_SByte, RangeValidator_SByte, TValueValidator, TSource, sbyte>> validatorFactory)
 			where TValueValidator : IValueValidator<sbyte>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<short>, MultipleOfValidator_Int16, CustomValidator<short>, short> Assert(this NullableDataSourceStandard<OptionalStateValidator<short>, MultipleOfValidator_Int16, short> source, string description, Func<short, bool> validator)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int16, CustomValidator<short>, TSource, short> Assert<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int16, TSource, short> source, string description, Func<short, bool> validator)
 			=> source.Add(new CustomValidator<short>(description, validator));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<short>, MultipleOfValidator_Int16, CustomValidator<short>, short> Assert(this NullableDataSourceInverted<OptionalStateValidator<short>, MultipleOfValidator_Int16, short> source, string description, Func<short, bool> validator)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int16, CustomValidator<short>, TSource, short> Assert<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Int16, TSource, short> source, string description, Func<short, bool> validator)
 			=> source.Add(new CustomValidator<short>(description, validator));
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<short>, MultipleOfValidator_Int16, RangeValidator_Int16, short> GreaterThan(this NullableDataSourceStandard<OptionalStateValidator<short>, MultipleOfValidator_Int16, short> source, short value)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int16, RangeValidator_Int16, TSource, short> GreaterThan<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int16, TSource, short> source, short value)
 			=> source.Add(new RangeValidator_Int16(value, null, null, null));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<short>, MultipleOfValidator_Int16, RangeValidator_Int16, short> GreaterThan(this NullableDataSourceInverted<OptionalStateValidator<short>, MultipleOfValidator_Int16, short> source, short value)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int16, RangeValidator_Int16, TSource, short> GreaterThan<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Int16, TSource, short> source, short value)
 			=> source.Add(new RangeValidator_Int16(value, null, null, null));
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<short>, MultipleOfValidator_Int16, RangeValidator_Int16, short> GreaterThanOrEqualTo(this NullableDataSourceStandard<OptionalStateValidator<short>, MultipleOfValidator_Int16, short> source, short value)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int16, RangeValidator_Int16, TSource, short> GreaterThanOrEqualTo<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int16, TSource, short> source, short value)
 			=> source.Add(new RangeValidator_Int16(null, value, null, null));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<short>, MultipleOfValidator_Int16, RangeValidator_Int16, short> GreaterThanOrEqualTo(this NullableDataSourceInverted<OptionalStateValidator<short>, MultipleOfValidator_Int16, short> source, short value)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int16, RangeValidator_Int16, TSource, short> GreaterThanOrEqualTo<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Int16, TSource, short> source, short value)
 			=> source.Add(new RangeValidator_Int16(null, value, null, null));
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<short>, MultipleOfValidator_Int16, RangeValidator_Int16, short> LessThan(this NullableDataSourceStandard<OptionalStateValidator<short>, MultipleOfValidator_Int16, short> source, short value)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int16, RangeValidator_Int16, TSource, short> LessThan<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int16, TSource, short> source, short value)
 			=> source.Add(new RangeValidator_Int16(null, null, value, null));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<short>, MultipleOfValidator_Int16, RangeValidator_Int16, short> LessThan(this NullableDataSourceInverted<OptionalStateValidator<short>, MultipleOfValidator_Int16, short> source, short value)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int16, RangeValidator_Int16, TSource, short> LessThan<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Int16, TSource, short> source, short value)
 			=> source.Add(new RangeValidator_Int16(null, null, value, null));
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<short>, MultipleOfValidator_Int16, RangeValidator_Int16, short> LessThanOrEqualTo(this NullableDataSourceStandard<OptionalStateValidator<short>, MultipleOfValidator_Int16, short> source, short value)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int16, RangeValidator_Int16, TSource, short> LessThanOrEqualTo<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int16, TSource, short> source, short value)
 			=> source.Add(new RangeValidator_Int16(null, null, null, value));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<short>, MultipleOfValidator_Int16, RangeValidator_Int16, short> LessThanOrEqualTo(this NullableDataSourceInverted<OptionalStateValidator<short>, MultipleOfValidator_Int16, short> source, short value)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int16, RangeValidator_Int16, TSource, short> LessThanOrEqualTo<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Int16, TSource, short> source, short value)
 			=> source.Add(new RangeValidator_Int16(null, null, null, value));
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<short>, MultipleOfValidator_Int16, RangeValidator_Int16, short> InRange(this NullableDataSourceStandard<OptionalStateValidator<short>, MultipleOfValidator_Int16, short> source, short? greaterThan = null, short? greaterThanOrEqualTo = null, short? lessThan = null, short? lessThanOrEqualTo = null)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int16, RangeValidator_Int16, TSource, short> InRange<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int16, TSource, short> source, short? greaterThan = null, short? greaterThanOrEqualTo = null, short? lessThan = null, short? lessThanOrEqualTo = null)
 			=> source.Add(new RangeValidator_Int16(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<short>, MultipleOfValidator_Int16, RangeValidator_Int16, short> InRange(this NullableDataSourceInverted<OptionalStateValidator<short>, MultipleOfValidator_Int16, short> source, short? greaterThan = null, short? greaterThanOrEqualTo = null, short? lessThan = null, short? lessThanOrEqualTo = null)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int16, RangeValidator_Int16, TSource, short> InRange<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Int16, TSource, short> source, short? greaterThan = null, short? greaterThanOrEqualTo = null, short? lessThan = null, short? lessThanOrEqualTo = null)
 			=> source.Add(new RangeValidator_Int16(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
-		public static NullableDataSourceStandardInverted<OptionalStateValidator<short>, MultipleOfValidator_Int16, TValueValidator, short> Not<TValueValidator>(this NullableDataSourceStandard<OptionalStateValidator<short>, MultipleOfValidator_Int16, short> source, Func<NullableDataSourceStandard<OptionalStateValidator<short>, MultipleOfValidator_Int16, short>, NullableDataSourceStandardStandard<OptionalStateValidator<short>, MultipleOfValidator_Int16, TValueValidator, short>> validatorFactory)
+		public static NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Int16, TValueValidator, TSource, short> Not<TSource, TValueValidator>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int16, TSource, short> source, Func<NullableDataSourceStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int16, TSource, short>, NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int16, TValueValidator, TSource, short>> validatorFactory)
 			where TValueValidator : IValueValidator<short>
 			=> validatorFactory.Invoke(source).InvertTwo();
 
-		public static NullableDataSourceInvertedInverted<OptionalStateValidator<short>, MultipleOfValidator_Int16, TValueValidator, short> Not<TValueValidator>(this NullableDataSourceInverted<OptionalStateValidator<short>, MultipleOfValidator_Int16, short> source, Func<NullableDataSourceInverted<OptionalStateValidator<short>, MultipleOfValidator_Int16, short>, NullableDataSourceInvertedStandard<OptionalStateValidator<short>, MultipleOfValidator_Int16, TValueValidator, short>> validatorFactory)
+		public static NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Int16, TValueValidator, TSource, short> Not<TSource, TValueValidator>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Int16, TSource, short> source, Func<NullableDataSourceInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Int16, TSource, short>, NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int16, TValueValidator, TSource, short>> validatorFactory)
 			where TValueValidator : IValueValidator<short>
 			=> validatorFactory.Invoke(source).InvertTwo();
 
-		public static NullableDataSourceStandardStandardStandard<OptionalStateValidator<short>, MultipleOfValidator_Int16, RangeValidator_Int16, CustomValidator<short>, short> Assert(this NullableDataSourceStandardStandard<OptionalStateValidator<short>, MultipleOfValidator_Int16, RangeValidator_Int16, short> source, string description, Func<short, bool> validator)
+		public static NullableDataSourceStandardStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int16, RangeValidator_Int16, CustomValidator<short>, TSource, short> Assert<TSource>(this NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int16, RangeValidator_Int16, TSource, short> source, string description, Func<short, bool> validator)
 			=> source.Add(new CustomValidator<short>(description, validator));
 
-		public static NullableDataSourceInvertedStandardStandard<OptionalStateValidator<short>, MultipleOfValidator_Int16, RangeValidator_Int16, CustomValidator<short>, short> Assert(this NullableDataSourceInvertedStandard<OptionalStateValidator<short>, MultipleOfValidator_Int16, RangeValidator_Int16, short> source, string description, Func<short, bool> validator)
+		public static NullableDataSourceInvertedStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int16, RangeValidator_Int16, CustomValidator<short>, TSource, short> Assert<TSource>(this NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int16, RangeValidator_Int16, TSource, short> source, string description, Func<short, bool> validator)
 			=> source.Add(new CustomValidator<short>(description, validator));
 
-		public static NullableDataSourceStandardInvertedStandard<OptionalStateValidator<short>, MultipleOfValidator_Int16, RangeValidator_Int16, CustomValidator<short>, short> Assert(this NullableDataSourceStandardInverted<OptionalStateValidator<short>, MultipleOfValidator_Int16, RangeValidator_Int16, short> source, string description, Func<short, bool> validator)
+		public static NullableDataSourceStandardInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int16, RangeValidator_Int16, CustomValidator<short>, TSource, short> Assert<TSource>(this NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Int16, RangeValidator_Int16, TSource, short> source, string description, Func<short, bool> validator)
 			=> source.Add(new CustomValidator<short>(description, validator));
 
-		public static NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<short>, MultipleOfValidator_Int16, RangeValidator_Int16, CustomValidator<short>, short> Assert(this NullableDataSourceInvertedInverted<OptionalStateValidator<short>, MultipleOfValidator_Int16, RangeValidator_Int16, short> source, string description, Func<short, bool> validator)
+		public static NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int16, RangeValidator_Int16, CustomValidator<short>, TSource, short> Assert<TSource>(this NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Int16, RangeValidator_Int16, TSource, short> source, string description, Func<short, bool> validator)
 			=> source.Add(new CustomValidator<short>(description, validator));
 
-		public static NullableDataSourceStandardStandardInverted<OptionalStateValidator<short>, MultipleOfValidator_Int16, RangeValidator_Int16, TValueValidator, short> Not<TValueValidator>(this NullableDataSourceStandardStandard<OptionalStateValidator<short>, MultipleOfValidator_Int16, RangeValidator_Int16, short> source, Func<NullableDataSourceStandardStandard<OptionalStateValidator<short>, MultipleOfValidator_Int16, RangeValidator_Int16, short>, NullableDataSourceStandardStandardStandard<OptionalStateValidator<short>, MultipleOfValidator_Int16, RangeValidator_Int16, TValueValidator, short>> validatorFactory)
+		public static NullableDataSourceStandardStandardInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Int16, RangeValidator_Int16, TValueValidator, TSource, short> Not<TSource, TValueValidator>(this NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int16, RangeValidator_Int16, TSource, short> source, Func<NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int16, RangeValidator_Int16, TSource, short>, NullableDataSourceStandardStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int16, RangeValidator_Int16, TValueValidator, TSource, short>> validatorFactory)
 			where TValueValidator : IValueValidator<short>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceInvertedStandardInverted<OptionalStateValidator<short>, MultipleOfValidator_Int16, RangeValidator_Int16, TValueValidator, short> Not<TValueValidator>(this NullableDataSourceInvertedStandard<OptionalStateValidator<short>, MultipleOfValidator_Int16, RangeValidator_Int16, short> source, Func<NullableDataSourceInvertedStandard<OptionalStateValidator<short>, MultipleOfValidator_Int16, RangeValidator_Int16, short>, NullableDataSourceInvertedStandardStandard<OptionalStateValidator<short>, MultipleOfValidator_Int16, RangeValidator_Int16, TValueValidator, short>> validatorFactory)
+		public static NullableDataSourceInvertedStandardInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Int16, RangeValidator_Int16, TValueValidator, TSource, short> Not<TSource, TValueValidator>(this NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int16, RangeValidator_Int16, TSource, short> source, Func<NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int16, RangeValidator_Int16, TSource, short>, NullableDataSourceInvertedStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int16, RangeValidator_Int16, TValueValidator, TSource, short>> validatorFactory)
 			where TValueValidator : IValueValidator<short>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceStandardInvertedInverted<OptionalStateValidator<short>, MultipleOfValidator_Int16, RangeValidator_Int16, TValueValidator, short> Not<TValueValidator>(this NullableDataSourceStandardInverted<OptionalStateValidator<short>, MultipleOfValidator_Int16, RangeValidator_Int16, short> source, Func<NullableDataSourceStandardInverted<OptionalStateValidator<short>, MultipleOfValidator_Int16, RangeValidator_Int16, short>, NullableDataSourceStandardInvertedStandard<OptionalStateValidator<short>, MultipleOfValidator_Int16, RangeValidator_Int16, TValueValidator, short>> validatorFactory)
+		public static NullableDataSourceStandardInvertedInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Int16, RangeValidator_Int16, TValueValidator, TSource, short> Not<TSource, TValueValidator>(this NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Int16, RangeValidator_Int16, TSource, short> source, Func<NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Int16, RangeValidator_Int16, TSource, short>, NullableDataSourceStandardInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int16, RangeValidator_Int16, TValueValidator, TSource, short>> validatorFactory)
 			where TValueValidator : IValueValidator<short>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceInvertedInvertedInverted<OptionalStateValidator<short>, MultipleOfValidator_Int16, RangeValidator_Int16, TValueValidator, short> Not<TValueValidator>(this NullableDataSourceInvertedInverted<OptionalStateValidator<short>, MultipleOfValidator_Int16, RangeValidator_Int16, short> source, Func<NullableDataSourceInvertedInverted<OptionalStateValidator<short>, MultipleOfValidator_Int16, RangeValidator_Int16, short>, NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<short>, MultipleOfValidator_Int16, RangeValidator_Int16, TValueValidator, short>> validatorFactory)
+		public static NullableDataSourceInvertedInvertedInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Int16, RangeValidator_Int16, TValueValidator, TSource, short> Not<TSource, TValueValidator>(this NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Int16, RangeValidator_Int16, TSource, short> source, Func<NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Int16, RangeValidator_Int16, TSource, short>, NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int16, RangeValidator_Int16, TValueValidator, TSource, short>> validatorFactory)
 			where TValueValidator : IValueValidator<short>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<ushort>, MultipleOfValidator_UInt16, CustomValidator<ushort>, ushort> Assert(this NullableDataSourceStandard<OptionalStateValidator<ushort>, MultipleOfValidator_UInt16, ushort> source, string description, Func<ushort, bool> validator)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt16, CustomValidator<ushort>, TSource, ushort> Assert<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt16, TSource, ushort> source, string description, Func<ushort, bool> validator)
 			=> source.Add(new CustomValidator<ushort>(description, validator));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<ushort>, MultipleOfValidator_UInt16, CustomValidator<ushort>, ushort> Assert(this NullableDataSourceInverted<OptionalStateValidator<ushort>, MultipleOfValidator_UInt16, ushort> source, string description, Func<ushort, bool> validator)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt16, CustomValidator<ushort>, TSource, ushort> Assert<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, MultipleOfValidator_UInt16, TSource, ushort> source, string description, Func<ushort, bool> validator)
 			=> source.Add(new CustomValidator<ushort>(description, validator));
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<ushort>, MultipleOfValidator_UInt16, RangeValidator_UInt16, ushort> GreaterThan(this NullableDataSourceStandard<OptionalStateValidator<ushort>, MultipleOfValidator_UInt16, ushort> source, ushort value)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt16, RangeValidator_UInt16, TSource, ushort> GreaterThan<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt16, TSource, ushort> source, ushort value)
 			=> source.Add(new RangeValidator_UInt16(value, null, null, null));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<ushort>, MultipleOfValidator_UInt16, RangeValidator_UInt16, ushort> GreaterThan(this NullableDataSourceInverted<OptionalStateValidator<ushort>, MultipleOfValidator_UInt16, ushort> source, ushort value)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt16, RangeValidator_UInt16, TSource, ushort> GreaterThan<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, MultipleOfValidator_UInt16, TSource, ushort> source, ushort value)
 			=> source.Add(new RangeValidator_UInt16(value, null, null, null));
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<ushort>, MultipleOfValidator_UInt16, RangeValidator_UInt16, ushort> GreaterThanOrEqualTo(this NullableDataSourceStandard<OptionalStateValidator<ushort>, MultipleOfValidator_UInt16, ushort> source, ushort value)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt16, RangeValidator_UInt16, TSource, ushort> GreaterThanOrEqualTo<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt16, TSource, ushort> source, ushort value)
 			=> source.Add(new RangeValidator_UInt16(null, value, null, null));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<ushort>, MultipleOfValidator_UInt16, RangeValidator_UInt16, ushort> GreaterThanOrEqualTo(this NullableDataSourceInverted<OptionalStateValidator<ushort>, MultipleOfValidator_UInt16, ushort> source, ushort value)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt16, RangeValidator_UInt16, TSource, ushort> GreaterThanOrEqualTo<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, MultipleOfValidator_UInt16, TSource, ushort> source, ushort value)
 			=> source.Add(new RangeValidator_UInt16(null, value, null, null));
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<ushort>, MultipleOfValidator_UInt16, RangeValidator_UInt16, ushort> LessThan(this NullableDataSourceStandard<OptionalStateValidator<ushort>, MultipleOfValidator_UInt16, ushort> source, ushort value)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt16, RangeValidator_UInt16, TSource, ushort> LessThan<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt16, TSource, ushort> source, ushort value)
 			=> source.Add(new RangeValidator_UInt16(null, null, value, null));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<ushort>, MultipleOfValidator_UInt16, RangeValidator_UInt16, ushort> LessThan(this NullableDataSourceInverted<OptionalStateValidator<ushort>, MultipleOfValidator_UInt16, ushort> source, ushort value)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt16, RangeValidator_UInt16, TSource, ushort> LessThan<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, MultipleOfValidator_UInt16, TSource, ushort> source, ushort value)
 			=> source.Add(new RangeValidator_UInt16(null, null, value, null));
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<ushort>, MultipleOfValidator_UInt16, RangeValidator_UInt16, ushort> LessThanOrEqualTo(this NullableDataSourceStandard<OptionalStateValidator<ushort>, MultipleOfValidator_UInt16, ushort> source, ushort value)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt16, RangeValidator_UInt16, TSource, ushort> LessThanOrEqualTo<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt16, TSource, ushort> source, ushort value)
 			=> source.Add(new RangeValidator_UInt16(null, null, null, value));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<ushort>, MultipleOfValidator_UInt16, RangeValidator_UInt16, ushort> LessThanOrEqualTo(this NullableDataSourceInverted<OptionalStateValidator<ushort>, MultipleOfValidator_UInt16, ushort> source, ushort value)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt16, RangeValidator_UInt16, TSource, ushort> LessThanOrEqualTo<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, MultipleOfValidator_UInt16, TSource, ushort> source, ushort value)
 			=> source.Add(new RangeValidator_UInt16(null, null, null, value));
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<ushort>, MultipleOfValidator_UInt16, RangeValidator_UInt16, ushort> InRange(this NullableDataSourceStandard<OptionalStateValidator<ushort>, MultipleOfValidator_UInt16, ushort> source, ushort? greaterThan = null, ushort? greaterThanOrEqualTo = null, ushort? lessThan = null, ushort? lessThanOrEqualTo = null)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt16, RangeValidator_UInt16, TSource, ushort> InRange<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt16, TSource, ushort> source, ushort? greaterThan = null, ushort? greaterThanOrEqualTo = null, ushort? lessThan = null, ushort? lessThanOrEqualTo = null)
 			=> source.Add(new RangeValidator_UInt16(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<ushort>, MultipleOfValidator_UInt16, RangeValidator_UInt16, ushort> InRange(this NullableDataSourceInverted<OptionalStateValidator<ushort>, MultipleOfValidator_UInt16, ushort> source, ushort? greaterThan = null, ushort? greaterThanOrEqualTo = null, ushort? lessThan = null, ushort? lessThanOrEqualTo = null)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt16, RangeValidator_UInt16, TSource, ushort> InRange<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, MultipleOfValidator_UInt16, TSource, ushort> source, ushort? greaterThan = null, ushort? greaterThanOrEqualTo = null, ushort? lessThan = null, ushort? lessThanOrEqualTo = null)
 			=> source.Add(new RangeValidator_UInt16(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
-		public static NullableDataSourceStandardInverted<OptionalStateValidator<ushort>, MultipleOfValidator_UInt16, TValueValidator, ushort> Not<TValueValidator>(this NullableDataSourceStandard<OptionalStateValidator<ushort>, MultipleOfValidator_UInt16, ushort> source, Func<NullableDataSourceStandard<OptionalStateValidator<ushort>, MultipleOfValidator_UInt16, ushort>, NullableDataSourceStandardStandard<OptionalStateValidator<ushort>, MultipleOfValidator_UInt16, TValueValidator, ushort>> validatorFactory)
+		public static NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, MultipleOfValidator_UInt16, TValueValidator, TSource, ushort> Not<TSource, TValueValidator>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt16, TSource, ushort> source, Func<NullableDataSourceStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt16, TSource, ushort>, NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt16, TValueValidator, TSource, ushort>> validatorFactory)
 			where TValueValidator : IValueValidator<ushort>
 			=> validatorFactory.Invoke(source).InvertTwo();
 
-		public static NullableDataSourceInvertedInverted<OptionalStateValidator<ushort>, MultipleOfValidator_UInt16, TValueValidator, ushort> Not<TValueValidator>(this NullableDataSourceInverted<OptionalStateValidator<ushort>, MultipleOfValidator_UInt16, ushort> source, Func<NullableDataSourceInverted<OptionalStateValidator<ushort>, MultipleOfValidator_UInt16, ushort>, NullableDataSourceInvertedStandard<OptionalStateValidator<ushort>, MultipleOfValidator_UInt16, TValueValidator, ushort>> validatorFactory)
+		public static NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, MultipleOfValidator_UInt16, TValueValidator, TSource, ushort> Not<TSource, TValueValidator>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, MultipleOfValidator_UInt16, TSource, ushort> source, Func<NullableDataSourceInverted<OptionalStateValidator<TSource>, MultipleOfValidator_UInt16, TSource, ushort>, NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt16, TValueValidator, TSource, ushort>> validatorFactory)
 			where TValueValidator : IValueValidator<ushort>
 			=> validatorFactory.Invoke(source).InvertTwo();
 
-		public static NullableDataSourceStandardStandardStandard<OptionalStateValidator<ushort>, MultipleOfValidator_UInt16, RangeValidator_UInt16, CustomValidator<ushort>, ushort> Assert(this NullableDataSourceStandardStandard<OptionalStateValidator<ushort>, MultipleOfValidator_UInt16, RangeValidator_UInt16, ushort> source, string description, Func<ushort, bool> validator)
+		public static NullableDataSourceStandardStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt16, RangeValidator_UInt16, CustomValidator<ushort>, TSource, ushort> Assert<TSource>(this NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt16, RangeValidator_UInt16, TSource, ushort> source, string description, Func<ushort, bool> validator)
 			=> source.Add(new CustomValidator<ushort>(description, validator));
 
-		public static NullableDataSourceInvertedStandardStandard<OptionalStateValidator<ushort>, MultipleOfValidator_UInt16, RangeValidator_UInt16, CustomValidator<ushort>, ushort> Assert(this NullableDataSourceInvertedStandard<OptionalStateValidator<ushort>, MultipleOfValidator_UInt16, RangeValidator_UInt16, ushort> source, string description, Func<ushort, bool> validator)
+		public static NullableDataSourceInvertedStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt16, RangeValidator_UInt16, CustomValidator<ushort>, TSource, ushort> Assert<TSource>(this NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt16, RangeValidator_UInt16, TSource, ushort> source, string description, Func<ushort, bool> validator)
 			=> source.Add(new CustomValidator<ushort>(description, validator));
 
-		public static NullableDataSourceStandardInvertedStandard<OptionalStateValidator<ushort>, MultipleOfValidator_UInt16, RangeValidator_UInt16, CustomValidator<ushort>, ushort> Assert(this NullableDataSourceStandardInverted<OptionalStateValidator<ushort>, MultipleOfValidator_UInt16, RangeValidator_UInt16, ushort> source, string description, Func<ushort, bool> validator)
+		public static NullableDataSourceStandardInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt16, RangeValidator_UInt16, CustomValidator<ushort>, TSource, ushort> Assert<TSource>(this NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, MultipleOfValidator_UInt16, RangeValidator_UInt16, TSource, ushort> source, string description, Func<ushort, bool> validator)
 			=> source.Add(new CustomValidator<ushort>(description, validator));
 
-		public static NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<ushort>, MultipleOfValidator_UInt16, RangeValidator_UInt16, CustomValidator<ushort>, ushort> Assert(this NullableDataSourceInvertedInverted<OptionalStateValidator<ushort>, MultipleOfValidator_UInt16, RangeValidator_UInt16, ushort> source, string description, Func<ushort, bool> validator)
+		public static NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt16, RangeValidator_UInt16, CustomValidator<ushort>, TSource, ushort> Assert<TSource>(this NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, MultipleOfValidator_UInt16, RangeValidator_UInt16, TSource, ushort> source, string description, Func<ushort, bool> validator)
 			=> source.Add(new CustomValidator<ushort>(description, validator));
 
-		public static NullableDataSourceStandardStandardInverted<OptionalStateValidator<ushort>, MultipleOfValidator_UInt16, RangeValidator_UInt16, TValueValidator, ushort> Not<TValueValidator>(this NullableDataSourceStandardStandard<OptionalStateValidator<ushort>, MultipleOfValidator_UInt16, RangeValidator_UInt16, ushort> source, Func<NullableDataSourceStandardStandard<OptionalStateValidator<ushort>, MultipleOfValidator_UInt16, RangeValidator_UInt16, ushort>, NullableDataSourceStandardStandardStandard<OptionalStateValidator<ushort>, MultipleOfValidator_UInt16, RangeValidator_UInt16, TValueValidator, ushort>> validatorFactory)
+		public static NullableDataSourceStandardStandardInverted<OptionalStateValidator<TSource>, MultipleOfValidator_UInt16, RangeValidator_UInt16, TValueValidator, TSource, ushort> Not<TSource, TValueValidator>(this NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt16, RangeValidator_UInt16, TSource, ushort> source, Func<NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt16, RangeValidator_UInt16, TSource, ushort>, NullableDataSourceStandardStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt16, RangeValidator_UInt16, TValueValidator, TSource, ushort>> validatorFactory)
 			where TValueValidator : IValueValidator<ushort>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceInvertedStandardInverted<OptionalStateValidator<ushort>, MultipleOfValidator_UInt16, RangeValidator_UInt16, TValueValidator, ushort> Not<TValueValidator>(this NullableDataSourceInvertedStandard<OptionalStateValidator<ushort>, MultipleOfValidator_UInt16, RangeValidator_UInt16, ushort> source, Func<NullableDataSourceInvertedStandard<OptionalStateValidator<ushort>, MultipleOfValidator_UInt16, RangeValidator_UInt16, ushort>, NullableDataSourceInvertedStandardStandard<OptionalStateValidator<ushort>, MultipleOfValidator_UInt16, RangeValidator_UInt16, TValueValidator, ushort>> validatorFactory)
+		public static NullableDataSourceInvertedStandardInverted<OptionalStateValidator<TSource>, MultipleOfValidator_UInt16, RangeValidator_UInt16, TValueValidator, TSource, ushort> Not<TSource, TValueValidator>(this NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt16, RangeValidator_UInt16, TSource, ushort> source, Func<NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt16, RangeValidator_UInt16, TSource, ushort>, NullableDataSourceInvertedStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt16, RangeValidator_UInt16, TValueValidator, TSource, ushort>> validatorFactory)
 			where TValueValidator : IValueValidator<ushort>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceStandardInvertedInverted<OptionalStateValidator<ushort>, MultipleOfValidator_UInt16, RangeValidator_UInt16, TValueValidator, ushort> Not<TValueValidator>(this NullableDataSourceStandardInverted<OptionalStateValidator<ushort>, MultipleOfValidator_UInt16, RangeValidator_UInt16, ushort> source, Func<NullableDataSourceStandardInverted<OptionalStateValidator<ushort>, MultipleOfValidator_UInt16, RangeValidator_UInt16, ushort>, NullableDataSourceStandardInvertedStandard<OptionalStateValidator<ushort>, MultipleOfValidator_UInt16, RangeValidator_UInt16, TValueValidator, ushort>> validatorFactory)
+		public static NullableDataSourceStandardInvertedInverted<OptionalStateValidator<TSource>, MultipleOfValidator_UInt16, RangeValidator_UInt16, TValueValidator, TSource, ushort> Not<TSource, TValueValidator>(this NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, MultipleOfValidator_UInt16, RangeValidator_UInt16, TSource, ushort> source, Func<NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, MultipleOfValidator_UInt16, RangeValidator_UInt16, TSource, ushort>, NullableDataSourceStandardInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt16, RangeValidator_UInt16, TValueValidator, TSource, ushort>> validatorFactory)
 			where TValueValidator : IValueValidator<ushort>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceInvertedInvertedInverted<OptionalStateValidator<ushort>, MultipleOfValidator_UInt16, RangeValidator_UInt16, TValueValidator, ushort> Not<TValueValidator>(this NullableDataSourceInvertedInverted<OptionalStateValidator<ushort>, MultipleOfValidator_UInt16, RangeValidator_UInt16, ushort> source, Func<NullableDataSourceInvertedInverted<OptionalStateValidator<ushort>, MultipleOfValidator_UInt16, RangeValidator_UInt16, ushort>, NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<ushort>, MultipleOfValidator_UInt16, RangeValidator_UInt16, TValueValidator, ushort>> validatorFactory)
+		public static NullableDataSourceInvertedInvertedInverted<OptionalStateValidator<TSource>, MultipleOfValidator_UInt16, RangeValidator_UInt16, TValueValidator, TSource, ushort> Not<TSource, TValueValidator>(this NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, MultipleOfValidator_UInt16, RangeValidator_UInt16, TSource, ushort> source, Func<NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, MultipleOfValidator_UInt16, RangeValidator_UInt16, TSource, ushort>, NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt16, RangeValidator_UInt16, TValueValidator, TSource, ushort>> validatorFactory)
 			where TValueValidator : IValueValidator<ushort>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<int>, MultipleOfValidator_Int32, CustomValidator<int>, int> Assert(this NullableDataSourceStandard<OptionalStateValidator<int>, MultipleOfValidator_Int32, int> source, string description, Func<int, bool> validator)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int32, CustomValidator<int>, TSource, int> Assert<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int32, TSource, int> source, string description, Func<int, bool> validator)
 			=> source.Add(new CustomValidator<int>(description, validator));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<int>, MultipleOfValidator_Int32, CustomValidator<int>, int> Assert(this NullableDataSourceInverted<OptionalStateValidator<int>, MultipleOfValidator_Int32, int> source, string description, Func<int, bool> validator)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int32, CustomValidator<int>, TSource, int> Assert<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Int32, TSource, int> source, string description, Func<int, bool> validator)
 			=> source.Add(new CustomValidator<int>(description, validator));
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<int>, MultipleOfValidator_Int32, RangeValidator_Int32, int> GreaterThan(this NullableDataSourceStandard<OptionalStateValidator<int>, MultipleOfValidator_Int32, int> source, int value)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int32, RangeValidator_Int32, TSource, int> GreaterThan<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int32, TSource, int> source, int value)
 			=> source.Add(new RangeValidator_Int32(value, null, null, null));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<int>, MultipleOfValidator_Int32, RangeValidator_Int32, int> GreaterThan(this NullableDataSourceInverted<OptionalStateValidator<int>, MultipleOfValidator_Int32, int> source, int value)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int32, RangeValidator_Int32, TSource, int> GreaterThan<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Int32, TSource, int> source, int value)
 			=> source.Add(new RangeValidator_Int32(value, null, null, null));
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<int>, MultipleOfValidator_Int32, RangeValidator_Int32, int> GreaterThanOrEqualTo(this NullableDataSourceStandard<OptionalStateValidator<int>, MultipleOfValidator_Int32, int> source, int value)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int32, RangeValidator_Int32, TSource, int> GreaterThanOrEqualTo<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int32, TSource, int> source, int value)
 			=> source.Add(new RangeValidator_Int32(null, value, null, null));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<int>, MultipleOfValidator_Int32, RangeValidator_Int32, int> GreaterThanOrEqualTo(this NullableDataSourceInverted<OptionalStateValidator<int>, MultipleOfValidator_Int32, int> source, int value)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int32, RangeValidator_Int32, TSource, int> GreaterThanOrEqualTo<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Int32, TSource, int> source, int value)
 			=> source.Add(new RangeValidator_Int32(null, value, null, null));
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<int>, MultipleOfValidator_Int32, RangeValidator_Int32, int> LessThan(this NullableDataSourceStandard<OptionalStateValidator<int>, MultipleOfValidator_Int32, int> source, int value)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int32, RangeValidator_Int32, TSource, int> LessThan<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int32, TSource, int> source, int value)
 			=> source.Add(new RangeValidator_Int32(null, null, value, null));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<int>, MultipleOfValidator_Int32, RangeValidator_Int32, int> LessThan(this NullableDataSourceInverted<OptionalStateValidator<int>, MultipleOfValidator_Int32, int> source, int value)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int32, RangeValidator_Int32, TSource, int> LessThan<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Int32, TSource, int> source, int value)
 			=> source.Add(new RangeValidator_Int32(null, null, value, null));
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<int>, MultipleOfValidator_Int32, RangeValidator_Int32, int> LessThanOrEqualTo(this NullableDataSourceStandard<OptionalStateValidator<int>, MultipleOfValidator_Int32, int> source, int value)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int32, RangeValidator_Int32, TSource, int> LessThanOrEqualTo<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int32, TSource, int> source, int value)
 			=> source.Add(new RangeValidator_Int32(null, null, null, value));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<int>, MultipleOfValidator_Int32, RangeValidator_Int32, int> LessThanOrEqualTo(this NullableDataSourceInverted<OptionalStateValidator<int>, MultipleOfValidator_Int32, int> source, int value)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int32, RangeValidator_Int32, TSource, int> LessThanOrEqualTo<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Int32, TSource, int> source, int value)
 			=> source.Add(new RangeValidator_Int32(null, null, null, value));
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<int>, MultipleOfValidator_Int32, RangeValidator_Int32, int> InRange(this NullableDataSourceStandard<OptionalStateValidator<int>, MultipleOfValidator_Int32, int> source, int? greaterThan = null, int? greaterThanOrEqualTo = null, int? lessThan = null, int? lessThanOrEqualTo = null)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int32, RangeValidator_Int32, TSource, int> InRange<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int32, TSource, int> source, int? greaterThan = null, int? greaterThanOrEqualTo = null, int? lessThan = null, int? lessThanOrEqualTo = null)
 			=> source.Add(new RangeValidator_Int32(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<int>, MultipleOfValidator_Int32, RangeValidator_Int32, int> InRange(this NullableDataSourceInverted<OptionalStateValidator<int>, MultipleOfValidator_Int32, int> source, int? greaterThan = null, int? greaterThanOrEqualTo = null, int? lessThan = null, int? lessThanOrEqualTo = null)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int32, RangeValidator_Int32, TSource, int> InRange<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Int32, TSource, int> source, int? greaterThan = null, int? greaterThanOrEqualTo = null, int? lessThan = null, int? lessThanOrEqualTo = null)
 			=> source.Add(new RangeValidator_Int32(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
-		public static NullableDataSourceStandardInverted<OptionalStateValidator<int>, MultipleOfValidator_Int32, TValueValidator, int> Not<TValueValidator>(this NullableDataSourceStandard<OptionalStateValidator<int>, MultipleOfValidator_Int32, int> source, Func<NullableDataSourceStandard<OptionalStateValidator<int>, MultipleOfValidator_Int32, int>, NullableDataSourceStandardStandard<OptionalStateValidator<int>, MultipleOfValidator_Int32, TValueValidator, int>> validatorFactory)
+		public static NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Int32, TValueValidator, TSource, int> Not<TSource, TValueValidator>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int32, TSource, int> source, Func<NullableDataSourceStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int32, TSource, int>, NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int32, TValueValidator, TSource, int>> validatorFactory)
 			where TValueValidator : IValueValidator<int>
 			=> validatorFactory.Invoke(source).InvertTwo();
 
-		public static NullableDataSourceInvertedInverted<OptionalStateValidator<int>, MultipleOfValidator_Int32, TValueValidator, int> Not<TValueValidator>(this NullableDataSourceInverted<OptionalStateValidator<int>, MultipleOfValidator_Int32, int> source, Func<NullableDataSourceInverted<OptionalStateValidator<int>, MultipleOfValidator_Int32, int>, NullableDataSourceInvertedStandard<OptionalStateValidator<int>, MultipleOfValidator_Int32, TValueValidator, int>> validatorFactory)
+		public static NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Int32, TValueValidator, TSource, int> Not<TSource, TValueValidator>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Int32, TSource, int> source, Func<NullableDataSourceInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Int32, TSource, int>, NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int32, TValueValidator, TSource, int>> validatorFactory)
 			where TValueValidator : IValueValidator<int>
 			=> validatorFactory.Invoke(source).InvertTwo();
 
-		public static NullableDataSourceStandardStandardStandard<OptionalStateValidator<int>, MultipleOfValidator_Int32, RangeValidator_Int32, CustomValidator<int>, int> Assert(this NullableDataSourceStandardStandard<OptionalStateValidator<int>, MultipleOfValidator_Int32, RangeValidator_Int32, int> source, string description, Func<int, bool> validator)
+		public static NullableDataSourceStandardStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int32, RangeValidator_Int32, CustomValidator<int>, TSource, int> Assert<TSource>(this NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int32, RangeValidator_Int32, TSource, int> source, string description, Func<int, bool> validator)
 			=> source.Add(new CustomValidator<int>(description, validator));
 
-		public static NullableDataSourceInvertedStandardStandard<OptionalStateValidator<int>, MultipleOfValidator_Int32, RangeValidator_Int32, CustomValidator<int>, int> Assert(this NullableDataSourceInvertedStandard<OptionalStateValidator<int>, MultipleOfValidator_Int32, RangeValidator_Int32, int> source, string description, Func<int, bool> validator)
+		public static NullableDataSourceInvertedStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int32, RangeValidator_Int32, CustomValidator<int>, TSource, int> Assert<TSource>(this NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int32, RangeValidator_Int32, TSource, int> source, string description, Func<int, bool> validator)
 			=> source.Add(new CustomValidator<int>(description, validator));
 
-		public static NullableDataSourceStandardInvertedStandard<OptionalStateValidator<int>, MultipleOfValidator_Int32, RangeValidator_Int32, CustomValidator<int>, int> Assert(this NullableDataSourceStandardInverted<OptionalStateValidator<int>, MultipleOfValidator_Int32, RangeValidator_Int32, int> source, string description, Func<int, bool> validator)
+		public static NullableDataSourceStandardInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int32, RangeValidator_Int32, CustomValidator<int>, TSource, int> Assert<TSource>(this NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Int32, RangeValidator_Int32, TSource, int> source, string description, Func<int, bool> validator)
 			=> source.Add(new CustomValidator<int>(description, validator));
 
-		public static NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<int>, MultipleOfValidator_Int32, RangeValidator_Int32, CustomValidator<int>, int> Assert(this NullableDataSourceInvertedInverted<OptionalStateValidator<int>, MultipleOfValidator_Int32, RangeValidator_Int32, int> source, string description, Func<int, bool> validator)
+		public static NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int32, RangeValidator_Int32, CustomValidator<int>, TSource, int> Assert<TSource>(this NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Int32, RangeValidator_Int32, TSource, int> source, string description, Func<int, bool> validator)
 			=> source.Add(new CustomValidator<int>(description, validator));
 
-		public static NullableDataSourceStandardStandardInverted<OptionalStateValidator<int>, MultipleOfValidator_Int32, RangeValidator_Int32, TValueValidator, int> Not<TValueValidator>(this NullableDataSourceStandardStandard<OptionalStateValidator<int>, MultipleOfValidator_Int32, RangeValidator_Int32, int> source, Func<NullableDataSourceStandardStandard<OptionalStateValidator<int>, MultipleOfValidator_Int32, RangeValidator_Int32, int>, NullableDataSourceStandardStandardStandard<OptionalStateValidator<int>, MultipleOfValidator_Int32, RangeValidator_Int32, TValueValidator, int>> validatorFactory)
+		public static NullableDataSourceStandardStandardInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Int32, RangeValidator_Int32, TValueValidator, TSource, int> Not<TSource, TValueValidator>(this NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int32, RangeValidator_Int32, TSource, int> source, Func<NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int32, RangeValidator_Int32, TSource, int>, NullableDataSourceStandardStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int32, RangeValidator_Int32, TValueValidator, TSource, int>> validatorFactory)
 			where TValueValidator : IValueValidator<int>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceInvertedStandardInverted<OptionalStateValidator<int>, MultipleOfValidator_Int32, RangeValidator_Int32, TValueValidator, int> Not<TValueValidator>(this NullableDataSourceInvertedStandard<OptionalStateValidator<int>, MultipleOfValidator_Int32, RangeValidator_Int32, int> source, Func<NullableDataSourceInvertedStandard<OptionalStateValidator<int>, MultipleOfValidator_Int32, RangeValidator_Int32, int>, NullableDataSourceInvertedStandardStandard<OptionalStateValidator<int>, MultipleOfValidator_Int32, RangeValidator_Int32, TValueValidator, int>> validatorFactory)
+		public static NullableDataSourceInvertedStandardInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Int32, RangeValidator_Int32, TValueValidator, TSource, int> Not<TSource, TValueValidator>(this NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int32, RangeValidator_Int32, TSource, int> source, Func<NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int32, RangeValidator_Int32, TSource, int>, NullableDataSourceInvertedStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int32, RangeValidator_Int32, TValueValidator, TSource, int>> validatorFactory)
 			where TValueValidator : IValueValidator<int>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceStandardInvertedInverted<OptionalStateValidator<int>, MultipleOfValidator_Int32, RangeValidator_Int32, TValueValidator, int> Not<TValueValidator>(this NullableDataSourceStandardInverted<OptionalStateValidator<int>, MultipleOfValidator_Int32, RangeValidator_Int32, int> source, Func<NullableDataSourceStandardInverted<OptionalStateValidator<int>, MultipleOfValidator_Int32, RangeValidator_Int32, int>, NullableDataSourceStandardInvertedStandard<OptionalStateValidator<int>, MultipleOfValidator_Int32, RangeValidator_Int32, TValueValidator, int>> validatorFactory)
+		public static NullableDataSourceStandardInvertedInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Int32, RangeValidator_Int32, TValueValidator, TSource, int> Not<TSource, TValueValidator>(this NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Int32, RangeValidator_Int32, TSource, int> source, Func<NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Int32, RangeValidator_Int32, TSource, int>, NullableDataSourceStandardInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int32, RangeValidator_Int32, TValueValidator, TSource, int>> validatorFactory)
 			where TValueValidator : IValueValidator<int>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceInvertedInvertedInverted<OptionalStateValidator<int>, MultipleOfValidator_Int32, RangeValidator_Int32, TValueValidator, int> Not<TValueValidator>(this NullableDataSourceInvertedInverted<OptionalStateValidator<int>, MultipleOfValidator_Int32, RangeValidator_Int32, int> source, Func<NullableDataSourceInvertedInverted<OptionalStateValidator<int>, MultipleOfValidator_Int32, RangeValidator_Int32, int>, NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<int>, MultipleOfValidator_Int32, RangeValidator_Int32, TValueValidator, int>> validatorFactory)
+		public static NullableDataSourceInvertedInvertedInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Int32, RangeValidator_Int32, TValueValidator, TSource, int> Not<TSource, TValueValidator>(this NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Int32, RangeValidator_Int32, TSource, int> source, Func<NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Int32, RangeValidator_Int32, TSource, int>, NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int32, RangeValidator_Int32, TValueValidator, TSource, int>> validatorFactory)
 			where TValueValidator : IValueValidator<int>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<uint>, MultipleOfValidator_UInt32, CustomValidator<uint>, uint> Assert(this NullableDataSourceStandard<OptionalStateValidator<uint>, MultipleOfValidator_UInt32, uint> source, string description, Func<uint, bool> validator)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt32, CustomValidator<uint>, TSource, uint> Assert<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt32, TSource, uint> source, string description, Func<uint, bool> validator)
 			=> source.Add(new CustomValidator<uint>(description, validator));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<uint>, MultipleOfValidator_UInt32, CustomValidator<uint>, uint> Assert(this NullableDataSourceInverted<OptionalStateValidator<uint>, MultipleOfValidator_UInt32, uint> source, string description, Func<uint, bool> validator)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt32, CustomValidator<uint>, TSource, uint> Assert<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, MultipleOfValidator_UInt32, TSource, uint> source, string description, Func<uint, bool> validator)
 			=> source.Add(new CustomValidator<uint>(description, validator));
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<uint>, MultipleOfValidator_UInt32, RangeValidator_UInt32, uint> GreaterThan(this NullableDataSourceStandard<OptionalStateValidator<uint>, MultipleOfValidator_UInt32, uint> source, uint value)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt32, RangeValidator_UInt32, TSource, uint> GreaterThan<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt32, TSource, uint> source, uint value)
 			=> source.Add(new RangeValidator_UInt32(value, null, null, null));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<uint>, MultipleOfValidator_UInt32, RangeValidator_UInt32, uint> GreaterThan(this NullableDataSourceInverted<OptionalStateValidator<uint>, MultipleOfValidator_UInt32, uint> source, uint value)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt32, RangeValidator_UInt32, TSource, uint> GreaterThan<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, MultipleOfValidator_UInt32, TSource, uint> source, uint value)
 			=> source.Add(new RangeValidator_UInt32(value, null, null, null));
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<uint>, MultipleOfValidator_UInt32, RangeValidator_UInt32, uint> GreaterThanOrEqualTo(this NullableDataSourceStandard<OptionalStateValidator<uint>, MultipleOfValidator_UInt32, uint> source, uint value)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt32, RangeValidator_UInt32, TSource, uint> GreaterThanOrEqualTo<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt32, TSource, uint> source, uint value)
 			=> source.Add(new RangeValidator_UInt32(null, value, null, null));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<uint>, MultipleOfValidator_UInt32, RangeValidator_UInt32, uint> GreaterThanOrEqualTo(this NullableDataSourceInverted<OptionalStateValidator<uint>, MultipleOfValidator_UInt32, uint> source, uint value)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt32, RangeValidator_UInt32, TSource, uint> GreaterThanOrEqualTo<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, MultipleOfValidator_UInt32, TSource, uint> source, uint value)
 			=> source.Add(new RangeValidator_UInt32(null, value, null, null));
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<uint>, MultipleOfValidator_UInt32, RangeValidator_UInt32, uint> LessThan(this NullableDataSourceStandard<OptionalStateValidator<uint>, MultipleOfValidator_UInt32, uint> source, uint value)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt32, RangeValidator_UInt32, TSource, uint> LessThan<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt32, TSource, uint> source, uint value)
 			=> source.Add(new RangeValidator_UInt32(null, null, value, null));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<uint>, MultipleOfValidator_UInt32, RangeValidator_UInt32, uint> LessThan(this NullableDataSourceInverted<OptionalStateValidator<uint>, MultipleOfValidator_UInt32, uint> source, uint value)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt32, RangeValidator_UInt32, TSource, uint> LessThan<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, MultipleOfValidator_UInt32, TSource, uint> source, uint value)
 			=> source.Add(new RangeValidator_UInt32(null, null, value, null));
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<uint>, MultipleOfValidator_UInt32, RangeValidator_UInt32, uint> LessThanOrEqualTo(this NullableDataSourceStandard<OptionalStateValidator<uint>, MultipleOfValidator_UInt32, uint> source, uint value)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt32, RangeValidator_UInt32, TSource, uint> LessThanOrEqualTo<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt32, TSource, uint> source, uint value)
 			=> source.Add(new RangeValidator_UInt32(null, null, null, value));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<uint>, MultipleOfValidator_UInt32, RangeValidator_UInt32, uint> LessThanOrEqualTo(this NullableDataSourceInverted<OptionalStateValidator<uint>, MultipleOfValidator_UInt32, uint> source, uint value)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt32, RangeValidator_UInt32, TSource, uint> LessThanOrEqualTo<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, MultipleOfValidator_UInt32, TSource, uint> source, uint value)
 			=> source.Add(new RangeValidator_UInt32(null, null, null, value));
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<uint>, MultipleOfValidator_UInt32, RangeValidator_UInt32, uint> InRange(this NullableDataSourceStandard<OptionalStateValidator<uint>, MultipleOfValidator_UInt32, uint> source, uint? greaterThan = null, uint? greaterThanOrEqualTo = null, uint? lessThan = null, uint? lessThanOrEqualTo = null)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt32, RangeValidator_UInt32, TSource, uint> InRange<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt32, TSource, uint> source, uint? greaterThan = null, uint? greaterThanOrEqualTo = null, uint? lessThan = null, uint? lessThanOrEqualTo = null)
 			=> source.Add(new RangeValidator_UInt32(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<uint>, MultipleOfValidator_UInt32, RangeValidator_UInt32, uint> InRange(this NullableDataSourceInverted<OptionalStateValidator<uint>, MultipleOfValidator_UInt32, uint> source, uint? greaterThan = null, uint? greaterThanOrEqualTo = null, uint? lessThan = null, uint? lessThanOrEqualTo = null)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt32, RangeValidator_UInt32, TSource, uint> InRange<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, MultipleOfValidator_UInt32, TSource, uint> source, uint? greaterThan = null, uint? greaterThanOrEqualTo = null, uint? lessThan = null, uint? lessThanOrEqualTo = null)
 			=> source.Add(new RangeValidator_UInt32(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
-		public static NullableDataSourceStandardInverted<OptionalStateValidator<uint>, MultipleOfValidator_UInt32, TValueValidator, uint> Not<TValueValidator>(this NullableDataSourceStandard<OptionalStateValidator<uint>, MultipleOfValidator_UInt32, uint> source, Func<NullableDataSourceStandard<OptionalStateValidator<uint>, MultipleOfValidator_UInt32, uint>, NullableDataSourceStandardStandard<OptionalStateValidator<uint>, MultipleOfValidator_UInt32, TValueValidator, uint>> validatorFactory)
+		public static NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, MultipleOfValidator_UInt32, TValueValidator, TSource, uint> Not<TSource, TValueValidator>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt32, TSource, uint> source, Func<NullableDataSourceStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt32, TSource, uint>, NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt32, TValueValidator, TSource, uint>> validatorFactory)
 			where TValueValidator : IValueValidator<uint>
 			=> validatorFactory.Invoke(source).InvertTwo();
 
-		public static NullableDataSourceInvertedInverted<OptionalStateValidator<uint>, MultipleOfValidator_UInt32, TValueValidator, uint> Not<TValueValidator>(this NullableDataSourceInverted<OptionalStateValidator<uint>, MultipleOfValidator_UInt32, uint> source, Func<NullableDataSourceInverted<OptionalStateValidator<uint>, MultipleOfValidator_UInt32, uint>, NullableDataSourceInvertedStandard<OptionalStateValidator<uint>, MultipleOfValidator_UInt32, TValueValidator, uint>> validatorFactory)
+		public static NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, MultipleOfValidator_UInt32, TValueValidator, TSource, uint> Not<TSource, TValueValidator>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, MultipleOfValidator_UInt32, TSource, uint> source, Func<NullableDataSourceInverted<OptionalStateValidator<TSource>, MultipleOfValidator_UInt32, TSource, uint>, NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt32, TValueValidator, TSource, uint>> validatorFactory)
 			where TValueValidator : IValueValidator<uint>
 			=> validatorFactory.Invoke(source).InvertTwo();
 
-		public static NullableDataSourceStandardStandardStandard<OptionalStateValidator<uint>, MultipleOfValidator_UInt32, RangeValidator_UInt32, CustomValidator<uint>, uint> Assert(this NullableDataSourceStandardStandard<OptionalStateValidator<uint>, MultipleOfValidator_UInt32, RangeValidator_UInt32, uint> source, string description, Func<uint, bool> validator)
+		public static NullableDataSourceStandardStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt32, RangeValidator_UInt32, CustomValidator<uint>, TSource, uint> Assert<TSource>(this NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt32, RangeValidator_UInt32, TSource, uint> source, string description, Func<uint, bool> validator)
 			=> source.Add(new CustomValidator<uint>(description, validator));
 
-		public static NullableDataSourceInvertedStandardStandard<OptionalStateValidator<uint>, MultipleOfValidator_UInt32, RangeValidator_UInt32, CustomValidator<uint>, uint> Assert(this NullableDataSourceInvertedStandard<OptionalStateValidator<uint>, MultipleOfValidator_UInt32, RangeValidator_UInt32, uint> source, string description, Func<uint, bool> validator)
+		public static NullableDataSourceInvertedStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt32, RangeValidator_UInt32, CustomValidator<uint>, TSource, uint> Assert<TSource>(this NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt32, RangeValidator_UInt32, TSource, uint> source, string description, Func<uint, bool> validator)
 			=> source.Add(new CustomValidator<uint>(description, validator));
 
-		public static NullableDataSourceStandardInvertedStandard<OptionalStateValidator<uint>, MultipleOfValidator_UInt32, RangeValidator_UInt32, CustomValidator<uint>, uint> Assert(this NullableDataSourceStandardInverted<OptionalStateValidator<uint>, MultipleOfValidator_UInt32, RangeValidator_UInt32, uint> source, string description, Func<uint, bool> validator)
+		public static NullableDataSourceStandardInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt32, RangeValidator_UInt32, CustomValidator<uint>, TSource, uint> Assert<TSource>(this NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, MultipleOfValidator_UInt32, RangeValidator_UInt32, TSource, uint> source, string description, Func<uint, bool> validator)
 			=> source.Add(new CustomValidator<uint>(description, validator));
 
-		public static NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<uint>, MultipleOfValidator_UInt32, RangeValidator_UInt32, CustomValidator<uint>, uint> Assert(this NullableDataSourceInvertedInverted<OptionalStateValidator<uint>, MultipleOfValidator_UInt32, RangeValidator_UInt32, uint> source, string description, Func<uint, bool> validator)
+		public static NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt32, RangeValidator_UInt32, CustomValidator<uint>, TSource, uint> Assert<TSource>(this NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, MultipleOfValidator_UInt32, RangeValidator_UInt32, TSource, uint> source, string description, Func<uint, bool> validator)
 			=> source.Add(new CustomValidator<uint>(description, validator));
 
-		public static NullableDataSourceStandardStandardInverted<OptionalStateValidator<uint>, MultipleOfValidator_UInt32, RangeValidator_UInt32, TValueValidator, uint> Not<TValueValidator>(this NullableDataSourceStandardStandard<OptionalStateValidator<uint>, MultipleOfValidator_UInt32, RangeValidator_UInt32, uint> source, Func<NullableDataSourceStandardStandard<OptionalStateValidator<uint>, MultipleOfValidator_UInt32, RangeValidator_UInt32, uint>, NullableDataSourceStandardStandardStandard<OptionalStateValidator<uint>, MultipleOfValidator_UInt32, RangeValidator_UInt32, TValueValidator, uint>> validatorFactory)
+		public static NullableDataSourceStandardStandardInverted<OptionalStateValidator<TSource>, MultipleOfValidator_UInt32, RangeValidator_UInt32, TValueValidator, TSource, uint> Not<TSource, TValueValidator>(this NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt32, RangeValidator_UInt32, TSource, uint> source, Func<NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt32, RangeValidator_UInt32, TSource, uint>, NullableDataSourceStandardStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt32, RangeValidator_UInt32, TValueValidator, TSource, uint>> validatorFactory)
 			where TValueValidator : IValueValidator<uint>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceInvertedStandardInverted<OptionalStateValidator<uint>, MultipleOfValidator_UInt32, RangeValidator_UInt32, TValueValidator, uint> Not<TValueValidator>(this NullableDataSourceInvertedStandard<OptionalStateValidator<uint>, MultipleOfValidator_UInt32, RangeValidator_UInt32, uint> source, Func<NullableDataSourceInvertedStandard<OptionalStateValidator<uint>, MultipleOfValidator_UInt32, RangeValidator_UInt32, uint>, NullableDataSourceInvertedStandardStandard<OptionalStateValidator<uint>, MultipleOfValidator_UInt32, RangeValidator_UInt32, TValueValidator, uint>> validatorFactory)
+		public static NullableDataSourceInvertedStandardInverted<OptionalStateValidator<TSource>, MultipleOfValidator_UInt32, RangeValidator_UInt32, TValueValidator, TSource, uint> Not<TSource, TValueValidator>(this NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt32, RangeValidator_UInt32, TSource, uint> source, Func<NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt32, RangeValidator_UInt32, TSource, uint>, NullableDataSourceInvertedStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt32, RangeValidator_UInt32, TValueValidator, TSource, uint>> validatorFactory)
 			where TValueValidator : IValueValidator<uint>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceStandardInvertedInverted<OptionalStateValidator<uint>, MultipleOfValidator_UInt32, RangeValidator_UInt32, TValueValidator, uint> Not<TValueValidator>(this NullableDataSourceStandardInverted<OptionalStateValidator<uint>, MultipleOfValidator_UInt32, RangeValidator_UInt32, uint> source, Func<NullableDataSourceStandardInverted<OptionalStateValidator<uint>, MultipleOfValidator_UInt32, RangeValidator_UInt32, uint>, NullableDataSourceStandardInvertedStandard<OptionalStateValidator<uint>, MultipleOfValidator_UInt32, RangeValidator_UInt32, TValueValidator, uint>> validatorFactory)
+		public static NullableDataSourceStandardInvertedInverted<OptionalStateValidator<TSource>, MultipleOfValidator_UInt32, RangeValidator_UInt32, TValueValidator, TSource, uint> Not<TSource, TValueValidator>(this NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, MultipleOfValidator_UInt32, RangeValidator_UInt32, TSource, uint> source, Func<NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, MultipleOfValidator_UInt32, RangeValidator_UInt32, TSource, uint>, NullableDataSourceStandardInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt32, RangeValidator_UInt32, TValueValidator, TSource, uint>> validatorFactory)
 			where TValueValidator : IValueValidator<uint>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceInvertedInvertedInverted<OptionalStateValidator<uint>, MultipleOfValidator_UInt32, RangeValidator_UInt32, TValueValidator, uint> Not<TValueValidator>(this NullableDataSourceInvertedInverted<OptionalStateValidator<uint>, MultipleOfValidator_UInt32, RangeValidator_UInt32, uint> source, Func<NullableDataSourceInvertedInverted<OptionalStateValidator<uint>, MultipleOfValidator_UInt32, RangeValidator_UInt32, uint>, NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<uint>, MultipleOfValidator_UInt32, RangeValidator_UInt32, TValueValidator, uint>> validatorFactory)
+		public static NullableDataSourceInvertedInvertedInverted<OptionalStateValidator<TSource>, MultipleOfValidator_UInt32, RangeValidator_UInt32, TValueValidator, TSource, uint> Not<TSource, TValueValidator>(this NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, MultipleOfValidator_UInt32, RangeValidator_UInt32, TSource, uint> source, Func<NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, MultipleOfValidator_UInt32, RangeValidator_UInt32, TSource, uint>, NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt32, RangeValidator_UInt32, TValueValidator, TSource, uint>> validatorFactory)
 			where TValueValidator : IValueValidator<uint>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<long>, MultipleOfValidator_Int64, CustomValidator<long>, long> Assert(this NullableDataSourceStandard<OptionalStateValidator<long>, MultipleOfValidator_Int64, long> source, string description, Func<long, bool> validator)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int64, CustomValidator<long>, TSource, long> Assert<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int64, TSource, long> source, string description, Func<long, bool> validator)
 			=> source.Add(new CustomValidator<long>(description, validator));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<long>, MultipleOfValidator_Int64, CustomValidator<long>, long> Assert(this NullableDataSourceInverted<OptionalStateValidator<long>, MultipleOfValidator_Int64, long> source, string description, Func<long, bool> validator)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int64, CustomValidator<long>, TSource, long> Assert<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Int64, TSource, long> source, string description, Func<long, bool> validator)
 			=> source.Add(new CustomValidator<long>(description, validator));
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<long>, MultipleOfValidator_Int64, RangeValidator_Int64, long> GreaterThan(this NullableDataSourceStandard<OptionalStateValidator<long>, MultipleOfValidator_Int64, long> source, long value)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int64, RangeValidator_Int64, TSource, long> GreaterThan<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int64, TSource, long> source, long value)
 			=> source.Add(new RangeValidator_Int64(value, null, null, null));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<long>, MultipleOfValidator_Int64, RangeValidator_Int64, long> GreaterThan(this NullableDataSourceInverted<OptionalStateValidator<long>, MultipleOfValidator_Int64, long> source, long value)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int64, RangeValidator_Int64, TSource, long> GreaterThan<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Int64, TSource, long> source, long value)
 			=> source.Add(new RangeValidator_Int64(value, null, null, null));
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<long>, MultipleOfValidator_Int64, RangeValidator_Int64, long> GreaterThanOrEqualTo(this NullableDataSourceStandard<OptionalStateValidator<long>, MultipleOfValidator_Int64, long> source, long value)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int64, RangeValidator_Int64, TSource, long> GreaterThanOrEqualTo<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int64, TSource, long> source, long value)
 			=> source.Add(new RangeValidator_Int64(null, value, null, null));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<long>, MultipleOfValidator_Int64, RangeValidator_Int64, long> GreaterThanOrEqualTo(this NullableDataSourceInverted<OptionalStateValidator<long>, MultipleOfValidator_Int64, long> source, long value)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int64, RangeValidator_Int64, TSource, long> GreaterThanOrEqualTo<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Int64, TSource, long> source, long value)
 			=> source.Add(new RangeValidator_Int64(null, value, null, null));
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<long>, MultipleOfValidator_Int64, RangeValidator_Int64, long> LessThan(this NullableDataSourceStandard<OptionalStateValidator<long>, MultipleOfValidator_Int64, long> source, long value)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int64, RangeValidator_Int64, TSource, long> LessThan<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int64, TSource, long> source, long value)
 			=> source.Add(new RangeValidator_Int64(null, null, value, null));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<long>, MultipleOfValidator_Int64, RangeValidator_Int64, long> LessThan(this NullableDataSourceInverted<OptionalStateValidator<long>, MultipleOfValidator_Int64, long> source, long value)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int64, RangeValidator_Int64, TSource, long> LessThan<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Int64, TSource, long> source, long value)
 			=> source.Add(new RangeValidator_Int64(null, null, value, null));
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<long>, MultipleOfValidator_Int64, RangeValidator_Int64, long> LessThanOrEqualTo(this NullableDataSourceStandard<OptionalStateValidator<long>, MultipleOfValidator_Int64, long> source, long value)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int64, RangeValidator_Int64, TSource, long> LessThanOrEqualTo<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int64, TSource, long> source, long value)
 			=> source.Add(new RangeValidator_Int64(null, null, null, value));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<long>, MultipleOfValidator_Int64, RangeValidator_Int64, long> LessThanOrEqualTo(this NullableDataSourceInverted<OptionalStateValidator<long>, MultipleOfValidator_Int64, long> source, long value)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int64, RangeValidator_Int64, TSource, long> LessThanOrEqualTo<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Int64, TSource, long> source, long value)
 			=> source.Add(new RangeValidator_Int64(null, null, null, value));
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<long>, MultipleOfValidator_Int64, RangeValidator_Int64, long> InRange(this NullableDataSourceStandard<OptionalStateValidator<long>, MultipleOfValidator_Int64, long> source, long? greaterThan = null, long? greaterThanOrEqualTo = null, long? lessThan = null, long? lessThanOrEqualTo = null)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int64, RangeValidator_Int64, TSource, long> InRange<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int64, TSource, long> source, long? greaterThan = null, long? greaterThanOrEqualTo = null, long? lessThan = null, long? lessThanOrEqualTo = null)
 			=> source.Add(new RangeValidator_Int64(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<long>, MultipleOfValidator_Int64, RangeValidator_Int64, long> InRange(this NullableDataSourceInverted<OptionalStateValidator<long>, MultipleOfValidator_Int64, long> source, long? greaterThan = null, long? greaterThanOrEqualTo = null, long? lessThan = null, long? lessThanOrEqualTo = null)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int64, RangeValidator_Int64, TSource, long> InRange<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Int64, TSource, long> source, long? greaterThan = null, long? greaterThanOrEqualTo = null, long? lessThan = null, long? lessThanOrEqualTo = null)
 			=> source.Add(new RangeValidator_Int64(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
-		public static NullableDataSourceStandardInverted<OptionalStateValidator<long>, MultipleOfValidator_Int64, TValueValidator, long> Not<TValueValidator>(this NullableDataSourceStandard<OptionalStateValidator<long>, MultipleOfValidator_Int64, long> source, Func<NullableDataSourceStandard<OptionalStateValidator<long>, MultipleOfValidator_Int64, long>, NullableDataSourceStandardStandard<OptionalStateValidator<long>, MultipleOfValidator_Int64, TValueValidator, long>> validatorFactory)
+		public static NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Int64, TValueValidator, TSource, long> Not<TSource, TValueValidator>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int64, TSource, long> source, Func<NullableDataSourceStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int64, TSource, long>, NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int64, TValueValidator, TSource, long>> validatorFactory)
 			where TValueValidator : IValueValidator<long>
 			=> validatorFactory.Invoke(source).InvertTwo();
 
-		public static NullableDataSourceInvertedInverted<OptionalStateValidator<long>, MultipleOfValidator_Int64, TValueValidator, long> Not<TValueValidator>(this NullableDataSourceInverted<OptionalStateValidator<long>, MultipleOfValidator_Int64, long> source, Func<NullableDataSourceInverted<OptionalStateValidator<long>, MultipleOfValidator_Int64, long>, NullableDataSourceInvertedStandard<OptionalStateValidator<long>, MultipleOfValidator_Int64, TValueValidator, long>> validatorFactory)
+		public static NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Int64, TValueValidator, TSource, long> Not<TSource, TValueValidator>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Int64, TSource, long> source, Func<NullableDataSourceInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Int64, TSource, long>, NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int64, TValueValidator, TSource, long>> validatorFactory)
 			where TValueValidator : IValueValidator<long>
 			=> validatorFactory.Invoke(source).InvertTwo();
 
-		public static NullableDataSourceStandardStandardStandard<OptionalStateValidator<long>, MultipleOfValidator_Int64, RangeValidator_Int64, CustomValidator<long>, long> Assert(this NullableDataSourceStandardStandard<OptionalStateValidator<long>, MultipleOfValidator_Int64, RangeValidator_Int64, long> source, string description, Func<long, bool> validator)
+		public static NullableDataSourceStandardStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int64, RangeValidator_Int64, CustomValidator<long>, TSource, long> Assert<TSource>(this NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int64, RangeValidator_Int64, TSource, long> source, string description, Func<long, bool> validator)
 			=> source.Add(new CustomValidator<long>(description, validator));
 
-		public static NullableDataSourceInvertedStandardStandard<OptionalStateValidator<long>, MultipleOfValidator_Int64, RangeValidator_Int64, CustomValidator<long>, long> Assert(this NullableDataSourceInvertedStandard<OptionalStateValidator<long>, MultipleOfValidator_Int64, RangeValidator_Int64, long> source, string description, Func<long, bool> validator)
+		public static NullableDataSourceInvertedStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int64, RangeValidator_Int64, CustomValidator<long>, TSource, long> Assert<TSource>(this NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int64, RangeValidator_Int64, TSource, long> source, string description, Func<long, bool> validator)
 			=> source.Add(new CustomValidator<long>(description, validator));
 
-		public static NullableDataSourceStandardInvertedStandard<OptionalStateValidator<long>, MultipleOfValidator_Int64, RangeValidator_Int64, CustomValidator<long>, long> Assert(this NullableDataSourceStandardInverted<OptionalStateValidator<long>, MultipleOfValidator_Int64, RangeValidator_Int64, long> source, string description, Func<long, bool> validator)
+		public static NullableDataSourceStandardInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int64, RangeValidator_Int64, CustomValidator<long>, TSource, long> Assert<TSource>(this NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Int64, RangeValidator_Int64, TSource, long> source, string description, Func<long, bool> validator)
 			=> source.Add(new CustomValidator<long>(description, validator));
 
-		public static NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<long>, MultipleOfValidator_Int64, RangeValidator_Int64, CustomValidator<long>, long> Assert(this NullableDataSourceInvertedInverted<OptionalStateValidator<long>, MultipleOfValidator_Int64, RangeValidator_Int64, long> source, string description, Func<long, bool> validator)
+		public static NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int64, RangeValidator_Int64, CustomValidator<long>, TSource, long> Assert<TSource>(this NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Int64, RangeValidator_Int64, TSource, long> source, string description, Func<long, bool> validator)
 			=> source.Add(new CustomValidator<long>(description, validator));
 
-		public static NullableDataSourceStandardStandardInverted<OptionalStateValidator<long>, MultipleOfValidator_Int64, RangeValidator_Int64, TValueValidator, long> Not<TValueValidator>(this NullableDataSourceStandardStandard<OptionalStateValidator<long>, MultipleOfValidator_Int64, RangeValidator_Int64, long> source, Func<NullableDataSourceStandardStandard<OptionalStateValidator<long>, MultipleOfValidator_Int64, RangeValidator_Int64, long>, NullableDataSourceStandardStandardStandard<OptionalStateValidator<long>, MultipleOfValidator_Int64, RangeValidator_Int64, TValueValidator, long>> validatorFactory)
+		public static NullableDataSourceStandardStandardInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Int64, RangeValidator_Int64, TValueValidator, TSource, long> Not<TSource, TValueValidator>(this NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int64, RangeValidator_Int64, TSource, long> source, Func<NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int64, RangeValidator_Int64, TSource, long>, NullableDataSourceStandardStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int64, RangeValidator_Int64, TValueValidator, TSource, long>> validatorFactory)
 			where TValueValidator : IValueValidator<long>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceInvertedStandardInverted<OptionalStateValidator<long>, MultipleOfValidator_Int64, RangeValidator_Int64, TValueValidator, long> Not<TValueValidator>(this NullableDataSourceInvertedStandard<OptionalStateValidator<long>, MultipleOfValidator_Int64, RangeValidator_Int64, long> source, Func<NullableDataSourceInvertedStandard<OptionalStateValidator<long>, MultipleOfValidator_Int64, RangeValidator_Int64, long>, NullableDataSourceInvertedStandardStandard<OptionalStateValidator<long>, MultipleOfValidator_Int64, RangeValidator_Int64, TValueValidator, long>> validatorFactory)
+		public static NullableDataSourceInvertedStandardInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Int64, RangeValidator_Int64, TValueValidator, TSource, long> Not<TSource, TValueValidator>(this NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int64, RangeValidator_Int64, TSource, long> source, Func<NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int64, RangeValidator_Int64, TSource, long>, NullableDataSourceInvertedStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int64, RangeValidator_Int64, TValueValidator, TSource, long>> validatorFactory)
 			where TValueValidator : IValueValidator<long>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceStandardInvertedInverted<OptionalStateValidator<long>, MultipleOfValidator_Int64, RangeValidator_Int64, TValueValidator, long> Not<TValueValidator>(this NullableDataSourceStandardInverted<OptionalStateValidator<long>, MultipleOfValidator_Int64, RangeValidator_Int64, long> source, Func<NullableDataSourceStandardInverted<OptionalStateValidator<long>, MultipleOfValidator_Int64, RangeValidator_Int64, long>, NullableDataSourceStandardInvertedStandard<OptionalStateValidator<long>, MultipleOfValidator_Int64, RangeValidator_Int64, TValueValidator, long>> validatorFactory)
+		public static NullableDataSourceStandardInvertedInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Int64, RangeValidator_Int64, TValueValidator, TSource, long> Not<TSource, TValueValidator>(this NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Int64, RangeValidator_Int64, TSource, long> source, Func<NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Int64, RangeValidator_Int64, TSource, long>, NullableDataSourceStandardInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int64, RangeValidator_Int64, TValueValidator, TSource, long>> validatorFactory)
 			where TValueValidator : IValueValidator<long>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceInvertedInvertedInverted<OptionalStateValidator<long>, MultipleOfValidator_Int64, RangeValidator_Int64, TValueValidator, long> Not<TValueValidator>(this NullableDataSourceInvertedInverted<OptionalStateValidator<long>, MultipleOfValidator_Int64, RangeValidator_Int64, long> source, Func<NullableDataSourceInvertedInverted<OptionalStateValidator<long>, MultipleOfValidator_Int64, RangeValidator_Int64, long>, NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<long>, MultipleOfValidator_Int64, RangeValidator_Int64, TValueValidator, long>> validatorFactory)
+		public static NullableDataSourceInvertedInvertedInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Int64, RangeValidator_Int64, TValueValidator, TSource, long> Not<TSource, TValueValidator>(this NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Int64, RangeValidator_Int64, TSource, long> source, Func<NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, MultipleOfValidator_Int64, RangeValidator_Int64, TSource, long>, NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_Int64, RangeValidator_Int64, TValueValidator, TSource, long>> validatorFactory)
 			where TValueValidator : IValueValidator<long>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<ulong>, MultipleOfValidator_UInt64, CustomValidator<ulong>, ulong> Assert(this NullableDataSourceStandard<OptionalStateValidator<ulong>, MultipleOfValidator_UInt64, ulong> source, string description, Func<ulong, bool> validator)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt64, CustomValidator<ulong>, TSource, ulong> Assert<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt64, TSource, ulong> source, string description, Func<ulong, bool> validator)
 			=> source.Add(new CustomValidator<ulong>(description, validator));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<ulong>, MultipleOfValidator_UInt64, CustomValidator<ulong>, ulong> Assert(this NullableDataSourceInverted<OptionalStateValidator<ulong>, MultipleOfValidator_UInt64, ulong> source, string description, Func<ulong, bool> validator)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt64, CustomValidator<ulong>, TSource, ulong> Assert<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, MultipleOfValidator_UInt64, TSource, ulong> source, string description, Func<ulong, bool> validator)
 			=> source.Add(new CustomValidator<ulong>(description, validator));
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<ulong>, MultipleOfValidator_UInt64, RangeValidator_UInt64, ulong> GreaterThan(this NullableDataSourceStandard<OptionalStateValidator<ulong>, MultipleOfValidator_UInt64, ulong> source, ulong value)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt64, RangeValidator_UInt64, TSource, ulong> GreaterThan<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt64, TSource, ulong> source, ulong value)
 			=> source.Add(new RangeValidator_UInt64(value, null, null, null));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<ulong>, MultipleOfValidator_UInt64, RangeValidator_UInt64, ulong> GreaterThan(this NullableDataSourceInverted<OptionalStateValidator<ulong>, MultipleOfValidator_UInt64, ulong> source, ulong value)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt64, RangeValidator_UInt64, TSource, ulong> GreaterThan<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, MultipleOfValidator_UInt64, TSource, ulong> source, ulong value)
 			=> source.Add(new RangeValidator_UInt64(value, null, null, null));
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<ulong>, MultipleOfValidator_UInt64, RangeValidator_UInt64, ulong> GreaterThanOrEqualTo(this NullableDataSourceStandard<OptionalStateValidator<ulong>, MultipleOfValidator_UInt64, ulong> source, ulong value)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt64, RangeValidator_UInt64, TSource, ulong> GreaterThanOrEqualTo<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt64, TSource, ulong> source, ulong value)
 			=> source.Add(new RangeValidator_UInt64(null, value, null, null));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<ulong>, MultipleOfValidator_UInt64, RangeValidator_UInt64, ulong> GreaterThanOrEqualTo(this NullableDataSourceInverted<OptionalStateValidator<ulong>, MultipleOfValidator_UInt64, ulong> source, ulong value)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt64, RangeValidator_UInt64, TSource, ulong> GreaterThanOrEqualTo<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, MultipleOfValidator_UInt64, TSource, ulong> source, ulong value)
 			=> source.Add(new RangeValidator_UInt64(null, value, null, null));
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<ulong>, MultipleOfValidator_UInt64, RangeValidator_UInt64, ulong> LessThan(this NullableDataSourceStandard<OptionalStateValidator<ulong>, MultipleOfValidator_UInt64, ulong> source, ulong value)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt64, RangeValidator_UInt64, TSource, ulong> LessThan<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt64, TSource, ulong> source, ulong value)
 			=> source.Add(new RangeValidator_UInt64(null, null, value, null));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<ulong>, MultipleOfValidator_UInt64, RangeValidator_UInt64, ulong> LessThan(this NullableDataSourceInverted<OptionalStateValidator<ulong>, MultipleOfValidator_UInt64, ulong> source, ulong value)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt64, RangeValidator_UInt64, TSource, ulong> LessThan<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, MultipleOfValidator_UInt64, TSource, ulong> source, ulong value)
 			=> source.Add(new RangeValidator_UInt64(null, null, value, null));
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<ulong>, MultipleOfValidator_UInt64, RangeValidator_UInt64, ulong> LessThanOrEqualTo(this NullableDataSourceStandard<OptionalStateValidator<ulong>, MultipleOfValidator_UInt64, ulong> source, ulong value)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt64, RangeValidator_UInt64, TSource, ulong> LessThanOrEqualTo<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt64, TSource, ulong> source, ulong value)
 			=> source.Add(new RangeValidator_UInt64(null, null, null, value));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<ulong>, MultipleOfValidator_UInt64, RangeValidator_UInt64, ulong> LessThanOrEqualTo(this NullableDataSourceInverted<OptionalStateValidator<ulong>, MultipleOfValidator_UInt64, ulong> source, ulong value)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt64, RangeValidator_UInt64, TSource, ulong> LessThanOrEqualTo<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, MultipleOfValidator_UInt64, TSource, ulong> source, ulong value)
 			=> source.Add(new RangeValidator_UInt64(null, null, null, value));
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<ulong>, MultipleOfValidator_UInt64, RangeValidator_UInt64, ulong> InRange(this NullableDataSourceStandard<OptionalStateValidator<ulong>, MultipleOfValidator_UInt64, ulong> source, ulong? greaterThan = null, ulong? greaterThanOrEqualTo = null, ulong? lessThan = null, ulong? lessThanOrEqualTo = null)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt64, RangeValidator_UInt64, TSource, ulong> InRange<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt64, TSource, ulong> source, ulong? greaterThan = null, ulong? greaterThanOrEqualTo = null, ulong? lessThan = null, ulong? lessThanOrEqualTo = null)
 			=> source.Add(new RangeValidator_UInt64(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<ulong>, MultipleOfValidator_UInt64, RangeValidator_UInt64, ulong> InRange(this NullableDataSourceInverted<OptionalStateValidator<ulong>, MultipleOfValidator_UInt64, ulong> source, ulong? greaterThan = null, ulong? greaterThanOrEqualTo = null, ulong? lessThan = null, ulong? lessThanOrEqualTo = null)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt64, RangeValidator_UInt64, TSource, ulong> InRange<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, MultipleOfValidator_UInt64, TSource, ulong> source, ulong? greaterThan = null, ulong? greaterThanOrEqualTo = null, ulong? lessThan = null, ulong? lessThanOrEqualTo = null)
 			=> source.Add(new RangeValidator_UInt64(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
-		public static NullableDataSourceStandardInverted<OptionalStateValidator<ulong>, MultipleOfValidator_UInt64, TValueValidator, ulong> Not<TValueValidator>(this NullableDataSourceStandard<OptionalStateValidator<ulong>, MultipleOfValidator_UInt64, ulong> source, Func<NullableDataSourceStandard<OptionalStateValidator<ulong>, MultipleOfValidator_UInt64, ulong>, NullableDataSourceStandardStandard<OptionalStateValidator<ulong>, MultipleOfValidator_UInt64, TValueValidator, ulong>> validatorFactory)
+		public static NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, MultipleOfValidator_UInt64, TValueValidator, TSource, ulong> Not<TSource, TValueValidator>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt64, TSource, ulong> source, Func<NullableDataSourceStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt64, TSource, ulong>, NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt64, TValueValidator, TSource, ulong>> validatorFactory)
 			where TValueValidator : IValueValidator<ulong>
 			=> validatorFactory.Invoke(source).InvertTwo();
 
-		public static NullableDataSourceInvertedInverted<OptionalStateValidator<ulong>, MultipleOfValidator_UInt64, TValueValidator, ulong> Not<TValueValidator>(this NullableDataSourceInverted<OptionalStateValidator<ulong>, MultipleOfValidator_UInt64, ulong> source, Func<NullableDataSourceInverted<OptionalStateValidator<ulong>, MultipleOfValidator_UInt64, ulong>, NullableDataSourceInvertedStandard<OptionalStateValidator<ulong>, MultipleOfValidator_UInt64, TValueValidator, ulong>> validatorFactory)
+		public static NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, MultipleOfValidator_UInt64, TValueValidator, TSource, ulong> Not<TSource, TValueValidator>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, MultipleOfValidator_UInt64, TSource, ulong> source, Func<NullableDataSourceInverted<OptionalStateValidator<TSource>, MultipleOfValidator_UInt64, TSource, ulong>, NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt64, TValueValidator, TSource, ulong>> validatorFactory)
 			where TValueValidator : IValueValidator<ulong>
 			=> validatorFactory.Invoke(source).InvertTwo();
 
-		public static NullableDataSourceStandardStandardStandard<OptionalStateValidator<ulong>, MultipleOfValidator_UInt64, RangeValidator_UInt64, CustomValidator<ulong>, ulong> Assert(this NullableDataSourceStandardStandard<OptionalStateValidator<ulong>, MultipleOfValidator_UInt64, RangeValidator_UInt64, ulong> source, string description, Func<ulong, bool> validator)
+		public static NullableDataSourceStandardStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt64, RangeValidator_UInt64, CustomValidator<ulong>, TSource, ulong> Assert<TSource>(this NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt64, RangeValidator_UInt64, TSource, ulong> source, string description, Func<ulong, bool> validator)
 			=> source.Add(new CustomValidator<ulong>(description, validator));
 
-		public static NullableDataSourceInvertedStandardStandard<OptionalStateValidator<ulong>, MultipleOfValidator_UInt64, RangeValidator_UInt64, CustomValidator<ulong>, ulong> Assert(this NullableDataSourceInvertedStandard<OptionalStateValidator<ulong>, MultipleOfValidator_UInt64, RangeValidator_UInt64, ulong> source, string description, Func<ulong, bool> validator)
+		public static NullableDataSourceInvertedStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt64, RangeValidator_UInt64, CustomValidator<ulong>, TSource, ulong> Assert<TSource>(this NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt64, RangeValidator_UInt64, TSource, ulong> source, string description, Func<ulong, bool> validator)
 			=> source.Add(new CustomValidator<ulong>(description, validator));
 
-		public static NullableDataSourceStandardInvertedStandard<OptionalStateValidator<ulong>, MultipleOfValidator_UInt64, RangeValidator_UInt64, CustomValidator<ulong>, ulong> Assert(this NullableDataSourceStandardInverted<OptionalStateValidator<ulong>, MultipleOfValidator_UInt64, RangeValidator_UInt64, ulong> source, string description, Func<ulong, bool> validator)
+		public static NullableDataSourceStandardInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt64, RangeValidator_UInt64, CustomValidator<ulong>, TSource, ulong> Assert<TSource>(this NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, MultipleOfValidator_UInt64, RangeValidator_UInt64, TSource, ulong> source, string description, Func<ulong, bool> validator)
 			=> source.Add(new CustomValidator<ulong>(description, validator));
 
-		public static NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<ulong>, MultipleOfValidator_UInt64, RangeValidator_UInt64, CustomValidator<ulong>, ulong> Assert(this NullableDataSourceInvertedInverted<OptionalStateValidator<ulong>, MultipleOfValidator_UInt64, RangeValidator_UInt64, ulong> source, string description, Func<ulong, bool> validator)
+		public static NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt64, RangeValidator_UInt64, CustomValidator<ulong>, TSource, ulong> Assert<TSource>(this NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, MultipleOfValidator_UInt64, RangeValidator_UInt64, TSource, ulong> source, string description, Func<ulong, bool> validator)
 			=> source.Add(new CustomValidator<ulong>(description, validator));
 
-		public static NullableDataSourceStandardStandardInverted<OptionalStateValidator<ulong>, MultipleOfValidator_UInt64, RangeValidator_UInt64, TValueValidator, ulong> Not<TValueValidator>(this NullableDataSourceStandardStandard<OptionalStateValidator<ulong>, MultipleOfValidator_UInt64, RangeValidator_UInt64, ulong> source, Func<NullableDataSourceStandardStandard<OptionalStateValidator<ulong>, MultipleOfValidator_UInt64, RangeValidator_UInt64, ulong>, NullableDataSourceStandardStandardStandard<OptionalStateValidator<ulong>, MultipleOfValidator_UInt64, RangeValidator_UInt64, TValueValidator, ulong>> validatorFactory)
+		public static NullableDataSourceStandardStandardInverted<OptionalStateValidator<TSource>, MultipleOfValidator_UInt64, RangeValidator_UInt64, TValueValidator, TSource, ulong> Not<TSource, TValueValidator>(this NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt64, RangeValidator_UInt64, TSource, ulong> source, Func<NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt64, RangeValidator_UInt64, TSource, ulong>, NullableDataSourceStandardStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt64, RangeValidator_UInt64, TValueValidator, TSource, ulong>> validatorFactory)
 			where TValueValidator : IValueValidator<ulong>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceInvertedStandardInverted<OptionalStateValidator<ulong>, MultipleOfValidator_UInt64, RangeValidator_UInt64, TValueValidator, ulong> Not<TValueValidator>(this NullableDataSourceInvertedStandard<OptionalStateValidator<ulong>, MultipleOfValidator_UInt64, RangeValidator_UInt64, ulong> source, Func<NullableDataSourceInvertedStandard<OptionalStateValidator<ulong>, MultipleOfValidator_UInt64, RangeValidator_UInt64, ulong>, NullableDataSourceInvertedStandardStandard<OptionalStateValidator<ulong>, MultipleOfValidator_UInt64, RangeValidator_UInt64, TValueValidator, ulong>> validatorFactory)
+		public static NullableDataSourceInvertedStandardInverted<OptionalStateValidator<TSource>, MultipleOfValidator_UInt64, RangeValidator_UInt64, TValueValidator, TSource, ulong> Not<TSource, TValueValidator>(this NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt64, RangeValidator_UInt64, TSource, ulong> source, Func<NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt64, RangeValidator_UInt64, TSource, ulong>, NullableDataSourceInvertedStandardStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt64, RangeValidator_UInt64, TValueValidator, TSource, ulong>> validatorFactory)
 			where TValueValidator : IValueValidator<ulong>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceStandardInvertedInverted<OptionalStateValidator<ulong>, MultipleOfValidator_UInt64, RangeValidator_UInt64, TValueValidator, ulong> Not<TValueValidator>(this NullableDataSourceStandardInverted<OptionalStateValidator<ulong>, MultipleOfValidator_UInt64, RangeValidator_UInt64, ulong> source, Func<NullableDataSourceStandardInverted<OptionalStateValidator<ulong>, MultipleOfValidator_UInt64, RangeValidator_UInt64, ulong>, NullableDataSourceStandardInvertedStandard<OptionalStateValidator<ulong>, MultipleOfValidator_UInt64, RangeValidator_UInt64, TValueValidator, ulong>> validatorFactory)
+		public static NullableDataSourceStandardInvertedInverted<OptionalStateValidator<TSource>, MultipleOfValidator_UInt64, RangeValidator_UInt64, TValueValidator, TSource, ulong> Not<TSource, TValueValidator>(this NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, MultipleOfValidator_UInt64, RangeValidator_UInt64, TSource, ulong> source, Func<NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, MultipleOfValidator_UInt64, RangeValidator_UInt64, TSource, ulong>, NullableDataSourceStandardInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt64, RangeValidator_UInt64, TValueValidator, TSource, ulong>> validatorFactory)
 			where TValueValidator : IValueValidator<ulong>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceInvertedInvertedInverted<OptionalStateValidator<ulong>, MultipleOfValidator_UInt64, RangeValidator_UInt64, TValueValidator, ulong> Not<TValueValidator>(this NullableDataSourceInvertedInverted<OptionalStateValidator<ulong>, MultipleOfValidator_UInt64, RangeValidator_UInt64, ulong> source, Func<NullableDataSourceInvertedInverted<OptionalStateValidator<ulong>, MultipleOfValidator_UInt64, RangeValidator_UInt64, ulong>, NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<ulong>, MultipleOfValidator_UInt64, RangeValidator_UInt64, TValueValidator, ulong>> validatorFactory)
+		public static NullableDataSourceInvertedInvertedInverted<OptionalStateValidator<TSource>, MultipleOfValidator_UInt64, RangeValidator_UInt64, TValueValidator, TSource, ulong> Not<TSource, TValueValidator>(this NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, MultipleOfValidator_UInt64, RangeValidator_UInt64, TSource, ulong> source, Func<NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, MultipleOfValidator_UInt64, RangeValidator_UInt64, TSource, ulong>, NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<TSource>, MultipleOfValidator_UInt64, RangeValidator_UInt64, TValueValidator, TSource, ulong>> validatorFactory)
 			where TValueValidator : IValueValidator<ulong>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<decimal>, PrecisionValidator, CustomValidator<decimal>, decimal> Assert(this NullableDataSourceStandard<OptionalStateValidator<decimal>, PrecisionValidator, decimal> source, string description, Func<decimal, bool> validator)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, PrecisionValidator, CustomValidator<decimal>, TSource, decimal> Assert<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, PrecisionValidator, TSource, decimal> source, string description, Func<decimal, bool> validator)
 			=> source.Add(new CustomValidator<decimal>(description, validator));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<decimal>, PrecisionValidator, CustomValidator<decimal>, decimal> Assert(this NullableDataSourceInverted<OptionalStateValidator<decimal>, PrecisionValidator, decimal> source, string description, Func<decimal, bool> validator)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, PrecisionValidator, CustomValidator<decimal>, TSource, decimal> Assert<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, PrecisionValidator, TSource, decimal> source, string description, Func<decimal, bool> validator)
 			=> source.Add(new CustomValidator<decimal>(description, validator));
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<decimal>, PrecisionValidator, RangeValidator_Decimal, decimal> GreaterThan(this NullableDataSourceStandard<OptionalStateValidator<decimal>, PrecisionValidator, decimal> source, decimal value)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, PrecisionValidator, RangeValidator_Decimal, TSource, decimal> GreaterThan<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, PrecisionValidator, TSource, decimal> source, decimal value)
 			=> source.Add(new RangeValidator_Decimal(value, null, null, null));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<decimal>, PrecisionValidator, RangeValidator_Decimal, decimal> GreaterThan(this NullableDataSourceInverted<OptionalStateValidator<decimal>, PrecisionValidator, decimal> source, decimal value)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, PrecisionValidator, RangeValidator_Decimal, TSource, decimal> GreaterThan<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, PrecisionValidator, TSource, decimal> source, decimal value)
 			=> source.Add(new RangeValidator_Decimal(value, null, null, null));
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<decimal>, PrecisionValidator, RangeValidator_Decimal, decimal> GreaterThanOrEqualTo(this NullableDataSourceStandard<OptionalStateValidator<decimal>, PrecisionValidator, decimal> source, decimal value)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, PrecisionValidator, RangeValidator_Decimal, TSource, decimal> GreaterThanOrEqualTo<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, PrecisionValidator, TSource, decimal> source, decimal value)
 			=> source.Add(new RangeValidator_Decimal(null, value, null, null));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<decimal>, PrecisionValidator, RangeValidator_Decimal, decimal> GreaterThanOrEqualTo(this NullableDataSourceInverted<OptionalStateValidator<decimal>, PrecisionValidator, decimal> source, decimal value)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, PrecisionValidator, RangeValidator_Decimal, TSource, decimal> GreaterThanOrEqualTo<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, PrecisionValidator, TSource, decimal> source, decimal value)
 			=> source.Add(new RangeValidator_Decimal(null, value, null, null));
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<decimal>, PrecisionValidator, RangeValidator_Decimal, decimal> LessThan(this NullableDataSourceStandard<OptionalStateValidator<decimal>, PrecisionValidator, decimal> source, decimal value)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, PrecisionValidator, RangeValidator_Decimal, TSource, decimal> LessThan<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, PrecisionValidator, TSource, decimal> source, decimal value)
 			=> source.Add(new RangeValidator_Decimal(null, null, value, null));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<decimal>, PrecisionValidator, RangeValidator_Decimal, decimal> LessThan(this NullableDataSourceInverted<OptionalStateValidator<decimal>, PrecisionValidator, decimal> source, decimal value)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, PrecisionValidator, RangeValidator_Decimal, TSource, decimal> LessThan<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, PrecisionValidator, TSource, decimal> source, decimal value)
 			=> source.Add(new RangeValidator_Decimal(null, null, value, null));
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<decimal>, PrecisionValidator, RangeValidator_Decimal, decimal> LessThanOrEqualTo(this NullableDataSourceStandard<OptionalStateValidator<decimal>, PrecisionValidator, decimal> source, decimal value)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, PrecisionValidator, RangeValidator_Decimal, TSource, decimal> LessThanOrEqualTo<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, PrecisionValidator, TSource, decimal> source, decimal value)
 			=> source.Add(new RangeValidator_Decimal(null, null, null, value));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<decimal>, PrecisionValidator, RangeValidator_Decimal, decimal> LessThanOrEqualTo(this NullableDataSourceInverted<OptionalStateValidator<decimal>, PrecisionValidator, decimal> source, decimal value)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, PrecisionValidator, RangeValidator_Decimal, TSource, decimal> LessThanOrEqualTo<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, PrecisionValidator, TSource, decimal> source, decimal value)
 			=> source.Add(new RangeValidator_Decimal(null, null, null, value));
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<decimal>, PrecisionValidator, RangeValidator_Decimal, decimal> InRange(this NullableDataSourceStandard<OptionalStateValidator<decimal>, PrecisionValidator, decimal> source, decimal? greaterThan = null, decimal? greaterThanOrEqualTo = null, decimal? lessThan = null, decimal? lessThanOrEqualTo = null)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, PrecisionValidator, RangeValidator_Decimal, TSource, decimal> InRange<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, PrecisionValidator, TSource, decimal> source, decimal? greaterThan = null, decimal? greaterThanOrEqualTo = null, decimal? lessThan = null, decimal? lessThanOrEqualTo = null)
 			=> source.Add(new RangeValidator_Decimal(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<decimal>, PrecisionValidator, RangeValidator_Decimal, decimal> InRange(this NullableDataSourceInverted<OptionalStateValidator<decimal>, PrecisionValidator, decimal> source, decimal? greaterThan = null, decimal? greaterThanOrEqualTo = null, decimal? lessThan = null, decimal? lessThanOrEqualTo = null)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, PrecisionValidator, RangeValidator_Decimal, TSource, decimal> InRange<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, PrecisionValidator, TSource, decimal> source, decimal? greaterThan = null, decimal? greaterThanOrEqualTo = null, decimal? lessThan = null, decimal? lessThanOrEqualTo = null)
 			=> source.Add(new RangeValidator_Decimal(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
-		public static NullableDataSourceStandardInverted<OptionalStateValidator<decimal>, PrecisionValidator, TValueValidator, decimal> Not<TValueValidator>(this NullableDataSourceStandard<OptionalStateValidator<decimal>, PrecisionValidator, decimal> source, Func<NullableDataSourceStandard<OptionalStateValidator<decimal>, PrecisionValidator, decimal>, NullableDataSourceStandardStandard<OptionalStateValidator<decimal>, PrecisionValidator, TValueValidator, decimal>> validatorFactory)
+		public static NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, PrecisionValidator, TValueValidator, TSource, decimal> Not<TSource, TValueValidator>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, PrecisionValidator, TSource, decimal> source, Func<NullableDataSourceStandard<OptionalStateValidator<TSource>, PrecisionValidator, TSource, decimal>, NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, PrecisionValidator, TValueValidator, TSource, decimal>> validatorFactory)
 			where TValueValidator : IValueValidator<decimal>
 			=> validatorFactory.Invoke(source).InvertTwo();
 
-		public static NullableDataSourceInvertedInverted<OptionalStateValidator<decimal>, PrecisionValidator, TValueValidator, decimal> Not<TValueValidator>(this NullableDataSourceInverted<OptionalStateValidator<decimal>, PrecisionValidator, decimal> source, Func<NullableDataSourceInverted<OptionalStateValidator<decimal>, PrecisionValidator, decimal>, NullableDataSourceInvertedStandard<OptionalStateValidator<decimal>, PrecisionValidator, TValueValidator, decimal>> validatorFactory)
+		public static NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, PrecisionValidator, TValueValidator, TSource, decimal> Not<TSource, TValueValidator>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, PrecisionValidator, TSource, decimal> source, Func<NullableDataSourceInverted<OptionalStateValidator<TSource>, PrecisionValidator, TSource, decimal>, NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, PrecisionValidator, TValueValidator, TSource, decimal>> validatorFactory)
 			where TValueValidator : IValueValidator<decimal>
 			=> validatorFactory.Invoke(source).InvertTwo();
 
-		public static NullableDataSourceStandardStandardStandard<OptionalStateValidator<decimal>, PrecisionValidator, RangeValidator_Decimal, CustomValidator<decimal>, decimal> Assert(this NullableDataSourceStandardStandard<OptionalStateValidator<decimal>, PrecisionValidator, RangeValidator_Decimal, decimal> source, string description, Func<decimal, bool> validator)
+		public static NullableDataSourceStandardStandardStandard<OptionalStateValidator<TSource>, PrecisionValidator, RangeValidator_Decimal, CustomValidator<decimal>, TSource, decimal> Assert<TSource>(this NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, PrecisionValidator, RangeValidator_Decimal, TSource, decimal> source, string description, Func<decimal, bool> validator)
 			=> source.Add(new CustomValidator<decimal>(description, validator));
 
-		public static NullableDataSourceInvertedStandardStandard<OptionalStateValidator<decimal>, PrecisionValidator, RangeValidator_Decimal, CustomValidator<decimal>, decimal> Assert(this NullableDataSourceInvertedStandard<OptionalStateValidator<decimal>, PrecisionValidator, RangeValidator_Decimal, decimal> source, string description, Func<decimal, bool> validator)
+		public static NullableDataSourceInvertedStandardStandard<OptionalStateValidator<TSource>, PrecisionValidator, RangeValidator_Decimal, CustomValidator<decimal>, TSource, decimal> Assert<TSource>(this NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, PrecisionValidator, RangeValidator_Decimal, TSource, decimal> source, string description, Func<decimal, bool> validator)
 			=> source.Add(new CustomValidator<decimal>(description, validator));
 
-		public static NullableDataSourceStandardInvertedStandard<OptionalStateValidator<decimal>, PrecisionValidator, RangeValidator_Decimal, CustomValidator<decimal>, decimal> Assert(this NullableDataSourceStandardInverted<OptionalStateValidator<decimal>, PrecisionValidator, RangeValidator_Decimal, decimal> source, string description, Func<decimal, bool> validator)
+		public static NullableDataSourceStandardInvertedStandard<OptionalStateValidator<TSource>, PrecisionValidator, RangeValidator_Decimal, CustomValidator<decimal>, TSource, decimal> Assert<TSource>(this NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, PrecisionValidator, RangeValidator_Decimal, TSource, decimal> source, string description, Func<decimal, bool> validator)
 			=> source.Add(new CustomValidator<decimal>(description, validator));
 
-		public static NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<decimal>, PrecisionValidator, RangeValidator_Decimal, CustomValidator<decimal>, decimal> Assert(this NullableDataSourceInvertedInverted<OptionalStateValidator<decimal>, PrecisionValidator, RangeValidator_Decimal, decimal> source, string description, Func<decimal, bool> validator)
+		public static NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<TSource>, PrecisionValidator, RangeValidator_Decimal, CustomValidator<decimal>, TSource, decimal> Assert<TSource>(this NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, PrecisionValidator, RangeValidator_Decimal, TSource, decimal> source, string description, Func<decimal, bool> validator)
 			=> source.Add(new CustomValidator<decimal>(description, validator));
 
-		public static NullableDataSourceStandardStandardInverted<OptionalStateValidator<decimal>, PrecisionValidator, RangeValidator_Decimal, TValueValidator, decimal> Not<TValueValidator>(this NullableDataSourceStandardStandard<OptionalStateValidator<decimal>, PrecisionValidator, RangeValidator_Decimal, decimal> source, Func<NullableDataSourceStandardStandard<OptionalStateValidator<decimal>, PrecisionValidator, RangeValidator_Decimal, decimal>, NullableDataSourceStandardStandardStandard<OptionalStateValidator<decimal>, PrecisionValidator, RangeValidator_Decimal, TValueValidator, decimal>> validatorFactory)
+		public static NullableDataSourceStandardStandardInverted<OptionalStateValidator<TSource>, PrecisionValidator, RangeValidator_Decimal, TValueValidator, TSource, decimal> Not<TSource, TValueValidator>(this NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, PrecisionValidator, RangeValidator_Decimal, TSource, decimal> source, Func<NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, PrecisionValidator, RangeValidator_Decimal, TSource, decimal>, NullableDataSourceStandardStandardStandard<OptionalStateValidator<TSource>, PrecisionValidator, RangeValidator_Decimal, TValueValidator, TSource, decimal>> validatorFactory)
 			where TValueValidator : IValueValidator<decimal>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceInvertedStandardInverted<OptionalStateValidator<decimal>, PrecisionValidator, RangeValidator_Decimal, TValueValidator, decimal> Not<TValueValidator>(this NullableDataSourceInvertedStandard<OptionalStateValidator<decimal>, PrecisionValidator, RangeValidator_Decimal, decimal> source, Func<NullableDataSourceInvertedStandard<OptionalStateValidator<decimal>, PrecisionValidator, RangeValidator_Decimal, decimal>, NullableDataSourceInvertedStandardStandard<OptionalStateValidator<decimal>, PrecisionValidator, RangeValidator_Decimal, TValueValidator, decimal>> validatorFactory)
+		public static NullableDataSourceInvertedStandardInverted<OptionalStateValidator<TSource>, PrecisionValidator, RangeValidator_Decimal, TValueValidator, TSource, decimal> Not<TSource, TValueValidator>(this NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, PrecisionValidator, RangeValidator_Decimal, TSource, decimal> source, Func<NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, PrecisionValidator, RangeValidator_Decimal, TSource, decimal>, NullableDataSourceInvertedStandardStandard<OptionalStateValidator<TSource>, PrecisionValidator, RangeValidator_Decimal, TValueValidator, TSource, decimal>> validatorFactory)
 			where TValueValidator : IValueValidator<decimal>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceStandardInvertedInverted<OptionalStateValidator<decimal>, PrecisionValidator, RangeValidator_Decimal, TValueValidator, decimal> Not<TValueValidator>(this NullableDataSourceStandardInverted<OptionalStateValidator<decimal>, PrecisionValidator, RangeValidator_Decimal, decimal> source, Func<NullableDataSourceStandardInverted<OptionalStateValidator<decimal>, PrecisionValidator, RangeValidator_Decimal, decimal>, NullableDataSourceStandardInvertedStandard<OptionalStateValidator<decimal>, PrecisionValidator, RangeValidator_Decimal, TValueValidator, decimal>> validatorFactory)
+		public static NullableDataSourceStandardInvertedInverted<OptionalStateValidator<TSource>, PrecisionValidator, RangeValidator_Decimal, TValueValidator, TSource, decimal> Not<TSource, TValueValidator>(this NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, PrecisionValidator, RangeValidator_Decimal, TSource, decimal> source, Func<NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, PrecisionValidator, RangeValidator_Decimal, TSource, decimal>, NullableDataSourceStandardInvertedStandard<OptionalStateValidator<TSource>, PrecisionValidator, RangeValidator_Decimal, TValueValidator, TSource, decimal>> validatorFactory)
 			where TValueValidator : IValueValidator<decimal>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceInvertedInvertedInverted<OptionalStateValidator<decimal>, PrecisionValidator, RangeValidator_Decimal, TValueValidator, decimal> Not<TValueValidator>(this NullableDataSourceInvertedInverted<OptionalStateValidator<decimal>, PrecisionValidator, RangeValidator_Decimal, decimal> source, Func<NullableDataSourceInvertedInverted<OptionalStateValidator<decimal>, PrecisionValidator, RangeValidator_Decimal, decimal>, NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<decimal>, PrecisionValidator, RangeValidator_Decimal, TValueValidator, decimal>> validatorFactory)
+		public static NullableDataSourceInvertedInvertedInverted<OptionalStateValidator<TSource>, PrecisionValidator, RangeValidator_Decimal, TValueValidator, TSource, decimal> Not<TSource, TValueValidator>(this NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, PrecisionValidator, RangeValidator_Decimal, TSource, decimal> source, Func<NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, PrecisionValidator, RangeValidator_Decimal, TSource, decimal>, NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<TSource>, PrecisionValidator, RangeValidator_Decimal, TValueValidator, TSource, decimal>> validatorFactory)
 			where TValueValidator : IValueValidator<decimal>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<byte>, RangeValidator_Byte, CustomValidator<byte>, byte> Assert(this NullableDataSourceStandard<OptionalStateValidator<byte>, RangeValidator_Byte, byte> source, string description, Func<byte, bool> validator)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, RangeValidator_Byte, CustomValidator<byte>, TSource, byte> Assert<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, RangeValidator_Byte, TSource, byte> source, string description, Func<byte, bool> validator)
 			=> source.Add(new CustomValidator<byte>(description, validator));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<byte>, RangeValidator_Byte, CustomValidator<byte>, byte> Assert(this NullableDataSourceInverted<OptionalStateValidator<byte>, RangeValidator_Byte, byte> source, string description, Func<byte, bool> validator)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_Byte, CustomValidator<byte>, TSource, byte> Assert<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, RangeValidator_Byte, TSource, byte> source, string description, Func<byte, bool> validator)
 			=> source.Add(new CustomValidator<byte>(description, validator));
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<byte>, RangeValidator_Byte, MultipleOfValidator_Byte, byte> MultipleOf(this NullableDataSourceStandard<OptionalStateValidator<byte>, RangeValidator_Byte, byte> source, byte divisor)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, RangeValidator_Byte, MultipleOfValidator_Byte, TSource, byte> MultipleOf<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, RangeValidator_Byte, TSource, byte> source, byte divisor)
 			=> source.Add(new MultipleOfValidator_Byte(divisor));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<byte>, RangeValidator_Byte, MultipleOfValidator_Byte, byte> MultipleOf(this NullableDataSourceInverted<OptionalStateValidator<byte>, RangeValidator_Byte, byte> source, byte divisor)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_Byte, MultipleOfValidator_Byte, TSource, byte> MultipleOf<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, RangeValidator_Byte, TSource, byte> source, byte divisor)
 			=> source.Add(new MultipleOfValidator_Byte(divisor));
 
-		public static NullableDataSourceStandardInverted<OptionalStateValidator<byte>, RangeValidator_Byte, TValueValidator, byte> Not<TValueValidator>(this NullableDataSourceStandard<OptionalStateValidator<byte>, RangeValidator_Byte, byte> source, Func<NullableDataSourceStandard<OptionalStateValidator<byte>, RangeValidator_Byte, byte>, NullableDataSourceStandardStandard<OptionalStateValidator<byte>, RangeValidator_Byte, TValueValidator, byte>> validatorFactory)
+		public static NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, RangeValidator_Byte, TValueValidator, TSource, byte> Not<TSource, TValueValidator>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, RangeValidator_Byte, TSource, byte> source, Func<NullableDataSourceStandard<OptionalStateValidator<TSource>, RangeValidator_Byte, TSource, byte>, NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, RangeValidator_Byte, TValueValidator, TSource, byte>> validatorFactory)
 			where TValueValidator : IValueValidator<byte>
 			=> validatorFactory.Invoke(source).InvertTwo();
 
-		public static NullableDataSourceInvertedInverted<OptionalStateValidator<byte>, RangeValidator_Byte, TValueValidator, byte> Not<TValueValidator>(this NullableDataSourceInverted<OptionalStateValidator<byte>, RangeValidator_Byte, byte> source, Func<NullableDataSourceInverted<OptionalStateValidator<byte>, RangeValidator_Byte, byte>, NullableDataSourceInvertedStandard<OptionalStateValidator<byte>, RangeValidator_Byte, TValueValidator, byte>> validatorFactory)
+		public static NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, RangeValidator_Byte, TValueValidator, TSource, byte> Not<TSource, TValueValidator>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, RangeValidator_Byte, TSource, byte> source, Func<NullableDataSourceInverted<OptionalStateValidator<TSource>, RangeValidator_Byte, TSource, byte>, NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_Byte, TValueValidator, TSource, byte>> validatorFactory)
 			where TValueValidator : IValueValidator<byte>
 			=> validatorFactory.Invoke(source).InvertTwo();
 
-		public static NullableDataSourceStandardStandardStandard<OptionalStateValidator<byte>, RangeValidator_Byte, MultipleOfValidator_Byte, CustomValidator<byte>, byte> Assert(this NullableDataSourceStandardStandard<OptionalStateValidator<byte>, RangeValidator_Byte, MultipleOfValidator_Byte, byte> source, string description, Func<byte, bool> validator)
+		public static NullableDataSourceStandardStandardStandard<OptionalStateValidator<TSource>, RangeValidator_Byte, MultipleOfValidator_Byte, CustomValidator<byte>, TSource, byte> Assert<TSource>(this NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, RangeValidator_Byte, MultipleOfValidator_Byte, TSource, byte> source, string description, Func<byte, bool> validator)
 			=> source.Add(new CustomValidator<byte>(description, validator));
 
-		public static NullableDataSourceInvertedStandardStandard<OptionalStateValidator<byte>, RangeValidator_Byte, MultipleOfValidator_Byte, CustomValidator<byte>, byte> Assert(this NullableDataSourceInvertedStandard<OptionalStateValidator<byte>, RangeValidator_Byte, MultipleOfValidator_Byte, byte> source, string description, Func<byte, bool> validator)
+		public static NullableDataSourceInvertedStandardStandard<OptionalStateValidator<TSource>, RangeValidator_Byte, MultipleOfValidator_Byte, CustomValidator<byte>, TSource, byte> Assert<TSource>(this NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_Byte, MultipleOfValidator_Byte, TSource, byte> source, string description, Func<byte, bool> validator)
 			=> source.Add(new CustomValidator<byte>(description, validator));
 
-		public static NullableDataSourceStandardInvertedStandard<OptionalStateValidator<byte>, RangeValidator_Byte, MultipleOfValidator_Byte, CustomValidator<byte>, byte> Assert(this NullableDataSourceStandardInverted<OptionalStateValidator<byte>, RangeValidator_Byte, MultipleOfValidator_Byte, byte> source, string description, Func<byte, bool> validator)
+		public static NullableDataSourceStandardInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_Byte, MultipleOfValidator_Byte, CustomValidator<byte>, TSource, byte> Assert<TSource>(this NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, RangeValidator_Byte, MultipleOfValidator_Byte, TSource, byte> source, string description, Func<byte, bool> validator)
 			=> source.Add(new CustomValidator<byte>(description, validator));
 
-		public static NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<byte>, RangeValidator_Byte, MultipleOfValidator_Byte, CustomValidator<byte>, byte> Assert(this NullableDataSourceInvertedInverted<OptionalStateValidator<byte>, RangeValidator_Byte, MultipleOfValidator_Byte, byte> source, string description, Func<byte, bool> validator)
+		public static NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_Byte, MultipleOfValidator_Byte, CustomValidator<byte>, TSource, byte> Assert<TSource>(this NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, RangeValidator_Byte, MultipleOfValidator_Byte, TSource, byte> source, string description, Func<byte, bool> validator)
 			=> source.Add(new CustomValidator<byte>(description, validator));
 
-		public static NullableDataSourceStandardStandardInverted<OptionalStateValidator<byte>, RangeValidator_Byte, MultipleOfValidator_Byte, TValueValidator, byte> Not<TValueValidator>(this NullableDataSourceStandardStandard<OptionalStateValidator<byte>, RangeValidator_Byte, MultipleOfValidator_Byte, byte> source, Func<NullableDataSourceStandardStandard<OptionalStateValidator<byte>, RangeValidator_Byte, MultipleOfValidator_Byte, byte>, NullableDataSourceStandardStandardStandard<OptionalStateValidator<byte>, RangeValidator_Byte, MultipleOfValidator_Byte, TValueValidator, byte>> validatorFactory)
+		public static NullableDataSourceStandardStandardInverted<OptionalStateValidator<TSource>, RangeValidator_Byte, MultipleOfValidator_Byte, TValueValidator, TSource, byte> Not<TSource, TValueValidator>(this NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, RangeValidator_Byte, MultipleOfValidator_Byte, TSource, byte> source, Func<NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, RangeValidator_Byte, MultipleOfValidator_Byte, TSource, byte>, NullableDataSourceStandardStandardStandard<OptionalStateValidator<TSource>, RangeValidator_Byte, MultipleOfValidator_Byte, TValueValidator, TSource, byte>> validatorFactory)
 			where TValueValidator : IValueValidator<byte>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceInvertedStandardInverted<OptionalStateValidator<byte>, RangeValidator_Byte, MultipleOfValidator_Byte, TValueValidator, byte> Not<TValueValidator>(this NullableDataSourceInvertedStandard<OptionalStateValidator<byte>, RangeValidator_Byte, MultipleOfValidator_Byte, byte> source, Func<NullableDataSourceInvertedStandard<OptionalStateValidator<byte>, RangeValidator_Byte, MultipleOfValidator_Byte, byte>, NullableDataSourceInvertedStandardStandard<OptionalStateValidator<byte>, RangeValidator_Byte, MultipleOfValidator_Byte, TValueValidator, byte>> validatorFactory)
+		public static NullableDataSourceInvertedStandardInverted<OptionalStateValidator<TSource>, RangeValidator_Byte, MultipleOfValidator_Byte, TValueValidator, TSource, byte> Not<TSource, TValueValidator>(this NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_Byte, MultipleOfValidator_Byte, TSource, byte> source, Func<NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_Byte, MultipleOfValidator_Byte, TSource, byte>, NullableDataSourceInvertedStandardStandard<OptionalStateValidator<TSource>, RangeValidator_Byte, MultipleOfValidator_Byte, TValueValidator, TSource, byte>> validatorFactory)
 			where TValueValidator : IValueValidator<byte>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceStandardInvertedInverted<OptionalStateValidator<byte>, RangeValidator_Byte, MultipleOfValidator_Byte, TValueValidator, byte> Not<TValueValidator>(this NullableDataSourceStandardInverted<OptionalStateValidator<byte>, RangeValidator_Byte, MultipleOfValidator_Byte, byte> source, Func<NullableDataSourceStandardInverted<OptionalStateValidator<byte>, RangeValidator_Byte, MultipleOfValidator_Byte, byte>, NullableDataSourceStandardInvertedStandard<OptionalStateValidator<byte>, RangeValidator_Byte, MultipleOfValidator_Byte, TValueValidator, byte>> validatorFactory)
+		public static NullableDataSourceStandardInvertedInverted<OptionalStateValidator<TSource>, RangeValidator_Byte, MultipleOfValidator_Byte, TValueValidator, TSource, byte> Not<TSource, TValueValidator>(this NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, RangeValidator_Byte, MultipleOfValidator_Byte, TSource, byte> source, Func<NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, RangeValidator_Byte, MultipleOfValidator_Byte, TSource, byte>, NullableDataSourceStandardInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_Byte, MultipleOfValidator_Byte, TValueValidator, TSource, byte>> validatorFactory)
 			where TValueValidator : IValueValidator<byte>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceInvertedInvertedInverted<OptionalStateValidator<byte>, RangeValidator_Byte, MultipleOfValidator_Byte, TValueValidator, byte> Not<TValueValidator>(this NullableDataSourceInvertedInverted<OptionalStateValidator<byte>, RangeValidator_Byte, MultipleOfValidator_Byte, byte> source, Func<NullableDataSourceInvertedInverted<OptionalStateValidator<byte>, RangeValidator_Byte, MultipleOfValidator_Byte, byte>, NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<byte>, RangeValidator_Byte, MultipleOfValidator_Byte, TValueValidator, byte>> validatorFactory)
+		public static NullableDataSourceInvertedInvertedInverted<OptionalStateValidator<TSource>, RangeValidator_Byte, MultipleOfValidator_Byte, TValueValidator, TSource, byte> Not<TSource, TValueValidator>(this NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, RangeValidator_Byte, MultipleOfValidator_Byte, TSource, byte> source, Func<NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, RangeValidator_Byte, MultipleOfValidator_Byte, TSource, byte>, NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_Byte, MultipleOfValidator_Byte, TValueValidator, TSource, byte>> validatorFactory)
 			where TValueValidator : IValueValidator<byte>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<sbyte>, RangeValidator_SByte, CustomValidator<sbyte>, sbyte> Assert(this NullableDataSourceStandard<OptionalStateValidator<sbyte>, RangeValidator_SByte, sbyte> source, string description, Func<sbyte, bool> validator)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, RangeValidator_SByte, CustomValidator<sbyte>, TSource, sbyte> Assert<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, RangeValidator_SByte, TSource, sbyte> source, string description, Func<sbyte, bool> validator)
 			=> source.Add(new CustomValidator<sbyte>(description, validator));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<sbyte>, RangeValidator_SByte, CustomValidator<sbyte>, sbyte> Assert(this NullableDataSourceInverted<OptionalStateValidator<sbyte>, RangeValidator_SByte, sbyte> source, string description, Func<sbyte, bool> validator)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_SByte, CustomValidator<sbyte>, TSource, sbyte> Assert<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, RangeValidator_SByte, TSource, sbyte> source, string description, Func<sbyte, bool> validator)
 			=> source.Add(new CustomValidator<sbyte>(description, validator));
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<sbyte>, RangeValidator_SByte, MultipleOfValidator_SByte, sbyte> MultipleOf(this NullableDataSourceStandard<OptionalStateValidator<sbyte>, RangeValidator_SByte, sbyte> source, sbyte divisor)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, RangeValidator_SByte, MultipleOfValidator_SByte, TSource, sbyte> MultipleOf<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, RangeValidator_SByte, TSource, sbyte> source, sbyte divisor)
 			=> source.Add(new MultipleOfValidator_SByte(divisor));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<sbyte>, RangeValidator_SByte, MultipleOfValidator_SByte, sbyte> MultipleOf(this NullableDataSourceInverted<OptionalStateValidator<sbyte>, RangeValidator_SByte, sbyte> source, sbyte divisor)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_SByte, MultipleOfValidator_SByte, TSource, sbyte> MultipleOf<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, RangeValidator_SByte, TSource, sbyte> source, sbyte divisor)
 			=> source.Add(new MultipleOfValidator_SByte(divisor));
 
-		public static NullableDataSourceStandardInverted<OptionalStateValidator<sbyte>, RangeValidator_SByte, TValueValidator, sbyte> Not<TValueValidator>(this NullableDataSourceStandard<OptionalStateValidator<sbyte>, RangeValidator_SByte, sbyte> source, Func<NullableDataSourceStandard<OptionalStateValidator<sbyte>, RangeValidator_SByte, sbyte>, NullableDataSourceStandardStandard<OptionalStateValidator<sbyte>, RangeValidator_SByte, TValueValidator, sbyte>> validatorFactory)
+		public static NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, RangeValidator_SByte, TValueValidator, TSource, sbyte> Not<TSource, TValueValidator>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, RangeValidator_SByte, TSource, sbyte> source, Func<NullableDataSourceStandard<OptionalStateValidator<TSource>, RangeValidator_SByte, TSource, sbyte>, NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, RangeValidator_SByte, TValueValidator, TSource, sbyte>> validatorFactory)
 			where TValueValidator : IValueValidator<sbyte>
 			=> validatorFactory.Invoke(source).InvertTwo();
 
-		public static NullableDataSourceInvertedInverted<OptionalStateValidator<sbyte>, RangeValidator_SByte, TValueValidator, sbyte> Not<TValueValidator>(this NullableDataSourceInverted<OptionalStateValidator<sbyte>, RangeValidator_SByte, sbyte> source, Func<NullableDataSourceInverted<OptionalStateValidator<sbyte>, RangeValidator_SByte, sbyte>, NullableDataSourceInvertedStandard<OptionalStateValidator<sbyte>, RangeValidator_SByte, TValueValidator, sbyte>> validatorFactory)
+		public static NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, RangeValidator_SByte, TValueValidator, TSource, sbyte> Not<TSource, TValueValidator>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, RangeValidator_SByte, TSource, sbyte> source, Func<NullableDataSourceInverted<OptionalStateValidator<TSource>, RangeValidator_SByte, TSource, sbyte>, NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_SByte, TValueValidator, TSource, sbyte>> validatorFactory)
 			where TValueValidator : IValueValidator<sbyte>
 			=> validatorFactory.Invoke(source).InvertTwo();
 
-		public static NullableDataSourceStandardStandardStandard<OptionalStateValidator<sbyte>, RangeValidator_SByte, MultipleOfValidator_SByte, CustomValidator<sbyte>, sbyte> Assert(this NullableDataSourceStandardStandard<OptionalStateValidator<sbyte>, RangeValidator_SByte, MultipleOfValidator_SByte, sbyte> source, string description, Func<sbyte, bool> validator)
+		public static NullableDataSourceStandardStandardStandard<OptionalStateValidator<TSource>, RangeValidator_SByte, MultipleOfValidator_SByte, CustomValidator<sbyte>, TSource, sbyte> Assert<TSource>(this NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, RangeValidator_SByte, MultipleOfValidator_SByte, TSource, sbyte> source, string description, Func<sbyte, bool> validator)
 			=> source.Add(new CustomValidator<sbyte>(description, validator));
 
-		public static NullableDataSourceInvertedStandardStandard<OptionalStateValidator<sbyte>, RangeValidator_SByte, MultipleOfValidator_SByte, CustomValidator<sbyte>, sbyte> Assert(this NullableDataSourceInvertedStandard<OptionalStateValidator<sbyte>, RangeValidator_SByte, MultipleOfValidator_SByte, sbyte> source, string description, Func<sbyte, bool> validator)
+		public static NullableDataSourceInvertedStandardStandard<OptionalStateValidator<TSource>, RangeValidator_SByte, MultipleOfValidator_SByte, CustomValidator<sbyte>, TSource, sbyte> Assert<TSource>(this NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_SByte, MultipleOfValidator_SByte, TSource, sbyte> source, string description, Func<sbyte, bool> validator)
 			=> source.Add(new CustomValidator<sbyte>(description, validator));
 
-		public static NullableDataSourceStandardInvertedStandard<OptionalStateValidator<sbyte>, RangeValidator_SByte, MultipleOfValidator_SByte, CustomValidator<sbyte>, sbyte> Assert(this NullableDataSourceStandardInverted<OptionalStateValidator<sbyte>, RangeValidator_SByte, MultipleOfValidator_SByte, sbyte> source, string description, Func<sbyte, bool> validator)
+		public static NullableDataSourceStandardInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_SByte, MultipleOfValidator_SByte, CustomValidator<sbyte>, TSource, sbyte> Assert<TSource>(this NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, RangeValidator_SByte, MultipleOfValidator_SByte, TSource, sbyte> source, string description, Func<sbyte, bool> validator)
 			=> source.Add(new CustomValidator<sbyte>(description, validator));
 
-		public static NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<sbyte>, RangeValidator_SByte, MultipleOfValidator_SByte, CustomValidator<sbyte>, sbyte> Assert(this NullableDataSourceInvertedInverted<OptionalStateValidator<sbyte>, RangeValidator_SByte, MultipleOfValidator_SByte, sbyte> source, string description, Func<sbyte, bool> validator)
+		public static NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_SByte, MultipleOfValidator_SByte, CustomValidator<sbyte>, TSource, sbyte> Assert<TSource>(this NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, RangeValidator_SByte, MultipleOfValidator_SByte, TSource, sbyte> source, string description, Func<sbyte, bool> validator)
 			=> source.Add(new CustomValidator<sbyte>(description, validator));
 
-		public static NullableDataSourceStandardStandardInverted<OptionalStateValidator<sbyte>, RangeValidator_SByte, MultipleOfValidator_SByte, TValueValidator, sbyte> Not<TValueValidator>(this NullableDataSourceStandardStandard<OptionalStateValidator<sbyte>, RangeValidator_SByte, MultipleOfValidator_SByte, sbyte> source, Func<NullableDataSourceStandardStandard<OptionalStateValidator<sbyte>, RangeValidator_SByte, MultipleOfValidator_SByte, sbyte>, NullableDataSourceStandardStandardStandard<OptionalStateValidator<sbyte>, RangeValidator_SByte, MultipleOfValidator_SByte, TValueValidator, sbyte>> validatorFactory)
+		public static NullableDataSourceStandardStandardInverted<OptionalStateValidator<TSource>, RangeValidator_SByte, MultipleOfValidator_SByte, TValueValidator, TSource, sbyte> Not<TSource, TValueValidator>(this NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, RangeValidator_SByte, MultipleOfValidator_SByte, TSource, sbyte> source, Func<NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, RangeValidator_SByte, MultipleOfValidator_SByte, TSource, sbyte>, NullableDataSourceStandardStandardStandard<OptionalStateValidator<TSource>, RangeValidator_SByte, MultipleOfValidator_SByte, TValueValidator, TSource, sbyte>> validatorFactory)
 			where TValueValidator : IValueValidator<sbyte>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceInvertedStandardInverted<OptionalStateValidator<sbyte>, RangeValidator_SByte, MultipleOfValidator_SByte, TValueValidator, sbyte> Not<TValueValidator>(this NullableDataSourceInvertedStandard<OptionalStateValidator<sbyte>, RangeValidator_SByte, MultipleOfValidator_SByte, sbyte> source, Func<NullableDataSourceInvertedStandard<OptionalStateValidator<sbyte>, RangeValidator_SByte, MultipleOfValidator_SByte, sbyte>, NullableDataSourceInvertedStandardStandard<OptionalStateValidator<sbyte>, RangeValidator_SByte, MultipleOfValidator_SByte, TValueValidator, sbyte>> validatorFactory)
+		public static NullableDataSourceInvertedStandardInverted<OptionalStateValidator<TSource>, RangeValidator_SByte, MultipleOfValidator_SByte, TValueValidator, TSource, sbyte> Not<TSource, TValueValidator>(this NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_SByte, MultipleOfValidator_SByte, TSource, sbyte> source, Func<NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_SByte, MultipleOfValidator_SByte, TSource, sbyte>, NullableDataSourceInvertedStandardStandard<OptionalStateValidator<TSource>, RangeValidator_SByte, MultipleOfValidator_SByte, TValueValidator, TSource, sbyte>> validatorFactory)
 			where TValueValidator : IValueValidator<sbyte>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceStandardInvertedInverted<OptionalStateValidator<sbyte>, RangeValidator_SByte, MultipleOfValidator_SByte, TValueValidator, sbyte> Not<TValueValidator>(this NullableDataSourceStandardInverted<OptionalStateValidator<sbyte>, RangeValidator_SByte, MultipleOfValidator_SByte, sbyte> source, Func<NullableDataSourceStandardInverted<OptionalStateValidator<sbyte>, RangeValidator_SByte, MultipleOfValidator_SByte, sbyte>, NullableDataSourceStandardInvertedStandard<OptionalStateValidator<sbyte>, RangeValidator_SByte, MultipleOfValidator_SByte, TValueValidator, sbyte>> validatorFactory)
+		public static NullableDataSourceStandardInvertedInverted<OptionalStateValidator<TSource>, RangeValidator_SByte, MultipleOfValidator_SByte, TValueValidator, TSource, sbyte> Not<TSource, TValueValidator>(this NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, RangeValidator_SByte, MultipleOfValidator_SByte, TSource, sbyte> source, Func<NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, RangeValidator_SByte, MultipleOfValidator_SByte, TSource, sbyte>, NullableDataSourceStandardInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_SByte, MultipleOfValidator_SByte, TValueValidator, TSource, sbyte>> validatorFactory)
 			where TValueValidator : IValueValidator<sbyte>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceInvertedInvertedInverted<OptionalStateValidator<sbyte>, RangeValidator_SByte, MultipleOfValidator_SByte, TValueValidator, sbyte> Not<TValueValidator>(this NullableDataSourceInvertedInverted<OptionalStateValidator<sbyte>, RangeValidator_SByte, MultipleOfValidator_SByte, sbyte> source, Func<NullableDataSourceInvertedInverted<OptionalStateValidator<sbyte>, RangeValidator_SByte, MultipleOfValidator_SByte, sbyte>, NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<sbyte>, RangeValidator_SByte, MultipleOfValidator_SByte, TValueValidator, sbyte>> validatorFactory)
+		public static NullableDataSourceInvertedInvertedInverted<OptionalStateValidator<TSource>, RangeValidator_SByte, MultipleOfValidator_SByte, TValueValidator, TSource, sbyte> Not<TSource, TValueValidator>(this NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, RangeValidator_SByte, MultipleOfValidator_SByte, TSource, sbyte> source, Func<NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, RangeValidator_SByte, MultipleOfValidator_SByte, TSource, sbyte>, NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_SByte, MultipleOfValidator_SByte, TValueValidator, TSource, sbyte>> validatorFactory)
 			where TValueValidator : IValueValidator<sbyte>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<short>, RangeValidator_Int16, CustomValidator<short>, short> Assert(this NullableDataSourceStandard<OptionalStateValidator<short>, RangeValidator_Int16, short> source, string description, Func<short, bool> validator)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, RangeValidator_Int16, CustomValidator<short>, TSource, short> Assert<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, RangeValidator_Int16, TSource, short> source, string description, Func<short, bool> validator)
 			=> source.Add(new CustomValidator<short>(description, validator));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<short>, RangeValidator_Int16, CustomValidator<short>, short> Assert(this NullableDataSourceInverted<OptionalStateValidator<short>, RangeValidator_Int16, short> source, string description, Func<short, bool> validator)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_Int16, CustomValidator<short>, TSource, short> Assert<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, RangeValidator_Int16, TSource, short> source, string description, Func<short, bool> validator)
 			=> source.Add(new CustomValidator<short>(description, validator));
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<short>, RangeValidator_Int16, MultipleOfValidator_Int16, short> MultipleOf(this NullableDataSourceStandard<OptionalStateValidator<short>, RangeValidator_Int16, short> source, short divisor)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, RangeValidator_Int16, MultipleOfValidator_Int16, TSource, short> MultipleOf<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, RangeValidator_Int16, TSource, short> source, short divisor)
 			=> source.Add(new MultipleOfValidator_Int16(divisor));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<short>, RangeValidator_Int16, MultipleOfValidator_Int16, short> MultipleOf(this NullableDataSourceInverted<OptionalStateValidator<short>, RangeValidator_Int16, short> source, short divisor)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_Int16, MultipleOfValidator_Int16, TSource, short> MultipleOf<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, RangeValidator_Int16, TSource, short> source, short divisor)
 			=> source.Add(new MultipleOfValidator_Int16(divisor));
 
-		public static NullableDataSourceStandardInverted<OptionalStateValidator<short>, RangeValidator_Int16, TValueValidator, short> Not<TValueValidator>(this NullableDataSourceStandard<OptionalStateValidator<short>, RangeValidator_Int16, short> source, Func<NullableDataSourceStandard<OptionalStateValidator<short>, RangeValidator_Int16, short>, NullableDataSourceStandardStandard<OptionalStateValidator<short>, RangeValidator_Int16, TValueValidator, short>> validatorFactory)
+		public static NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, RangeValidator_Int16, TValueValidator, TSource, short> Not<TSource, TValueValidator>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, RangeValidator_Int16, TSource, short> source, Func<NullableDataSourceStandard<OptionalStateValidator<TSource>, RangeValidator_Int16, TSource, short>, NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, RangeValidator_Int16, TValueValidator, TSource, short>> validatorFactory)
 			where TValueValidator : IValueValidator<short>
 			=> validatorFactory.Invoke(source).InvertTwo();
 
-		public static NullableDataSourceInvertedInverted<OptionalStateValidator<short>, RangeValidator_Int16, TValueValidator, short> Not<TValueValidator>(this NullableDataSourceInverted<OptionalStateValidator<short>, RangeValidator_Int16, short> source, Func<NullableDataSourceInverted<OptionalStateValidator<short>, RangeValidator_Int16, short>, NullableDataSourceInvertedStandard<OptionalStateValidator<short>, RangeValidator_Int16, TValueValidator, short>> validatorFactory)
+		public static NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, RangeValidator_Int16, TValueValidator, TSource, short> Not<TSource, TValueValidator>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, RangeValidator_Int16, TSource, short> source, Func<NullableDataSourceInverted<OptionalStateValidator<TSource>, RangeValidator_Int16, TSource, short>, NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_Int16, TValueValidator, TSource, short>> validatorFactory)
 			where TValueValidator : IValueValidator<short>
 			=> validatorFactory.Invoke(source).InvertTwo();
 
-		public static NullableDataSourceStandardStandardStandard<OptionalStateValidator<short>, RangeValidator_Int16, MultipleOfValidator_Int16, CustomValidator<short>, short> Assert(this NullableDataSourceStandardStandard<OptionalStateValidator<short>, RangeValidator_Int16, MultipleOfValidator_Int16, short> source, string description, Func<short, bool> validator)
+		public static NullableDataSourceStandardStandardStandard<OptionalStateValidator<TSource>, RangeValidator_Int16, MultipleOfValidator_Int16, CustomValidator<short>, TSource, short> Assert<TSource>(this NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, RangeValidator_Int16, MultipleOfValidator_Int16, TSource, short> source, string description, Func<short, bool> validator)
 			=> source.Add(new CustomValidator<short>(description, validator));
 
-		public static NullableDataSourceInvertedStandardStandard<OptionalStateValidator<short>, RangeValidator_Int16, MultipleOfValidator_Int16, CustomValidator<short>, short> Assert(this NullableDataSourceInvertedStandard<OptionalStateValidator<short>, RangeValidator_Int16, MultipleOfValidator_Int16, short> source, string description, Func<short, bool> validator)
+		public static NullableDataSourceInvertedStandardStandard<OptionalStateValidator<TSource>, RangeValidator_Int16, MultipleOfValidator_Int16, CustomValidator<short>, TSource, short> Assert<TSource>(this NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_Int16, MultipleOfValidator_Int16, TSource, short> source, string description, Func<short, bool> validator)
 			=> source.Add(new CustomValidator<short>(description, validator));
 
-		public static NullableDataSourceStandardInvertedStandard<OptionalStateValidator<short>, RangeValidator_Int16, MultipleOfValidator_Int16, CustomValidator<short>, short> Assert(this NullableDataSourceStandardInverted<OptionalStateValidator<short>, RangeValidator_Int16, MultipleOfValidator_Int16, short> source, string description, Func<short, bool> validator)
+		public static NullableDataSourceStandardInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_Int16, MultipleOfValidator_Int16, CustomValidator<short>, TSource, short> Assert<TSource>(this NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, RangeValidator_Int16, MultipleOfValidator_Int16, TSource, short> source, string description, Func<short, bool> validator)
 			=> source.Add(new CustomValidator<short>(description, validator));
 
-		public static NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<short>, RangeValidator_Int16, MultipleOfValidator_Int16, CustomValidator<short>, short> Assert(this NullableDataSourceInvertedInverted<OptionalStateValidator<short>, RangeValidator_Int16, MultipleOfValidator_Int16, short> source, string description, Func<short, bool> validator)
+		public static NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_Int16, MultipleOfValidator_Int16, CustomValidator<short>, TSource, short> Assert<TSource>(this NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, RangeValidator_Int16, MultipleOfValidator_Int16, TSource, short> source, string description, Func<short, bool> validator)
 			=> source.Add(new CustomValidator<short>(description, validator));
 
-		public static NullableDataSourceStandardStandardInverted<OptionalStateValidator<short>, RangeValidator_Int16, MultipleOfValidator_Int16, TValueValidator, short> Not<TValueValidator>(this NullableDataSourceStandardStandard<OptionalStateValidator<short>, RangeValidator_Int16, MultipleOfValidator_Int16, short> source, Func<NullableDataSourceStandardStandard<OptionalStateValidator<short>, RangeValidator_Int16, MultipleOfValidator_Int16, short>, NullableDataSourceStandardStandardStandard<OptionalStateValidator<short>, RangeValidator_Int16, MultipleOfValidator_Int16, TValueValidator, short>> validatorFactory)
+		public static NullableDataSourceStandardStandardInverted<OptionalStateValidator<TSource>, RangeValidator_Int16, MultipleOfValidator_Int16, TValueValidator, TSource, short> Not<TSource, TValueValidator>(this NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, RangeValidator_Int16, MultipleOfValidator_Int16, TSource, short> source, Func<NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, RangeValidator_Int16, MultipleOfValidator_Int16, TSource, short>, NullableDataSourceStandardStandardStandard<OptionalStateValidator<TSource>, RangeValidator_Int16, MultipleOfValidator_Int16, TValueValidator, TSource, short>> validatorFactory)
 			where TValueValidator : IValueValidator<short>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceInvertedStandardInverted<OptionalStateValidator<short>, RangeValidator_Int16, MultipleOfValidator_Int16, TValueValidator, short> Not<TValueValidator>(this NullableDataSourceInvertedStandard<OptionalStateValidator<short>, RangeValidator_Int16, MultipleOfValidator_Int16, short> source, Func<NullableDataSourceInvertedStandard<OptionalStateValidator<short>, RangeValidator_Int16, MultipleOfValidator_Int16, short>, NullableDataSourceInvertedStandardStandard<OptionalStateValidator<short>, RangeValidator_Int16, MultipleOfValidator_Int16, TValueValidator, short>> validatorFactory)
+		public static NullableDataSourceInvertedStandardInverted<OptionalStateValidator<TSource>, RangeValidator_Int16, MultipleOfValidator_Int16, TValueValidator, TSource, short> Not<TSource, TValueValidator>(this NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_Int16, MultipleOfValidator_Int16, TSource, short> source, Func<NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_Int16, MultipleOfValidator_Int16, TSource, short>, NullableDataSourceInvertedStandardStandard<OptionalStateValidator<TSource>, RangeValidator_Int16, MultipleOfValidator_Int16, TValueValidator, TSource, short>> validatorFactory)
 			where TValueValidator : IValueValidator<short>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceStandardInvertedInverted<OptionalStateValidator<short>, RangeValidator_Int16, MultipleOfValidator_Int16, TValueValidator, short> Not<TValueValidator>(this NullableDataSourceStandardInverted<OptionalStateValidator<short>, RangeValidator_Int16, MultipleOfValidator_Int16, short> source, Func<NullableDataSourceStandardInverted<OptionalStateValidator<short>, RangeValidator_Int16, MultipleOfValidator_Int16, short>, NullableDataSourceStandardInvertedStandard<OptionalStateValidator<short>, RangeValidator_Int16, MultipleOfValidator_Int16, TValueValidator, short>> validatorFactory)
+		public static NullableDataSourceStandardInvertedInverted<OptionalStateValidator<TSource>, RangeValidator_Int16, MultipleOfValidator_Int16, TValueValidator, TSource, short> Not<TSource, TValueValidator>(this NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, RangeValidator_Int16, MultipleOfValidator_Int16, TSource, short> source, Func<NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, RangeValidator_Int16, MultipleOfValidator_Int16, TSource, short>, NullableDataSourceStandardInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_Int16, MultipleOfValidator_Int16, TValueValidator, TSource, short>> validatorFactory)
 			where TValueValidator : IValueValidator<short>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceInvertedInvertedInverted<OptionalStateValidator<short>, RangeValidator_Int16, MultipleOfValidator_Int16, TValueValidator, short> Not<TValueValidator>(this NullableDataSourceInvertedInverted<OptionalStateValidator<short>, RangeValidator_Int16, MultipleOfValidator_Int16, short> source, Func<NullableDataSourceInvertedInverted<OptionalStateValidator<short>, RangeValidator_Int16, MultipleOfValidator_Int16, short>, NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<short>, RangeValidator_Int16, MultipleOfValidator_Int16, TValueValidator, short>> validatorFactory)
+		public static NullableDataSourceInvertedInvertedInverted<OptionalStateValidator<TSource>, RangeValidator_Int16, MultipleOfValidator_Int16, TValueValidator, TSource, short> Not<TSource, TValueValidator>(this NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, RangeValidator_Int16, MultipleOfValidator_Int16, TSource, short> source, Func<NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, RangeValidator_Int16, MultipleOfValidator_Int16, TSource, short>, NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_Int16, MultipleOfValidator_Int16, TValueValidator, TSource, short>> validatorFactory)
 			where TValueValidator : IValueValidator<short>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<ushort>, RangeValidator_UInt16, CustomValidator<ushort>, ushort> Assert(this NullableDataSourceStandard<OptionalStateValidator<ushort>, RangeValidator_UInt16, ushort> source, string description, Func<ushort, bool> validator)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, RangeValidator_UInt16, CustomValidator<ushort>, TSource, ushort> Assert<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, RangeValidator_UInt16, TSource, ushort> source, string description, Func<ushort, bool> validator)
 			=> source.Add(new CustomValidator<ushort>(description, validator));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<ushort>, RangeValidator_UInt16, CustomValidator<ushort>, ushort> Assert(this NullableDataSourceInverted<OptionalStateValidator<ushort>, RangeValidator_UInt16, ushort> source, string description, Func<ushort, bool> validator)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_UInt16, CustomValidator<ushort>, TSource, ushort> Assert<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, RangeValidator_UInt16, TSource, ushort> source, string description, Func<ushort, bool> validator)
 			=> source.Add(new CustomValidator<ushort>(description, validator));
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<ushort>, RangeValidator_UInt16, MultipleOfValidator_UInt16, ushort> MultipleOf(this NullableDataSourceStandard<OptionalStateValidator<ushort>, RangeValidator_UInt16, ushort> source, ushort divisor)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, RangeValidator_UInt16, MultipleOfValidator_UInt16, TSource, ushort> MultipleOf<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, RangeValidator_UInt16, TSource, ushort> source, ushort divisor)
 			=> source.Add(new MultipleOfValidator_UInt16(divisor));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<ushort>, RangeValidator_UInt16, MultipleOfValidator_UInt16, ushort> MultipleOf(this NullableDataSourceInverted<OptionalStateValidator<ushort>, RangeValidator_UInt16, ushort> source, ushort divisor)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_UInt16, MultipleOfValidator_UInt16, TSource, ushort> MultipleOf<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, RangeValidator_UInt16, TSource, ushort> source, ushort divisor)
 			=> source.Add(new MultipleOfValidator_UInt16(divisor));
 
-		public static NullableDataSourceStandardInverted<OptionalStateValidator<ushort>, RangeValidator_UInt16, TValueValidator, ushort> Not<TValueValidator>(this NullableDataSourceStandard<OptionalStateValidator<ushort>, RangeValidator_UInt16, ushort> source, Func<NullableDataSourceStandard<OptionalStateValidator<ushort>, RangeValidator_UInt16, ushort>, NullableDataSourceStandardStandard<OptionalStateValidator<ushort>, RangeValidator_UInt16, TValueValidator, ushort>> validatorFactory)
+		public static NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, RangeValidator_UInt16, TValueValidator, TSource, ushort> Not<TSource, TValueValidator>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, RangeValidator_UInt16, TSource, ushort> source, Func<NullableDataSourceStandard<OptionalStateValidator<TSource>, RangeValidator_UInt16, TSource, ushort>, NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, RangeValidator_UInt16, TValueValidator, TSource, ushort>> validatorFactory)
 			where TValueValidator : IValueValidator<ushort>
 			=> validatorFactory.Invoke(source).InvertTwo();
 
-		public static NullableDataSourceInvertedInverted<OptionalStateValidator<ushort>, RangeValidator_UInt16, TValueValidator, ushort> Not<TValueValidator>(this NullableDataSourceInverted<OptionalStateValidator<ushort>, RangeValidator_UInt16, ushort> source, Func<NullableDataSourceInverted<OptionalStateValidator<ushort>, RangeValidator_UInt16, ushort>, NullableDataSourceInvertedStandard<OptionalStateValidator<ushort>, RangeValidator_UInt16, TValueValidator, ushort>> validatorFactory)
+		public static NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, RangeValidator_UInt16, TValueValidator, TSource, ushort> Not<TSource, TValueValidator>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, RangeValidator_UInt16, TSource, ushort> source, Func<NullableDataSourceInverted<OptionalStateValidator<TSource>, RangeValidator_UInt16, TSource, ushort>, NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_UInt16, TValueValidator, TSource, ushort>> validatorFactory)
 			where TValueValidator : IValueValidator<ushort>
 			=> validatorFactory.Invoke(source).InvertTwo();
 
-		public static NullableDataSourceStandardStandardStandard<OptionalStateValidator<ushort>, RangeValidator_UInt16, MultipleOfValidator_UInt16, CustomValidator<ushort>, ushort> Assert(this NullableDataSourceStandardStandard<OptionalStateValidator<ushort>, RangeValidator_UInt16, MultipleOfValidator_UInt16, ushort> source, string description, Func<ushort, bool> validator)
+		public static NullableDataSourceStandardStandardStandard<OptionalStateValidator<TSource>, RangeValidator_UInt16, MultipleOfValidator_UInt16, CustomValidator<ushort>, TSource, ushort> Assert<TSource>(this NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, RangeValidator_UInt16, MultipleOfValidator_UInt16, TSource, ushort> source, string description, Func<ushort, bool> validator)
 			=> source.Add(new CustomValidator<ushort>(description, validator));
 
-		public static NullableDataSourceInvertedStandardStandard<OptionalStateValidator<ushort>, RangeValidator_UInt16, MultipleOfValidator_UInt16, CustomValidator<ushort>, ushort> Assert(this NullableDataSourceInvertedStandard<OptionalStateValidator<ushort>, RangeValidator_UInt16, MultipleOfValidator_UInt16, ushort> source, string description, Func<ushort, bool> validator)
+		public static NullableDataSourceInvertedStandardStandard<OptionalStateValidator<TSource>, RangeValidator_UInt16, MultipleOfValidator_UInt16, CustomValidator<ushort>, TSource, ushort> Assert<TSource>(this NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_UInt16, MultipleOfValidator_UInt16, TSource, ushort> source, string description, Func<ushort, bool> validator)
 			=> source.Add(new CustomValidator<ushort>(description, validator));
 
-		public static NullableDataSourceStandardInvertedStandard<OptionalStateValidator<ushort>, RangeValidator_UInt16, MultipleOfValidator_UInt16, CustomValidator<ushort>, ushort> Assert(this NullableDataSourceStandardInverted<OptionalStateValidator<ushort>, RangeValidator_UInt16, MultipleOfValidator_UInt16, ushort> source, string description, Func<ushort, bool> validator)
+		public static NullableDataSourceStandardInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_UInt16, MultipleOfValidator_UInt16, CustomValidator<ushort>, TSource, ushort> Assert<TSource>(this NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, RangeValidator_UInt16, MultipleOfValidator_UInt16, TSource, ushort> source, string description, Func<ushort, bool> validator)
 			=> source.Add(new CustomValidator<ushort>(description, validator));
 
-		public static NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<ushort>, RangeValidator_UInt16, MultipleOfValidator_UInt16, CustomValidator<ushort>, ushort> Assert(this NullableDataSourceInvertedInverted<OptionalStateValidator<ushort>, RangeValidator_UInt16, MultipleOfValidator_UInt16, ushort> source, string description, Func<ushort, bool> validator)
+		public static NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_UInt16, MultipleOfValidator_UInt16, CustomValidator<ushort>, TSource, ushort> Assert<TSource>(this NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, RangeValidator_UInt16, MultipleOfValidator_UInt16, TSource, ushort> source, string description, Func<ushort, bool> validator)
 			=> source.Add(new CustomValidator<ushort>(description, validator));
 
-		public static NullableDataSourceStandardStandardInverted<OptionalStateValidator<ushort>, RangeValidator_UInt16, MultipleOfValidator_UInt16, TValueValidator, ushort> Not<TValueValidator>(this NullableDataSourceStandardStandard<OptionalStateValidator<ushort>, RangeValidator_UInt16, MultipleOfValidator_UInt16, ushort> source, Func<NullableDataSourceStandardStandard<OptionalStateValidator<ushort>, RangeValidator_UInt16, MultipleOfValidator_UInt16, ushort>, NullableDataSourceStandardStandardStandard<OptionalStateValidator<ushort>, RangeValidator_UInt16, MultipleOfValidator_UInt16, TValueValidator, ushort>> validatorFactory)
+		public static NullableDataSourceStandardStandardInverted<OptionalStateValidator<TSource>, RangeValidator_UInt16, MultipleOfValidator_UInt16, TValueValidator, TSource, ushort> Not<TSource, TValueValidator>(this NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, RangeValidator_UInt16, MultipleOfValidator_UInt16, TSource, ushort> source, Func<NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, RangeValidator_UInt16, MultipleOfValidator_UInt16, TSource, ushort>, NullableDataSourceStandardStandardStandard<OptionalStateValidator<TSource>, RangeValidator_UInt16, MultipleOfValidator_UInt16, TValueValidator, TSource, ushort>> validatorFactory)
 			where TValueValidator : IValueValidator<ushort>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceInvertedStandardInverted<OptionalStateValidator<ushort>, RangeValidator_UInt16, MultipleOfValidator_UInt16, TValueValidator, ushort> Not<TValueValidator>(this NullableDataSourceInvertedStandard<OptionalStateValidator<ushort>, RangeValidator_UInt16, MultipleOfValidator_UInt16, ushort> source, Func<NullableDataSourceInvertedStandard<OptionalStateValidator<ushort>, RangeValidator_UInt16, MultipleOfValidator_UInt16, ushort>, NullableDataSourceInvertedStandardStandard<OptionalStateValidator<ushort>, RangeValidator_UInt16, MultipleOfValidator_UInt16, TValueValidator, ushort>> validatorFactory)
+		public static NullableDataSourceInvertedStandardInverted<OptionalStateValidator<TSource>, RangeValidator_UInt16, MultipleOfValidator_UInt16, TValueValidator, TSource, ushort> Not<TSource, TValueValidator>(this NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_UInt16, MultipleOfValidator_UInt16, TSource, ushort> source, Func<NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_UInt16, MultipleOfValidator_UInt16, TSource, ushort>, NullableDataSourceInvertedStandardStandard<OptionalStateValidator<TSource>, RangeValidator_UInt16, MultipleOfValidator_UInt16, TValueValidator, TSource, ushort>> validatorFactory)
 			where TValueValidator : IValueValidator<ushort>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceStandardInvertedInverted<OptionalStateValidator<ushort>, RangeValidator_UInt16, MultipleOfValidator_UInt16, TValueValidator, ushort> Not<TValueValidator>(this NullableDataSourceStandardInverted<OptionalStateValidator<ushort>, RangeValidator_UInt16, MultipleOfValidator_UInt16, ushort> source, Func<NullableDataSourceStandardInverted<OptionalStateValidator<ushort>, RangeValidator_UInt16, MultipleOfValidator_UInt16, ushort>, NullableDataSourceStandardInvertedStandard<OptionalStateValidator<ushort>, RangeValidator_UInt16, MultipleOfValidator_UInt16, TValueValidator, ushort>> validatorFactory)
+		public static NullableDataSourceStandardInvertedInverted<OptionalStateValidator<TSource>, RangeValidator_UInt16, MultipleOfValidator_UInt16, TValueValidator, TSource, ushort> Not<TSource, TValueValidator>(this NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, RangeValidator_UInt16, MultipleOfValidator_UInt16, TSource, ushort> source, Func<NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, RangeValidator_UInt16, MultipleOfValidator_UInt16, TSource, ushort>, NullableDataSourceStandardInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_UInt16, MultipleOfValidator_UInt16, TValueValidator, TSource, ushort>> validatorFactory)
 			where TValueValidator : IValueValidator<ushort>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceInvertedInvertedInverted<OptionalStateValidator<ushort>, RangeValidator_UInt16, MultipleOfValidator_UInt16, TValueValidator, ushort> Not<TValueValidator>(this NullableDataSourceInvertedInverted<OptionalStateValidator<ushort>, RangeValidator_UInt16, MultipleOfValidator_UInt16, ushort> source, Func<NullableDataSourceInvertedInverted<OptionalStateValidator<ushort>, RangeValidator_UInt16, MultipleOfValidator_UInt16, ushort>, NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<ushort>, RangeValidator_UInt16, MultipleOfValidator_UInt16, TValueValidator, ushort>> validatorFactory)
+		public static NullableDataSourceInvertedInvertedInverted<OptionalStateValidator<TSource>, RangeValidator_UInt16, MultipleOfValidator_UInt16, TValueValidator, TSource, ushort> Not<TSource, TValueValidator>(this NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, RangeValidator_UInt16, MultipleOfValidator_UInt16, TSource, ushort> source, Func<NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, RangeValidator_UInt16, MultipleOfValidator_UInt16, TSource, ushort>, NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_UInt16, MultipleOfValidator_UInt16, TValueValidator, TSource, ushort>> validatorFactory)
 			where TValueValidator : IValueValidator<ushort>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<int>, RangeValidator_Int32, CustomValidator<int>, int> Assert(this NullableDataSourceStandard<OptionalStateValidator<int>, RangeValidator_Int32, int> source, string description, Func<int, bool> validator)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, RangeValidator_Int32, CustomValidator<int>, TSource, int> Assert<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, RangeValidator_Int32, TSource, int> source, string description, Func<int, bool> validator)
 			=> source.Add(new CustomValidator<int>(description, validator));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<int>, RangeValidator_Int32, CustomValidator<int>, int> Assert(this NullableDataSourceInverted<OptionalStateValidator<int>, RangeValidator_Int32, int> source, string description, Func<int, bool> validator)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_Int32, CustomValidator<int>, TSource, int> Assert<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, RangeValidator_Int32, TSource, int> source, string description, Func<int, bool> validator)
 			=> source.Add(new CustomValidator<int>(description, validator));
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<int>, RangeValidator_Int32, MultipleOfValidator_Int32, int> MultipleOf(this NullableDataSourceStandard<OptionalStateValidator<int>, RangeValidator_Int32, int> source, int divisor)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, RangeValidator_Int32, MultipleOfValidator_Int32, TSource, int> MultipleOf<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, RangeValidator_Int32, TSource, int> source, int divisor)
 			=> source.Add(new MultipleOfValidator_Int32(divisor));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<int>, RangeValidator_Int32, MultipleOfValidator_Int32, int> MultipleOf(this NullableDataSourceInverted<OptionalStateValidator<int>, RangeValidator_Int32, int> source, int divisor)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_Int32, MultipleOfValidator_Int32, TSource, int> MultipleOf<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, RangeValidator_Int32, TSource, int> source, int divisor)
 			=> source.Add(new MultipleOfValidator_Int32(divisor));
 
-		public static NullableDataSourceStandardInverted<OptionalStateValidator<int>, RangeValidator_Int32, TValueValidator, int> Not<TValueValidator>(this NullableDataSourceStandard<OptionalStateValidator<int>, RangeValidator_Int32, int> source, Func<NullableDataSourceStandard<OptionalStateValidator<int>, RangeValidator_Int32, int>, NullableDataSourceStandardStandard<OptionalStateValidator<int>, RangeValidator_Int32, TValueValidator, int>> validatorFactory)
+		public static NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, RangeValidator_Int32, TValueValidator, TSource, int> Not<TSource, TValueValidator>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, RangeValidator_Int32, TSource, int> source, Func<NullableDataSourceStandard<OptionalStateValidator<TSource>, RangeValidator_Int32, TSource, int>, NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, RangeValidator_Int32, TValueValidator, TSource, int>> validatorFactory)
 			where TValueValidator : IValueValidator<int>
 			=> validatorFactory.Invoke(source).InvertTwo();
 
-		public static NullableDataSourceInvertedInverted<OptionalStateValidator<int>, RangeValidator_Int32, TValueValidator, int> Not<TValueValidator>(this NullableDataSourceInverted<OptionalStateValidator<int>, RangeValidator_Int32, int> source, Func<NullableDataSourceInverted<OptionalStateValidator<int>, RangeValidator_Int32, int>, NullableDataSourceInvertedStandard<OptionalStateValidator<int>, RangeValidator_Int32, TValueValidator, int>> validatorFactory)
+		public static NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, RangeValidator_Int32, TValueValidator, TSource, int> Not<TSource, TValueValidator>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, RangeValidator_Int32, TSource, int> source, Func<NullableDataSourceInverted<OptionalStateValidator<TSource>, RangeValidator_Int32, TSource, int>, NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_Int32, TValueValidator, TSource, int>> validatorFactory)
 			where TValueValidator : IValueValidator<int>
 			=> validatorFactory.Invoke(source).InvertTwo();
 
-		public static NullableDataSourceStandardStandardStandard<OptionalStateValidator<int>, RangeValidator_Int32, MultipleOfValidator_Int32, CustomValidator<int>, int> Assert(this NullableDataSourceStandardStandard<OptionalStateValidator<int>, RangeValidator_Int32, MultipleOfValidator_Int32, int> source, string description, Func<int, bool> validator)
+		public static NullableDataSourceStandardStandardStandard<OptionalStateValidator<TSource>, RangeValidator_Int32, MultipleOfValidator_Int32, CustomValidator<int>, TSource, int> Assert<TSource>(this NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, RangeValidator_Int32, MultipleOfValidator_Int32, TSource, int> source, string description, Func<int, bool> validator)
 			=> source.Add(new CustomValidator<int>(description, validator));
 
-		public static NullableDataSourceInvertedStandardStandard<OptionalStateValidator<int>, RangeValidator_Int32, MultipleOfValidator_Int32, CustomValidator<int>, int> Assert(this NullableDataSourceInvertedStandard<OptionalStateValidator<int>, RangeValidator_Int32, MultipleOfValidator_Int32, int> source, string description, Func<int, bool> validator)
+		public static NullableDataSourceInvertedStandardStandard<OptionalStateValidator<TSource>, RangeValidator_Int32, MultipleOfValidator_Int32, CustomValidator<int>, TSource, int> Assert<TSource>(this NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_Int32, MultipleOfValidator_Int32, TSource, int> source, string description, Func<int, bool> validator)
 			=> source.Add(new CustomValidator<int>(description, validator));
 
-		public static NullableDataSourceStandardInvertedStandard<OptionalStateValidator<int>, RangeValidator_Int32, MultipleOfValidator_Int32, CustomValidator<int>, int> Assert(this NullableDataSourceStandardInverted<OptionalStateValidator<int>, RangeValidator_Int32, MultipleOfValidator_Int32, int> source, string description, Func<int, bool> validator)
+		public static NullableDataSourceStandardInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_Int32, MultipleOfValidator_Int32, CustomValidator<int>, TSource, int> Assert<TSource>(this NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, RangeValidator_Int32, MultipleOfValidator_Int32, TSource, int> source, string description, Func<int, bool> validator)
 			=> source.Add(new CustomValidator<int>(description, validator));
 
-		public static NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<int>, RangeValidator_Int32, MultipleOfValidator_Int32, CustomValidator<int>, int> Assert(this NullableDataSourceInvertedInverted<OptionalStateValidator<int>, RangeValidator_Int32, MultipleOfValidator_Int32, int> source, string description, Func<int, bool> validator)
+		public static NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_Int32, MultipleOfValidator_Int32, CustomValidator<int>, TSource, int> Assert<TSource>(this NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, RangeValidator_Int32, MultipleOfValidator_Int32, TSource, int> source, string description, Func<int, bool> validator)
 			=> source.Add(new CustomValidator<int>(description, validator));
 
-		public static NullableDataSourceStandardStandardInverted<OptionalStateValidator<int>, RangeValidator_Int32, MultipleOfValidator_Int32, TValueValidator, int> Not<TValueValidator>(this NullableDataSourceStandardStandard<OptionalStateValidator<int>, RangeValidator_Int32, MultipleOfValidator_Int32, int> source, Func<NullableDataSourceStandardStandard<OptionalStateValidator<int>, RangeValidator_Int32, MultipleOfValidator_Int32, int>, NullableDataSourceStandardStandardStandard<OptionalStateValidator<int>, RangeValidator_Int32, MultipleOfValidator_Int32, TValueValidator, int>> validatorFactory)
+		public static NullableDataSourceStandardStandardInverted<OptionalStateValidator<TSource>, RangeValidator_Int32, MultipleOfValidator_Int32, TValueValidator, TSource, int> Not<TSource, TValueValidator>(this NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, RangeValidator_Int32, MultipleOfValidator_Int32, TSource, int> source, Func<NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, RangeValidator_Int32, MultipleOfValidator_Int32, TSource, int>, NullableDataSourceStandardStandardStandard<OptionalStateValidator<TSource>, RangeValidator_Int32, MultipleOfValidator_Int32, TValueValidator, TSource, int>> validatorFactory)
 			where TValueValidator : IValueValidator<int>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceInvertedStandardInverted<OptionalStateValidator<int>, RangeValidator_Int32, MultipleOfValidator_Int32, TValueValidator, int> Not<TValueValidator>(this NullableDataSourceInvertedStandard<OptionalStateValidator<int>, RangeValidator_Int32, MultipleOfValidator_Int32, int> source, Func<NullableDataSourceInvertedStandard<OptionalStateValidator<int>, RangeValidator_Int32, MultipleOfValidator_Int32, int>, NullableDataSourceInvertedStandardStandard<OptionalStateValidator<int>, RangeValidator_Int32, MultipleOfValidator_Int32, TValueValidator, int>> validatorFactory)
+		public static NullableDataSourceInvertedStandardInverted<OptionalStateValidator<TSource>, RangeValidator_Int32, MultipleOfValidator_Int32, TValueValidator, TSource, int> Not<TSource, TValueValidator>(this NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_Int32, MultipleOfValidator_Int32, TSource, int> source, Func<NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_Int32, MultipleOfValidator_Int32, TSource, int>, NullableDataSourceInvertedStandardStandard<OptionalStateValidator<TSource>, RangeValidator_Int32, MultipleOfValidator_Int32, TValueValidator, TSource, int>> validatorFactory)
 			where TValueValidator : IValueValidator<int>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceStandardInvertedInverted<OptionalStateValidator<int>, RangeValidator_Int32, MultipleOfValidator_Int32, TValueValidator, int> Not<TValueValidator>(this NullableDataSourceStandardInverted<OptionalStateValidator<int>, RangeValidator_Int32, MultipleOfValidator_Int32, int> source, Func<NullableDataSourceStandardInverted<OptionalStateValidator<int>, RangeValidator_Int32, MultipleOfValidator_Int32, int>, NullableDataSourceStandardInvertedStandard<OptionalStateValidator<int>, RangeValidator_Int32, MultipleOfValidator_Int32, TValueValidator, int>> validatorFactory)
+		public static NullableDataSourceStandardInvertedInverted<OptionalStateValidator<TSource>, RangeValidator_Int32, MultipleOfValidator_Int32, TValueValidator, TSource, int> Not<TSource, TValueValidator>(this NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, RangeValidator_Int32, MultipleOfValidator_Int32, TSource, int> source, Func<NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, RangeValidator_Int32, MultipleOfValidator_Int32, TSource, int>, NullableDataSourceStandardInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_Int32, MultipleOfValidator_Int32, TValueValidator, TSource, int>> validatorFactory)
 			where TValueValidator : IValueValidator<int>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceInvertedInvertedInverted<OptionalStateValidator<int>, RangeValidator_Int32, MultipleOfValidator_Int32, TValueValidator, int> Not<TValueValidator>(this NullableDataSourceInvertedInverted<OptionalStateValidator<int>, RangeValidator_Int32, MultipleOfValidator_Int32, int> source, Func<NullableDataSourceInvertedInverted<OptionalStateValidator<int>, RangeValidator_Int32, MultipleOfValidator_Int32, int>, NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<int>, RangeValidator_Int32, MultipleOfValidator_Int32, TValueValidator, int>> validatorFactory)
+		public static NullableDataSourceInvertedInvertedInverted<OptionalStateValidator<TSource>, RangeValidator_Int32, MultipleOfValidator_Int32, TValueValidator, TSource, int> Not<TSource, TValueValidator>(this NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, RangeValidator_Int32, MultipleOfValidator_Int32, TSource, int> source, Func<NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, RangeValidator_Int32, MultipleOfValidator_Int32, TSource, int>, NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_Int32, MultipleOfValidator_Int32, TValueValidator, TSource, int>> validatorFactory)
 			where TValueValidator : IValueValidator<int>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<uint>, RangeValidator_UInt32, CustomValidator<uint>, uint> Assert(this NullableDataSourceStandard<OptionalStateValidator<uint>, RangeValidator_UInt32, uint> source, string description, Func<uint, bool> validator)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, RangeValidator_UInt32, CustomValidator<uint>, TSource, uint> Assert<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, RangeValidator_UInt32, TSource, uint> source, string description, Func<uint, bool> validator)
 			=> source.Add(new CustomValidator<uint>(description, validator));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<uint>, RangeValidator_UInt32, CustomValidator<uint>, uint> Assert(this NullableDataSourceInverted<OptionalStateValidator<uint>, RangeValidator_UInt32, uint> source, string description, Func<uint, bool> validator)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_UInt32, CustomValidator<uint>, TSource, uint> Assert<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, RangeValidator_UInt32, TSource, uint> source, string description, Func<uint, bool> validator)
 			=> source.Add(new CustomValidator<uint>(description, validator));
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<uint>, RangeValidator_UInt32, MultipleOfValidator_UInt32, uint> MultipleOf(this NullableDataSourceStandard<OptionalStateValidator<uint>, RangeValidator_UInt32, uint> source, uint divisor)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, RangeValidator_UInt32, MultipleOfValidator_UInt32, TSource, uint> MultipleOf<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, RangeValidator_UInt32, TSource, uint> source, uint divisor)
 			=> source.Add(new MultipleOfValidator_UInt32(divisor));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<uint>, RangeValidator_UInt32, MultipleOfValidator_UInt32, uint> MultipleOf(this NullableDataSourceInverted<OptionalStateValidator<uint>, RangeValidator_UInt32, uint> source, uint divisor)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_UInt32, MultipleOfValidator_UInt32, TSource, uint> MultipleOf<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, RangeValidator_UInt32, TSource, uint> source, uint divisor)
 			=> source.Add(new MultipleOfValidator_UInt32(divisor));
 
-		public static NullableDataSourceStandardInverted<OptionalStateValidator<uint>, RangeValidator_UInt32, TValueValidator, uint> Not<TValueValidator>(this NullableDataSourceStandard<OptionalStateValidator<uint>, RangeValidator_UInt32, uint> source, Func<NullableDataSourceStandard<OptionalStateValidator<uint>, RangeValidator_UInt32, uint>, NullableDataSourceStandardStandard<OptionalStateValidator<uint>, RangeValidator_UInt32, TValueValidator, uint>> validatorFactory)
+		public static NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, RangeValidator_UInt32, TValueValidator, TSource, uint> Not<TSource, TValueValidator>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, RangeValidator_UInt32, TSource, uint> source, Func<NullableDataSourceStandard<OptionalStateValidator<TSource>, RangeValidator_UInt32, TSource, uint>, NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, RangeValidator_UInt32, TValueValidator, TSource, uint>> validatorFactory)
 			where TValueValidator : IValueValidator<uint>
 			=> validatorFactory.Invoke(source).InvertTwo();
 
-		public static NullableDataSourceInvertedInverted<OptionalStateValidator<uint>, RangeValidator_UInt32, TValueValidator, uint> Not<TValueValidator>(this NullableDataSourceInverted<OptionalStateValidator<uint>, RangeValidator_UInt32, uint> source, Func<NullableDataSourceInverted<OptionalStateValidator<uint>, RangeValidator_UInt32, uint>, NullableDataSourceInvertedStandard<OptionalStateValidator<uint>, RangeValidator_UInt32, TValueValidator, uint>> validatorFactory)
+		public static NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, RangeValidator_UInt32, TValueValidator, TSource, uint> Not<TSource, TValueValidator>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, RangeValidator_UInt32, TSource, uint> source, Func<NullableDataSourceInverted<OptionalStateValidator<TSource>, RangeValidator_UInt32, TSource, uint>, NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_UInt32, TValueValidator, TSource, uint>> validatorFactory)
 			where TValueValidator : IValueValidator<uint>
 			=> validatorFactory.Invoke(source).InvertTwo();
 
-		public static NullableDataSourceStandardStandardStandard<OptionalStateValidator<uint>, RangeValidator_UInt32, MultipleOfValidator_UInt32, CustomValidator<uint>, uint> Assert(this NullableDataSourceStandardStandard<OptionalStateValidator<uint>, RangeValidator_UInt32, MultipleOfValidator_UInt32, uint> source, string description, Func<uint, bool> validator)
+		public static NullableDataSourceStandardStandardStandard<OptionalStateValidator<TSource>, RangeValidator_UInt32, MultipleOfValidator_UInt32, CustomValidator<uint>, TSource, uint> Assert<TSource>(this NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, RangeValidator_UInt32, MultipleOfValidator_UInt32, TSource, uint> source, string description, Func<uint, bool> validator)
 			=> source.Add(new CustomValidator<uint>(description, validator));
 
-		public static NullableDataSourceInvertedStandardStandard<OptionalStateValidator<uint>, RangeValidator_UInt32, MultipleOfValidator_UInt32, CustomValidator<uint>, uint> Assert(this NullableDataSourceInvertedStandard<OptionalStateValidator<uint>, RangeValidator_UInt32, MultipleOfValidator_UInt32, uint> source, string description, Func<uint, bool> validator)
+		public static NullableDataSourceInvertedStandardStandard<OptionalStateValidator<TSource>, RangeValidator_UInt32, MultipleOfValidator_UInt32, CustomValidator<uint>, TSource, uint> Assert<TSource>(this NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_UInt32, MultipleOfValidator_UInt32, TSource, uint> source, string description, Func<uint, bool> validator)
 			=> source.Add(new CustomValidator<uint>(description, validator));
 
-		public static NullableDataSourceStandardInvertedStandard<OptionalStateValidator<uint>, RangeValidator_UInt32, MultipleOfValidator_UInt32, CustomValidator<uint>, uint> Assert(this NullableDataSourceStandardInverted<OptionalStateValidator<uint>, RangeValidator_UInt32, MultipleOfValidator_UInt32, uint> source, string description, Func<uint, bool> validator)
+		public static NullableDataSourceStandardInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_UInt32, MultipleOfValidator_UInt32, CustomValidator<uint>, TSource, uint> Assert<TSource>(this NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, RangeValidator_UInt32, MultipleOfValidator_UInt32, TSource, uint> source, string description, Func<uint, bool> validator)
 			=> source.Add(new CustomValidator<uint>(description, validator));
 
-		public static NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<uint>, RangeValidator_UInt32, MultipleOfValidator_UInt32, CustomValidator<uint>, uint> Assert(this NullableDataSourceInvertedInverted<OptionalStateValidator<uint>, RangeValidator_UInt32, MultipleOfValidator_UInt32, uint> source, string description, Func<uint, bool> validator)
+		public static NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_UInt32, MultipleOfValidator_UInt32, CustomValidator<uint>, TSource, uint> Assert<TSource>(this NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, RangeValidator_UInt32, MultipleOfValidator_UInt32, TSource, uint> source, string description, Func<uint, bool> validator)
 			=> source.Add(new CustomValidator<uint>(description, validator));
 
-		public static NullableDataSourceStandardStandardInverted<OptionalStateValidator<uint>, RangeValidator_UInt32, MultipleOfValidator_UInt32, TValueValidator, uint> Not<TValueValidator>(this NullableDataSourceStandardStandard<OptionalStateValidator<uint>, RangeValidator_UInt32, MultipleOfValidator_UInt32, uint> source, Func<NullableDataSourceStandardStandard<OptionalStateValidator<uint>, RangeValidator_UInt32, MultipleOfValidator_UInt32, uint>, NullableDataSourceStandardStandardStandard<OptionalStateValidator<uint>, RangeValidator_UInt32, MultipleOfValidator_UInt32, TValueValidator, uint>> validatorFactory)
+		public static NullableDataSourceStandardStandardInverted<OptionalStateValidator<TSource>, RangeValidator_UInt32, MultipleOfValidator_UInt32, TValueValidator, TSource, uint> Not<TSource, TValueValidator>(this NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, RangeValidator_UInt32, MultipleOfValidator_UInt32, TSource, uint> source, Func<NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, RangeValidator_UInt32, MultipleOfValidator_UInt32, TSource, uint>, NullableDataSourceStandardStandardStandard<OptionalStateValidator<TSource>, RangeValidator_UInt32, MultipleOfValidator_UInt32, TValueValidator, TSource, uint>> validatorFactory)
 			where TValueValidator : IValueValidator<uint>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceInvertedStandardInverted<OptionalStateValidator<uint>, RangeValidator_UInt32, MultipleOfValidator_UInt32, TValueValidator, uint> Not<TValueValidator>(this NullableDataSourceInvertedStandard<OptionalStateValidator<uint>, RangeValidator_UInt32, MultipleOfValidator_UInt32, uint> source, Func<NullableDataSourceInvertedStandard<OptionalStateValidator<uint>, RangeValidator_UInt32, MultipleOfValidator_UInt32, uint>, NullableDataSourceInvertedStandardStandard<OptionalStateValidator<uint>, RangeValidator_UInt32, MultipleOfValidator_UInt32, TValueValidator, uint>> validatorFactory)
+		public static NullableDataSourceInvertedStandardInverted<OptionalStateValidator<TSource>, RangeValidator_UInt32, MultipleOfValidator_UInt32, TValueValidator, TSource, uint> Not<TSource, TValueValidator>(this NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_UInt32, MultipleOfValidator_UInt32, TSource, uint> source, Func<NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_UInt32, MultipleOfValidator_UInt32, TSource, uint>, NullableDataSourceInvertedStandardStandard<OptionalStateValidator<TSource>, RangeValidator_UInt32, MultipleOfValidator_UInt32, TValueValidator, TSource, uint>> validatorFactory)
 			where TValueValidator : IValueValidator<uint>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceStandardInvertedInverted<OptionalStateValidator<uint>, RangeValidator_UInt32, MultipleOfValidator_UInt32, TValueValidator, uint> Not<TValueValidator>(this NullableDataSourceStandardInverted<OptionalStateValidator<uint>, RangeValidator_UInt32, MultipleOfValidator_UInt32, uint> source, Func<NullableDataSourceStandardInverted<OptionalStateValidator<uint>, RangeValidator_UInt32, MultipleOfValidator_UInt32, uint>, NullableDataSourceStandardInvertedStandard<OptionalStateValidator<uint>, RangeValidator_UInt32, MultipleOfValidator_UInt32, TValueValidator, uint>> validatorFactory)
+		public static NullableDataSourceStandardInvertedInverted<OptionalStateValidator<TSource>, RangeValidator_UInt32, MultipleOfValidator_UInt32, TValueValidator, TSource, uint> Not<TSource, TValueValidator>(this NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, RangeValidator_UInt32, MultipleOfValidator_UInt32, TSource, uint> source, Func<NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, RangeValidator_UInt32, MultipleOfValidator_UInt32, TSource, uint>, NullableDataSourceStandardInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_UInt32, MultipleOfValidator_UInt32, TValueValidator, TSource, uint>> validatorFactory)
 			where TValueValidator : IValueValidator<uint>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceInvertedInvertedInverted<OptionalStateValidator<uint>, RangeValidator_UInt32, MultipleOfValidator_UInt32, TValueValidator, uint> Not<TValueValidator>(this NullableDataSourceInvertedInverted<OptionalStateValidator<uint>, RangeValidator_UInt32, MultipleOfValidator_UInt32, uint> source, Func<NullableDataSourceInvertedInverted<OptionalStateValidator<uint>, RangeValidator_UInt32, MultipleOfValidator_UInt32, uint>, NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<uint>, RangeValidator_UInt32, MultipleOfValidator_UInt32, TValueValidator, uint>> validatorFactory)
+		public static NullableDataSourceInvertedInvertedInverted<OptionalStateValidator<TSource>, RangeValidator_UInt32, MultipleOfValidator_UInt32, TValueValidator, TSource, uint> Not<TSource, TValueValidator>(this NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, RangeValidator_UInt32, MultipleOfValidator_UInt32, TSource, uint> source, Func<NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, RangeValidator_UInt32, MultipleOfValidator_UInt32, TSource, uint>, NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_UInt32, MultipleOfValidator_UInt32, TValueValidator, TSource, uint>> validatorFactory)
 			where TValueValidator : IValueValidator<uint>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<long>, RangeValidator_Int64, CustomValidator<long>, long> Assert(this NullableDataSourceStandard<OptionalStateValidator<long>, RangeValidator_Int64, long> source, string description, Func<long, bool> validator)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, RangeValidator_Int64, CustomValidator<long>, TSource, long> Assert<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, RangeValidator_Int64, TSource, long> source, string description, Func<long, bool> validator)
 			=> source.Add(new CustomValidator<long>(description, validator));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<long>, RangeValidator_Int64, CustomValidator<long>, long> Assert(this NullableDataSourceInverted<OptionalStateValidator<long>, RangeValidator_Int64, long> source, string description, Func<long, bool> validator)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_Int64, CustomValidator<long>, TSource, long> Assert<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, RangeValidator_Int64, TSource, long> source, string description, Func<long, bool> validator)
 			=> source.Add(new CustomValidator<long>(description, validator));
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<long>, RangeValidator_Int64, MultipleOfValidator_Int64, long> MultipleOf(this NullableDataSourceStandard<OptionalStateValidator<long>, RangeValidator_Int64, long> source, long divisor)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, RangeValidator_Int64, MultipleOfValidator_Int64, TSource, long> MultipleOf<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, RangeValidator_Int64, TSource, long> source, long divisor)
 			=> source.Add(new MultipleOfValidator_Int64(divisor));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<long>, RangeValidator_Int64, MultipleOfValidator_Int64, long> MultipleOf(this NullableDataSourceInverted<OptionalStateValidator<long>, RangeValidator_Int64, long> source, long divisor)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_Int64, MultipleOfValidator_Int64, TSource, long> MultipleOf<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, RangeValidator_Int64, TSource, long> source, long divisor)
 			=> source.Add(new MultipleOfValidator_Int64(divisor));
 
-		public static NullableDataSourceStandardInverted<OptionalStateValidator<long>, RangeValidator_Int64, TValueValidator, long> Not<TValueValidator>(this NullableDataSourceStandard<OptionalStateValidator<long>, RangeValidator_Int64, long> source, Func<NullableDataSourceStandard<OptionalStateValidator<long>, RangeValidator_Int64, long>, NullableDataSourceStandardStandard<OptionalStateValidator<long>, RangeValidator_Int64, TValueValidator, long>> validatorFactory)
+		public static NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, RangeValidator_Int64, TValueValidator, TSource, long> Not<TSource, TValueValidator>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, RangeValidator_Int64, TSource, long> source, Func<NullableDataSourceStandard<OptionalStateValidator<TSource>, RangeValidator_Int64, TSource, long>, NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, RangeValidator_Int64, TValueValidator, TSource, long>> validatorFactory)
 			where TValueValidator : IValueValidator<long>
 			=> validatorFactory.Invoke(source).InvertTwo();
 
-		public static NullableDataSourceInvertedInverted<OptionalStateValidator<long>, RangeValidator_Int64, TValueValidator, long> Not<TValueValidator>(this NullableDataSourceInverted<OptionalStateValidator<long>, RangeValidator_Int64, long> source, Func<NullableDataSourceInverted<OptionalStateValidator<long>, RangeValidator_Int64, long>, NullableDataSourceInvertedStandard<OptionalStateValidator<long>, RangeValidator_Int64, TValueValidator, long>> validatorFactory)
+		public static NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, RangeValidator_Int64, TValueValidator, TSource, long> Not<TSource, TValueValidator>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, RangeValidator_Int64, TSource, long> source, Func<NullableDataSourceInverted<OptionalStateValidator<TSource>, RangeValidator_Int64, TSource, long>, NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_Int64, TValueValidator, TSource, long>> validatorFactory)
 			where TValueValidator : IValueValidator<long>
 			=> validatorFactory.Invoke(source).InvertTwo();
 
-		public static NullableDataSourceStandardStandardStandard<OptionalStateValidator<long>, RangeValidator_Int64, MultipleOfValidator_Int64, CustomValidator<long>, long> Assert(this NullableDataSourceStandardStandard<OptionalStateValidator<long>, RangeValidator_Int64, MultipleOfValidator_Int64, long> source, string description, Func<long, bool> validator)
+		public static NullableDataSourceStandardStandardStandard<OptionalStateValidator<TSource>, RangeValidator_Int64, MultipleOfValidator_Int64, CustomValidator<long>, TSource, long> Assert<TSource>(this NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, RangeValidator_Int64, MultipleOfValidator_Int64, TSource, long> source, string description, Func<long, bool> validator)
 			=> source.Add(new CustomValidator<long>(description, validator));
 
-		public static NullableDataSourceInvertedStandardStandard<OptionalStateValidator<long>, RangeValidator_Int64, MultipleOfValidator_Int64, CustomValidator<long>, long> Assert(this NullableDataSourceInvertedStandard<OptionalStateValidator<long>, RangeValidator_Int64, MultipleOfValidator_Int64, long> source, string description, Func<long, bool> validator)
+		public static NullableDataSourceInvertedStandardStandard<OptionalStateValidator<TSource>, RangeValidator_Int64, MultipleOfValidator_Int64, CustomValidator<long>, TSource, long> Assert<TSource>(this NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_Int64, MultipleOfValidator_Int64, TSource, long> source, string description, Func<long, bool> validator)
 			=> source.Add(new CustomValidator<long>(description, validator));
 
-		public static NullableDataSourceStandardInvertedStandard<OptionalStateValidator<long>, RangeValidator_Int64, MultipleOfValidator_Int64, CustomValidator<long>, long> Assert(this NullableDataSourceStandardInverted<OptionalStateValidator<long>, RangeValidator_Int64, MultipleOfValidator_Int64, long> source, string description, Func<long, bool> validator)
+		public static NullableDataSourceStandardInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_Int64, MultipleOfValidator_Int64, CustomValidator<long>, TSource, long> Assert<TSource>(this NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, RangeValidator_Int64, MultipleOfValidator_Int64, TSource, long> source, string description, Func<long, bool> validator)
 			=> source.Add(new CustomValidator<long>(description, validator));
 
-		public static NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<long>, RangeValidator_Int64, MultipleOfValidator_Int64, CustomValidator<long>, long> Assert(this NullableDataSourceInvertedInverted<OptionalStateValidator<long>, RangeValidator_Int64, MultipleOfValidator_Int64, long> source, string description, Func<long, bool> validator)
+		public static NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_Int64, MultipleOfValidator_Int64, CustomValidator<long>, TSource, long> Assert<TSource>(this NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, RangeValidator_Int64, MultipleOfValidator_Int64, TSource, long> source, string description, Func<long, bool> validator)
 			=> source.Add(new CustomValidator<long>(description, validator));
 
-		public static NullableDataSourceStandardStandardInverted<OptionalStateValidator<long>, RangeValidator_Int64, MultipleOfValidator_Int64, TValueValidator, long> Not<TValueValidator>(this NullableDataSourceStandardStandard<OptionalStateValidator<long>, RangeValidator_Int64, MultipleOfValidator_Int64, long> source, Func<NullableDataSourceStandardStandard<OptionalStateValidator<long>, RangeValidator_Int64, MultipleOfValidator_Int64, long>, NullableDataSourceStandardStandardStandard<OptionalStateValidator<long>, RangeValidator_Int64, MultipleOfValidator_Int64, TValueValidator, long>> validatorFactory)
+		public static NullableDataSourceStandardStandardInverted<OptionalStateValidator<TSource>, RangeValidator_Int64, MultipleOfValidator_Int64, TValueValidator, TSource, long> Not<TSource, TValueValidator>(this NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, RangeValidator_Int64, MultipleOfValidator_Int64, TSource, long> source, Func<NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, RangeValidator_Int64, MultipleOfValidator_Int64, TSource, long>, NullableDataSourceStandardStandardStandard<OptionalStateValidator<TSource>, RangeValidator_Int64, MultipleOfValidator_Int64, TValueValidator, TSource, long>> validatorFactory)
 			where TValueValidator : IValueValidator<long>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceInvertedStandardInverted<OptionalStateValidator<long>, RangeValidator_Int64, MultipleOfValidator_Int64, TValueValidator, long> Not<TValueValidator>(this NullableDataSourceInvertedStandard<OptionalStateValidator<long>, RangeValidator_Int64, MultipleOfValidator_Int64, long> source, Func<NullableDataSourceInvertedStandard<OptionalStateValidator<long>, RangeValidator_Int64, MultipleOfValidator_Int64, long>, NullableDataSourceInvertedStandardStandard<OptionalStateValidator<long>, RangeValidator_Int64, MultipleOfValidator_Int64, TValueValidator, long>> validatorFactory)
+		public static NullableDataSourceInvertedStandardInverted<OptionalStateValidator<TSource>, RangeValidator_Int64, MultipleOfValidator_Int64, TValueValidator, TSource, long> Not<TSource, TValueValidator>(this NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_Int64, MultipleOfValidator_Int64, TSource, long> source, Func<NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_Int64, MultipleOfValidator_Int64, TSource, long>, NullableDataSourceInvertedStandardStandard<OptionalStateValidator<TSource>, RangeValidator_Int64, MultipleOfValidator_Int64, TValueValidator, TSource, long>> validatorFactory)
 			where TValueValidator : IValueValidator<long>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceStandardInvertedInverted<OptionalStateValidator<long>, RangeValidator_Int64, MultipleOfValidator_Int64, TValueValidator, long> Not<TValueValidator>(this NullableDataSourceStandardInverted<OptionalStateValidator<long>, RangeValidator_Int64, MultipleOfValidator_Int64, long> source, Func<NullableDataSourceStandardInverted<OptionalStateValidator<long>, RangeValidator_Int64, MultipleOfValidator_Int64, long>, NullableDataSourceStandardInvertedStandard<OptionalStateValidator<long>, RangeValidator_Int64, MultipleOfValidator_Int64, TValueValidator, long>> validatorFactory)
+		public static NullableDataSourceStandardInvertedInverted<OptionalStateValidator<TSource>, RangeValidator_Int64, MultipleOfValidator_Int64, TValueValidator, TSource, long> Not<TSource, TValueValidator>(this NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, RangeValidator_Int64, MultipleOfValidator_Int64, TSource, long> source, Func<NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, RangeValidator_Int64, MultipleOfValidator_Int64, TSource, long>, NullableDataSourceStandardInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_Int64, MultipleOfValidator_Int64, TValueValidator, TSource, long>> validatorFactory)
 			where TValueValidator : IValueValidator<long>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceInvertedInvertedInverted<OptionalStateValidator<long>, RangeValidator_Int64, MultipleOfValidator_Int64, TValueValidator, long> Not<TValueValidator>(this NullableDataSourceInvertedInverted<OptionalStateValidator<long>, RangeValidator_Int64, MultipleOfValidator_Int64, long> source, Func<NullableDataSourceInvertedInverted<OptionalStateValidator<long>, RangeValidator_Int64, MultipleOfValidator_Int64, long>, NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<long>, RangeValidator_Int64, MultipleOfValidator_Int64, TValueValidator, long>> validatorFactory)
+		public static NullableDataSourceInvertedInvertedInverted<OptionalStateValidator<TSource>, RangeValidator_Int64, MultipleOfValidator_Int64, TValueValidator, TSource, long> Not<TSource, TValueValidator>(this NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, RangeValidator_Int64, MultipleOfValidator_Int64, TSource, long> source, Func<NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, RangeValidator_Int64, MultipleOfValidator_Int64, TSource, long>, NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_Int64, MultipleOfValidator_Int64, TValueValidator, TSource, long>> validatorFactory)
 			where TValueValidator : IValueValidator<long>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<ulong>, RangeValidator_UInt64, CustomValidator<ulong>, ulong> Assert(this NullableDataSourceStandard<OptionalStateValidator<ulong>, RangeValidator_UInt64, ulong> source, string description, Func<ulong, bool> validator)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, RangeValidator_UInt64, CustomValidator<ulong>, TSource, ulong> Assert<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, RangeValidator_UInt64, TSource, ulong> source, string description, Func<ulong, bool> validator)
 			=> source.Add(new CustomValidator<ulong>(description, validator));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<ulong>, RangeValidator_UInt64, CustomValidator<ulong>, ulong> Assert(this NullableDataSourceInverted<OptionalStateValidator<ulong>, RangeValidator_UInt64, ulong> source, string description, Func<ulong, bool> validator)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_UInt64, CustomValidator<ulong>, TSource, ulong> Assert<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, RangeValidator_UInt64, TSource, ulong> source, string description, Func<ulong, bool> validator)
 			=> source.Add(new CustomValidator<ulong>(description, validator));
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<ulong>, RangeValidator_UInt64, MultipleOfValidator_UInt64, ulong> MultipleOf(this NullableDataSourceStandard<OptionalStateValidator<ulong>, RangeValidator_UInt64, ulong> source, ulong divisor)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, RangeValidator_UInt64, MultipleOfValidator_UInt64, TSource, ulong> MultipleOf<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, RangeValidator_UInt64, TSource, ulong> source, ulong divisor)
 			=> source.Add(new MultipleOfValidator_UInt64(divisor));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<ulong>, RangeValidator_UInt64, MultipleOfValidator_UInt64, ulong> MultipleOf(this NullableDataSourceInverted<OptionalStateValidator<ulong>, RangeValidator_UInt64, ulong> source, ulong divisor)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_UInt64, MultipleOfValidator_UInt64, TSource, ulong> MultipleOf<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, RangeValidator_UInt64, TSource, ulong> source, ulong divisor)
 			=> source.Add(new MultipleOfValidator_UInt64(divisor));
 
-		public static NullableDataSourceStandardInverted<OptionalStateValidator<ulong>, RangeValidator_UInt64, TValueValidator, ulong> Not<TValueValidator>(this NullableDataSourceStandard<OptionalStateValidator<ulong>, RangeValidator_UInt64, ulong> source, Func<NullableDataSourceStandard<OptionalStateValidator<ulong>, RangeValidator_UInt64, ulong>, NullableDataSourceStandardStandard<OptionalStateValidator<ulong>, RangeValidator_UInt64, TValueValidator, ulong>> validatorFactory)
+		public static NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, RangeValidator_UInt64, TValueValidator, TSource, ulong> Not<TSource, TValueValidator>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, RangeValidator_UInt64, TSource, ulong> source, Func<NullableDataSourceStandard<OptionalStateValidator<TSource>, RangeValidator_UInt64, TSource, ulong>, NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, RangeValidator_UInt64, TValueValidator, TSource, ulong>> validatorFactory)
 			where TValueValidator : IValueValidator<ulong>
 			=> validatorFactory.Invoke(source).InvertTwo();
 
-		public static NullableDataSourceInvertedInverted<OptionalStateValidator<ulong>, RangeValidator_UInt64, TValueValidator, ulong> Not<TValueValidator>(this NullableDataSourceInverted<OptionalStateValidator<ulong>, RangeValidator_UInt64, ulong> source, Func<NullableDataSourceInverted<OptionalStateValidator<ulong>, RangeValidator_UInt64, ulong>, NullableDataSourceInvertedStandard<OptionalStateValidator<ulong>, RangeValidator_UInt64, TValueValidator, ulong>> validatorFactory)
+		public static NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, RangeValidator_UInt64, TValueValidator, TSource, ulong> Not<TSource, TValueValidator>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, RangeValidator_UInt64, TSource, ulong> source, Func<NullableDataSourceInverted<OptionalStateValidator<TSource>, RangeValidator_UInt64, TSource, ulong>, NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_UInt64, TValueValidator, TSource, ulong>> validatorFactory)
 			where TValueValidator : IValueValidator<ulong>
 			=> validatorFactory.Invoke(source).InvertTwo();
 
-		public static NullableDataSourceStandardStandardStandard<OptionalStateValidator<ulong>, RangeValidator_UInt64, MultipleOfValidator_UInt64, CustomValidator<ulong>, ulong> Assert(this NullableDataSourceStandardStandard<OptionalStateValidator<ulong>, RangeValidator_UInt64, MultipleOfValidator_UInt64, ulong> source, string description, Func<ulong, bool> validator)
+		public static NullableDataSourceStandardStandardStandard<OptionalStateValidator<TSource>, RangeValidator_UInt64, MultipleOfValidator_UInt64, CustomValidator<ulong>, TSource, ulong> Assert<TSource>(this NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, RangeValidator_UInt64, MultipleOfValidator_UInt64, TSource, ulong> source, string description, Func<ulong, bool> validator)
 			=> source.Add(new CustomValidator<ulong>(description, validator));
 
-		public static NullableDataSourceInvertedStandardStandard<OptionalStateValidator<ulong>, RangeValidator_UInt64, MultipleOfValidator_UInt64, CustomValidator<ulong>, ulong> Assert(this NullableDataSourceInvertedStandard<OptionalStateValidator<ulong>, RangeValidator_UInt64, MultipleOfValidator_UInt64, ulong> source, string description, Func<ulong, bool> validator)
+		public static NullableDataSourceInvertedStandardStandard<OptionalStateValidator<TSource>, RangeValidator_UInt64, MultipleOfValidator_UInt64, CustomValidator<ulong>, TSource, ulong> Assert<TSource>(this NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_UInt64, MultipleOfValidator_UInt64, TSource, ulong> source, string description, Func<ulong, bool> validator)
 			=> source.Add(new CustomValidator<ulong>(description, validator));
 
-		public static NullableDataSourceStandardInvertedStandard<OptionalStateValidator<ulong>, RangeValidator_UInt64, MultipleOfValidator_UInt64, CustomValidator<ulong>, ulong> Assert(this NullableDataSourceStandardInverted<OptionalStateValidator<ulong>, RangeValidator_UInt64, MultipleOfValidator_UInt64, ulong> source, string description, Func<ulong, bool> validator)
+		public static NullableDataSourceStandardInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_UInt64, MultipleOfValidator_UInt64, CustomValidator<ulong>, TSource, ulong> Assert<TSource>(this NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, RangeValidator_UInt64, MultipleOfValidator_UInt64, TSource, ulong> source, string description, Func<ulong, bool> validator)
 			=> source.Add(new CustomValidator<ulong>(description, validator));
 
-		public static NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<ulong>, RangeValidator_UInt64, MultipleOfValidator_UInt64, CustomValidator<ulong>, ulong> Assert(this NullableDataSourceInvertedInverted<OptionalStateValidator<ulong>, RangeValidator_UInt64, MultipleOfValidator_UInt64, ulong> source, string description, Func<ulong, bool> validator)
+		public static NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_UInt64, MultipleOfValidator_UInt64, CustomValidator<ulong>, TSource, ulong> Assert<TSource>(this NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, RangeValidator_UInt64, MultipleOfValidator_UInt64, TSource, ulong> source, string description, Func<ulong, bool> validator)
 			=> source.Add(new CustomValidator<ulong>(description, validator));
 
-		public static NullableDataSourceStandardStandardInverted<OptionalStateValidator<ulong>, RangeValidator_UInt64, MultipleOfValidator_UInt64, TValueValidator, ulong> Not<TValueValidator>(this NullableDataSourceStandardStandard<OptionalStateValidator<ulong>, RangeValidator_UInt64, MultipleOfValidator_UInt64, ulong> source, Func<NullableDataSourceStandardStandard<OptionalStateValidator<ulong>, RangeValidator_UInt64, MultipleOfValidator_UInt64, ulong>, NullableDataSourceStandardStandardStandard<OptionalStateValidator<ulong>, RangeValidator_UInt64, MultipleOfValidator_UInt64, TValueValidator, ulong>> validatorFactory)
+		public static NullableDataSourceStandardStandardInverted<OptionalStateValidator<TSource>, RangeValidator_UInt64, MultipleOfValidator_UInt64, TValueValidator, TSource, ulong> Not<TSource, TValueValidator>(this NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, RangeValidator_UInt64, MultipleOfValidator_UInt64, TSource, ulong> source, Func<NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, RangeValidator_UInt64, MultipleOfValidator_UInt64, TSource, ulong>, NullableDataSourceStandardStandardStandard<OptionalStateValidator<TSource>, RangeValidator_UInt64, MultipleOfValidator_UInt64, TValueValidator, TSource, ulong>> validatorFactory)
 			where TValueValidator : IValueValidator<ulong>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceInvertedStandardInverted<OptionalStateValidator<ulong>, RangeValidator_UInt64, MultipleOfValidator_UInt64, TValueValidator, ulong> Not<TValueValidator>(this NullableDataSourceInvertedStandard<OptionalStateValidator<ulong>, RangeValidator_UInt64, MultipleOfValidator_UInt64, ulong> source, Func<NullableDataSourceInvertedStandard<OptionalStateValidator<ulong>, RangeValidator_UInt64, MultipleOfValidator_UInt64, ulong>, NullableDataSourceInvertedStandardStandard<OptionalStateValidator<ulong>, RangeValidator_UInt64, MultipleOfValidator_UInt64, TValueValidator, ulong>> validatorFactory)
+		public static NullableDataSourceInvertedStandardInverted<OptionalStateValidator<TSource>, RangeValidator_UInt64, MultipleOfValidator_UInt64, TValueValidator, TSource, ulong> Not<TSource, TValueValidator>(this NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_UInt64, MultipleOfValidator_UInt64, TSource, ulong> source, Func<NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_UInt64, MultipleOfValidator_UInt64, TSource, ulong>, NullableDataSourceInvertedStandardStandard<OptionalStateValidator<TSource>, RangeValidator_UInt64, MultipleOfValidator_UInt64, TValueValidator, TSource, ulong>> validatorFactory)
 			where TValueValidator : IValueValidator<ulong>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceStandardInvertedInverted<OptionalStateValidator<ulong>, RangeValidator_UInt64, MultipleOfValidator_UInt64, TValueValidator, ulong> Not<TValueValidator>(this NullableDataSourceStandardInverted<OptionalStateValidator<ulong>, RangeValidator_UInt64, MultipleOfValidator_UInt64, ulong> source, Func<NullableDataSourceStandardInverted<OptionalStateValidator<ulong>, RangeValidator_UInt64, MultipleOfValidator_UInt64, ulong>, NullableDataSourceStandardInvertedStandard<OptionalStateValidator<ulong>, RangeValidator_UInt64, MultipleOfValidator_UInt64, TValueValidator, ulong>> validatorFactory)
+		public static NullableDataSourceStandardInvertedInverted<OptionalStateValidator<TSource>, RangeValidator_UInt64, MultipleOfValidator_UInt64, TValueValidator, TSource, ulong> Not<TSource, TValueValidator>(this NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, RangeValidator_UInt64, MultipleOfValidator_UInt64, TSource, ulong> source, Func<NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, RangeValidator_UInt64, MultipleOfValidator_UInt64, TSource, ulong>, NullableDataSourceStandardInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_UInt64, MultipleOfValidator_UInt64, TValueValidator, TSource, ulong>> validatorFactory)
 			where TValueValidator : IValueValidator<ulong>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceInvertedInvertedInverted<OptionalStateValidator<ulong>, RangeValidator_UInt64, MultipleOfValidator_UInt64, TValueValidator, ulong> Not<TValueValidator>(this NullableDataSourceInvertedInverted<OptionalStateValidator<ulong>, RangeValidator_UInt64, MultipleOfValidator_UInt64, ulong> source, Func<NullableDataSourceInvertedInverted<OptionalStateValidator<ulong>, RangeValidator_UInt64, MultipleOfValidator_UInt64, ulong>, NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<ulong>, RangeValidator_UInt64, MultipleOfValidator_UInt64, TValueValidator, ulong>> validatorFactory)
+		public static NullableDataSourceInvertedInvertedInverted<OptionalStateValidator<TSource>, RangeValidator_UInt64, MultipleOfValidator_UInt64, TValueValidator, TSource, ulong> Not<TSource, TValueValidator>(this NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, RangeValidator_UInt64, MultipleOfValidator_UInt64, TSource, ulong> source, Func<NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, RangeValidator_UInt64, MultipleOfValidator_UInt64, TSource, ulong>, NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_UInt64, MultipleOfValidator_UInt64, TValueValidator, TSource, ulong>> validatorFactory)
 			where TValueValidator : IValueValidator<ulong>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<float>, RangeValidator_Single, CustomValidator<float>, float> Assert(this NullableDataSourceStandard<OptionalStateValidator<float>, RangeValidator_Single, float> source, string description, Func<float, bool> validator)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, RangeValidator_Single, CustomValidator<float>, TSource, float> Assert<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, RangeValidator_Single, TSource, float> source, string description, Func<float, bool> validator)
 			=> source.Add(new CustomValidator<float>(description, validator));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<float>, RangeValidator_Single, CustomValidator<float>, float> Assert(this NullableDataSourceInverted<OptionalStateValidator<float>, RangeValidator_Single, float> source, string description, Func<float, bool> validator)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_Single, CustomValidator<float>, TSource, float> Assert<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, RangeValidator_Single, TSource, float> source, string description, Func<float, bool> validator)
 			=> source.Add(new CustomValidator<float>(description, validator));
 
-		public static NullableDataSourceStandardInverted<OptionalStateValidator<float>, RangeValidator_Single, TValueValidator, float> Not<TValueValidator>(this NullableDataSourceStandard<OptionalStateValidator<float>, RangeValidator_Single, float> source, Func<NullableDataSourceStandard<OptionalStateValidator<float>, RangeValidator_Single, float>, NullableDataSourceStandardStandard<OptionalStateValidator<float>, RangeValidator_Single, TValueValidator, float>> validatorFactory)
+		public static NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, RangeValidator_Single, TValueValidator, TSource, float> Not<TSource, TValueValidator>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, RangeValidator_Single, TSource, float> source, Func<NullableDataSourceStandard<OptionalStateValidator<TSource>, RangeValidator_Single, TSource, float>, NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, RangeValidator_Single, TValueValidator, TSource, float>> validatorFactory)
 			where TValueValidator : IValueValidator<float>
 			=> validatorFactory.Invoke(source).InvertTwo();
 
-		public static NullableDataSourceInvertedInverted<OptionalStateValidator<float>, RangeValidator_Single, TValueValidator, float> Not<TValueValidator>(this NullableDataSourceInverted<OptionalStateValidator<float>, RangeValidator_Single, float> source, Func<NullableDataSourceInverted<OptionalStateValidator<float>, RangeValidator_Single, float>, NullableDataSourceInvertedStandard<OptionalStateValidator<float>, RangeValidator_Single, TValueValidator, float>> validatorFactory)
+		public static NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, RangeValidator_Single, TValueValidator, TSource, float> Not<TSource, TValueValidator>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, RangeValidator_Single, TSource, float> source, Func<NullableDataSourceInverted<OptionalStateValidator<TSource>, RangeValidator_Single, TSource, float>, NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_Single, TValueValidator, TSource, float>> validatorFactory)
 			where TValueValidator : IValueValidator<float>
 			=> validatorFactory.Invoke(source).InvertTwo();
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<double>, RangeValidator_Double, CustomValidator<double>, double> Assert(this NullableDataSourceStandard<OptionalStateValidator<double>, RangeValidator_Double, double> source, string description, Func<double, bool> validator)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, RangeValidator_Double, CustomValidator<double>, TSource, double> Assert<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, RangeValidator_Double, TSource, double> source, string description, Func<double, bool> validator)
 			=> source.Add(new CustomValidator<double>(description, validator));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<double>, RangeValidator_Double, CustomValidator<double>, double> Assert(this NullableDataSourceInverted<OptionalStateValidator<double>, RangeValidator_Double, double> source, string description, Func<double, bool> validator)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_Double, CustomValidator<double>, TSource, double> Assert<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, RangeValidator_Double, TSource, double> source, string description, Func<double, bool> validator)
 			=> source.Add(new CustomValidator<double>(description, validator));
 
-		public static NullableDataSourceStandardInverted<OptionalStateValidator<double>, RangeValidator_Double, TValueValidator, double> Not<TValueValidator>(this NullableDataSourceStandard<OptionalStateValidator<double>, RangeValidator_Double, double> source, Func<NullableDataSourceStandard<OptionalStateValidator<double>, RangeValidator_Double, double>, NullableDataSourceStandardStandard<OptionalStateValidator<double>, RangeValidator_Double, TValueValidator, double>> validatorFactory)
+		public static NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, RangeValidator_Double, TValueValidator, TSource, double> Not<TSource, TValueValidator>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, RangeValidator_Double, TSource, double> source, Func<NullableDataSourceStandard<OptionalStateValidator<TSource>, RangeValidator_Double, TSource, double>, NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, RangeValidator_Double, TValueValidator, TSource, double>> validatorFactory)
 			where TValueValidator : IValueValidator<double>
 			=> validatorFactory.Invoke(source).InvertTwo();
 
-		public static NullableDataSourceInvertedInverted<OptionalStateValidator<double>, RangeValidator_Double, TValueValidator, double> Not<TValueValidator>(this NullableDataSourceInverted<OptionalStateValidator<double>, RangeValidator_Double, double> source, Func<NullableDataSourceInverted<OptionalStateValidator<double>, RangeValidator_Double, double>, NullableDataSourceInvertedStandard<OptionalStateValidator<double>, RangeValidator_Double, TValueValidator, double>> validatorFactory)
+		public static NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, RangeValidator_Double, TValueValidator, TSource, double> Not<TSource, TValueValidator>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, RangeValidator_Double, TSource, double> source, Func<NullableDataSourceInverted<OptionalStateValidator<TSource>, RangeValidator_Double, TSource, double>, NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_Double, TValueValidator, TSource, double>> validatorFactory)
 			where TValueValidator : IValueValidator<double>
 			=> validatorFactory.Invoke(source).InvertTwo();
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<decimal>, RangeValidator_Decimal, CustomValidator<decimal>, decimal> Assert(this NullableDataSourceStandard<OptionalStateValidator<decimal>, RangeValidator_Decimal, decimal> source, string description, Func<decimal, bool> validator)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, RangeValidator_Decimal, CustomValidator<decimal>, TSource, decimal> Assert<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, RangeValidator_Decimal, TSource, decimal> source, string description, Func<decimal, bool> validator)
 			=> source.Add(new CustomValidator<decimal>(description, validator));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<decimal>, RangeValidator_Decimal, CustomValidator<decimal>, decimal> Assert(this NullableDataSourceInverted<OptionalStateValidator<decimal>, RangeValidator_Decimal, decimal> source, string description, Func<decimal, bool> validator)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_Decimal, CustomValidator<decimal>, TSource, decimal> Assert<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, RangeValidator_Decimal, TSource, decimal> source, string description, Func<decimal, bool> validator)
 			=> source.Add(new CustomValidator<decimal>(description, validator));
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<decimal>, RangeValidator_Decimal, PrecisionValidator, decimal> Precision(this NullableDataSourceStandard<OptionalStateValidator<decimal>, RangeValidator_Decimal, decimal> source, decimal? minimumDecimalPlaces = null, decimal? maximumDecimalPlaces = null)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, RangeValidator_Decimal, PrecisionValidator, TSource, decimal> Precision<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, RangeValidator_Decimal, TSource, decimal> source, decimal? minimumDecimalPlaces = null, decimal? maximumDecimalPlaces = null)
 			=> source.Add(new PrecisionValidator(minimumDecimalPlaces, maximumDecimalPlaces));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<decimal>, RangeValidator_Decimal, PrecisionValidator, decimal> Precision(this NullableDataSourceInverted<OptionalStateValidator<decimal>, RangeValidator_Decimal, decimal> source, decimal? minimumDecimalPlaces = null, decimal? maximumDecimalPlaces = null)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_Decimal, PrecisionValidator, TSource, decimal> Precision<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, RangeValidator_Decimal, TSource, decimal> source, decimal? minimumDecimalPlaces = null, decimal? maximumDecimalPlaces = null)
 			=> source.Add(new PrecisionValidator(minimumDecimalPlaces, maximumDecimalPlaces));
 
-		public static NullableDataSourceStandardInverted<OptionalStateValidator<decimal>, RangeValidator_Decimal, TValueValidator, decimal> Not<TValueValidator>(this NullableDataSourceStandard<OptionalStateValidator<decimal>, RangeValidator_Decimal, decimal> source, Func<NullableDataSourceStandard<OptionalStateValidator<decimal>, RangeValidator_Decimal, decimal>, NullableDataSourceStandardStandard<OptionalStateValidator<decimal>, RangeValidator_Decimal, TValueValidator, decimal>> validatorFactory)
+		public static NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, RangeValidator_Decimal, TValueValidator, TSource, decimal> Not<TSource, TValueValidator>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, RangeValidator_Decimal, TSource, decimal> source, Func<NullableDataSourceStandard<OptionalStateValidator<TSource>, RangeValidator_Decimal, TSource, decimal>, NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, RangeValidator_Decimal, TValueValidator, TSource, decimal>> validatorFactory)
 			where TValueValidator : IValueValidator<decimal>
 			=> validatorFactory.Invoke(source).InvertTwo();
 
-		public static NullableDataSourceInvertedInverted<OptionalStateValidator<decimal>, RangeValidator_Decimal, TValueValidator, decimal> Not<TValueValidator>(this NullableDataSourceInverted<OptionalStateValidator<decimal>, RangeValidator_Decimal, decimal> source, Func<NullableDataSourceInverted<OptionalStateValidator<decimal>, RangeValidator_Decimal, decimal>, NullableDataSourceInvertedStandard<OptionalStateValidator<decimal>, RangeValidator_Decimal, TValueValidator, decimal>> validatorFactory)
+		public static NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, RangeValidator_Decimal, TValueValidator, TSource, decimal> Not<TSource, TValueValidator>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, RangeValidator_Decimal, TSource, decimal> source, Func<NullableDataSourceInverted<OptionalStateValidator<TSource>, RangeValidator_Decimal, TSource, decimal>, NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_Decimal, TValueValidator, TSource, decimal>> validatorFactory)
 			where TValueValidator : IValueValidator<decimal>
 			=> validatorFactory.Invoke(source).InvertTwo();
 
-		public static NullableDataSourceStandardStandardStandard<OptionalStateValidator<decimal>, RangeValidator_Decimal, PrecisionValidator, CustomValidator<decimal>, decimal> Assert(this NullableDataSourceStandardStandard<OptionalStateValidator<decimal>, RangeValidator_Decimal, PrecisionValidator, decimal> source, string description, Func<decimal, bool> validator)
+		public static NullableDataSourceStandardStandardStandard<OptionalStateValidator<TSource>, RangeValidator_Decimal, PrecisionValidator, CustomValidator<decimal>, TSource, decimal> Assert<TSource>(this NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, RangeValidator_Decimal, PrecisionValidator, TSource, decimal> source, string description, Func<decimal, bool> validator)
 			=> source.Add(new CustomValidator<decimal>(description, validator));
 
-		public static NullableDataSourceInvertedStandardStandard<OptionalStateValidator<decimal>, RangeValidator_Decimal, PrecisionValidator, CustomValidator<decimal>, decimal> Assert(this NullableDataSourceInvertedStandard<OptionalStateValidator<decimal>, RangeValidator_Decimal, PrecisionValidator, decimal> source, string description, Func<decimal, bool> validator)
+		public static NullableDataSourceInvertedStandardStandard<OptionalStateValidator<TSource>, RangeValidator_Decimal, PrecisionValidator, CustomValidator<decimal>, TSource, decimal> Assert<TSource>(this NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_Decimal, PrecisionValidator, TSource, decimal> source, string description, Func<decimal, bool> validator)
 			=> source.Add(new CustomValidator<decimal>(description, validator));
 
-		public static NullableDataSourceStandardInvertedStandard<OptionalStateValidator<decimal>, RangeValidator_Decimal, PrecisionValidator, CustomValidator<decimal>, decimal> Assert(this NullableDataSourceStandardInverted<OptionalStateValidator<decimal>, RangeValidator_Decimal, PrecisionValidator, decimal> source, string description, Func<decimal, bool> validator)
+		public static NullableDataSourceStandardInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_Decimal, PrecisionValidator, CustomValidator<decimal>, TSource, decimal> Assert<TSource>(this NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, RangeValidator_Decimal, PrecisionValidator, TSource, decimal> source, string description, Func<decimal, bool> validator)
 			=> source.Add(new CustomValidator<decimal>(description, validator));
 
-		public static NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<decimal>, RangeValidator_Decimal, PrecisionValidator, CustomValidator<decimal>, decimal> Assert(this NullableDataSourceInvertedInverted<OptionalStateValidator<decimal>, RangeValidator_Decimal, PrecisionValidator, decimal> source, string description, Func<decimal, bool> validator)
+		public static NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_Decimal, PrecisionValidator, CustomValidator<decimal>, TSource, decimal> Assert<TSource>(this NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, RangeValidator_Decimal, PrecisionValidator, TSource, decimal> source, string description, Func<decimal, bool> validator)
 			=> source.Add(new CustomValidator<decimal>(description, validator));
 
-		public static NullableDataSourceStandardStandardInverted<OptionalStateValidator<decimal>, RangeValidator_Decimal, PrecisionValidator, TValueValidator, decimal> Not<TValueValidator>(this NullableDataSourceStandardStandard<OptionalStateValidator<decimal>, RangeValidator_Decimal, PrecisionValidator, decimal> source, Func<NullableDataSourceStandardStandard<OptionalStateValidator<decimal>, RangeValidator_Decimal, PrecisionValidator, decimal>, NullableDataSourceStandardStandardStandard<OptionalStateValidator<decimal>, RangeValidator_Decimal, PrecisionValidator, TValueValidator, decimal>> validatorFactory)
+		public static NullableDataSourceStandardStandardInverted<OptionalStateValidator<TSource>, RangeValidator_Decimal, PrecisionValidator, TValueValidator, TSource, decimal> Not<TSource, TValueValidator>(this NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, RangeValidator_Decimal, PrecisionValidator, TSource, decimal> source, Func<NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, RangeValidator_Decimal, PrecisionValidator, TSource, decimal>, NullableDataSourceStandardStandardStandard<OptionalStateValidator<TSource>, RangeValidator_Decimal, PrecisionValidator, TValueValidator, TSource, decimal>> validatorFactory)
 			where TValueValidator : IValueValidator<decimal>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceInvertedStandardInverted<OptionalStateValidator<decimal>, RangeValidator_Decimal, PrecisionValidator, TValueValidator, decimal> Not<TValueValidator>(this NullableDataSourceInvertedStandard<OptionalStateValidator<decimal>, RangeValidator_Decimal, PrecisionValidator, decimal> source, Func<NullableDataSourceInvertedStandard<OptionalStateValidator<decimal>, RangeValidator_Decimal, PrecisionValidator, decimal>, NullableDataSourceInvertedStandardStandard<OptionalStateValidator<decimal>, RangeValidator_Decimal, PrecisionValidator, TValueValidator, decimal>> validatorFactory)
+		public static NullableDataSourceInvertedStandardInverted<OptionalStateValidator<TSource>, RangeValidator_Decimal, PrecisionValidator, TValueValidator, TSource, decimal> Not<TSource, TValueValidator>(this NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_Decimal, PrecisionValidator, TSource, decimal> source, Func<NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_Decimal, PrecisionValidator, TSource, decimal>, NullableDataSourceInvertedStandardStandard<OptionalStateValidator<TSource>, RangeValidator_Decimal, PrecisionValidator, TValueValidator, TSource, decimal>> validatorFactory)
 			where TValueValidator : IValueValidator<decimal>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceStandardInvertedInverted<OptionalStateValidator<decimal>, RangeValidator_Decimal, PrecisionValidator, TValueValidator, decimal> Not<TValueValidator>(this NullableDataSourceStandardInverted<OptionalStateValidator<decimal>, RangeValidator_Decimal, PrecisionValidator, decimal> source, Func<NullableDataSourceStandardInverted<OptionalStateValidator<decimal>, RangeValidator_Decimal, PrecisionValidator, decimal>, NullableDataSourceStandardInvertedStandard<OptionalStateValidator<decimal>, RangeValidator_Decimal, PrecisionValidator, TValueValidator, decimal>> validatorFactory)
+		public static NullableDataSourceStandardInvertedInverted<OptionalStateValidator<TSource>, RangeValidator_Decimal, PrecisionValidator, TValueValidator, TSource, decimal> Not<TSource, TValueValidator>(this NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, RangeValidator_Decimal, PrecisionValidator, TSource, decimal> source, Func<NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, RangeValidator_Decimal, PrecisionValidator, TSource, decimal>, NullableDataSourceStandardInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_Decimal, PrecisionValidator, TValueValidator, TSource, decimal>> validatorFactory)
 			where TValueValidator : IValueValidator<decimal>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceInvertedInvertedInverted<OptionalStateValidator<decimal>, RangeValidator_Decimal, PrecisionValidator, TValueValidator, decimal> Not<TValueValidator>(this NullableDataSourceInvertedInverted<OptionalStateValidator<decimal>, RangeValidator_Decimal, PrecisionValidator, decimal> source, Func<NullableDataSourceInvertedInverted<OptionalStateValidator<decimal>, RangeValidator_Decimal, PrecisionValidator, decimal>, NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<decimal>, RangeValidator_Decimal, PrecisionValidator, TValueValidator, decimal>> validatorFactory)
+		public static NullableDataSourceInvertedInvertedInverted<OptionalStateValidator<TSource>, RangeValidator_Decimal, PrecisionValidator, TValueValidator, TSource, decimal> Not<TSource, TValueValidator>(this NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, RangeValidator_Decimal, PrecisionValidator, TSource, decimal> source, Func<NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, RangeValidator_Decimal, PrecisionValidator, TSource, decimal>, NullableDataSourceInvertedInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_Decimal, PrecisionValidator, TValueValidator, TSource, decimal>> validatorFactory)
 			where TValueValidator : IValueValidator<decimal>
 			=> validatorFactory.Invoke(source).InvertThree();
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<DateTime>, RangeValidator_DateTime, CustomValidator<DateTime>, DateTime> Assert(this NullableDataSourceStandard<OptionalStateValidator<DateTime>, RangeValidator_DateTime, DateTime> source, string description, Func<DateTime, bool> validator)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, RangeValidator_DateTime, CustomValidator<DateTime>, TSource, DateTime> Assert<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, RangeValidator_DateTime, TSource, DateTime> source, string description, Func<DateTime, bool> validator)
 			=> source.Add(new CustomValidator<DateTime>(description, validator));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<DateTime>, RangeValidator_DateTime, CustomValidator<DateTime>, DateTime> Assert(this NullableDataSourceInverted<OptionalStateValidator<DateTime>, RangeValidator_DateTime, DateTime> source, string description, Func<DateTime, bool> validator)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_DateTime, CustomValidator<DateTime>, TSource, DateTime> Assert<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, RangeValidator_DateTime, TSource, DateTime> source, string description, Func<DateTime, bool> validator)
 			=> source.Add(new CustomValidator<DateTime>(description, validator));
 
-		public static NullableDataSourceStandardInverted<OptionalStateValidator<DateTime>, RangeValidator_DateTime, TValueValidator, DateTime> Not<TValueValidator>(this NullableDataSourceStandard<OptionalStateValidator<DateTime>, RangeValidator_DateTime, DateTime> source, Func<NullableDataSourceStandard<OptionalStateValidator<DateTime>, RangeValidator_DateTime, DateTime>, NullableDataSourceStandardStandard<OptionalStateValidator<DateTime>, RangeValidator_DateTime, TValueValidator, DateTime>> validatorFactory)
+		public static NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, RangeValidator_DateTime, TValueValidator, TSource, DateTime> Not<TSource, TValueValidator>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, RangeValidator_DateTime, TSource, DateTime> source, Func<NullableDataSourceStandard<OptionalStateValidator<TSource>, RangeValidator_DateTime, TSource, DateTime>, NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, RangeValidator_DateTime, TValueValidator, TSource, DateTime>> validatorFactory)
 			where TValueValidator : IValueValidator<DateTime>
 			=> validatorFactory.Invoke(source).InvertTwo();
 
-		public static NullableDataSourceInvertedInverted<OptionalStateValidator<DateTime>, RangeValidator_DateTime, TValueValidator, DateTime> Not<TValueValidator>(this NullableDataSourceInverted<OptionalStateValidator<DateTime>, RangeValidator_DateTime, DateTime> source, Func<NullableDataSourceInverted<OptionalStateValidator<DateTime>, RangeValidator_DateTime, DateTime>, NullableDataSourceInvertedStandard<OptionalStateValidator<DateTime>, RangeValidator_DateTime, TValueValidator, DateTime>> validatorFactory)
+		public static NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, RangeValidator_DateTime, TValueValidator, TSource, DateTime> Not<TSource, TValueValidator>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, RangeValidator_DateTime, TSource, DateTime> source, Func<NullableDataSourceInverted<OptionalStateValidator<TSource>, RangeValidator_DateTime, TSource, DateTime>, NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, RangeValidator_DateTime, TValueValidator, TSource, DateTime>> validatorFactory)
 			where TValueValidator : IValueValidator<DateTime>
 			=> validatorFactory.Invoke(source).InvertTwo();
 
-		public static NullableDataSourceStandardStandard<OptionalStateValidator<string>, StringLengthValidator, CustomValidator<string>, string> Assert(this NullableDataSourceStandard<OptionalStateValidator<string>, StringLengthValidator, string> source, string description, Func<string, bool> validator)
+		public static NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, StringLengthValidator, CustomValidator<string>, TSource, string> Assert<TSource>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, StringLengthValidator, TSource, string> source, string description, Func<string, bool> validator)
 			=> source.Add(new CustomValidator<string>(description, validator));
 
-		public static NullableDataSourceInvertedStandard<OptionalStateValidator<string>, StringLengthValidator, CustomValidator<string>, string> Assert(this NullableDataSourceInverted<OptionalStateValidator<string>, StringLengthValidator, string> source, string description, Func<string, bool> validator)
+		public static NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, StringLengthValidator, CustomValidator<string>, TSource, string> Assert<TSource>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, StringLengthValidator, TSource, string> source, string description, Func<string, bool> validator)
 			=> source.Add(new CustomValidator<string>(description, validator));
 
-		public static NullableDataSourceStandardInverted<OptionalStateValidator<string>, StringLengthValidator, TValueValidator, string> Not<TValueValidator>(this NullableDataSourceStandard<OptionalStateValidator<string>, StringLengthValidator, string> source, Func<NullableDataSourceStandard<OptionalStateValidator<string>, StringLengthValidator, string>, NullableDataSourceStandardStandard<OptionalStateValidator<string>, StringLengthValidator, TValueValidator, string>> validatorFactory)
+		public static NullableDataSourceStandardInverted<OptionalStateValidator<TSource>, StringLengthValidator, TValueValidator, TSource, string> Not<TSource, TValueValidator>(this NullableDataSourceStandard<OptionalStateValidator<TSource>, StringLengthValidator, TSource, string> source, Func<NullableDataSourceStandard<OptionalStateValidator<TSource>, StringLengthValidator, TSource, string>, NullableDataSourceStandardStandard<OptionalStateValidator<TSource>, StringLengthValidator, TValueValidator, TSource, string>> validatorFactory)
 			where TValueValidator : IValueValidator<string>
 			=> validatorFactory.Invoke(source).InvertTwo();
 
-		public static NullableDataSourceInvertedInverted<OptionalStateValidator<string>, StringLengthValidator, TValueValidator, string> Not<TValueValidator>(this NullableDataSourceInverted<OptionalStateValidator<string>, StringLengthValidator, string> source, Func<NullableDataSourceInverted<OptionalStateValidator<string>, StringLengthValidator, string>, NullableDataSourceInvertedStandard<OptionalStateValidator<string>, StringLengthValidator, TValueValidator, string>> validatorFactory)
+		public static NullableDataSourceInvertedInverted<OptionalStateValidator<TSource>, StringLengthValidator, TValueValidator, TSource, string> Not<TSource, TValueValidator>(this NullableDataSourceInverted<OptionalStateValidator<TSource>, StringLengthValidator, TSource, string> source, Func<NullableDataSourceInverted<OptionalStateValidator<TSource>, StringLengthValidator, TSource, string>, NullableDataSourceInvertedStandard<OptionalStateValidator<TSource>, StringLengthValidator, TValueValidator, TSource, string>> validatorFactory)
 			where TValueValidator : IValueValidator<string>
 			=> validatorFactory.Invoke(source).InvertTwo();
 	}
