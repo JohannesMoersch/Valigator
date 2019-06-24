@@ -50,17 +50,11 @@ namespace Valigator
 			where TValueValidator : IValueValidator<TValue>
 			=> new NullableDataSourceStandard<DefaultedNullableStateValidator<TValue>, TValueValidator, TValue, TValue>(defaulted, valueValidator, _ => _);
 
-		public static MappedNullableDataSource<DefaultedNullableStateValidator<TSource>, TSource, TValue> Map<TSource, TValue>(this DefaultedNullableStateValidator<TSource> source, Func<TSource, TValue> mapper)
-			=> new MappedNullableDataSource<DefaultedNullableStateValidator<TSource>, TSource, TValue>(source, mapper);
-
 		// Defaulted
 
 		public static DataSourceStandard<DefaultedStateValidator<TValue>, TValueValidator, TValue, TValue> Add<TValueValidator, TValue>(this DefaultedStateValidator<TValue> defaulted, TValueValidator valueValidator)
 			where TValueValidator : IValueValidator<TValue>
 			=> new DataSourceStandard<DefaultedStateValidator<TValue>, TValueValidator, TValue, TValue>(defaulted, valueValidator, _ => _);
-
-		public static MappedDataSource<DefaultedStateValidator<TSource>, TSource, TValue> Map<TSource, TValue>(this DefaultedStateValidator<TSource> source, Func<TSource, TValue> mapper)
-			=> new MappedDataSource<DefaultedStateValidator<TSource>, TSource, TValue>(source, mapper);
 
 		// Optional Nullable
 
@@ -68,17 +62,11 @@ namespace Valigator
 			where TValueValidator : IValueValidator<TValue>
 			=> new NullableDataSourceStandard<OptionalNullableStateValidator<TValue>, TValueValidator, TValue, TValue>(optional, valueValidator, _ => _);
 
-		public static MappedNullableDataSource<OptionalNullableStateValidator<TSource>, TSource, TValue> Map<TSource, TValue>(this OptionalNullableStateValidator<TSource> source, Func<TSource, TValue> mapper)
-			=> new MappedNullableDataSource<OptionalNullableStateValidator<TSource>, TSource, TValue>(source, mapper);
-
 		// Optional
 
 		public static NullableDataSourceStandard<OptionalStateValidator<TValue>, TValueValidator, TValue, TValue> Add<TValueValidator, TValue>(this OptionalStateValidator<TValue> optional, TValueValidator valueValidator)
 			where TValueValidator : IValueValidator<TValue>
 			=> new NullableDataSourceStandard<OptionalStateValidator<TValue>, TValueValidator, TValue, TValue>(optional, valueValidator, _ => _);
-
-		public static MappedNullableDataSource<OptionalStateValidator<TSource>, TSource, TValue> Map<TSource, TValue>(this OptionalStateValidator<TSource> source, Func<TSource, TValue> mapper)
-			=> new MappedNullableDataSource<OptionalStateValidator<TSource>, TSource, TValue>(source, mapper);
 
 		// Required Nullable
 
@@ -86,16 +74,10 @@ namespace Valigator
 			where TValueValidator : IValueValidator<TValue>
 			=> new NullableDataSourceStandard<RequiredNullableStateValidator<TValue>, TValueValidator, TValue, TValue>(required, valueValidator, _ => _);
 
-		public static MappedNullableDataSource<RequiredNullableStateValidator<TSource>, TSource, TValue> Map<TSource, TValue>(this RequiredNullableStateValidator<TSource> source, Func<TSource, TValue> mapper)
-			=> new MappedNullableDataSource<RequiredNullableStateValidator<TSource>, TSource, TValue>(source, mapper);
-
 		// Required
 
 		public static DataSourceStandard<RequiredStateValidator<TValue>, TValueValidator, TValue, TValue> Add<TValueValidator, TValue>(this RequiredStateValidator<TValue> required, TValueValidator valueValidator)
 			where TValueValidator : IValueValidator<TValue>
 			=> new DataSourceStandard<RequiredStateValidator<TValue>, TValueValidator, TValue, TValue>(required, valueValidator, _ => _);
-
-		public static MappedDataSource<RequiredStateValidator<TSource>, TSource, TValue> Map<TSource, TValue>(this RequiredStateValidator<TSource> source, Func<TSource, TValue> mapper)
-			=> new MappedDataSource<RequiredStateValidator<TSource>, TSource, TValue>(source, mapper);
 	}
 }

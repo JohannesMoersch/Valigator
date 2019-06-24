@@ -11,9 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Valigator.Generator", "Vali
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Valigator.Newtonsoft.Json", "Valigator.Newtonsoft.Json\Valigator.Newtonsoft.Json.csproj", "{B7482DE6-5F9E-4430-8AD4-E0516C1D16FC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Valigator.TestApi", "Valigator.TestApi\Valigator.TestApi.csproj", "{1B464422-CE9E-4BFF-8841-8D95C82622D2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Valigator.TestApi", "Valigator.TestApi\Valigator.TestApi.csproj", "{1B464422-CE9E-4BFF-8841-8D95C82622D2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Valigator.AspNetCore", "Valigator.AspNetCore\Valigator.AspNetCore.csproj", "{DACB0B7F-884C-4293-9E26-427145C9F1DE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Valigator.AspNetCore", "Valigator.AspNetCore\Valigator.AspNetCore.csproj", "{DACB0B7F-884C-4293-9E26-427145C9F1DE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

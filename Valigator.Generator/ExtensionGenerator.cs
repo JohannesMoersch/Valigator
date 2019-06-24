@@ -8,6 +8,10 @@ namespace Valigator.Generator
 {
 	public static class ExtensionGenerator
 	{
+		private static readonly string _mapExtensionTemplate =
+@"		public static Mapped__Nullable__DataSource<__StateValidator__, __TSourceType__, __TValueType__> Map__GenericParameters__(this __StateValidator__ source, Func<__TSourceType__, __TValueType__> mapper)
+			=> new Mapped__Nullable__DataSource<__StateValidator__, __TSourceType__, __TValueType__>(source, mapper);";
+
 		private static readonly string _mappedExtensionTemplate =
 @"		public static __Nullable__DataSource__Inverted__<__StateValidator__, __NewValueValidator__, __TSourceType__, __TValueType__> __ExtensionName____GenericParameters__(this Mapped__Nullable__DataSource<__StateValidator__, __TSourceType__, __TValueType__> source__ExtensionParameters__)
 			=> source__NotOpen__.Add(new __NewValueValidator__(__Parameters__))__NotClose__;";
@@ -67,6 +71,12 @@ namespace Valigator.Generator
 
 		private static string GetValueForValidator(SourceDefinition sourceDefinition, ValidatorDefinition validator, string valueGenericName)
 			=> sourceDefinition.ValueType == ValueType.Array && validator?.ValueType == ValueType.Value ? $"{valueGenericName}[]" : valueGenericName;
+
+		public static IEnumerable<string> GenerateMapExtension(SourceDefinition sourceDefinition)
+		{
+			if (sourceDefinition.ValueType == ValueType.Value)
+				yield return PopulateTemplate(_mapExtensionTemplate, sourceDefinition, "TValue", new[] { "TValue" }, null, null, null, false, false);
+		}
 
 		public static IEnumerable<string> GenerateExtensionOne(SourceDefinition sourceDefinition, Option<string> dataType, ExtensionDefinition extension)
 		{

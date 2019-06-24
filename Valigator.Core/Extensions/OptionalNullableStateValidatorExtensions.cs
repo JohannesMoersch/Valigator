@@ -8,6 +8,9 @@ namespace Valigator
 {
 	public static class OptionalNullableStateValidatorExtensions
 	{
+		public static MappedNullableDataSource<OptionalNullableStateValidator<TSource>, TSource, TValue> Map<TSource, TValue>(this OptionalNullableStateValidator<TSource> source, Func<TSource, TValue> mapper)
+			=> new MappedNullableDataSource<OptionalNullableStateValidator<TSource>, TSource, TValue>(source, mapper);
+
 		public static NullableDataSourceInverted<OptionalNullableStateValidator<TSource>, TValueValidator, TSource, TValue> Not<TSource, TValueValidator, TValue>(this OptionalNullableStateValidator<TSource> source, Func<OptionalNullableStateValidator<TSource>, NullableDataSourceStandard<OptionalNullableStateValidator<TSource>, TValueValidator, TSource, TValue>> validatorFactory)
 			where TValueValidator : IValueValidator<TValue>
 			=> validatorFactory.Invoke(source).InvertOne();
