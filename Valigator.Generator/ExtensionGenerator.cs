@@ -8,6 +8,10 @@ namespace Valigator.Generator
 {
 	public static class ExtensionGenerator
 	{
+		private static readonly string _mappedExtensionTemplate =
+@"		public static __Nullable__DataSource__Inverted__<__StateValidator__, __NewValueValidator__, __TSourceType__, __TValueType__> __ExtensionName____GenericParameters__(this Mapped__Nullable__DataSource<__StateValidator__, __TSourceType__, __TValueType__> source__ExtensionParameters__)
+			=> source__NotOpen__.Add(new __NewValueValidator__(__Parameters__))__NotClose__;";
+
 		private static readonly string _singleExtensionTemplate =
 @"		public static __Nullable__DataSource__Inverted__<__StateValidator__, __NewValueValidator__, __TSourceType__, __TValueType__> __ExtensionName____GenericParameters__(this __StateValidator__ source__ExtensionParameters__)
 			=> source__NotOpen__.Add(new __NewValueValidator__(__Parameters__))__NotClose__;";
@@ -19,6 +23,11 @@ namespace Valigator.Generator
 		private static readonly string _tripleExtensionTemplate =
 @"		public static __Nullable__DataSource__InvertOne____InvertTwo____Inverted__<__StateValidator__, __ValueValidatorOne__, __ValueValidatorTwo__, __NewValueValidator__, __TSourceType__, __TValueType__> __ExtensionName____GenericParameters__(this __Nullable__DataSource__InvertOne____InvertTwo__<__StateValidator__, __ValueValidatorOne__, __ValueValidatorTwo__, __TSourceType__, __TValueType__> source__ExtensionParameters__)
 			=> source__NotOpen__.Add(new __NewValueValidator__(__Parameters__))__NotClose__;";
+
+		private static readonly string _mappedNotTemplate =
+@"		public static __Nullable__DataSourceInverted<__StateValidator__, TValueValidator, __TSourceType__, __TValueType__> Not__GenericParameters__(this Mapped__Nullable__DataSource<__StateValidator__, __TSourceType__, __TValueType__> source, Func<Mapped__Nullable__DataSource<__StateValidator__, __TSourceType__, __TValueType__>, __Nullable__DataSourceStandard<__StateValidator__, TValueValidator, __TSourceType__, __TValueType__>> validatorFactory)
+			where TValueValidator : IValueValidator<__TValueType__>
+			=> validatorFactory.Invoke(source).InvertOne();";
 
 		private static readonly string _singleNotTemplate =
 @"		public static __Nullable__DataSourceInverted<__StateValidator__, TValueValidator, __TSourceType__, __TValueType__> Not__GenericParameters__(this __StateValidator__ source, Func<__StateValidator__, __Nullable__DataSourceStandard<__StateValidator__, TValueValidator, __TSourceType__, __TValueType__>> validatorFactory)
@@ -69,6 +78,9 @@ namespace Valigator.Generator
 			var genericParameters = dataType.Match(_ => Array.Empty<string>(), () => new[] { "TValue" });
 
 			yield return PopulateTemplate(_singleExtensionTemplate, sourceDefinition, valueGenericName, genericParameters, null, null, extension, false, false, true);
+
+			if (sourceDefinition.ValueType == ValueType.Value)
+				yield return PopulateTemplate(_mappedExtensionTemplate, sourceDefinition, valueGenericName, genericParameters, null, null, extension, false, false);
 		}
 
 		public static IEnumerable<string> GenerateExtensionTwo(SourceDefinition sourceDefinition, Option<string> dataType, ValidatorDefinition validatorOne, ExtensionDefinition extension)
@@ -102,6 +114,9 @@ namespace Valigator.Generator
 		public static IEnumerable<string> GenerateInvertExtensionOne(SourceDefinition sourceDefinition)
 		{
 			yield return PopulateTemplate(_singleNotTemplate, sourceDefinition, "TValue", new[] { "TValueValidator", "TValue" }, null, null, null, false, false);
+
+			if (sourceDefinition.ValueType == ValueType.Value)
+				yield return PopulateTemplate(_mappedNotTemplate, sourceDefinition, "TValue", new[] { "TValueValidator", "TValue" }, null, null, null, false, false);
 		}
 
 		public static IEnumerable<string> GenerateInvertExtensionTwo(SourceDefinition sourceDefinition, Option<string> dataType, ValidatorDefinition validatorOne)

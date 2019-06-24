@@ -12,265 +12,530 @@ namespace Valigator
 			where TValueValidator : IValueValidator<TValue>
 			=> validatorFactory.Invoke(source).InvertOne();
 
+		public static DataSourceInverted<RequiredStateValidator<TSource>, TValueValidator, TSource, TValue> Not<TSource, TValueValidator, TValue>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, TValue> source, Func<MappedDataSource<RequiredStateValidator<TSource>, TSource, TValue>, DataSourceStandard<RequiredStateValidator<TSource>, TValueValidator, TSource, TValue>> validatorFactory)
+			where TValueValidator : IValueValidator<TValue>
+			=> validatorFactory.Invoke(source).InvertOne();
+
 		public static DataSourceStandard<RequiredStateValidator<TValue>, CustomValidator<TValue>, TValue, TValue> Assert<TValue>(this RequiredStateValidator<TValue> source, string description, Func<TValue, bool> validator)
+			=> source.Add(new CustomValidator<TValue>(description, validator));
+
+		public static DataSourceStandard<RequiredStateValidator<TSource>, CustomValidator<TValue>, TSource, TValue> Assert<TSource, TValue>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, TValue> source, string description, Func<TValue, bool> validator)
 			=> source.Add(new CustomValidator<TValue>(description, validator));
 
 		public static DataSourceStandard<RequiredStateValidator<TValue>, EqualsValidator<TValue>, TValue, TValue> EqualTo<TValue>(this RequiredStateValidator<TValue> source, TValue value)
 			=> source.Add(new EqualsValidator<TValue>(value));
 
+		public static DataSourceStandard<RequiredStateValidator<TSource>, EqualsValidator<TValue>, TSource, TValue> EqualTo<TSource, TValue>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, TValue> source, TValue value)
+			=> source.Add(new EqualsValidator<TValue>(value));
+
 		public static DataSourceInverted<RequiredStateValidator<string>, EqualsValidator<string>, string, string> NotEmpty(this RequiredStateValidator<string> source)
+			=> source.Not(s => s.Add(new EqualsValidator<string>(String.Empty)));
+
+		public static DataSourceInverted<RequiredStateValidator<TSource>, EqualsValidator<string>, TSource, string> NotEmpty<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, string> source)
 			=> source.Not(s => s.Add(new EqualsValidator<string>(String.Empty)));
 
 		public static DataSourceInverted<RequiredStateValidator<Guid>, EqualsValidator<Guid>, Guid, Guid> NotEmpty(this RequiredStateValidator<Guid> source)
 			=> source.Not(s => s.Add(new EqualsValidator<Guid>(Guid.Empty)));
 
+		public static DataSourceInverted<RequiredStateValidator<TSource>, EqualsValidator<Guid>, TSource, Guid> NotEmpty<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, Guid> source)
+			=> source.Not(s => s.Add(new EqualsValidator<Guid>(Guid.Empty)));
+
 		public static DataSourceInverted<RequiredStateValidator<byte>, EqualsValidator<byte>, byte, byte> NotZero(this RequiredStateValidator<byte> source)
+			=> source.Not(s => s.Add(new EqualsValidator<byte>(0)));
+
+		public static DataSourceInverted<RequiredStateValidator<TSource>, EqualsValidator<byte>, TSource, byte> NotZero<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, byte> source)
 			=> source.Not(s => s.Add(new EqualsValidator<byte>(0)));
 
 		public static DataSourceInverted<RequiredStateValidator<sbyte>, EqualsValidator<sbyte>, sbyte, sbyte> NotZero(this RequiredStateValidator<sbyte> source)
 			=> source.Not(s => s.Add(new EqualsValidator<sbyte>(0)));
 
+		public static DataSourceInverted<RequiredStateValidator<TSource>, EqualsValidator<sbyte>, TSource, sbyte> NotZero<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, sbyte> source)
+			=> source.Not(s => s.Add(new EqualsValidator<sbyte>(0)));
+
 		public static DataSourceInverted<RequiredStateValidator<short>, EqualsValidator<short>, short, short> NotZero(this RequiredStateValidator<short> source)
+			=> source.Not(s => s.Add(new EqualsValidator<short>(0)));
+
+		public static DataSourceInverted<RequiredStateValidator<TSource>, EqualsValidator<short>, TSource, short> NotZero<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, short> source)
 			=> source.Not(s => s.Add(new EqualsValidator<short>(0)));
 
 		public static DataSourceInverted<RequiredStateValidator<ushort>, EqualsValidator<ushort>, ushort, ushort> NotZero(this RequiredStateValidator<ushort> source)
 			=> source.Not(s => s.Add(new EqualsValidator<ushort>(0)));
 
+		public static DataSourceInverted<RequiredStateValidator<TSource>, EqualsValidator<ushort>, TSource, ushort> NotZero<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, ushort> source)
+			=> source.Not(s => s.Add(new EqualsValidator<ushort>(0)));
+
 		public static DataSourceInverted<RequiredStateValidator<int>, EqualsValidator<int>, int, int> NotZero(this RequiredStateValidator<int> source)
+			=> source.Not(s => s.Add(new EqualsValidator<int>(0)));
+
+		public static DataSourceInverted<RequiredStateValidator<TSource>, EqualsValidator<int>, TSource, int> NotZero<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, int> source)
 			=> source.Not(s => s.Add(new EqualsValidator<int>(0)));
 
 		public static DataSourceInverted<RequiredStateValidator<uint>, EqualsValidator<uint>, uint, uint> NotZero(this RequiredStateValidator<uint> source)
 			=> source.Not(s => s.Add(new EqualsValidator<uint>(0)));
 
+		public static DataSourceInverted<RequiredStateValidator<TSource>, EqualsValidator<uint>, TSource, uint> NotZero<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, uint> source)
+			=> source.Not(s => s.Add(new EqualsValidator<uint>(0)));
+
 		public static DataSourceInverted<RequiredStateValidator<long>, EqualsValidator<long>, long, long> NotZero(this RequiredStateValidator<long> source)
+			=> source.Not(s => s.Add(new EqualsValidator<long>(0)));
+
+		public static DataSourceInverted<RequiredStateValidator<TSource>, EqualsValidator<long>, TSource, long> NotZero<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, long> source)
 			=> source.Not(s => s.Add(new EqualsValidator<long>(0)));
 
 		public static DataSourceInverted<RequiredStateValidator<ulong>, EqualsValidator<ulong>, ulong, ulong> NotZero(this RequiredStateValidator<ulong> source)
 			=> source.Not(s => s.Add(new EqualsValidator<ulong>(0)));
 
+		public static DataSourceInverted<RequiredStateValidator<TSource>, EqualsValidator<ulong>, TSource, ulong> NotZero<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, ulong> source)
+			=> source.Not(s => s.Add(new EqualsValidator<ulong>(0)));
+
 		public static DataSourceInverted<RequiredStateValidator<float>, EqualsValidator<float>, float, float> NotZero(this RequiredStateValidator<float> source)
+			=> source.Not(s => s.Add(new EqualsValidator<float>(0)));
+
+		public static DataSourceInverted<RequiredStateValidator<TSource>, EqualsValidator<float>, TSource, float> NotZero<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, float> source)
 			=> source.Not(s => s.Add(new EqualsValidator<float>(0)));
 
 		public static DataSourceInverted<RequiredStateValidator<double>, EqualsValidator<double>, double, double> NotZero(this RequiredStateValidator<double> source)
 			=> source.Not(s => s.Add(new EqualsValidator<double>(0)));
 
+		public static DataSourceInverted<RequiredStateValidator<TSource>, EqualsValidator<double>, TSource, double> NotZero<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, double> source)
+			=> source.Not(s => s.Add(new EqualsValidator<double>(0)));
+
 		public static DataSourceInverted<RequiredStateValidator<decimal>, EqualsValidator<decimal>, decimal, decimal> NotZero(this RequiredStateValidator<decimal> source)
+			=> source.Not(s => s.Add(new EqualsValidator<decimal>(0)));
+
+		public static DataSourceInverted<RequiredStateValidator<TSource>, EqualsValidator<decimal>, TSource, decimal> NotZero<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, decimal> source)
 			=> source.Not(s => s.Add(new EqualsValidator<decimal>(0)));
 
 		public static DataSourceStandard<RequiredStateValidator<TValue>, InSetValidator<TValue>, TValue, TValue> InSet<TValue>(this RequiredStateValidator<TValue> source, params TValue[] options)
 			=> source.Add(new InSetValidator<TValue>(options));
 
+		public static DataSourceStandard<RequiredStateValidator<TSource>, InSetValidator<TValue>, TSource, TValue> InSet<TSource, TValue>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, TValue> source, params TValue[] options)
+			=> source.Add(new InSetValidator<TValue>(options));
+
 		public static DataSourceStandard<RequiredStateValidator<TValue>, InSetValidator<TValue>, TValue, TValue> InSet<TValue>(this RequiredStateValidator<TValue> source, ISet<TValue> options)
+			=> source.Add(new InSetValidator<TValue>(options));
+
+		public static DataSourceStandard<RequiredStateValidator<TSource>, InSetValidator<TValue>, TSource, TValue> InSet<TSource, TValue>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, TValue> source, ISet<TValue> options)
 			=> source.Add(new InSetValidator<TValue>(options));
 
 		public static DataSourceStandard<RequiredStateValidator<byte>, MultipleOfValidator_Byte, byte, byte> MultipleOf(this RequiredStateValidator<byte> source, byte divisor)
 			=> source.Add(new MultipleOfValidator_Byte(divisor));
 
+		public static DataSourceStandard<RequiredStateValidator<TSource>, MultipleOfValidator_Byte, TSource, byte> MultipleOf<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, byte> source, byte divisor)
+			=> source.Add(new MultipleOfValidator_Byte(divisor));
+
 		public static DataSourceStandard<RequiredStateValidator<sbyte>, MultipleOfValidator_SByte, sbyte, sbyte> MultipleOf(this RequiredStateValidator<sbyte> source, sbyte divisor)
+			=> source.Add(new MultipleOfValidator_SByte(divisor));
+
+		public static DataSourceStandard<RequiredStateValidator<TSource>, MultipleOfValidator_SByte, TSource, sbyte> MultipleOf<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, sbyte> source, sbyte divisor)
 			=> source.Add(new MultipleOfValidator_SByte(divisor));
 
 		public static DataSourceStandard<RequiredStateValidator<short>, MultipleOfValidator_Int16, short, short> MultipleOf(this RequiredStateValidator<short> source, short divisor)
 			=> source.Add(new MultipleOfValidator_Int16(divisor));
 
+		public static DataSourceStandard<RequiredStateValidator<TSource>, MultipleOfValidator_Int16, TSource, short> MultipleOf<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, short> source, short divisor)
+			=> source.Add(new MultipleOfValidator_Int16(divisor));
+
 		public static DataSourceStandard<RequiredStateValidator<ushort>, MultipleOfValidator_UInt16, ushort, ushort> MultipleOf(this RequiredStateValidator<ushort> source, ushort divisor)
+			=> source.Add(new MultipleOfValidator_UInt16(divisor));
+
+		public static DataSourceStandard<RequiredStateValidator<TSource>, MultipleOfValidator_UInt16, TSource, ushort> MultipleOf<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, ushort> source, ushort divisor)
 			=> source.Add(new MultipleOfValidator_UInt16(divisor));
 
 		public static DataSourceStandard<RequiredStateValidator<int>, MultipleOfValidator_Int32, int, int> MultipleOf(this RequiredStateValidator<int> source, int divisor)
 			=> source.Add(new MultipleOfValidator_Int32(divisor));
 
+		public static DataSourceStandard<RequiredStateValidator<TSource>, MultipleOfValidator_Int32, TSource, int> MultipleOf<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, int> source, int divisor)
+			=> source.Add(new MultipleOfValidator_Int32(divisor));
+
 		public static DataSourceStandard<RequiredStateValidator<uint>, MultipleOfValidator_UInt32, uint, uint> MultipleOf(this RequiredStateValidator<uint> source, uint divisor)
+			=> source.Add(new MultipleOfValidator_UInt32(divisor));
+
+		public static DataSourceStandard<RequiredStateValidator<TSource>, MultipleOfValidator_UInt32, TSource, uint> MultipleOf<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, uint> source, uint divisor)
 			=> source.Add(new MultipleOfValidator_UInt32(divisor));
 
 		public static DataSourceStandard<RequiredStateValidator<long>, MultipleOfValidator_Int64, long, long> MultipleOf(this RequiredStateValidator<long> source, long divisor)
 			=> source.Add(new MultipleOfValidator_Int64(divisor));
 
+		public static DataSourceStandard<RequiredStateValidator<TSource>, MultipleOfValidator_Int64, TSource, long> MultipleOf<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, long> source, long divisor)
+			=> source.Add(new MultipleOfValidator_Int64(divisor));
+
 		public static DataSourceStandard<RequiredStateValidator<ulong>, MultipleOfValidator_UInt64, ulong, ulong> MultipleOf(this RequiredStateValidator<ulong> source, ulong divisor)
+			=> source.Add(new MultipleOfValidator_UInt64(divisor));
+
+		public static DataSourceStandard<RequiredStateValidator<TSource>, MultipleOfValidator_UInt64, TSource, ulong> MultipleOf<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, ulong> source, ulong divisor)
 			=> source.Add(new MultipleOfValidator_UInt64(divisor));
 
 		public static DataSourceStandard<RequiredStateValidator<decimal>, PrecisionValidator, decimal, decimal> Precision(this RequiredStateValidator<decimal> source, decimal? minimumDecimalPlaces = null, decimal? maximumDecimalPlaces = null)
 			=> source.Add(new PrecisionValidator(minimumDecimalPlaces, maximumDecimalPlaces));
 
+		public static DataSourceStandard<RequiredStateValidator<TSource>, PrecisionValidator, TSource, decimal> Precision<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, decimal> source, decimal? minimumDecimalPlaces = null, decimal? maximumDecimalPlaces = null)
+			=> source.Add(new PrecisionValidator(minimumDecimalPlaces, maximumDecimalPlaces));
+
 		public static DataSourceStandard<RequiredStateValidator<byte>, RangeValidator_Byte, byte, byte> GreaterThan(this RequiredStateValidator<byte> source, byte value)
+			=> source.Add(new RangeValidator_Byte(value, null, null, null));
+
+		public static DataSourceStandard<RequiredStateValidator<TSource>, RangeValidator_Byte, TSource, byte> GreaterThan<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, byte> source, byte value)
 			=> source.Add(new RangeValidator_Byte(value, null, null, null));
 
 		public static DataSourceStandard<RequiredStateValidator<byte>, RangeValidator_Byte, byte, byte> GreaterThanOrEqualTo(this RequiredStateValidator<byte> source, byte value)
 			=> source.Add(new RangeValidator_Byte(null, value, null, null));
 
+		public static DataSourceStandard<RequiredStateValidator<TSource>, RangeValidator_Byte, TSource, byte> GreaterThanOrEqualTo<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, byte> source, byte value)
+			=> source.Add(new RangeValidator_Byte(null, value, null, null));
+
 		public static DataSourceStandard<RequiredStateValidator<byte>, RangeValidator_Byte, byte, byte> LessThan(this RequiredStateValidator<byte> source, byte value)
+			=> source.Add(new RangeValidator_Byte(null, null, value, null));
+
+		public static DataSourceStandard<RequiredStateValidator<TSource>, RangeValidator_Byte, TSource, byte> LessThan<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, byte> source, byte value)
 			=> source.Add(new RangeValidator_Byte(null, null, value, null));
 
 		public static DataSourceStandard<RequiredStateValidator<byte>, RangeValidator_Byte, byte, byte> LessThanOrEqualTo(this RequiredStateValidator<byte> source, byte value)
 			=> source.Add(new RangeValidator_Byte(null, null, null, value));
 
+		public static DataSourceStandard<RequiredStateValidator<TSource>, RangeValidator_Byte, TSource, byte> LessThanOrEqualTo<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, byte> source, byte value)
+			=> source.Add(new RangeValidator_Byte(null, null, null, value));
+
 		public static DataSourceStandard<RequiredStateValidator<byte>, RangeValidator_Byte, byte, byte> InRange(this RequiredStateValidator<byte> source, byte? greaterThan = null, byte? greaterThanOrEqualTo = null, byte? lessThan = null, byte? lessThanOrEqualTo = null)
+			=> source.Add(new RangeValidator_Byte(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
+
+		public static DataSourceStandard<RequiredStateValidator<TSource>, RangeValidator_Byte, TSource, byte> InRange<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, byte> source, byte? greaterThan = null, byte? greaterThanOrEqualTo = null, byte? lessThan = null, byte? lessThanOrEqualTo = null)
 			=> source.Add(new RangeValidator_Byte(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
 		public static DataSourceStandard<RequiredStateValidator<sbyte>, RangeValidator_SByte, sbyte, sbyte> GreaterThan(this RequiredStateValidator<sbyte> source, sbyte value)
 			=> source.Add(new RangeValidator_SByte(value, null, null, null));
 
+		public static DataSourceStandard<RequiredStateValidator<TSource>, RangeValidator_SByte, TSource, sbyte> GreaterThan<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, sbyte> source, sbyte value)
+			=> source.Add(new RangeValidator_SByte(value, null, null, null));
+
 		public static DataSourceStandard<RequiredStateValidator<sbyte>, RangeValidator_SByte, sbyte, sbyte> GreaterThanOrEqualTo(this RequiredStateValidator<sbyte> source, sbyte value)
+			=> source.Add(new RangeValidator_SByte(null, value, null, null));
+
+		public static DataSourceStandard<RequiredStateValidator<TSource>, RangeValidator_SByte, TSource, sbyte> GreaterThanOrEqualTo<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, sbyte> source, sbyte value)
 			=> source.Add(new RangeValidator_SByte(null, value, null, null));
 
 		public static DataSourceStandard<RequiredStateValidator<sbyte>, RangeValidator_SByte, sbyte, sbyte> LessThan(this RequiredStateValidator<sbyte> source, sbyte value)
 			=> source.Add(new RangeValidator_SByte(null, null, value, null));
 
+		public static DataSourceStandard<RequiredStateValidator<TSource>, RangeValidator_SByte, TSource, sbyte> LessThan<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, sbyte> source, sbyte value)
+			=> source.Add(new RangeValidator_SByte(null, null, value, null));
+
 		public static DataSourceStandard<RequiredStateValidator<sbyte>, RangeValidator_SByte, sbyte, sbyte> LessThanOrEqualTo(this RequiredStateValidator<sbyte> source, sbyte value)
+			=> source.Add(new RangeValidator_SByte(null, null, null, value));
+
+		public static DataSourceStandard<RequiredStateValidator<TSource>, RangeValidator_SByte, TSource, sbyte> LessThanOrEqualTo<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, sbyte> source, sbyte value)
 			=> source.Add(new RangeValidator_SByte(null, null, null, value));
 
 		public static DataSourceStandard<RequiredStateValidator<sbyte>, RangeValidator_SByte, sbyte, sbyte> InRange(this RequiredStateValidator<sbyte> source, sbyte? greaterThan = null, sbyte? greaterThanOrEqualTo = null, sbyte? lessThan = null, sbyte? lessThanOrEqualTo = null)
 			=> source.Add(new RangeValidator_SByte(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
+		public static DataSourceStandard<RequiredStateValidator<TSource>, RangeValidator_SByte, TSource, sbyte> InRange<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, sbyte> source, sbyte? greaterThan = null, sbyte? greaterThanOrEqualTo = null, sbyte? lessThan = null, sbyte? lessThanOrEqualTo = null)
+			=> source.Add(new RangeValidator_SByte(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
+
 		public static DataSourceStandard<RequiredStateValidator<short>, RangeValidator_Int16, short, short> GreaterThan(this RequiredStateValidator<short> source, short value)
+			=> source.Add(new RangeValidator_Int16(value, null, null, null));
+
+		public static DataSourceStandard<RequiredStateValidator<TSource>, RangeValidator_Int16, TSource, short> GreaterThan<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, short> source, short value)
 			=> source.Add(new RangeValidator_Int16(value, null, null, null));
 
 		public static DataSourceStandard<RequiredStateValidator<short>, RangeValidator_Int16, short, short> GreaterThanOrEqualTo(this RequiredStateValidator<short> source, short value)
 			=> source.Add(new RangeValidator_Int16(null, value, null, null));
 
+		public static DataSourceStandard<RequiredStateValidator<TSource>, RangeValidator_Int16, TSource, short> GreaterThanOrEqualTo<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, short> source, short value)
+			=> source.Add(new RangeValidator_Int16(null, value, null, null));
+
 		public static DataSourceStandard<RequiredStateValidator<short>, RangeValidator_Int16, short, short> LessThan(this RequiredStateValidator<short> source, short value)
+			=> source.Add(new RangeValidator_Int16(null, null, value, null));
+
+		public static DataSourceStandard<RequiredStateValidator<TSource>, RangeValidator_Int16, TSource, short> LessThan<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, short> source, short value)
 			=> source.Add(new RangeValidator_Int16(null, null, value, null));
 
 		public static DataSourceStandard<RequiredStateValidator<short>, RangeValidator_Int16, short, short> LessThanOrEqualTo(this RequiredStateValidator<short> source, short value)
 			=> source.Add(new RangeValidator_Int16(null, null, null, value));
 
+		public static DataSourceStandard<RequiredStateValidator<TSource>, RangeValidator_Int16, TSource, short> LessThanOrEqualTo<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, short> source, short value)
+			=> source.Add(new RangeValidator_Int16(null, null, null, value));
+
 		public static DataSourceStandard<RequiredStateValidator<short>, RangeValidator_Int16, short, short> InRange(this RequiredStateValidator<short> source, short? greaterThan = null, short? greaterThanOrEqualTo = null, short? lessThan = null, short? lessThanOrEqualTo = null)
+			=> source.Add(new RangeValidator_Int16(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
+
+		public static DataSourceStandard<RequiredStateValidator<TSource>, RangeValidator_Int16, TSource, short> InRange<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, short> source, short? greaterThan = null, short? greaterThanOrEqualTo = null, short? lessThan = null, short? lessThanOrEqualTo = null)
 			=> source.Add(new RangeValidator_Int16(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
 		public static DataSourceStandard<RequiredStateValidator<ushort>, RangeValidator_UInt16, ushort, ushort> GreaterThan(this RequiredStateValidator<ushort> source, ushort value)
 			=> source.Add(new RangeValidator_UInt16(value, null, null, null));
 
+		public static DataSourceStandard<RequiredStateValidator<TSource>, RangeValidator_UInt16, TSource, ushort> GreaterThan<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, ushort> source, ushort value)
+			=> source.Add(new RangeValidator_UInt16(value, null, null, null));
+
 		public static DataSourceStandard<RequiredStateValidator<ushort>, RangeValidator_UInt16, ushort, ushort> GreaterThanOrEqualTo(this RequiredStateValidator<ushort> source, ushort value)
+			=> source.Add(new RangeValidator_UInt16(null, value, null, null));
+
+		public static DataSourceStandard<RequiredStateValidator<TSource>, RangeValidator_UInt16, TSource, ushort> GreaterThanOrEqualTo<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, ushort> source, ushort value)
 			=> source.Add(new RangeValidator_UInt16(null, value, null, null));
 
 		public static DataSourceStandard<RequiredStateValidator<ushort>, RangeValidator_UInt16, ushort, ushort> LessThan(this RequiredStateValidator<ushort> source, ushort value)
 			=> source.Add(new RangeValidator_UInt16(null, null, value, null));
 
+		public static DataSourceStandard<RequiredStateValidator<TSource>, RangeValidator_UInt16, TSource, ushort> LessThan<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, ushort> source, ushort value)
+			=> source.Add(new RangeValidator_UInt16(null, null, value, null));
+
 		public static DataSourceStandard<RequiredStateValidator<ushort>, RangeValidator_UInt16, ushort, ushort> LessThanOrEqualTo(this RequiredStateValidator<ushort> source, ushort value)
+			=> source.Add(new RangeValidator_UInt16(null, null, null, value));
+
+		public static DataSourceStandard<RequiredStateValidator<TSource>, RangeValidator_UInt16, TSource, ushort> LessThanOrEqualTo<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, ushort> source, ushort value)
 			=> source.Add(new RangeValidator_UInt16(null, null, null, value));
 
 		public static DataSourceStandard<RequiredStateValidator<ushort>, RangeValidator_UInt16, ushort, ushort> InRange(this RequiredStateValidator<ushort> source, ushort? greaterThan = null, ushort? greaterThanOrEqualTo = null, ushort? lessThan = null, ushort? lessThanOrEqualTo = null)
 			=> source.Add(new RangeValidator_UInt16(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
+		public static DataSourceStandard<RequiredStateValidator<TSource>, RangeValidator_UInt16, TSource, ushort> InRange<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, ushort> source, ushort? greaterThan = null, ushort? greaterThanOrEqualTo = null, ushort? lessThan = null, ushort? lessThanOrEqualTo = null)
+			=> source.Add(new RangeValidator_UInt16(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
+
 		public static DataSourceStandard<RequiredStateValidator<int>, RangeValidator_Int32, int, int> GreaterThan(this RequiredStateValidator<int> source, int value)
+			=> source.Add(new RangeValidator_Int32(value, null, null, null));
+
+		public static DataSourceStandard<RequiredStateValidator<TSource>, RangeValidator_Int32, TSource, int> GreaterThan<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, int> source, int value)
 			=> source.Add(new RangeValidator_Int32(value, null, null, null));
 
 		public static DataSourceStandard<RequiredStateValidator<int>, RangeValidator_Int32, int, int> GreaterThanOrEqualTo(this RequiredStateValidator<int> source, int value)
 			=> source.Add(new RangeValidator_Int32(null, value, null, null));
 
+		public static DataSourceStandard<RequiredStateValidator<TSource>, RangeValidator_Int32, TSource, int> GreaterThanOrEqualTo<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, int> source, int value)
+			=> source.Add(new RangeValidator_Int32(null, value, null, null));
+
 		public static DataSourceStandard<RequiredStateValidator<int>, RangeValidator_Int32, int, int> LessThan(this RequiredStateValidator<int> source, int value)
+			=> source.Add(new RangeValidator_Int32(null, null, value, null));
+
+		public static DataSourceStandard<RequiredStateValidator<TSource>, RangeValidator_Int32, TSource, int> LessThan<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, int> source, int value)
 			=> source.Add(new RangeValidator_Int32(null, null, value, null));
 
 		public static DataSourceStandard<RequiredStateValidator<int>, RangeValidator_Int32, int, int> LessThanOrEqualTo(this RequiredStateValidator<int> source, int value)
 			=> source.Add(new RangeValidator_Int32(null, null, null, value));
 
+		public static DataSourceStandard<RequiredStateValidator<TSource>, RangeValidator_Int32, TSource, int> LessThanOrEqualTo<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, int> source, int value)
+			=> source.Add(new RangeValidator_Int32(null, null, null, value));
+
 		public static DataSourceStandard<RequiredStateValidator<int>, RangeValidator_Int32, int, int> InRange(this RequiredStateValidator<int> source, int? greaterThan = null, int? greaterThanOrEqualTo = null, int? lessThan = null, int? lessThanOrEqualTo = null)
+			=> source.Add(new RangeValidator_Int32(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
+
+		public static DataSourceStandard<RequiredStateValidator<TSource>, RangeValidator_Int32, TSource, int> InRange<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, int> source, int? greaterThan = null, int? greaterThanOrEqualTo = null, int? lessThan = null, int? lessThanOrEqualTo = null)
 			=> source.Add(new RangeValidator_Int32(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
 		public static DataSourceStandard<RequiredStateValidator<uint>, RangeValidator_UInt32, uint, uint> GreaterThan(this RequiredStateValidator<uint> source, uint value)
 			=> source.Add(new RangeValidator_UInt32(value, null, null, null));
 
+		public static DataSourceStandard<RequiredStateValidator<TSource>, RangeValidator_UInt32, TSource, uint> GreaterThan<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, uint> source, uint value)
+			=> source.Add(new RangeValidator_UInt32(value, null, null, null));
+
 		public static DataSourceStandard<RequiredStateValidator<uint>, RangeValidator_UInt32, uint, uint> GreaterThanOrEqualTo(this RequiredStateValidator<uint> source, uint value)
+			=> source.Add(new RangeValidator_UInt32(null, value, null, null));
+
+		public static DataSourceStandard<RequiredStateValidator<TSource>, RangeValidator_UInt32, TSource, uint> GreaterThanOrEqualTo<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, uint> source, uint value)
 			=> source.Add(new RangeValidator_UInt32(null, value, null, null));
 
 		public static DataSourceStandard<RequiredStateValidator<uint>, RangeValidator_UInt32, uint, uint> LessThan(this RequiredStateValidator<uint> source, uint value)
 			=> source.Add(new RangeValidator_UInt32(null, null, value, null));
 
+		public static DataSourceStandard<RequiredStateValidator<TSource>, RangeValidator_UInt32, TSource, uint> LessThan<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, uint> source, uint value)
+			=> source.Add(new RangeValidator_UInt32(null, null, value, null));
+
 		public static DataSourceStandard<RequiredStateValidator<uint>, RangeValidator_UInt32, uint, uint> LessThanOrEqualTo(this RequiredStateValidator<uint> source, uint value)
+			=> source.Add(new RangeValidator_UInt32(null, null, null, value));
+
+		public static DataSourceStandard<RequiredStateValidator<TSource>, RangeValidator_UInt32, TSource, uint> LessThanOrEqualTo<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, uint> source, uint value)
 			=> source.Add(new RangeValidator_UInt32(null, null, null, value));
 
 		public static DataSourceStandard<RequiredStateValidator<uint>, RangeValidator_UInt32, uint, uint> InRange(this RequiredStateValidator<uint> source, uint? greaterThan = null, uint? greaterThanOrEqualTo = null, uint? lessThan = null, uint? lessThanOrEqualTo = null)
 			=> source.Add(new RangeValidator_UInt32(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
+		public static DataSourceStandard<RequiredStateValidator<TSource>, RangeValidator_UInt32, TSource, uint> InRange<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, uint> source, uint? greaterThan = null, uint? greaterThanOrEqualTo = null, uint? lessThan = null, uint? lessThanOrEqualTo = null)
+			=> source.Add(new RangeValidator_UInt32(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
+
 		public static DataSourceStandard<RequiredStateValidator<long>, RangeValidator_Int64, long, long> GreaterThan(this RequiredStateValidator<long> source, long value)
+			=> source.Add(new RangeValidator_Int64(value, null, null, null));
+
+		public static DataSourceStandard<RequiredStateValidator<TSource>, RangeValidator_Int64, TSource, long> GreaterThan<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, long> source, long value)
 			=> source.Add(new RangeValidator_Int64(value, null, null, null));
 
 		public static DataSourceStandard<RequiredStateValidator<long>, RangeValidator_Int64, long, long> GreaterThanOrEqualTo(this RequiredStateValidator<long> source, long value)
 			=> source.Add(new RangeValidator_Int64(null, value, null, null));
 
+		public static DataSourceStandard<RequiredStateValidator<TSource>, RangeValidator_Int64, TSource, long> GreaterThanOrEqualTo<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, long> source, long value)
+			=> source.Add(new RangeValidator_Int64(null, value, null, null));
+
 		public static DataSourceStandard<RequiredStateValidator<long>, RangeValidator_Int64, long, long> LessThan(this RequiredStateValidator<long> source, long value)
+			=> source.Add(new RangeValidator_Int64(null, null, value, null));
+
+		public static DataSourceStandard<RequiredStateValidator<TSource>, RangeValidator_Int64, TSource, long> LessThan<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, long> source, long value)
 			=> source.Add(new RangeValidator_Int64(null, null, value, null));
 
 		public static DataSourceStandard<RequiredStateValidator<long>, RangeValidator_Int64, long, long> LessThanOrEqualTo(this RequiredStateValidator<long> source, long value)
 			=> source.Add(new RangeValidator_Int64(null, null, null, value));
 
+		public static DataSourceStandard<RequiredStateValidator<TSource>, RangeValidator_Int64, TSource, long> LessThanOrEqualTo<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, long> source, long value)
+			=> source.Add(new RangeValidator_Int64(null, null, null, value));
+
 		public static DataSourceStandard<RequiredStateValidator<long>, RangeValidator_Int64, long, long> InRange(this RequiredStateValidator<long> source, long? greaterThan = null, long? greaterThanOrEqualTo = null, long? lessThan = null, long? lessThanOrEqualTo = null)
+			=> source.Add(new RangeValidator_Int64(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
+
+		public static DataSourceStandard<RequiredStateValidator<TSource>, RangeValidator_Int64, TSource, long> InRange<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, long> source, long? greaterThan = null, long? greaterThanOrEqualTo = null, long? lessThan = null, long? lessThanOrEqualTo = null)
 			=> source.Add(new RangeValidator_Int64(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
 		public static DataSourceStandard<RequiredStateValidator<ulong>, RangeValidator_UInt64, ulong, ulong> GreaterThan(this RequiredStateValidator<ulong> source, ulong value)
 			=> source.Add(new RangeValidator_UInt64(value, null, null, null));
 
+		public static DataSourceStandard<RequiredStateValidator<TSource>, RangeValidator_UInt64, TSource, ulong> GreaterThan<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, ulong> source, ulong value)
+			=> source.Add(new RangeValidator_UInt64(value, null, null, null));
+
 		public static DataSourceStandard<RequiredStateValidator<ulong>, RangeValidator_UInt64, ulong, ulong> GreaterThanOrEqualTo(this RequiredStateValidator<ulong> source, ulong value)
+			=> source.Add(new RangeValidator_UInt64(null, value, null, null));
+
+		public static DataSourceStandard<RequiredStateValidator<TSource>, RangeValidator_UInt64, TSource, ulong> GreaterThanOrEqualTo<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, ulong> source, ulong value)
 			=> source.Add(new RangeValidator_UInt64(null, value, null, null));
 
 		public static DataSourceStandard<RequiredStateValidator<ulong>, RangeValidator_UInt64, ulong, ulong> LessThan(this RequiredStateValidator<ulong> source, ulong value)
 			=> source.Add(new RangeValidator_UInt64(null, null, value, null));
 
+		public static DataSourceStandard<RequiredStateValidator<TSource>, RangeValidator_UInt64, TSource, ulong> LessThan<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, ulong> source, ulong value)
+			=> source.Add(new RangeValidator_UInt64(null, null, value, null));
+
 		public static DataSourceStandard<RequiredStateValidator<ulong>, RangeValidator_UInt64, ulong, ulong> LessThanOrEqualTo(this RequiredStateValidator<ulong> source, ulong value)
+			=> source.Add(new RangeValidator_UInt64(null, null, null, value));
+
+		public static DataSourceStandard<RequiredStateValidator<TSource>, RangeValidator_UInt64, TSource, ulong> LessThanOrEqualTo<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, ulong> source, ulong value)
 			=> source.Add(new RangeValidator_UInt64(null, null, null, value));
 
 		public static DataSourceStandard<RequiredStateValidator<ulong>, RangeValidator_UInt64, ulong, ulong> InRange(this RequiredStateValidator<ulong> source, ulong? greaterThan = null, ulong? greaterThanOrEqualTo = null, ulong? lessThan = null, ulong? lessThanOrEqualTo = null)
 			=> source.Add(new RangeValidator_UInt64(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
+		public static DataSourceStandard<RequiredStateValidator<TSource>, RangeValidator_UInt64, TSource, ulong> InRange<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, ulong> source, ulong? greaterThan = null, ulong? greaterThanOrEqualTo = null, ulong? lessThan = null, ulong? lessThanOrEqualTo = null)
+			=> source.Add(new RangeValidator_UInt64(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
+
 		public static DataSourceStandard<RequiredStateValidator<float>, RangeValidator_Single, float, float> GreaterThan(this RequiredStateValidator<float> source, float value)
+			=> source.Add(new RangeValidator_Single(value, null, null, null));
+
+		public static DataSourceStandard<RequiredStateValidator<TSource>, RangeValidator_Single, TSource, float> GreaterThan<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, float> source, float value)
 			=> source.Add(new RangeValidator_Single(value, null, null, null));
 
 		public static DataSourceStandard<RequiredStateValidator<float>, RangeValidator_Single, float, float> GreaterThanOrEqualTo(this RequiredStateValidator<float> source, float value)
 			=> source.Add(new RangeValidator_Single(null, value, null, null));
 
+		public static DataSourceStandard<RequiredStateValidator<TSource>, RangeValidator_Single, TSource, float> GreaterThanOrEqualTo<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, float> source, float value)
+			=> source.Add(new RangeValidator_Single(null, value, null, null));
+
 		public static DataSourceStandard<RequiredStateValidator<float>, RangeValidator_Single, float, float> LessThan(this RequiredStateValidator<float> source, float value)
+			=> source.Add(new RangeValidator_Single(null, null, value, null));
+
+		public static DataSourceStandard<RequiredStateValidator<TSource>, RangeValidator_Single, TSource, float> LessThan<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, float> source, float value)
 			=> source.Add(new RangeValidator_Single(null, null, value, null));
 
 		public static DataSourceStandard<RequiredStateValidator<float>, RangeValidator_Single, float, float> LessThanOrEqualTo(this RequiredStateValidator<float> source, float value)
 			=> source.Add(new RangeValidator_Single(null, null, null, value));
 
+		public static DataSourceStandard<RequiredStateValidator<TSource>, RangeValidator_Single, TSource, float> LessThanOrEqualTo<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, float> source, float value)
+			=> source.Add(new RangeValidator_Single(null, null, null, value));
+
 		public static DataSourceStandard<RequiredStateValidator<float>, RangeValidator_Single, float, float> InRange(this RequiredStateValidator<float> source, float? greaterThan = null, float? greaterThanOrEqualTo = null, float? lessThan = null, float? lessThanOrEqualTo = null)
+			=> source.Add(new RangeValidator_Single(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
+
+		public static DataSourceStandard<RequiredStateValidator<TSource>, RangeValidator_Single, TSource, float> InRange<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, float> source, float? greaterThan = null, float? greaterThanOrEqualTo = null, float? lessThan = null, float? lessThanOrEqualTo = null)
 			=> source.Add(new RangeValidator_Single(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
 		public static DataSourceStandard<RequiredStateValidator<double>, RangeValidator_Double, double, double> GreaterThan(this RequiredStateValidator<double> source, double value)
 			=> source.Add(new RangeValidator_Double(value, null, null, null));
 
+		public static DataSourceStandard<RequiredStateValidator<TSource>, RangeValidator_Double, TSource, double> GreaterThan<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, double> source, double value)
+			=> source.Add(new RangeValidator_Double(value, null, null, null));
+
 		public static DataSourceStandard<RequiredStateValidator<double>, RangeValidator_Double, double, double> GreaterThanOrEqualTo(this RequiredStateValidator<double> source, double value)
+			=> source.Add(new RangeValidator_Double(null, value, null, null));
+
+		public static DataSourceStandard<RequiredStateValidator<TSource>, RangeValidator_Double, TSource, double> GreaterThanOrEqualTo<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, double> source, double value)
 			=> source.Add(new RangeValidator_Double(null, value, null, null));
 
 		public static DataSourceStandard<RequiredStateValidator<double>, RangeValidator_Double, double, double> LessThan(this RequiredStateValidator<double> source, double value)
 			=> source.Add(new RangeValidator_Double(null, null, value, null));
 
+		public static DataSourceStandard<RequiredStateValidator<TSource>, RangeValidator_Double, TSource, double> LessThan<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, double> source, double value)
+			=> source.Add(new RangeValidator_Double(null, null, value, null));
+
 		public static DataSourceStandard<RequiredStateValidator<double>, RangeValidator_Double, double, double> LessThanOrEqualTo(this RequiredStateValidator<double> source, double value)
+			=> source.Add(new RangeValidator_Double(null, null, null, value));
+
+		public static DataSourceStandard<RequiredStateValidator<TSource>, RangeValidator_Double, TSource, double> LessThanOrEqualTo<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, double> source, double value)
 			=> source.Add(new RangeValidator_Double(null, null, null, value));
 
 		public static DataSourceStandard<RequiredStateValidator<double>, RangeValidator_Double, double, double> InRange(this RequiredStateValidator<double> source, double? greaterThan = null, double? greaterThanOrEqualTo = null, double? lessThan = null, double? lessThanOrEqualTo = null)
 			=> source.Add(new RangeValidator_Double(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
+		public static DataSourceStandard<RequiredStateValidator<TSource>, RangeValidator_Double, TSource, double> InRange<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, double> source, double? greaterThan = null, double? greaterThanOrEqualTo = null, double? lessThan = null, double? lessThanOrEqualTo = null)
+			=> source.Add(new RangeValidator_Double(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
+
 		public static DataSourceStandard<RequiredStateValidator<decimal>, RangeValidator_Decimal, decimal, decimal> GreaterThan(this RequiredStateValidator<decimal> source, decimal value)
+			=> source.Add(new RangeValidator_Decimal(value, null, null, null));
+
+		public static DataSourceStandard<RequiredStateValidator<TSource>, RangeValidator_Decimal, TSource, decimal> GreaterThan<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, decimal> source, decimal value)
 			=> source.Add(new RangeValidator_Decimal(value, null, null, null));
 
 		public static DataSourceStandard<RequiredStateValidator<decimal>, RangeValidator_Decimal, decimal, decimal> GreaterThanOrEqualTo(this RequiredStateValidator<decimal> source, decimal value)
 			=> source.Add(new RangeValidator_Decimal(null, value, null, null));
 
+		public static DataSourceStandard<RequiredStateValidator<TSource>, RangeValidator_Decimal, TSource, decimal> GreaterThanOrEqualTo<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, decimal> source, decimal value)
+			=> source.Add(new RangeValidator_Decimal(null, value, null, null));
+
 		public static DataSourceStandard<RequiredStateValidator<decimal>, RangeValidator_Decimal, decimal, decimal> LessThan(this RequiredStateValidator<decimal> source, decimal value)
+			=> source.Add(new RangeValidator_Decimal(null, null, value, null));
+
+		public static DataSourceStandard<RequiredStateValidator<TSource>, RangeValidator_Decimal, TSource, decimal> LessThan<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, decimal> source, decimal value)
 			=> source.Add(new RangeValidator_Decimal(null, null, value, null));
 
 		public static DataSourceStandard<RequiredStateValidator<decimal>, RangeValidator_Decimal, decimal, decimal> LessThanOrEqualTo(this RequiredStateValidator<decimal> source, decimal value)
 			=> source.Add(new RangeValidator_Decimal(null, null, null, value));
 
+		public static DataSourceStandard<RequiredStateValidator<TSource>, RangeValidator_Decimal, TSource, decimal> LessThanOrEqualTo<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, decimal> source, decimal value)
+			=> source.Add(new RangeValidator_Decimal(null, null, null, value));
+
 		public static DataSourceStandard<RequiredStateValidator<decimal>, RangeValidator_Decimal, decimal, decimal> InRange(this RequiredStateValidator<decimal> source, decimal? greaterThan = null, decimal? greaterThanOrEqualTo = null, decimal? lessThan = null, decimal? lessThanOrEqualTo = null)
+			=> source.Add(new RangeValidator_Decimal(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
+
+		public static DataSourceStandard<RequiredStateValidator<TSource>, RangeValidator_Decimal, TSource, decimal> InRange<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, decimal> source, decimal? greaterThan = null, decimal? greaterThanOrEqualTo = null, decimal? lessThan = null, decimal? lessThanOrEqualTo = null)
 			=> source.Add(new RangeValidator_Decimal(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
 		public static DataSourceStandard<RequiredStateValidator<DateTime>, RangeValidator_DateTime, DateTime, DateTime> GreaterThan(this RequiredStateValidator<DateTime> source, DateTime value)
 			=> source.Add(new RangeValidator_DateTime(value, null, null, null));
 
+		public static DataSourceStandard<RequiredStateValidator<TSource>, RangeValidator_DateTime, TSource, DateTime> GreaterThan<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, DateTime> source, DateTime value)
+			=> source.Add(new RangeValidator_DateTime(value, null, null, null));
+
 		public static DataSourceStandard<RequiredStateValidator<DateTime>, RangeValidator_DateTime, DateTime, DateTime> GreaterThanOrEqualTo(this RequiredStateValidator<DateTime> source, DateTime value)
+			=> source.Add(new RangeValidator_DateTime(null, value, null, null));
+
+		public static DataSourceStandard<RequiredStateValidator<TSource>, RangeValidator_DateTime, TSource, DateTime> GreaterThanOrEqualTo<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, DateTime> source, DateTime value)
 			=> source.Add(new RangeValidator_DateTime(null, value, null, null));
 
 		public static DataSourceStandard<RequiredStateValidator<DateTime>, RangeValidator_DateTime, DateTime, DateTime> LessThan(this RequiredStateValidator<DateTime> source, DateTime value)
 			=> source.Add(new RangeValidator_DateTime(null, null, value, null));
 
+		public static DataSourceStandard<RequiredStateValidator<TSource>, RangeValidator_DateTime, TSource, DateTime> LessThan<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, DateTime> source, DateTime value)
+			=> source.Add(new RangeValidator_DateTime(null, null, value, null));
+
 		public static DataSourceStandard<RequiredStateValidator<DateTime>, RangeValidator_DateTime, DateTime, DateTime> LessThanOrEqualTo(this RequiredStateValidator<DateTime> source, DateTime value)
+			=> source.Add(new RangeValidator_DateTime(null, null, null, value));
+
+		public static DataSourceStandard<RequiredStateValidator<TSource>, RangeValidator_DateTime, TSource, DateTime> LessThanOrEqualTo<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, DateTime> source, DateTime value)
 			=> source.Add(new RangeValidator_DateTime(null, null, null, value));
 
 		public static DataSourceStandard<RequiredStateValidator<DateTime>, RangeValidator_DateTime, DateTime, DateTime> InRange(this RequiredStateValidator<DateTime> source, DateTime? greaterThan = null, DateTime? greaterThanOrEqualTo = null, DateTime? lessThan = null, DateTime? lessThanOrEqualTo = null)
 			=> source.Add(new RangeValidator_DateTime(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
+		public static DataSourceStandard<RequiredStateValidator<TSource>, RangeValidator_DateTime, TSource, DateTime> InRange<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, DateTime> source, DateTime? greaterThan = null, DateTime? greaterThanOrEqualTo = null, DateTime? lessThan = null, DateTime? lessThanOrEqualTo = null)
+			=> source.Add(new RangeValidator_DateTime(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
+
 		public static DataSourceStandard<RequiredStateValidator<string>, StringLengthValidator, string, string> Length(this RequiredStateValidator<string> source, int? minimumLength = null, int? maximumLength = null)
+			=> source.Add(new StringLengthValidator(minimumLength, maximumLength));
+
+		public static DataSourceStandard<RequiredStateValidator<TSource>, StringLengthValidator, TSource, string> Length<TSource>(this MappedDataSource<RequiredStateValidator<TSource>, TSource, string> source, int? minimumLength = null, int? maximumLength = null)
 			=> source.Add(new StringLengthValidator(minimumLength, maximumLength));
 
 		public static DataSourceStandardStandard<RequiredStateValidator<TSource>, EqualsValidator<TValue>, CustomValidator<TValue>, TSource, TValue> Assert<TSource, TValue>(this DataSourceStandard<RequiredStateValidator<TSource>, EqualsValidator<TValue>, TSource, TValue> source, string description, Func<TValue, bool> validator)
