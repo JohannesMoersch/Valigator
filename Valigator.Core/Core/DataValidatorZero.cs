@@ -21,7 +21,7 @@ namespace Valigator.Core
 		{
 			if (_stateValidator.Validate(model, isSet, value).TryGetValue(out var success, out var failure))
 			{
-				if (Model<TSource>.Verify(success).TryGetValue(out var _, out var modelErrors))
+				if (Model.Verify(success).TryGetValue(out var _, out var modelErrors))
 					return Result.Success<TSource, ValidationError[]>(success);
 
 				return Result.Failure<TSource, ValidationError[]>(modelErrors);

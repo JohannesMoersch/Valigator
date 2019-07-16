@@ -41,9 +41,12 @@ namespace Valigator
 
 		private static readonly ConcurrentDictionary<Type, Func<object, Result<Unit, ValidationError[]>>> _verifyModelFunctions = new ConcurrentDictionary<Type, Func<object, Result<Unit, ValidationError[]>>>();
 
-		public static Result<Unit, ValidationError[]> Verify(object model)
+		public static Result<Unit, ValidationError[]> Verify<TModel>(TModel model)
 		{
 			var modelType = model?.GetType() ?? throw new ArgumentNullException(nameof(model));
+
+			if (modelType == typeof(TModel))
+				return Model<TModel>.Verify(model);
 
 			if (!_verifyModelFunctions.TryGetValue(modelType, out var function))
 			{

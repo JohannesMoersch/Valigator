@@ -24,7 +24,7 @@ namespace Valigator.Core
 				if (!success.TryGetValue(out var some))
 					return Result.Success<Option<TSource>, ValidationError[]>(success);
 
-				if (Model<TSource>.Verify(some).TryGetValue(out var _, out var modelErrors))
+				if (Model.Verify(some).TryGetValue(out var _, out var modelErrors))
 					return Result.Success<Option<TSource>, ValidationError[]>(success);
 
 				return Result.Failure<Option<TSource>, ValidationError[]>(modelErrors);

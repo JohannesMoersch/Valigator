@@ -47,7 +47,7 @@ namespace Valigator.Core
 				if (!oneValid || !twoValid)
 					errors = new[] { !oneValid ? _valueValidatorOne.GetError(mappedValue, false) : null, !twoValid ? _valueValidatorTwo.GetError(mappedValue, false) : null }.OfType<ValidationError>();
 
-				if (Model<TSource>.Verify(some).TryGetValue(out var _, out var modelErrors))
+				if (Model.Verify(some).TryGetValue(out var _, out var modelErrors))
 					return errors == null ? Result.Success<Option<TSource>, ValidationError[]>(success) : Result.Failure<Option<TSource>, ValidationError[]>(errors.ToArray());
 
 				return Result.Failure<Option<TSource>, ValidationError[]>(modelErrors.Concat(errors ?? Enumerable.Empty<ValidationError>()).ToArray());
