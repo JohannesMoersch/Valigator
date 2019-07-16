@@ -13,7 +13,9 @@ namespace Valigator.AspNetCore
 {
 	public class ValigatorActionFilter : IActionFilter, IOrderedFilter
 	{
-		public int Order => -2500;
+		public static int Order => -2500;
+
+		int IOrderedFilter.Order => Order;
 
 		private readonly Func<ModelError[], IActionResult> _resultErrorCreator;
 

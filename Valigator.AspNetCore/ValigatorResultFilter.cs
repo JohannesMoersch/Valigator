@@ -7,8 +7,12 @@ using Valigator.Core;
 
 namespace Valigator.AspNetCore
 {
-	public class ValigatorResultFilter : IResultFilter
+	public class ValigatorResultFilter : IResultFilter, IOrderedFilter
 	{
+		public static int Order => 2500;
+
+		int IOrderedFilter.Order => Order;
+
 		private readonly Func<ValidationError[], IActionResult> _resultErrorCreator;
 
 		public ValigatorResultFilter(Func<ValidationError[], IActionResult> resultErrorCreator) 
