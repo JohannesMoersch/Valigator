@@ -88,15 +88,67 @@ namespace Valigator.Core
 
 			var modelExpression = Expression.Convert(modelParameter, typeof(TModel));
 
-			var validationErrors = typeof(TModel)
-				.GetProperties()
-				.Where(property => property.PropertyType.IsConstructedGenericType && property.PropertyType.GetGenericTypeDefinition() == typeof(Data<>))
+			var validationErrors = GetAllValigatorProperties(typeof(TModel))
 				.Select(property => VerifyProperty(modelExpression, property));
 
 			var arrayInitializer = Expression.NewArrayInit(typeof(ValidationError[]), validationErrors);
 
 			return Expression.Lambda<Func<TModel, ValidationError[][]>>(arrayInitializer, modelParameter).Compile();
 		}
+
+		private static PropertyInfo[] GetAllValigatorProperties(Type type)
+		{
+			// look at get or set and if(meth.GetBaseDefinition().DeclaringType != currentType) got to met.GetBaseDefinition().DeclaringType and us it's property
+			// explicit -> walk and look for period and go at that level
+			// blow up if no setter or getter
+
+
+			var properties = 
+				GetBaseProperties(type)
+				.Concat(GetExplicitProperties(type))
+				.Where(property => property.PropertyType.IsConstructedGenericType && property.PropertyType.GetGenericTypeDefinition() == typeof(Data<>))
+				.ToArray();
+
+			var noGetters = properties.Where(x => x.GetMethod == null).ToArray();
+			var noSetters = properties.Where(x => x.SetMethod == null).ToArray();
+
+			if (noGetters.Any() || noSetters.Any())
+				throw new MissingGettersOrSettersException(noGetters, noSetters);
+
+			return properties;
+		}
+
+		private static IEnumerable<PropertyInfo> GetBaseProperties(Type type)
+		{
+			var currentLevelProperties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+			foreach (var currentProperty in currentLevelProperties)
+			{
+				var propertyToUse = currentProperty;
+				var method = currentProperty.GetGetMethod() ?? currentProperty.GetSetMethod();
+
+				var baseType = method.GetBaseDefinition().DeclaringType;
+				if (baseType != type)
+					propertyToUse = baseType.GetProperty(currentProperty.Name, BindingFlags.Public | BindingFlags.Instance);
+
+				yield return propertyToUse;
+			}
+		}
+
+		private static IEnumerable<PropertyInfo> GetExplicitProperties(Type type)
+		{
+			var currentType = type;
+			while (currentType != null)
+			{
+				foreach (var property in currentType.GetProperties(BindingFlags.NonPublic | BindingFlags.Instance).Where(p => IsExplicitInterfaceImplementation(p)))
+					yield return property;
+
+				currentType = currentType.BaseType;
+			}
+		}
+
+
+		private static bool IsExplicitInterfaceImplementation(PropertyInfo prop)
+			=> prop.Name.Contains(".");
 
 		private static Expression VerifyProperty(Expression modelExpression, PropertyInfo property)
 		{
