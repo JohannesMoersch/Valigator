@@ -98,11 +98,6 @@ namespace Valigator.Core
 
 		private static PropertyInfo[] GetAllValigatorProperties(Type type)
 		{
-			// look at get or set and if(meth.GetBaseDefinition().DeclaringType != currentType) got to met.GetBaseDefinition().DeclaringType and us it's property
-			// explicit -> walk and look for period and go at that level
-			// blow up if no setter or getter
-
-
 			var properties = 
 				GetBaseProperties(type)
 				.Concat(GetExplicitProperties(type))
