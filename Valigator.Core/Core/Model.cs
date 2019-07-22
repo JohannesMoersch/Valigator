@@ -99,47 +99,58 @@ namespace Valigator.Core
 		private static PropertyInfo[] GetAllValigatorProperties(Type type)
 		{
 			var properties = 
-				GetBaseProperties(type)
-				.Concat(GetExplicitProperties(type))
-				.Where(property => property.PropertyType.IsConstructedGenericType && property.PropertyType.GetGenericTypeDefinition() == typeof(Data<>))
+				GetBaseValigatorProperties(type)
+				.Concat(GetExplicitValigatorProperties(type))
 				.ToArray();
 
 			var noGetters = properties.Where(x => x.GetMethod == null).ToArray();
 			var noSetters = properties.Where(x => x.SetMethod == null).ToArray();
 
 			if (noGetters.Any() || noSetters.Any())
-				throw new MissingGettersOrSettersException(noGetters, noSetters);
+				throw new MissingAccessorsException(noGetters, noSetters);
 
 			return properties;
 		}
 
-		private static IEnumerable<PropertyInfo> GetBaseProperties(Type type)
+		private static IEnumerable<PropertyInfo> GetBaseValigatorProperties(Type type)
 		{
-			var currentLevelProperties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+			var currentLevelProperties = type
+				.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
+				.Where(p => !IsExplicitInterfaceImplementation(p))
+				.Where(p => IsValigatorDataType(p.PropertyType));
+
 			foreach (var currentProperty in currentLevelProperties)
 			{
 				var propertyToUse = currentProperty;
-				var method = currentProperty.GetGetMethod() ?? currentProperty.GetSetMethod();
+				var method = currentProperty.GetGetMethod(true) ?? currentProperty.GetSetMethod(true);
 
 				var baseType = method.GetBaseDefinition().DeclaringType;
 				if (baseType != type)
-					propertyToUse = baseType.GetProperty(currentProperty.Name, BindingFlags.Public | BindingFlags.Instance);
+					propertyToUse = baseType.GetProperty(currentProperty.Name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 
 				yield return propertyToUse;
 			}
 		}
 
-		private static IEnumerable<PropertyInfo> GetExplicitProperties(Type type)
+		private static IEnumerable<PropertyInfo> GetExplicitValigatorProperties(Type type)
 		{
 			var currentType = type;
 			while (currentType != null)
 			{
+				var explicitProperties = currentType
+					.GetProperties(BindingFlags.NonPublic | BindingFlags.Instance)
+					.Where(p => IsExplicitInterfaceImplementation(p))
+					.Where(p => IsValigatorDataType(p.PropertyType));
+
 				foreach (var property in currentType.GetProperties(BindingFlags.NonPublic | BindingFlags.Instance).Where(p => IsExplicitInterfaceImplementation(p)))
 					yield return property;
 
 				currentType = currentType.BaseType;
 			}
 		}
+
+		private static bool IsValigatorDataType(Type type)
+			=> type.IsConstructedGenericType && type.GetGenericTypeDefinition() == typeof(Data<>);
 
 
 		private static bool IsExplicitInterfaceImplementation(PropertyInfo prop)
