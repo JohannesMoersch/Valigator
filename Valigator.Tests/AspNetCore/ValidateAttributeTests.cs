@@ -7,9 +7,14 @@ using Xunit;
 
 namespace Valigator.Tests.AspNetCore
 {
+	public class ValidateModelBinderAttribute
+	{
+
+	}
+
 	public class ValidateAttributeTests
 	{
-		public class TestValidateAttribute : ValidateAttribute, ValidateAttribute.IValidateType<int>
+		public class TestValidateAttribute : ValidateAttribute, IValidateType<int>
 		{
 			public Data<int> GetData()
 				=> Data.Required<int>().InRange(greaterThan: -5, lessThan: 10);

@@ -4,39 +4,73 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
+using System.Threading.Tasks;
 using Functional;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Valigator.AspNetCore;
 using Valigator.Core;
-using Valigator.Core.StateValidators;
 
 namespace Valigator
 {
-	public abstract class ValidateAttribute : Attribute
+	public abstract class ValidateModelBinderAttribute : Attribute, IModelNameProvider, IBinderTypeProviderMetadata, IBindingSourceMetadata, IModelBinder, IVerifiable, IDescriptor
 	{
-		public interface IValidateType<TValue>
+		public ValidateModelBinderAttribute()
 		{
-			Data<TValue> GetData();
+			BinderType = GetType();
 		}
 
+		/// <inheritdoc />
+		public virtual string Name { get; set; }
+
+		/// <inheritdoc />
+		public Type BinderType { get; }
+
+		/// <inheritdoc />
+		public BindingSource BindingSource { get; }
+
+		/// <inheritdoc />
+		public async Task BindModelAsync(ModelBindingContext bindingContext)
+		{
+			bindingContext.Result = ModelBindingResult.Success(
+				(await BindModel(bindingContext))
+					.Match(
+						value => Verify(value.GetType(), value),
+						errors => Result.Failure<object, ValidationError[]>(errors)
+				)
+			);
+			//TODO: make sure this comes out right
+		}
+
+		public abstract Task<Result<object, ValidationError[]>> BindModel(ModelBindingContext bindingContext);
+		public DataDescriptor GetDescriptor(Type type) => StaticThingy.GetDescriptor(this, type);
+		public Result<object, ValidationError[]> Verify(Type type, object value) => StaticThingy.Verify(this, type, value);
+		public Result<object, ValidationError[]> Verify(Type type) => StaticThingy.Verify(this, type);
+
+		//tODO: binder errors to filter
+	}
+
+	internal static class StaticThingy
+	{
 		private static readonly object _obj = new object();
 
-		private static readonly ConcurrentDictionary<Type, Func<ValidateAttribute, bool, object, Result<object, ValidationError[]>>> _verifyMethods = new ConcurrentDictionary<Type, Func<ValidateAttribute, bool, object, Result<object, ValidationError[]>>>();
+		private static readonly ConcurrentDictionary<Type, Func<IVerifiable, bool, object, Result<object, ValidationError[]>>> _verifyMethods = new ConcurrentDictionary<Type, Func<IVerifiable, bool, object, Result<object, ValidationError[]>>>();
 
-		private static readonly ConcurrentDictionary<Type, Func<ValidateAttribute, DataDescriptor>> _getDescriptorMethods = new ConcurrentDictionary<Type, Func<ValidateAttribute, DataDescriptor>>();
+		private static readonly ConcurrentDictionary<Type, Func<IDescriptor, DataDescriptor>> _getDescriptorMethods = new ConcurrentDictionary<Type, Func<IDescriptor, DataDescriptor>>();
 
-		public DataDescriptor GetDescriptor(Type type)
+		public static DataDescriptor GetDescriptor(this IDescriptor validateAttribute, Type type)
 			=> _getDescriptorMethods
 				.GetOrAdd(type, t => GenerateGetDescriptorMethod(type))
-				.Invoke(this);
+				.Invoke(validateAttribute);
 
-		private static Func<ValidateAttribute, DataDescriptor> GenerateGetDescriptorMethod(Type type)
+		private static Func<IDescriptor, DataDescriptor> GenerateGetDescriptorMethod(Type type)
 		{
 			var validateType = typeof(IValidateType<>).MakeGenericType(type);
 
-			var validateMethod = typeof(ValidateAttribute).GetMethod("ValidateType", BindingFlags.NonPublic | BindingFlags.Static).MakeGenericMethod(type);
+			var validateMethod = typeof(IDescriptor).GetMethod(nameof(StaticThingy.ValidateType), BindingFlags.NonPublic | BindingFlags.Static).MakeGenericMethod(type);
 			var getDataMethod = validateType.GetMethod(nameof(IValidateType<object>.GetData), BindingFlags.Public | BindingFlags.Instance);
 
-			var attributeParameter = Expression.Parameter(typeof(ValidateAttribute), "attribute");
+			var attributeParameter = Expression.Parameter(typeof(IDescriptor), "attribute");
 
 			var validate = Expression.Call(validateMethod, attributeParameter);
 
@@ -46,28 +80,28 @@ namespace Valigator
 
 			var block = Expression.Block(validate, descriptor);
 
-			return Expression.Lambda<Func<ValidateAttribute, DataDescriptor>>(block, attributeParameter).Compile();
+			return Expression.Lambda<Func<IDescriptor, DataDescriptor>>(block, attributeParameter).Compile();
 		}
 
-		public Result<object, ValidationError[]> Verify(Type type, object value)
+		public static Result<object, ValidationError[]> Verify(this IVerifiable validateAttribute, Type type, object value)
 			=> _verifyMethods
 				.GetOrAdd(type, t => GenerateVerifyMethod(type))
-				.Invoke(this, true, value);
+				.Invoke(validateAttribute, true, value);
 
-		public Result<object, ValidationError[]> Verify(Type type)
+		public static Result<object, ValidationError[]> Verify(this IVerifiable validateAttribute, Type type)
 			=> _verifyMethods
 				.GetOrAdd(type, t => GenerateVerifyMethod(type))
-				.Invoke(this, false, null);
+				.Invoke(validateAttribute, false, null);
 
-		private static Func<ValidateAttribute, bool, object, Result<object, ValidationError[]>> GenerateVerifyMethod(Type type)
+		private static Func<IVerifiable, bool, object, Result<object, ValidationError[]>> GenerateVerifyMethod(Type type)
 		{
 			var validateType = typeof(IValidateType<>).MakeGenericType(type);
 
-			var validateMethod = typeof(ValidateAttribute).GetMethod("ValidateType", BindingFlags.NonPublic | BindingFlags.Static).MakeGenericMethod(type);
+			var validateMethod = typeof(StaticThingy).GetMethod(nameof(ValidateType), BindingFlags.NonPublic | BindingFlags.Static).MakeGenericMethod(type);
 			var getDataMethod = validateType.GetMethod(nameof(IValidateType<object>.GetData), BindingFlags.Public | BindingFlags.Instance);
-			var verifyMethod = typeof(ValidateAttribute).GetMethod("Verify", BindingFlags.NonPublic | BindingFlags.Static).MakeGenericMethod(type);
+			var verifyMethod = typeof(StaticThingy).GetMethod(nameof(StaticThingy.Verify), BindingFlags.NonPublic | BindingFlags.Static).MakeGenericMethod(type);
 
-			var attributeParameter = Expression.Parameter(typeof(ValidateAttribute), "attribute");
+			var attributeParameter = Expression.Parameter(typeof(IVerifiable), "attribute");
 			var isSetParameter = Expression.Parameter(typeof(bool), "isSet");
 			var valueParameter = Expression.Parameter(typeof(object), "value");
 
@@ -78,7 +112,7 @@ namespace Valigator
 
 			var block = Expression.Block(validate, verified);
 
-			return Expression.Lambda<Func<ValidateAttribute, bool, object, Result<object, ValidationError[]>>>(block, attributeParameter, isSetParameter, valueParameter).Compile();
+			return Expression.Lambda<Func<IVerifiable, bool, object, Result<object, ValidationError[]>>>(block, attributeParameter, isSetParameter, valueParameter).Compile();
 		}
 
 		private static Result<object, ValidationError[]> Verify<TValue>(Data<TValue> data, bool isSet, object value)
@@ -91,10 +125,33 @@ namespace Valigator
 					Result.Failure<object, ValidationError[]>
 				);
 
-		private static void ValidateType<TValue>(ValidateAttribute attribute)
+		private static void ValidateType<TValue>(object attribute)
 		{
 			if (!(attribute is IValidateType<TValue>))
 				throw new ValidateAttributeDoesNotSupportTypeException(attribute.GetType(), typeof(TValue));
 		}
+	}
+
+	public interface IValidateType<TValue>
+	{
+		Data<TValue> GetData();
+	}
+
+	public interface IVerifiable
+	{
+		Result<object, ValidationError[]> Verify(Type type, object value);
+		Result<object, ValidationError[]> Verify(Type type);
+	}
+
+	public interface IDescriptor
+	{
+		DataDescriptor GetDescriptor(Type type);
+	}
+
+	public abstract class ValidateAttribute : Attribute, IVerifiable, IDescriptor
+	{
+		public DataDescriptor GetDescriptor(Type type) => StaticThingy.GetDescriptor(this, type);
+		public Result<object, ValidationError[]> Verify(Type type, object value) => StaticThingy.Verify(this, type, value);
+		public Result<object, ValidationError[]> Verify(Type type) => StaticThingy.Verify(this, type);
 	}
 }
