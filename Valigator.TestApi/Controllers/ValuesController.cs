@@ -30,23 +30,23 @@ namespace Valigator.TestApi.Controllers
 		public Data<int> GetData() => Data.Defaulted<int>(7).InRange(greaterThan: 5, lessThan: 10);
 	}
 
-	public class TestValidateModelBinderAttribute : ValidateModelBinderAttribute, IValidateType<int>
+	public class ComplexObject
+	{
+		public int Value { get; set; }
+	}
+
+	public class TestValidateModelBinderAttribute : ValidateModelBinderAttribute, IValidateType<ComplexObject>
 	{
 		public override Task<Result<object, ValidationError[]>> BindModel(ModelBindingContext bindingContext)
 		{
 			var failure = Result.Failure<Data<object>, ValidationError[]>(new[] { new ValidationError("Error1", null), new ValidationError("Error2", null) });
-			var success = Result.Success<object, ValidationError[]>(6);
+			var success = Result.Success<object, ValidationError[]>(new ComplexObject() { Value = (int)bindingContext.Model });
 
 			var result = success;
 			return Task.FromResult(result);
 		}
 
-		public Data<int> GetData() => Data.Defaulted<int>(7).InRange(greaterThan: 5, lessThan: 10);
-
-		public class ComplexObject
-		{
-			public int Value { get; set; }
-		}
+		public Data<ComplexObject> GetData() => Data.Required<ComplexObject>().Map(o => o.Value).InRange(greaterThan: 5, lessThan: 10);
 	}
 
 	[Route("api/[controller]")]
@@ -68,9 +68,9 @@ namespace Valigator.TestApi.Controllers
 		}
 
 		[HttpPost("testBinder/{id}")]
-		public ActionResult<string> TestValidateModelBinder([FromRoute, TestValidateModelBinder]TestValidateModelBinderAttribute.ComplexObject id, [TestValidateModelBinder]TestValidateModelBinderAttribute.ComplexObject value2)
+		public ActionResult<string> TestValidateModelBinder([FromRoute, TestValidateModelBinder]ComplexObject id)
 		{
-			return $"{id.Value} - {value2.Value}";
+			return $"Value: {id.Value}";
 		}
 
 

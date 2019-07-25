@@ -32,13 +32,29 @@ namespace Valigator
 		/// <inheritdoc />
 		public async Task BindModelAsync(ModelBindingContext bindingContext)
 		{
-			bindingContext.Result = ModelBindingResult.Success(
-				(await BindModel(bindingContext))
-					.Match(
-						value => Verify(value.GetType(), value),
-						errors => Result.Failure<object, ValidationError[]>(errors)
+			(await BindModel(bindingContext))
+				.Match(
+					s => Result.Success<object, ValidationError[]>(s), 
+					Result.Failure<object, ValidationError[]>
 				)
-			);
+				.Match(
+					value => Verify(value.GetType(), value),
+					Result.Failure<object, ValidationError[]>
+				)
+				.Match(
+					s =>
+					{
+						bindingContext.Model = Result.Success<object, ValidationError[]>(s);
+						bindingContext.Result = ModelBindingResult.Success(s);
+						return Unit.Value;
+					},
+					f =>
+					{
+						bindingContext.Model = Result.Failure<object, ValidationError[]>(f);
+						bindingContext.Result = ModelBindingResult.Failed();
+						return Unit.Value;
+					}
+				);
 			//TODO: make sure this comes out right
 		}
 
@@ -106,7 +122,7 @@ namespace Valigator
 			var valueParameter = Expression.Parameter(typeof(object), "value");
 
 			var validate = Expression.Call(validateMethod, attributeParameter);
-
+			
 			var data = Expression.Call(Expression.Convert(attributeParameter, validateType), getDataMethod);
 			var verified = Expression.Call(verifyMethod, data, isSetParameter, valueParameter);
 
@@ -125,7 +141,7 @@ namespace Valigator
 					Result.Failure<object, ValidationError[]>
 				);
 
-		private static void ValidateType<TValue>(object attribute)
+		private static void ValidateType<TValue>(IVerifiable attribute)
 		{
 			if (!(attribute is IValidateType<TValue>))
 				throw new ValidateAttributeDoesNotSupportTypeException(attribute.GetType(), typeof(TValue));
