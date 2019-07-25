@@ -1,12 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using FakeItEasy;
 using FluentAssertions;
 using Functional;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using Microsoft.AspNetCore.Routing;
 using Valigator.AspNetCore;
 using Xunit;
 
@@ -81,15 +87,35 @@ namespace Valigator.Tests.AspNetCore
 				errors.Should().BeEquivalentTo(new[] { errorMessage });
 		}
 
+		private class TestParameterInfo : ParameterInfo
+		{
+			public TestParameterInfo(string name)
+				=> Name = name;
+
+			public override string Name { get; }
+		}
+
 		private class TestModelBindingContext : ModelBindingContext
 		{
+			private IList<ParameterDescriptor> _parameterDescriptors = new List<ParameterDescriptor>(new[] { new ParameterDescriptor() { Name = "theName" } });
+
 			public TestModelBindingContext(string value)
 			{
 				ValueProvider = CreateValueProvider(value);
+
+				var httpContext = A.Dummy<HttpContext>();
+				var actionDescriptor = new ActionDescriptor() { BoundProperties = _parameterDescriptors, Parameters = _parameterDescriptors };
+				ActionContext = new ActionContext(httpContext, new RouteData(), actionDescriptor);
+
+				var parameter = GetType().GetMethod(nameof(MethodForParameterInfo), BindingFlags.Instance | BindingFlags.NonPublic).GetParameters().FirstOrDefault(p => p.Name == "theName");
+				ModelMetadata = new EmptyModelMetadataProvider().GetMetadataForParameter(parameter);
 			}
 
+			private void MethodForParameterInfo(int theName)
+			{ }
+
 			public override ActionContext ActionContext { get; set; }
-			public override string BinderModelName { get; set; } = "TheName";
+			public override string BinderModelName { get; set; }
 			public override BindingSource BindingSource { get; set; }
 			public override string FieldName { get; set; }
 			public override bool IsTopLevelObject { get; set; }
