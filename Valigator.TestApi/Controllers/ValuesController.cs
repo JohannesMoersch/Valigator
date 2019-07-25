@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Functional;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Valigator;
 
 namespace Valigator.TestApi.Controllers
@@ -24,9 +25,33 @@ namespace Valigator.TestApi.Controllers
 		public Data<int> A { get; set; } = Data.Defaulted<int>(5).LessThan(0);
 	}
 
-	public class TestAttribute : ValidateAttribute, ValidateAttribute.IValidateType<int>
+	public class TestAttribute : ValidateAttribute, IValidateType<int>
 	{
 		public Data<int> GetData() => Data.Defaulted<int>(7).InRange(greaterThan: 5, lessThan: 10);
+	}
+
+	public class ComplexObject
+	{
+		public int Value { get; set; }
+	}
+
+	public class TestValidateModelBinderAttribute : ValidateModelBinderAttribute, IValidateType<ComplexObject>
+	{
+		public override Task<Result<object, ValidationError[]>> BindModel(ModelBindingContext bindingContext)
+		{
+			var value = bindingContext?.ValueProvider?.GetValue(bindingContext.FieldName).TryFirst() ?? Option.None<string>();
+			var result = value.Match(
+				s => Result.Success<object, ValidationError[]>(new ComplexObject()
+				{
+					Value = int.Parse(s)
+				}),
+				() => Result.Failure<object, ValidationError[]>(new[] { new ValidationError("Error1", null), new ValidationError("Error2", null) })
+			);
+
+			return Task.FromResult(result);
+		}
+
+		public Data<ComplexObject> GetData() => Data.Required<ComplexObject>().Map(o => o.Value).InRange(greaterThan: 5, lessThan: 10);
 	}
 
 	[Route("api/[controller]")]
@@ -41,11 +66,18 @@ namespace Valigator.TestApi.Controllers
 		}
 
 		// GET api/values/5
-		[HttpGet("{id}")]
+		[HttpGet("test/{value}")]
 		public ActionResult<string> Get([Test]int value, [Test]int stuff)
 		{
 			return "value";
 		}
+
+		[HttpPost("testBinder/{id}")]
+		public ActionResult<string> TestValidateModelBinder([FromRoute, TestValidateModelBinder]ComplexObject id)
+		{
+			return $"Value: {id.Value}";
+		}
+
 
 		// POST api/values
 		[HttpPost]
