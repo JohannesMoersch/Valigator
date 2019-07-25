@@ -50,7 +50,8 @@ namespace Valigator
 					},
 					f =>
 					{
-						bindingContext.ModelState.TryAddModelException("ValigatorModelError", new ValigatorModelStateException(bindingContext.BinderModelName, bindingContext.BindingSource, f));
+						var name = bindingContext.BinderModelName ?? bindingContext.ModelMetadata?.ParameterName ?? bindingContext.ModelMetadata?.PropertyName ?? bindingContext?.ModelMetadata?.DisplayName ?? String.Empty;
+						bindingContext.ModelState.TryAddModelException("ValigatorModelError", new ValigatorModelStateException(name, bindingContext.BindingSource, f));
 						bindingContext.Result = ModelBindingResult.Failed();
 						return Unit.Value;
 					}
