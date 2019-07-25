@@ -39,10 +39,15 @@ namespace Valigator.TestApi.Controllers
 	{
 		public override Task<Result<object, ValidationError[]>> BindModel(ModelBindingContext bindingContext)
 		{
-			var failure = Result.Failure<Data<object>, ValidationError[]>(new[] { new ValidationError("Error1", null), new ValidationError("Error2", null) });
-			var success = Result.Success<object, ValidationError[]>(new ComplexObject() { Value = (int)bindingContext.Model });
+			var value = bindingContext?.ValueProvider?.GetValue(bindingContext.FieldName).TryFirst() ?? Option.None<string>();
+			var result = value.Match(
+				s => Result.Success<object, ValidationError[]>(new ComplexObject()
+				{
+					Value = int.Parse(s)
+				}),
+				() => Result.Failure<object, ValidationError[]>(new[] { new ValidationError("Error1", null), new ValidationError("Error2", null) })
+			);
 
-			var result = success;
 			return Task.FromResult(result);
 		}
 

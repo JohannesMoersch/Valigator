@@ -43,9 +43,24 @@ namespace Valigator.AspNetCore
 					(modelErrors ?? (modelErrors = new List<ModelError>())).AddRange(CreateModelErrorsForParameter(parameter, errors));
 			}
 
+			
+			modelErrors.AddRange(GetBindingValigatorModelErrors(context));
+
 			if (modelErrors?.Any() ?? false)
 				context.Result = _resultErrorCreator.Invoke(modelErrors.ToArray());
 		}
+
+		private IEnumerable<ModelError> GetBindingValigatorModelErrors(ActionExecutingContext context) 
+			=> context.ModelState.Values.SelectMany(value => CreateModelErrorsFromModelStateEntry(value));
+
+		private IEnumerable<ModelError> CreateModelErrorsFromModelStateEntry(ModelStateEntry value) 
+			=> value.Errors.OfType<ValigatorModelStateException>().SelectMany(exception => CreateModelErrorsFromValigatorModelStateException(exception));
+
+		private IEnumerable<ModelError> CreateModelErrorsFromValigatorModelStateException(ValigatorModelStateException exception) 
+			=> exception.ValidationErrors.Select(error => CreateModelError(error, exception));
+
+		private ModelError CreateModelError(ValidationError error, ValigatorModelStateException exception)
+			=> new ModelError(exception.Name, ConvertBindingSourceToModelSource(exception.Source), error);
 
 		private ValidateAttribute[] GetValidateAttributes(ControllerParameterDescriptor parameter)
 			=> parameter

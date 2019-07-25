@@ -34,7 +34,7 @@ namespace Valigator
 		{
 			(await BindModel(bindingContext))
 				.Match(
-					s => Result.Success<object, ValidationError[]>(s), 
+					s => Result.Success<object, ValidationError[]>(s),
 					Result.Failure<object, ValidationError[]>
 				)
 				.Match(
@@ -50,7 +50,7 @@ namespace Valigator
 					},
 					f =>
 					{
-						bindingContext.Model = Result.Failure<object, ValidationError[]>(f);
+						bindingContext.ModelState.TryAddModelException("ValigatorModelError", new ValigatorModelStateException(bindingContext.BinderModelName, bindingContext.BindingSource, f));
 						bindingContext.Result = ModelBindingResult.Failed();
 						return Unit.Value;
 					}
@@ -64,6 +64,21 @@ namespace Valigator
 		public Result<object, ValidationError[]> Verify(Type type) => StaticThingy.Verify(this, type);
 
 		//tODO: binder errors to filter
+	}
+
+	//todo: nathan
+	internal class ValigatorModelStateException : Exception
+	{
+		public ValigatorModelStateException(string name, BindingSource source, params ValidationError[] errors)
+		{
+			Name = name;
+			Source = source;
+			ValidationErrors = errors;
+		}
+
+		public string Name { get; }
+		public BindingSource Source { get; }
+		public ValidationError[] ValidationErrors { get; }
 	}
 
 	internal static class StaticThingy
@@ -122,7 +137,7 @@ namespace Valigator
 			var valueParameter = Expression.Parameter(typeof(object), "value");
 
 			var validate = Expression.Call(validateMethod, attributeParameter);
-			
+
 			var data = Expression.Call(Expression.Convert(attributeParameter, validateType), getDataMethod);
 			var verified = Expression.Call(verifyMethod, data, isSetParameter, valueParameter);
 
