@@ -19,12 +19,13 @@ namespace Valigator
 		{
 			var validateType = typeof(IValidateType<>).MakeGenericType(type);
 
-			var validateMethod = typeof(IDescriptor).GetMethod(nameof(ValidationHelpers.ValidateType), BindingFlags.Public | BindingFlags.Static).MakeGenericMethod(type);
+			var validateMethod = typeof(ValidationHelpers).GetMethod(nameof(ValidationHelpers.ValidateType), BindingFlags.Public | BindingFlags.Static).MakeGenericMethod(type);
 			var getDataMethod = validateType.GetMethod(nameof(IValidateType<object>.GetData), BindingFlags.Public | BindingFlags.Instance);
 
 			var attributeParameter = Expression.Parameter(typeof(IDescriptor), "attribute");
+			var convertedAttributeParameter = Expression.Convert(attributeParameter, typeof(object));
 
-			var validate = Expression.Call(validateMethod, attributeParameter);
+			var validate = Expression.Call(validateMethod, convertedAttributeParameter);
 
 			var data = Expression.Call(Expression.Convert(attributeParameter, validateType), getDataMethod);
 

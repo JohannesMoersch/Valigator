@@ -28,11 +28,11 @@ namespace Valigator
 			(await BindModel(bindingContext))
 				.Match(
 					s => Result.Success<object, ValidationError[]>(s),
-					Result.Failure<object, ValidationError[]>
+					f => Result.Failure<object, ValidationError[]>(f)
 				)
 				.Match(
 					value => Verify(value.GetType(), value),
-					Result.Failure<object, ValidationError[]>
+					f => Result.Failure<object, ValidationError[]>(f)
 				)
 				.Match(
 					s =>

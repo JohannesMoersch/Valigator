@@ -28,13 +28,14 @@ namespace Valigator
 
 			var validateMethod = typeof(ValidationHelpers).GetMethod(nameof(ValidationHelpers.ValidateType), BindingFlags.Public | BindingFlags.Static).MakeGenericMethod(type);
 			var getDataMethod = validateType.GetMethod(nameof(IValidateType<object>.GetData), BindingFlags.Public | BindingFlags.Instance);
-			var verifyMethod = typeof(ValidationHelpers).GetMethod(nameof(PerformVerification), BindingFlags.NonPublic | BindingFlags.Static).MakeGenericMethod(type);
+			var verifyMethod = typeof(VerifiableExtensions).GetMethod(nameof(PerformVerification), BindingFlags.NonPublic | BindingFlags.Static).MakeGenericMethod(type);
 
 			var attributeParameter = Expression.Parameter(typeof(IVerifiable), "attribute");
+			var convertedAttributeParameter = Expression.Convert(attributeParameter, typeof(object));
 			var isSetParameter = Expression.Parameter(typeof(bool), "isSet");
 			var valueParameter = Expression.Parameter(typeof(object), "value");
 
-			var validate = Expression.Call(validateMethod, attributeParameter);
+			var validate = Expression.Call(validateMethod, convertedAttributeParameter);
 
 			var data = Expression.Call(Expression.Convert(attributeParameter, validateType), getDataMethod);
 			var verified = Expression.Call(verifyMethod, data, isSetParameter, valueParameter);

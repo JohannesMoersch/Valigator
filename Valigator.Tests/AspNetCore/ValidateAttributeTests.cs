@@ -7,10 +7,6 @@ using Xunit;
 
 namespace Valigator.Tests.AspNetCore
 {
-	public class ValidateModelBinderAttribute
-	{
-
-	}
 
 	public class ValidateAttributeTests
 	{
