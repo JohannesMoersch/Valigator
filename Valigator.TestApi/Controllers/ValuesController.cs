@@ -66,7 +66,7 @@ namespace Valigator.TestApi.Controllers
 		}
 
 		// GET api/values/5
-		[HttpGet("test/{id}")]
+		[HttpGet("test/{value}")]
 		public ActionResult<string> Get([Test]int value, [Test]int stuff)
 		{
 			return "value";
