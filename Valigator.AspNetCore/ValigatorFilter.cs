@@ -45,7 +45,7 @@ namespace Valigator.AspNetCore
 					(modelErrors ?? (modelErrors = new List<ModelError>())).AddRange(CreateModelErrorsForParameter(parameter, errors));
 			}
 
-			if(currentErrors.Any())
+			if (currentErrors.Any())
 				(modelErrors ?? (modelErrors = new List<ModelError>())).AddRange(currentErrors.Values.SelectMany(e => CreateModelErrorsForParameter(e.ParameterDescriptor, e.ValidationErrors)));
 
 			if (modelErrors?.Any() ?? false)
@@ -53,10 +53,18 @@ namespace Valigator.AspNetCore
 		}
 
 		private IEnumerable<(ParameterDescriptor ParameterDescriptor, ValidationError[] ValidationErrors)> GetValidationErrorsFromContext(ActionExecutingContext context)
-			=> context.ModelState.Values.SelectMany(value => GetValidationErrorsFromModelStateEntry(value));
+			=> context
+				.ModelState
+				.Values
+				.Where(v => v.ValidationState == ModelValidationState.Invalid)
+				.SelectMany(GetValidationErrorsFromModelStateEntry);
 
 		private IEnumerable<(ParameterDescriptor ParameterDescriptor, ValidationError[] ValidationErrors)> GetValidationErrorsFromModelStateEntry(ModelStateEntry value)
-			=> value.Errors.Select(e => e.Exception).OfType<ValigatorModelStateException>().Select(exception => (exception.ParameterDescriptor, exception.ValidationErrors));
+			=> value
+				.Errors
+				.Select(e => e.Exception)
+				.OfType<ValigatorModelStateException>()
+				.Select(exception => (exception.ParameterDescriptor, exception.ValidationErrors));
 
 		private ValidateAttribute[] GetValidateAttributes(ControllerParameterDescriptor parameter)
 			=> parameter
