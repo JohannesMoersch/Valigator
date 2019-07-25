@@ -60,7 +60,7 @@ namespace Valigator.AspNetCore
 			=> exception.ValidationErrors.Select(error => CreateModelError(error, exception));
 
 		private ModelError CreateModelError(ValidationError error, ValigatorModelStateException exception)
-			=> new ModelError(exception.Name, ConvertBindingSourceToModelSource(exception.Source), error);
+			=> new ModelError(exception.Name, ConvertBindingSourceToModelSource(exception.BindingSource), error);
 
 		private ValidateAttribute[] GetValidateAttributes(ControllerParameterDescriptor parameter)
 			=> parameter

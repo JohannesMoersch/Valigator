@@ -8,12 +8,12 @@ namespace Valigator
 		public ValigatorModelStateException(string name, BindingSource source, params ValidationError[] errors)
 		{
 			Name = name;
-			Source = source;
+			BindingSource = source;
 			ValidationErrors = errors;
 		}
 
 		public string Name { get; }
-		public BindingSource Source { get; }
+		public BindingSource BindingSource { get; }
 		public ValidationError[] ValidationErrors { get; }
 	}
 }
