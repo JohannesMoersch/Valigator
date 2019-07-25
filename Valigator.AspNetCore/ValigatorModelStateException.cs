@@ -1,19 +1,18 @@
 ﻿using System;
+using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Valigator
 {
 	public class ValigatorModelStateException : Exception
 	{
-		public ValigatorModelStateException(string name, BindingSource source, params ValidationError[] errors)
+		public ValigatorModelStateException(ParameterDescriptor parameterDescriptor, params ValidationError[] errors)
 		{
-			Name = name;
-			BindingSource = source;
+			ParameterDescriptor = parameterDescriptor;
 			ValidationErrors = errors;
 		}
 
-		public string Name { get; }
-		public BindingSource BindingSource { get; }
+		public ParameterDescriptor ParameterDescriptor { get; }
 		public ValidationError[] ValidationErrors { get; }
 	}
 }

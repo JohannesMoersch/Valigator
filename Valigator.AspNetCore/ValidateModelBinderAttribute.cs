@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Functional;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -6,7 +7,7 @@ using Valigator.Core;
 
 namespace Valigator
 {
-	public abstract class ValidateModelBinderAttribute : Attribute, IModelNameProvider, IBinderTypeProviderMetadata, IBindingSourceMetadata, IModelBinder, IVerifiable, IDescriptor
+	public abstract class ValidateModelBinderAttribute : Attribute, IModelNameProvider, IBinderTypeProviderMetadata, IBindingSourceMetadata, IModelBinder, IVerifiable, IDescriptorProvider
 	{
 		public ValidateModelBinderAttribute()
 		{
@@ -31,7 +32,7 @@ namespace Valigator
 					f => Result.Failure<object, ValidationError[]>(f)
 				)
 				.Match(
-					value => Verify(value.GetType(), value),
+					value => this.Verify(value.GetType(), value),
 					f => Result.Failure<object, ValidationError[]>(f)
 				)
 				.Match(
@@ -43,8 +44,8 @@ namespace Valigator
 					},
 					f =>
 					{
-						var name = bindingContext.BinderModelName ?? bindingContext.ModelMetadata?.ParameterName ?? bindingContext.ModelMetadata?.PropertyName ?? bindingContext?.ModelMetadata?.DisplayName ?? String.Empty;
-						bindingContext.ModelState.TryAddModelException("ValigatorModelError", new ValigatorModelStateException(name, bindingContext.BindingSource, f));
+						var parameter = bindingContext.ActionContext.ActionDescriptor.Parameters.FirstOrDefault(descriptor => descriptor.Name == bindingContext.ModelMetadata.ParameterName);
+						bindingContext.ModelState.TryAddModelException("ValigatorModelError", new ValigatorModelStateException(parameter, f));
 						bindingContext.Result = ModelBindingResult.Failed();
 						return Unit.Value;
 					}
@@ -52,8 +53,5 @@ namespace Valigator
 		}
 
 		public abstract Task<Result<object, ValidationError[]>> BindModel(ModelBindingContext bindingContext);
-		public DataDescriptor GetDescriptor(Type type) => this.GetDataDescriptor(type);
-		public Result<object, ValidationError[]> Verify(Type type, object value) => this.VerifyObject(type, value);
-		public Result<object, ValidationError[]> Verify(Type type) => this.VerifyObject(type);
 	}
 }

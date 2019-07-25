@@ -6,23 +6,23 @@ using Valigator.Core;
 
 namespace Valigator
 {
-	internal static class DescriptorExtensions
+	public static class DescriptorExtensions
 	{
-		private static readonly ConcurrentDictionary<Type, Func<IDescriptor, DataDescriptor>> _getDescriptorMethods = new ConcurrentDictionary<Type, Func<IDescriptor, DataDescriptor>>();
+		private static readonly ConcurrentDictionary<Type, Func<IDescriptorProvider, DataDescriptor>> _getDescriptorMethods = new ConcurrentDictionary<Type, Func<IDescriptorProvider, DataDescriptor>>();
 
-		public static DataDescriptor GetDataDescriptor(this IDescriptor validateAttribute, Type type)
+		public static DataDescriptor GetDescriptor(this IDescriptorProvider validateAttribute, Type type)
 			=> _getDescriptorMethods
 				.GetOrAdd(type, t => GenerateGetDescriptorMethod(type))
 				.Invoke(validateAttribute);
 
-		private static Func<IDescriptor, DataDescriptor> GenerateGetDescriptorMethod(Type type)
+		private static Func<IDescriptorProvider, DataDescriptor> GenerateGetDescriptorMethod(Type type)
 		{
 			var validateType = typeof(IValidateType<>).MakeGenericType(type);
 
 			var validateMethod = typeof(ValidationHelpers).GetMethod(nameof(ValidationHelpers.ValidateType), BindingFlags.Public | BindingFlags.Static).MakeGenericMethod(type);
 			var getDataMethod = validateType.GetMethod(nameof(IValidateType<object>.GetData), BindingFlags.Public | BindingFlags.Instance);
 
-			var attributeParameter = Expression.Parameter(typeof(IDescriptor), "attribute");
+			var attributeParameter = Expression.Parameter(typeof(IDescriptorProvider), "attribute");
 			var convertedAttributeParameter = Expression.Convert(attributeParameter, typeof(object));
 
 			var validate = Expression.Call(validateMethod, convertedAttributeParameter);
@@ -33,7 +33,7 @@ namespace Valigator
 
 			var block = Expression.Block(validate, descriptor);
 
-			return Expression.Lambda<Func<IDescriptor, DataDescriptor>>(block, attributeParameter).Compile();
+			return Expression.Lambda<Func<IDescriptorProvider, DataDescriptor>>(block, attributeParameter).Compile();
 		}
 	}
 }

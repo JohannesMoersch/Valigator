@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Functional;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -25,8 +26,9 @@ namespace Valigator.AspNetCore
 		public void OnActionExecuting(ActionExecutingContext context)
 		{
 			List<ModelError> modelErrors = null;
+			var currentErrors = GetValidationErrorsFromContext(context).ToDictionary(k => k.ParameterDescriptor);
 
-			foreach (var parameter in context.ActionDescriptor.Parameters.OfType<ControllerParameterDescriptor>())
+			foreach (var parameter in context.ActionDescriptor.Parameters.OfType<ControllerParameterDescriptor>().Where(p => !currentErrors.ContainsKey(p)))
 			{
 				var validateAttributes = GetValidateAttributes(parameter);
 
@@ -43,24 +45,18 @@ namespace Valigator.AspNetCore
 					(modelErrors ?? (modelErrors = new List<ModelError>())).AddRange(CreateModelErrorsForParameter(parameter, errors));
 			}
 
-
-			(modelErrors ?? (modelErrors = new List<ModelError>())).AddRange(GetBindingValigatorModelErrors(context));
+			if(currentErrors.Any())
+				(modelErrors ?? (modelErrors = new List<ModelError>())).AddRange(currentErrors.Values.SelectMany(e => CreateModelErrorsForParameter(e.ParameterDescriptor, e.ValidationErrors)));
 
 			if (modelErrors?.Any() ?? false)
 				context.Result = _resultErrorCreator.Invoke(modelErrors.ToArray());
 		}
 
-		private IEnumerable<ModelError> GetBindingValigatorModelErrors(ActionExecutingContext context) 
-			=> context.ModelState.Values.SelectMany(value => CreateModelErrorsFromModelStateEntry(value));
+		private IEnumerable<(ParameterDescriptor ParameterDescriptor, ValidationError[] ValidationErrors)> GetValidationErrorsFromContext(ActionExecutingContext context)
+			=> context.ModelState.Values.SelectMany(value => GetValidationErrorsFromModelStateEntry(value));
 
-		private IEnumerable<ModelError> CreateModelErrorsFromModelStateEntry(ModelStateEntry value) 
-			=> value.Errors.Select(e => e.Exception).OfType<ValigatorModelStateException>().SelectMany(exception => CreateModelErrorsFromValigatorModelStateException(exception));
-
-		private IEnumerable<ModelError> CreateModelErrorsFromValigatorModelStateException(ValigatorModelStateException exception) 
-			=> exception.ValidationErrors.Select(error => CreateModelError(error, exception));
-
-		private ModelError CreateModelError(ValidationError error, ValigatorModelStateException exception)
-			=> new ModelError(exception.Name, ConvertBindingSourceToModelSource(exception.BindingSource), error);
+		private IEnumerable<(ParameterDescriptor ParameterDescriptor, ValidationError[] ValidationErrors)> GetValidationErrorsFromModelStateEntry(ModelStateEntry value)
+			=> value.Errors.Select(e => e.Exception).OfType<ValigatorModelStateException>().Select(exception => (exception.ParameterDescriptor, exception.ValidationErrors));
 
 		private ValidateAttribute[] GetValidateAttributes(ControllerParameterDescriptor parameter)
 			=> parameter
@@ -126,7 +122,7 @@ namespace Valigator.AspNetCore
 			return ModelSource.Other;
 		}
 
-		private IEnumerable<ModelError> CreateModelErrorsForParameter(ControllerParameterDescriptor parameter, IEnumerable<ValidationError> validationErrors)
+		private IEnumerable<ModelError> CreateModelErrorsForParameter(ParameterDescriptor parameter, IEnumerable<ValidationError> validationErrors)
 		{
 			var name = parameter.BindingInfo?.BinderModelName ?? parameter.Name ?? String.Empty;
 			var source = ConvertBindingSourceToModelSource(parameter.BindingInfo?.BindingSource);

@@ -6,18 +6,18 @@ using Functional;
 
 namespace Valigator
 {
-	internal static class VerifiableExtensions
+	public static class VerifiableExtensions
 	{
 		private static readonly object _obj = new object();
 
 		private static readonly ConcurrentDictionary<Type, Func<IVerifiable, bool, object, Result<object, ValidationError[]>>> _verifyMethods = new ConcurrentDictionary<Type, Func<IVerifiable, bool, object, Result<object, ValidationError[]>>>();
 
-		public static Result<object, ValidationError[]> VerifyObject(this IVerifiable validateAttribute, Type type, object value)
+		public static Result<object, ValidationError[]> Verify(this IVerifiable validateAttribute, Type type, object value)
 			=> _verifyMethods
 				.GetOrAdd(type, t => GenerateVerifyMethod(type))
 				.Invoke(validateAttribute, true, value);
 
-		public static Result<object, ValidationError[]> VerifyObject(this IVerifiable validateAttribute, Type type)
+		public static Result<object, ValidationError[]> Verify(this IVerifiable validateAttribute, Type type)
 			=> _verifyMethods
 				.GetOrAdd(type, t => GenerateVerifyMethod(type))
 				.Invoke(validateAttribute, false, null);
