@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Valigator
 {
-	//todo: nathan
 	internal class ValigatorModelStateException : Exception
 	{
 		public ValigatorModelStateException(string name, BindingSource source, params ValidationError[] errors)
