@@ -88,36 +88,121 @@ namespace Valigator.Core
 
 			var modelExpression = Expression.Convert(modelParameter, typeof(TModel));
 
-			var validationErrors = GetAllValigatorProperties(typeof(TModel))
-				.Select(property => VerifyProperty(modelExpression, property));
+			var properties = GetAllProperties(typeof(TModel));
+			var fields = GetAllFields(typeof(TModel));
+
+			var (dataProperties, validateContentsMembers) = FilterToDataPropertiesAndValidateContentsMembers(properties, fields);
+
+			var validationErrors = Enumerable
+				.Empty<Expression>()
+				.Concat(dataProperties
+					.Select(property => VerifyDataProperty(modelExpression, property))
+				)
+				.Concat(validateContentsMembers
+					.Select(propertyOrField => VerifyPropertyOrFieldContents(modelExpression, propertyOrField))
+				);
 
 			var arrayInitializer = Expression.NewArrayInit(typeof(ValidationError[]), validationErrors);
 
 			return Expression.Lambda<Func<TModel, ValidationError[][]>>(arrayInitializer, modelParameter).Compile();
 		}
 
-		private static PropertyInfo[] GetAllValigatorProperties(Type type)
-		{
-			var properties = 
-				GetBaseValigatorProperties(type)
-				.Concat(GetExplicitValigatorProperties(type))
+		private static PropertyInfo[] GetAllProperties(Type type)
+			=> GetBaseProperties(type)
+				.Concat(GetExplicitProperties(type))
 				.ToArray();
 
-			var noGetters = properties.Where(x => x.GetMethod == null).ToArray();
-			var noSetters = properties.Where(x => x.SetMethod == null).ToArray();
+		private static FieldInfo[] GetAllFields(Type type)
+			=> type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+
+		private static (PropertyInfo[] dataProperties, MemberInfo[] validateContentsMembers) FilterToDataPropertiesAndValidateContentsMembers(PropertyInfo[] properties, FieldInfo[] fields)
+		{
+			var dataProperties = properties
+				.Where(p => IsValigatorDataType(p.PropertyType))
+				.ToArray();
+
+			var validateContentsProperties = properties
+				.Where(p => !IsValigatorDataType(p.PropertyType))
+				.Where(p => p.GetCustomAttribute<ValidateContentsAttribute>() != null)
+				.ToArray();
+
+			var noGetters = dataProperties
+				.Concat(validateContentsProperties)
+				.Where(x => x.GetMethod == null)
+				.ToArray();
+
+			var noSetters = dataProperties
+				.Where(x => x.SetMethod == null)
+				.ToArray();
 
 			if (noGetters.Any() || noSetters.Any())
 				throw new MissingAccessorsException(noGetters, noSetters);
 
-			return properties;
+			var validateContentsFields = fields
+				.Where(p => p.GetCustomAttribute<ValidateContentsAttribute>() != null)
+				.ToArray();
+
+			var validateContentsMembers = Enumerable
+				.Empty<MemberInfo>()
+				.Concat(validateContentsProperties)
+				.Concat(validateContentsFields)
+				.ToArray();
+
+			return (dataProperties, validateContentsMembers);
 		}
 
-		private static IEnumerable<PropertyInfo> GetBaseValigatorProperties(Type type)
+		private static MethodInfo _modelVerify;
+		private static MethodInfo _isSuccess;
+		private static MethodInfo _getFailure;
+
+		private static Expression VerifyPropertyOrFieldContents(Expression modelExpression, MemberInfo propertyOrField)
+		{
+			Expression valueAccessor;
+			Type valueType;
+			if (propertyOrField is PropertyInfo property)
+			{
+				valueAccessor = Expression.Property(modelExpression, property);
+				valueType = property.PropertyType;
+			}
+			else if (propertyOrField is FieldInfo field)
+			{
+				valueAccessor = Expression.Field(modelExpression, field);
+				valueType = field.FieldType;
+			}
+			else
+				throw new ArgumentException("Value was not of type PropertyInfo or FieldInfo.", nameof(propertyOrField));
+
+			var valueName = propertyOrField.GetCustomAttribute<ValidateContentsAttribute>().MemberName;
+
+			var modelVerifyGeneric = _modelVerify ?? (_modelVerify = typeof(Model).GetMethod(nameof(Model.Verify), BindingFlags.Public | BindingFlags.Static));
+
+			var modelVerify = modelVerifyGeneric.MakeGenericMethod(valueType);
+
+			var isSuccessMethod = _isSuccess ?? (_isSuccess = typeof(Model<TModel>).GetMethod(nameof(IsUnitResultSuccess), BindingFlags.NonPublic | BindingFlags.Static));
+			var getFailureMethod = _getFailure ?? (_getFailure = typeof(Model<TModel>).GetMethod(nameof(GetUnitResultFailure), BindingFlags.NonPublic | BindingFlags.Static));
+
+			var result = Expression.Variable(typeof(Result<Unit, ValidationError[]>), "result");
+
+			var assignedResult = Expression.Assign(result, Expression.Call(null, modelVerify, valueAccessor));
+
+			var isSuccess = Expression.Call(isSuccessMethod, result);
+
+			var addPathsToErrorsMethod = _addPathsToErrorsMethod ?? (_addPathsToErrorsMethod = typeof(Model<object>).GetMethod(nameof(AddPropertyToErrors), BindingFlags.NonPublic | BindingFlags.Static));
+
+			var getFailure = Expression.Call(addPathsToErrorsMethod, Expression.Call(getFailureMethod, result), Expression.Constant(valueName, typeof(string)));
+
+			var onSuccess = Expression.Constant(null, typeof(ValidationError[]));
+
+			var condition = Expression.Condition(isSuccess, onSuccess, getFailure, typeof(ValidationError[]));
+
+			return Expression.Block(new[] { result }, assignedResult, condition);
+		}
+
+		private static IEnumerable<PropertyInfo> GetBaseProperties(Type type)
 		{
 			var currentLevelProperties = type
 				.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
-				.Where(p => !IsExplicitInterfaceImplementation(p))
-				.Where(p => IsValigatorDataType(p.PropertyType));
+				.Where(p => !IsExplicitInterfaceImplementation(p));
 
 			foreach (var currentProperty in currentLevelProperties)
 			{
@@ -132,15 +217,14 @@ namespace Valigator.Core
 			}
 		}
 
-		private static IEnumerable<PropertyInfo> GetExplicitValigatorProperties(Type type)
+		private static IEnumerable<PropertyInfo> GetExplicitProperties(Type type)
 		{
 			var currentType = type;
 			while (currentType != null)
 			{
 				var explicitProperties = currentType
 					.GetProperties(BindingFlags.NonPublic | BindingFlags.Instance)
-					.Where(p => IsExplicitInterfaceImplementation(p))
-					.Where(p => IsValigatorDataType(p.PropertyType));
+					.Where(p => IsExplicitInterfaceImplementation(p));
 
 				foreach (var property in currentType.GetProperties(BindingFlags.NonPublic | BindingFlags.Instance).Where(p => IsExplicitInterfaceImplementation(p)))
 					yield return property;
@@ -156,7 +240,7 @@ namespace Valigator.Core
 		private static bool IsExplicitInterfaceImplementation(PropertyInfo prop)
 			=> prop.Name.Contains(".");
 
-		private static Expression VerifyProperty(Expression modelExpression, PropertyInfo property)
+		private static Expression VerifyDataProperty(Expression modelExpression, PropertyInfo property)
 		{
 			var methods = GetVerifySupportMethods(property.PropertyType);
 
@@ -209,24 +293,30 @@ namespace Valigator.Core
 
 			var tryGetValue = dataType.GetMethod(nameof(Data<object>.TryGetValue), Type.EmptyTypes);
 
-			var isSuccess = typeof(Model<TModel>).GetMethod(nameof(IsSuccess), BindingFlags.NonPublic | BindingFlags.Static).MakeGenericMethod(valueType);
+			var isSuccess = typeof(Model<TModel>).GetMethod(nameof(IsResultSuccess), BindingFlags.NonPublic | BindingFlags.Static).MakeGenericMethod(valueType);
 
-			var getFailure = typeof(Model<TModel>).GetMethod(nameof(GetFailure), BindingFlags.NonPublic | BindingFlags.Static).MakeGenericMethod(valueType);
+			var getFailure = typeof(Model<TModel>).GetMethod(nameof(GetResultFailure), BindingFlags.NonPublic | BindingFlags.Static).MakeGenericMethod(valueType);
 
 			return (verify, tryGetValue, isSuccess, getFailure);
 		}
 
-		private static bool IsSuccess<TValue>(Result<TValue, ValidationError[]> result)
+		private static bool IsUnitResultSuccess(Result<Unit, ValidationError[]> result)
 			=> result.Match(_ => true, _ => false);
 
-		private static ValidationError[] GetFailure<TValue>(Result<TValue, ValidationError[]> result)
+		private static ValidationError[] GetUnitResultFailure(Result<Unit, ValidationError[]> result)
+			=> result.Match(_ => default, _ => _);
+
+		private static bool IsResultSuccess<TValue>(Result<TValue, ValidationError[]> result)
+			=> result.Match(_ => true, _ => false);
+
+		private static ValidationError[] GetResultFailure<TValue>(Result<TValue, ValidationError[]> result)
 			=> result.Match(_ => default, _ => _);
 
 		private static MethodInfo _addPathsToErrorsMethod;
 
 		private static ValidationError[] AddPropertyToErrors(ValidationError[] errors, string propertyName)
 		{
-			if (errors != null)
+			if (errors != null && !String.IsNullOrEmpty(propertyName))
 			{
 				foreach (var error in errors)
 					error.Path.AddProperty(propertyName);

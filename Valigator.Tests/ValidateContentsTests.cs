@@ -68,6 +68,22 @@ namespace Valigator.Tests
 				.Be(10);
 		}
 
+		[Fact]
+		public void ValidatesRecursively()
+		{
+			var model = new WrapperTestClass() { Value = new OuterTestClass(10) };
+
+			Model.Verify(model);
+
+			model
+				.Value
+				.PublicProperty
+				.Value
+				.Value
+				.Should()
+				.Be(10);
+		}
+
 		private class OuterTestClass
 		{
 			[ValidateContents]
@@ -103,6 +119,12 @@ namespace Valigator.Tests
 
 			public InnerTestClass(int value)
 				=> Value = Value.WithValue(value);
+		}
+
+		private class WrapperTestClass
+		{
+			[ValidateContents]
+			public OuterTestClass Value { get; set; }
 		}
 	}
 }
