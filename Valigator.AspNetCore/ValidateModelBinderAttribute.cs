@@ -23,7 +23,7 @@ namespace Valigator
 		public Type BinderType { get; }
 
 		/// <inheritdoc />
-		public BindingSource BindingSource { get; }
+		public virtual BindingSource BindingSource { get; }
 
 		/// <inheritdoc />
 		public async Task BindModelAsync(ModelBindingContext bindingContext)
