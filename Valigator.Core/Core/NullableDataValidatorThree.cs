@@ -27,7 +27,7 @@ namespace Valigator.Core
 					var twoValid = valueValidatorTwo?.IsValid(mappedValue) ?? true;
 					var threeValid = valueValidatorThree?.IsValid(mappedValue) ?? true;
 
-					return (!oneValid || !twoValid || !threeValid || error != null) ? new[] { !oneValid ? valueValidatorOne.GetError(mappedValue, false) : null, !twoValid ? valueValidatorTwo.GetError(mappedValue, false) : null, !threeValid ? valueValidatorThree.GetError(mappedValue, false) : null, error }.OfType<ValidationError>() : Enumerable.Empty<ValidationError>();
+					return (!oneValid || !twoValid || !threeValid || error != null) ? new[] { !oneValid ? valueValidatorOne.GetError(mappedValue, false) : null, !twoValid ? valueValidatorTwo.GetError(mappedValue, false) : null, !threeValid ? valueValidatorThree.GetError(mappedValue, false) : null, error }.OfType<ValidationError>() : null;
 				},
 				() => new[] { error }
 			);
