@@ -1,3 +1,5 @@
+// NOTE: GENERATED FILE //
+using Functional;
 using System;
 using System.Collections.Generic;
 using Valigator.Core;
@@ -9,7 +11,13 @@ namespace Valigator
 	public static class RequiredStateValidatorExtensions
 	{
 		public static MappedDataSource<RequiredStateValidator<TSource>, TSource, TValue> Map<TSource, TValue>(this RequiredStateValidator<TSource> source, Func<TSource, TValue> mapper)
-			=> new MappedDataSource<RequiredStateValidator<TSource>, TSource, TValue>(source, mapper);
+			=> new MappedDataSource<RequiredStateValidator<TSource>, TSource, TValue>(source, Mapping.Create(mapper));
+
+		public static MappedDataSource<RequiredStateValidator<TSource>, TSource, TValue> Map<TSource, TValue>(this RequiredStateValidator<TSource> source, Func<TSource, Result<TValue, ValidationError>> mapper, TValue defaultValue)
+			=> new MappedDataSource<RequiredStateValidator<TSource>, TSource, TValue>(source, Mapping.Create(mapper, defaultValue));
+
+		public static MappedDataSource<RequiredStateValidator<TSource>, TSource, TValue> Map<TSource, TValue>(this RequiredStateValidator<TSource> source, Func<TSource, Result<TValue, ValidationError>> mapper)
+			=> new MappedDataSource<RequiredStateValidator<TSource>, TSource, TValue>(source, Mapping.Create(mapper));
 
 		public static DataSourceInverted<RequiredStateValidator<TSource>, TValueValidator, TSource, TValue> Not<TSource, TValueValidator, TValue>(this RequiredStateValidator<TSource> source, Func<RequiredStateValidator<TSource>, DataSourceStandard<RequiredStateValidator<TSource>, TValueValidator, TSource, TValue>> validatorFactory)
 			where TValueValidator : IValueValidator<TValue>

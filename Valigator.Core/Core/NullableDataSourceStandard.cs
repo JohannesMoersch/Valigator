@@ -12,11 +12,11 @@ namespace Valigator.Core
 		private readonly TStateValidator _stateValidator;
 		private readonly TValueValidatorOne _valueValidatorOne;
 
-		private readonly Func<TSource, TValue> _mapper;
+		private readonly Mapping<TSource, TValue> _mapper;
 
 		public Data<Option<TSource>> Data => new Data<Option<TSource>>(new NullableDataValidator<TStateValidator, TValueValidatorOne, TSource, TValue>(_stateValidator, _valueValidatorOne, _mapper));
 
-		public NullableDataSourceStandard(TStateValidator stateValidator, TValueValidatorOne valueValidatorOne, Func<TSource, TValue> mapper)
+		public NullableDataSourceStandard(TStateValidator stateValidator, TValueValidatorOne valueValidatorOne, Mapping<TSource, TValue> mapper)
 		{
 			_stateValidator = stateValidator;
 			_valueValidatorOne = valueValidatorOne;

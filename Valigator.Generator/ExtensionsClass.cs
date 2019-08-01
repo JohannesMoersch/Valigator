@@ -9,7 +9,9 @@ namespace Valigator.Generator
 	public static class ExtensionsClass
 	{
 		private static readonly string _header =
-@"using System;
+@"// NOTE: GENERATED FILE //
+using Functional;
+using System;
 using System.Collections.Generic;
 using Valigator.Core;
 using Valigator.Core.StateValidators;

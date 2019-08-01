@@ -10,7 +10,15 @@ namespace Valigator.Generator
 	{
 		private static readonly string _mapExtensionTemplate =
 @"		public static Mapped__Nullable__DataSource<__StateValidator__, __TSourceType__, __TValueType__> Map__GenericParameters__(this __StateValidator__ source, Func<__TSourceType__, __TValueType__> mapper)
-			=> new Mapped__Nullable__DataSource<__StateValidator__, __TSourceType__, __TValueType__>(source, mapper);";
+			=> new Mapped__Nullable__DataSource<__StateValidator__, __TSourceType__, __TValueType__>(source, Mapping.Create(mapper));";
+
+		private static readonly string _mapExtensionTemplate2 =
+@"		public static Mapped__Nullable__DataSource<__StateValidator__, __TSourceType__, __TValueType__> Map__GenericParameters__(this __StateValidator__ source, Func<__TSourceType__, Result<__TValueType__, ValidationError>> mapper, __TValueType__ defaultValue)
+			=> new Mapped__Nullable__DataSource<__StateValidator__, __TSourceType__, __TValueType__>(source, Mapping.Create(mapper, defaultValue));";
+
+		private static readonly string _mapExtensionTemplate3 =
+@"		public static Mapped__Nullable__DataSource<__StateValidator__, __TSourceType__, __TValueType__> Map__GenericParameters__(this __StateValidator__ source, Func<__TSourceType__, Result<__TValueType__, ValidationError>> mapper)
+			=> new Mapped__Nullable__DataSource<__StateValidator__, __TSourceType__, __TValueType__>(source, Mapping.Create(mapper));";
 
 		private static readonly string _mappedExtensionTemplate =
 @"		public static __Nullable__DataSource__Inverted__<__StateValidator__, __NewValueValidator__, __TSourceType__, __TValueType__> __ExtensionName____GenericParameters__(this Mapped__Nullable__DataSource<__StateValidator__, __TSourceType__, __TValueType__> source__ExtensionParameters__)
@@ -75,7 +83,11 @@ namespace Valigator.Generator
 		public static IEnumerable<string> GenerateMapExtension(SourceDefinition sourceDefinition)
 		{
 			if (sourceDefinition.ValueType == ValueType.Value)
+			{
 				yield return PopulateTemplate(_mapExtensionTemplate, sourceDefinition, "TValue", new[] { "TValue" }, null, null, null, false, false);
+				yield return PopulateTemplate(_mapExtensionTemplate2, sourceDefinition, "TValue", new[] { "TValue" }, null, null, null, false, false);
+				yield return PopulateTemplate(_mapExtensionTemplate3, sourceDefinition, "TValue", new[] { "TValue" }, null, null, null, false, false);
+			}
 		}
 
 		public static IEnumerable<string> GenerateExtensionOne(SourceDefinition sourceDefinition, Option<string> dataType, ExtensionDefinition extension)

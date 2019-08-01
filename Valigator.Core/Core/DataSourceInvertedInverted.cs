@@ -14,11 +14,11 @@ namespace Valigator.Core
 		private readonly TValueValidatorOne _valueValidatorOne;
 		private readonly TValueValidatorTwo _valueValidatorTwo;
 
-		private readonly Func<TSource, TValue> _mapper;
+		private readonly Mapping<TSource, TValue> _mapper;
 
 		public Data<TSource> Data => new Data<TSource>(new DataValidator<TStateValidator, InvertValidator<TValueValidatorOne, TValue>, InvertValidator<TValueValidatorTwo, TValue>, TSource, TValue>(_stateValidator, new InvertValidator<TValueValidatorOne, TValue>(_valueValidatorOne), new InvertValidator<TValueValidatorTwo, TValue>(_valueValidatorTwo), _mapper));
 
-		public DataSourceInvertedInverted(TStateValidator stateValidator, TValueValidatorOne valueValidatorOne, TValueValidatorTwo valueValidatorTwo, Func<TSource, TValue> mapper)
+		public DataSourceInvertedInverted(TStateValidator stateValidator, TValueValidatorOne valueValidatorOne, TValueValidatorTwo valueValidatorTwo, Mapping<TSource, TValue> mapper)
 		{
 			_stateValidator = stateValidator;
 			_valueValidatorOne = valueValidatorOne;

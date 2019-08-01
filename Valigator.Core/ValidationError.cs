@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text;
 using Valigator.Core;
-using Valigator.Core.ValueDescriptors;
 
 namespace Valigator
 {
@@ -19,5 +17,8 @@ namespace Valigator
 			Message = message;
 			ValueDescriptor = valueDescriptor;
 		}
+
+		public static ValidationError Create(string message)
+			=> new ValidationError(message, null);
 	}
 }

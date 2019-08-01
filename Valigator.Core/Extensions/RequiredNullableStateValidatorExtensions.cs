@@ -1,3 +1,5 @@
+// NOTE: GENERATED FILE //
+using Functional;
 using System;
 using System.Collections.Generic;
 using Valigator.Core;
@@ -9,7 +11,13 @@ namespace Valigator
 	public static class RequiredNullableStateValidatorExtensions
 	{
 		public static MappedNullableDataSource<RequiredNullableStateValidator<TSource>, TSource, TValue> Map<TSource, TValue>(this RequiredNullableStateValidator<TSource> source, Func<TSource, TValue> mapper)
-			=> new MappedNullableDataSource<RequiredNullableStateValidator<TSource>, TSource, TValue>(source, mapper);
+			=> new MappedNullableDataSource<RequiredNullableStateValidator<TSource>, TSource, TValue>(source, Mapping.Create(mapper));
+
+		public static MappedNullableDataSource<RequiredNullableStateValidator<TSource>, TSource, TValue> Map<TSource, TValue>(this RequiredNullableStateValidator<TSource> source, Func<TSource, Result<TValue, ValidationError>> mapper, TValue defaultValue)
+			=> new MappedNullableDataSource<RequiredNullableStateValidator<TSource>, TSource, TValue>(source, Mapping.Create(mapper, defaultValue));
+
+		public static MappedNullableDataSource<RequiredNullableStateValidator<TSource>, TSource, TValue> Map<TSource, TValue>(this RequiredNullableStateValidator<TSource> source, Func<TSource, Result<TValue, ValidationError>> mapper)
+			=> new MappedNullableDataSource<RequiredNullableStateValidator<TSource>, TSource, TValue>(source, Mapping.Create(mapper));
 
 		public static NullableDataSourceInverted<RequiredNullableStateValidator<TSource>, TValueValidator, TSource, TValue> Not<TSource, TValueValidator, TValue>(this RequiredNullableStateValidator<TSource> source, Func<RequiredNullableStateValidator<TSource>, NullableDataSourceStandard<RequiredNullableStateValidator<TSource>, TValueValidator, TSource, TValue>> validatorFactory)
 			where TValueValidator : IValueValidator<TValue>
