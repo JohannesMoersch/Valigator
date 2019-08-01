@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using FluentAssertions;
+using Functional;
 using Valigator;
 using Xunit;
 
@@ -56,5 +57,15 @@ namespace Valigator.Tests
 		[Fact]
 		public void ValueSetAndVerifiedGetDataDescriptor()
 			=> Data.Required<int>().Data.WithValue(5).Verify(new object()).DataDescriptor.Should().NotBeNull();
+
+		[Fact]
+		public void Test()
+		{
+			Data<(int Item1, int Item2)> v = Data.Required<(int Item1, int Item2)>().MapWithErrorAndDefault(x => 
+			{
+				return Result.Success<int, MappingError>(x.Item1);
+			}, -1);
+			var verify = v.Verify(new object());
+		}
 	}
 }
