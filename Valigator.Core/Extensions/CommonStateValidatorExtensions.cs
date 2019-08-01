@@ -18,7 +18,7 @@ namespace Valigator
 
 		public static DataSourceStandard<DefaultedCollectionStateValidator<TValue>, TValueValidator, TValue[], TValue[]> Add<TValueValidator, TValue>(this DefaultedCollectionStateValidator<TValue> defaultedCollection, TValueValidator valueValidator)
 			where TValueValidator : IValueValidator<TValue[]>
-			=> new DataSourceStandard<DefaultedCollectionStateValidator<TValue>, TValueValidator, TValue[], TValue[]>(defaultedCollection, valueValidator, _ => _);
+			=> new DataSourceStandard<DefaultedCollectionStateValidator<TValue>, TValueValidator, TValue[], TValue[]>(defaultedCollection, valueValidator, Mapping.Create<TValue[], TValue[]>(_ => _));
 
 		// Optional Nullable Collection
 
@@ -42,7 +42,7 @@ namespace Valigator
 
 		public static DataSourceStandard<RequiredCollectionStateValidator<TValue>, TValueValidator, TValue[], TValue[]> Add<TValueValidator, TValue>(this RequiredCollectionStateValidator<TValue> requiredCollection, TValueValidator valueValidator)
 			where TValueValidator : IValueValidator<TValue[]>
-			=> new DataSourceStandard<RequiredCollectionStateValidator<TValue>, TValueValidator, TValue[], TValue[]>(requiredCollection, valueValidator, _ => _);
+			=> new DataSourceStandard<RequiredCollectionStateValidator<TValue>, TValueValidator, TValue[], TValue[]>(requiredCollection, valueValidator, Mapping.Create<TValue[], TValue[]>(_ => _));
 
 		// Defaulted Nullable
 
@@ -54,7 +54,7 @@ namespace Valigator
 
 		public static DataSourceStandard<DefaultedStateValidator<TValue>, TValueValidator, TValue, TValue> Add<TValueValidator, TValue>(this DefaultedStateValidator<TValue> defaulted, TValueValidator valueValidator)
 			where TValueValidator : IValueValidator<TValue>
-			=> new DataSourceStandard<DefaultedStateValidator<TValue>, TValueValidator, TValue, TValue>(defaulted, valueValidator, _ => _);
+			=> new DataSourceStandard<DefaultedStateValidator<TValue>, TValueValidator, TValue, TValue>(defaulted, valueValidator, Mapping.Create<TValue, TValue>(_ => _));
 
 		// Optional Nullable
 
@@ -78,6 +78,6 @@ namespace Valigator
 
 		public static DataSourceStandard<RequiredStateValidator<TValue>, TValueValidator, TValue, TValue> Add<TValueValidator, TValue>(this RequiredStateValidator<TValue> required, TValueValidator valueValidator)
 			where TValueValidator : IValueValidator<TValue>
-			=> new DataSourceStandard<RequiredStateValidator<TValue>, TValueValidator, TValue, TValue>(required, valueValidator, _ => _);
+			=> new DataSourceStandard<RequiredStateValidator<TValue>, TValueValidator, TValue, TValue>(required, valueValidator, Mapping.Create<TValue, TValue>(_ => _));
 	}
 }

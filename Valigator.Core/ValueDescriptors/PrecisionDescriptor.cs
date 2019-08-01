@@ -10,17 +10,17 @@ namespace Valigator.Core.ValueDescriptors
 		public Option<decimal> MinimumDecimalPlaces { get; }
 
 		public Option<decimal> MaximumDecimalPlaces { get; }
-		
+
 		public PrecisionDescriptor(Option<decimal> minimumDecimalPlaces, Option<decimal> maximumDecimalPlaces)
 		{
 			MinimumDecimalPlaces = minimumDecimalPlaces;
 			MaximumDecimalPlaces = maximumDecimalPlaces;
 		}
 
-		public override bool Equals(object obj) 
+		public override bool Equals(object obj)
 			=> Equals(obj as PrecisionDescriptor);
 
-		public bool Equals(PrecisionDescriptor other) 
+		public bool Equals(PrecisionDescriptor other)
 			=> other != null && EqualityComparer<Option<decimal>>.Default.Equals(MinimumDecimalPlaces, other.MinimumDecimalPlaces) && EqualityComparer<Option<decimal>>.Default.Equals(MaximumDecimalPlaces, other.MaximumDecimalPlaces);
 
 		public bool Equals(IValueDescriptor other)

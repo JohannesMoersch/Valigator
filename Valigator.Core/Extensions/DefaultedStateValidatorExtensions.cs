@@ -1,3 +1,4 @@
+using Functional;
 using System;
 using System.Collections.Generic;
 using Valigator.Core;
@@ -9,7 +10,10 @@ namespace Valigator
 	public static class DefaultedStateValidatorExtensions
 	{
 		public static MappedDataSource<DefaultedStateValidator<TSource>, TSource, TValue> Map<TSource, TValue>(this DefaultedStateValidator<TSource> source, Func<TSource, TValue> mapper)
-			=> new MappedDataSource<DefaultedStateValidator<TSource>, TSource, TValue>(source, mapper);
+			=> new MappedDataSource<DefaultedStateValidator<TSource>, TSource, TValue>(source, Mapping.Create(mapper));
+
+		public static MappedDataSource<DefaultedStateValidator<TSource>, TSource, TValue> MapWithErrorAndDefault<TSource, TValue>(this DefaultedStateValidator<TSource> source, Func<TSource, Result<TValue, MappingError>> mapper, TValue defaultValue)
+			=> new MappedDataSource<DefaultedStateValidator<TSource>, TSource, TValue>(source, Mapping.Create(mapper, defaultValue));
 
 		public static DataSourceInverted<DefaultedStateValidator<TSource>, TValueValidator, TSource, TValue> Not<TSource, TValueValidator, TValue>(this DefaultedStateValidator<TSource> source, Func<DefaultedStateValidator<TSource>, DataSourceStandard<DefaultedStateValidator<TSource>, TValueValidator, TSource, TValue>> validatorFactory)
 			where TValueValidator : IValueValidator<TValue>

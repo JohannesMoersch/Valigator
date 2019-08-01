@@ -18,9 +18,9 @@ namespace Valigator.Core
 
 		private readonly TValueValidatorOne _valueValidatorOne;
 
-		private readonly Func<TSource, TValue> _mapper;
+		private readonly Mapping<TSource, TValue> _mapper;
 
-		public DataValidator(TStateValidator stateValidator, TValueValidatorOne valueValidatorOne, Func<TSource, TValue> mapper)
+		public DataValidator(TStateValidator stateValidator, TValueValidatorOne valueValidatorOne, Mapping<TSource, TValue> mapper)
 		{
 			_stateValidator = stateValidator;
 			_valueValidatorOne = valueValidatorOne;
@@ -31,13 +31,16 @@ namespace Valigator.Core
 		{
 			if (_stateValidator.Validate(model, isSet, value).TryGetValue(out var success, out var failure))
 			{
-				var mappedValue = _mapper.Invoke(success);
+				var (valueOption, error) = _mapper.Map(success);
 
-				var oneValid = _valueValidatorOne.IsValid(mappedValue);
-
-				IEnumerable<ValidationError> errors = null;
-				if (!oneValid)
-					errors = new[] { !oneValid ? _valueValidatorOne.GetError(mappedValue, false) : null }.OfType<ValidationError>();
+				var errors = valueOption.Match(
+					mappedValue =>
+					{
+						var oneValid = _valueValidatorOne.IsValid(mappedValue);
+						return (!oneValid || error != null) ? new[] { !oneValid ? _valueValidatorOne.GetError(mappedValue, false) : null, error }.OfType<ValidationError>() : Enumerable.Empty<ValidationError>();
+					},
+					() => new[] { error }
+				);
 
 				if (Model.Verify(success).TryGetValue(out var _, out var modelErrors))
 					return errors == null ? Result.Success<TSource, ValidationError[]>(success) : Result.Failure<TSource, ValidationError[]>(errors.ToArray());
