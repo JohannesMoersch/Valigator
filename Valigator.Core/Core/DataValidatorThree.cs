@@ -38,25 +38,7 @@ namespace Valigator.Core
 		public Result<TSource, ValidationError[]> Validate(object model, bool isSet, TSource value)
 		{
 			if (_stateValidator.Validate(model, isSet, value).TryGetValue(out var success, out var failure))
-			{
-				var (valueOption, error) = _mapper.Map(success);
-
-				var errors = valueOption.Match(
-					mappedValue =>
-					{
-						var oneValid = _valueValidatorOne.IsValid(mappedValue);
-						var twoValid = _valueValidatorTwo.IsValid(mappedValue);
-						var threeValid = _valueValidatorThree.IsValid(mappedValue);
-						return (!oneValid || !twoValid || !threeValid || error != null) ? new[] { !oneValid ? _valueValidatorOne.GetError(mappedValue, false) : null, !twoValid ? _valueValidatorTwo.GetError(mappedValue, false) : null, !threeValid ? _valueValidatorThree.GetError(mappedValue, false) : null, error }.OfType<ValidationError>() : Enumerable.Empty<ValidationError>();
-					},
-					() => new[] { error }
-				);
-
-				if (Model.Verify(success).TryGetValue(out var _, out var modelErrors))
-					return errors == null ? Result.Success<TSource, ValidationError[]>(success) : Result.Failure<TSource, ValidationError[]>(errors.ToArray());
-
-				return Result.Failure<TSource, ValidationError[]>(modelErrors.Concat(errors ?? Enumerable.Empty<ValidationError>()).ToArray());
-			}
+				return ValidatorHelpers.Validate(success, success, _valueValidatorOne, _valueValidatorTwo, _valueValidatorThree, _mapper);
 
 			return Result.Failure<TSource, ValidationError[]>(failure);
 		}

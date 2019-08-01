@@ -8,6 +8,37 @@ using Valigator.Core.ValueDescriptors;
 
 namespace Valigator.Core
 {
+	internal static class ValidatorHelpers
+	{
+		public static Result<TInput, ValidationError[]> Validate<TInput, TSource, TValue>(TInput success, TSource some, IValueValidator<TValue> valueValidatorOne, Mapping<TSource, TValue> mapper)
+			=> Validate(success, some, valueValidatorOne, null, null, mapper);
+
+		public static Result<TInput, ValidationError[]> Validate<TInput, TSource, TValue>(TInput success, TSource some, IValueValidator<TValue> valueValidatorOne, IValueValidator<TValue> valueValidatorTwo, Mapping<TSource, TValue> mapper)
+			=> Validate(success, some, valueValidatorOne, valueValidatorTwo, null, mapper);
+
+		public static Result<TInput, ValidationError[]> Validate<TInput, TSource, TValue>(TInput success, TSource some, IValueValidator<TValue> valueValidatorOne, IValueValidator<TValue> valueValidatorTwo, IValueValidator<TValue> valueValidatorThree, Mapping<TSource, TValue> mapper)
+		{
+			var (valueOption, error) = mapper.Map(some);
+
+			var errors = valueOption.Match(
+				mappedValue =>
+				{
+					var oneValid = valueValidatorOne?.IsValid(mappedValue) ?? true;
+					var twoValid = valueValidatorTwo?.IsValid(mappedValue) ?? true;
+					var threeValid = valueValidatorThree?.IsValid(mappedValue) ?? true;
+
+					return (!oneValid || !twoValid || !threeValid || error != null) ? new[] { !oneValid ? valueValidatorOne.GetError(mappedValue, false) : null, !twoValid ? valueValidatorTwo.GetError(mappedValue, false) : null, !threeValid ? valueValidatorThree.GetError(mappedValue, false) : null, error }.OfType<ValidationError>() : Enumerable.Empty<ValidationError>();
+				},
+				() => new[] { error }
+			);
+
+			if (Model.Verify(some).TryGetValue(out var _, out var modelErrors))
+				return errors == null ? Result.Success<TInput, ValidationError[]>(success) : Result.Failure<TInput, ValidationError[]>(errors.ToArray());
+
+			return Result.Failure<TInput, ValidationError[]>(modelErrors.Concat(errors ?? Enumerable.Empty<ValidationError>()).ToArray());
+		}
+	}
+
 	public class NullableDataValidator<TStateValidator, TValueValidatorOne, TValueValidatorTwo, TValueValidatorThree, TSource, TValue> : IDataValidatorOrErrors<Option<TSource>>
 		where TStateValidator : IStateValidator<Option<TSource>>
 		where TValueValidatorOne : IValueValidator<TValue>
@@ -24,9 +55,9 @@ namespace Valigator.Core
 
 		private readonly TValueValidatorThree _valueValidatorThree;
 
-		private readonly Func<TSource, TValue> _mapper;
+		private readonly Mapping<TSource, TValue> _mapper;
 
-		public NullableDataValidator(TStateValidator stateValidator, TValueValidatorOne valueValidatorOne, TValueValidatorTwo valueValidatorTwo, TValueValidatorThree valueValidatorThree, Func<TSource, TValue> mapper)
+		public NullableDataValidator(TStateValidator stateValidator, TValueValidatorOne valueValidatorOne, TValueValidatorTwo valueValidatorTwo, TValueValidatorThree valueValidatorThree, Mapping<TSource, TValue> mapper)
 		{
 			_stateValidator = stateValidator;
 			_valueValidatorOne = valueValidatorOne;
@@ -42,20 +73,7 @@ namespace Valigator.Core
 				if (!success.TryGetValue(out var some))
 					return Result.Success<Option<TSource>, ValidationError[]>(success);
 
-				var mappedValue = _mapper.Invoke(some);
-
-				var oneValid = _valueValidatorOne.IsValid(mappedValue);
-				var twoValid = _valueValidatorTwo.IsValid(mappedValue);
-				var threeValid = _valueValidatorThree.IsValid(mappedValue);
-
-				IEnumerable<ValidationError> errors = null;
-				if (!oneValid || !twoValid || !threeValid)
-					errors = new[] { !oneValid ? _valueValidatorOne.GetError(mappedValue, false) : null, !twoValid ? _valueValidatorTwo.GetError(mappedValue, false) : null, !threeValid ? _valueValidatorThree.GetError(mappedValue, false) : null }.OfType<ValidationError>();
-
-				if (Model.Verify(some).TryGetValue(out var _, out var modelErrors))
-					return errors == null ? Result.Success<Option<TSource>, ValidationError[]>(success) : Result.Failure<Option<TSource>, ValidationError[]>(errors.ToArray());
-
-				return Result.Failure<Option<TSource>, ValidationError[]>(modelErrors.Concat(errors ?? Enumerable.Empty<ValidationError>()).ToArray());
+				return ValidatorHelpers.Validate(success, some, _valueValidatorOne, _valueValidatorTwo, _valueValidatorThree, _mapper);
 			}
 
 			return Result.Failure<Option<TSource>, ValidationError[]>(failure);

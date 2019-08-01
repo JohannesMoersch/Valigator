@@ -1,3 +1,4 @@
+using Functional;
 using System;
 using System.Collections.Generic;
 using Valigator.Core;
@@ -9,7 +10,13 @@ namespace Valigator
 	public static class OptionalNullableStateValidatorExtensions
 	{
 		public static MappedNullableDataSource<OptionalNullableStateValidator<TSource>, TSource, TValue> Map<TSource, TValue>(this OptionalNullableStateValidator<TSource> source, Func<TSource, TValue> mapper)
-			=> new MappedNullableDataSource<OptionalNullableStateValidator<TSource>, TSource, TValue>(source, mapper);
+			=> new MappedNullableDataSource<OptionalNullableStateValidator<TSource>, TSource, TValue>(source, Mapping.Create(mapper));
+
+		public static MappedNullableDataSource<OptionalNullableStateValidator<TSource>, TSource, TValue> Map<TSource, TValue>(this OptionalNullableStateValidator<TSource> source, Func<TSource, Result<TValue, ValidationError>> mapper, TValue defaultValue)
+			=> new MappedNullableDataSource<OptionalNullableStateValidator<TSource>, TSource, TValue>(source, Mapping.Create(mapper, defaultValue));
+
+		public static MappedNullableDataSource<OptionalNullableStateValidator<TSource>, TSource, TValue> Map<TSource, TValue>(this OptionalNullableStateValidator<TSource> source, Func<TSource, Result<TValue, ValidationError>> mapper)
+			=> new MappedNullableDataSource<OptionalNullableStateValidator<TSource>, TSource, TValue>(source, Mapping.Create(mapper));
 
 		public static NullableDataSourceInverted<OptionalNullableStateValidator<TSource>, TValueValidator, TSource, TValue> Not<TSource, TValueValidator, TValue>(this OptionalNullableStateValidator<TSource> source, Func<OptionalNullableStateValidator<TSource>, NullableDataSourceStandard<OptionalNullableStateValidator<TSource>, TValueValidator, TSource, TValue>> validatorFactory)
 			where TValueValidator : IValueValidator<TValue>

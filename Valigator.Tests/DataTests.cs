@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using FluentAssertions;
-using Functional;
 using Valigator;
-using Valigator.Core;
 using Xunit;
 
 namespace Valigator.Tests
@@ -58,17 +56,5 @@ namespace Valigator.Tests
 		[Fact]
 		public void ValueSetAndVerifiedGetDataDescriptor()
 			=> Data.Required<int>().Data.WithValue(5).Verify(new object()).DataDescriptor.Should().NotBeNull();
-
-		[Fact]
-		public void MapWithErrorAndDefaultShouldNotBeValidBecauseFailureResult()
-			=> Data.Required<int>().Map(x => Result.Failure<int, MappingError>(MappingError.Create("An error for the ages")), -1).InRange(1).Data.WithValue(500).Verify(new object()).State.Should().Be(DataState.Invalid);
-
-		[Fact]
-		public void MapWithErrorAndDefaultShouldBeValidBecauseSuccessResult()
-			=> Data.Required<(int Item1, int Item2)>().Map(x => Result.Success<int, MappingError>(50), -1).InRange(1).Data.WithValue((100, 200)).Verify(new object()).State.Should().Be(DataState.Valid);
-
-		[Fact]
-		public void MapWithErrorAndDefaultShouldBeNotBeValidDespiteDefaultIsValid()
-			=> Data.Required<(int Item1, int Item2)>().Map(x => Result.Failure<int, MappingError>(MappingError.Create("An error for the ages")), 50).InRange(1).Data.WithValue((100, 200)).Verify(new object()).State.Should().Be(DataState.Invalid);
 	}
 }
