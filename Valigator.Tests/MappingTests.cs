@@ -126,46 +126,60 @@ namespace Valigator.Tests
 
 		public class Defaulted
 		{
-			private static IStateValidator<T> CreateData<T>(T value) => Data.Defaulted<T>(value);
+			private static DefaultedStateValidator<T> CreateData<T>(T value) => Data.Defaulted<T>(value);
 
 			[Fact]
 			public void InvalidBecauseFailureResult()
-				=> CreateData<int>().Map(x => Result.Failure<int, ValidationError>(MappingError.Create("An error for the ages", typeof(int), typeof(int))), -1).InRange(1).Data.WithValue(500).Verify(new object()).State.Should().Be(DataState.Invalid);
+				=> CreateData<int>(7).Map(x => Result.Failure<int, ValidationError>(MappingError.Create("An error for the ages", typeof(int), typeof(int))), -1).InRange(1).Data.WithValue(500).Verify(new object()).State.Should().Be(DataState.Invalid);
 
 			[Fact]
 			public void InvalidBecauseFailureResultAndNoDefault()
-				=> CreateData<int>().Map(x => Result.Failure<int, ValidationError>(MappingError.Create("An error for the ages", typeof(int), typeof(int)))).InRange(1).Data.WithValue(500).Verify(new object()).State.Should().Be(DataState.Invalid);
+				=> CreateData<int>(7).Map(x => Result.Failure<int, ValidationError>(MappingError.Create("An error for the ages", typeof(int), typeof(int)))).InRange(1).Data.WithValue(500).Verify(new object()).State.Should().Be(DataState.Invalid);
 
 			[Fact]
 			public void ValidBecauseSuccessResult()
-				=> CreateData<(int Item1, int Item2)>().Map(x => Result.Success<int, ValidationError>(50), -1).InRange(1).Data.WithValue((100, 200)).Verify(new object()).State.Should().Be(DataState.Valid);
+				=> CreateData<(int Item1, int Item2)>((7, 7)).Map(x => Result.Success<int, ValidationError>(50), -1).InRange(1).Data.WithValue((100, 200)).Verify(new object()).State.Should().Be(DataState.Valid);
 
 			[Fact]
 			public void ValidBecauseSuccessResultWhenNoDefault()
-				=> CreateData<(int Item1, int Item2)>().Map(x => Result.Success<int, ValidationError>(50)).InRange(1).Data.WithValue((100, 200)).Verify(new object()).State.Should().Be(DataState.Valid);
+				=> CreateData<(int Item1, int Item2)>((7, 7)).Map(x => Result.Success<int, ValidationError>(50)).InRange(1).Data.WithValue((100, 200)).Verify(new object()).State.Should().Be(DataState.Valid);
 
 			[Fact]
 			public void ValidBecauseNormal()
-				=> CreateData<(int Item1, int Item2)>().Map(x => 50).InRange(1).Data.WithValue((100, 200)).Verify(new object()).State.Should().Be(DataState.Valid);
+				=> CreateData<(int Item1, int Item2)>((7, 7)).Map(x => 50).InRange(1).Data.WithValue((100, 200)).Verify(new object()).State.Should().Be(DataState.Valid);
 
 			[Fact]
 			public void InvalidDespiteDefaultIsValid()
-				=> CreateData<(int Item1, int Item2)>().Map(x => Result.Failure<int, ValidationError>(MappingError.Create("An error for the ages", typeof((int, int)), typeof(int))), 50).InRange(1).Data.WithValue((100, 200)).Verify(new object()).State.Should().Be(DataState.Invalid);
+				=> CreateData<(int Item1, int Item2)>((7,7)).Map(x => Result.Failure<int, ValidationError>(MappingError.Create("An error for the ages", typeof((int, int)), typeof(int))), 50).InRange(1).Data.WithValue((100, 200)).Verify(new object()).State.Should().Be(DataState.Invalid);
 		}
 
 		public class DefaultedNullable
 		{
-			[Fact]
-			public void MapWithErrorAndDefaultShouldNotBeValidBecauseFailureResult()
-			=> Data.Defaulted<int>().Nullable().Map(x => Result.Failure<int, ValidationError>(MappingError.Create("An error for the ages", typeof(int), typeof(int))), -1).InRange(1).Data.WithValue(500).Verify(new object()).State.Should().Be(DataState.Invalid);
+			private static DefaultedNullableStateValidator<T> CreateData<T>(T value) => Data.Defaulted<T>(value).Nullable();
 
 			[Fact]
-			public void MapWithErrorAndDefaultShouldBeValidBecauseSuccessResult()
-				=> Data.Defaulted<(int Item1, int Item2)>().Nullable().Map(x => Result.Success<int, ValidationError>(50), -1).InRange(1).Data.WithValue((100, 200)).Verify(new object()).State.Should().Be(DataState.Valid);
+			public void InvalidBecauseFailureResult()
+				=> CreateData<int>(7).Map(x => Result.Failure<int, ValidationError>(MappingError.Create("An error for the ages", typeof(int), typeof(int))), -1).InRange(1).Data.WithValue(500).Verify(new object()).State.Should().Be(DataState.Invalid);
 
 			[Fact]
-			public void MapWithErrorAndDefaultShouldBeNotBeValidDespiteDefaultIsValid()
-				=> Data.Defaulted<(int Item1, int Item2)>().Nullable().Map(x => Result.Failure<int, ValidationError>(MappingError.Create("An error for the ages", typeof((int, int)), typeof(int))), 50).InRange(1).Data.WithValue((100, 200)).Verify(new object()).State.Should().Be(DataState.Invalid);
+			public void InvalidBecauseFailureResultAndNoDefault()
+				=> CreateData<int>(7).Map(x => Result.Failure<int, ValidationError>(MappingError.Create("An error for the ages", typeof(int), typeof(int)))).InRange(1).Data.WithValue(500).Verify(new object()).State.Should().Be(DataState.Invalid);
+
+			[Fact]
+			public void ValidBecauseSuccessResult()
+				=> CreateData<(int Item1, int Item2)>((7, 7)).Map(x => Result.Success<int, ValidationError>(50), -1).InRange(1).Data.WithValue((100, 200)).Verify(new object()).State.Should().Be(DataState.Valid);
+
+			[Fact]
+			public void ValidBecauseSuccessResultWhenNoDefault()
+				=> CreateData<(int Item1, int Item2)>((7, 7)).Map(x => Result.Success<int, ValidationError>(50)).InRange(1).Data.WithValue((100, 200)).Verify(new object()).State.Should().Be(DataState.Valid);
+
+			[Fact]
+			public void ValidBecauseNormal()
+				=> CreateData<(int Item1, int Item2)>((7, 7)).Map(x => 50).InRange(1).Data.WithValue((100, 200)).Verify(new object()).State.Should().Be(DataState.Valid);
+
+			[Fact]
+			public void InvalidDespiteDefaultIsValid()
+				=> CreateData<(int Item1, int Item2)>((7, 7)).Map(x => Result.Failure<int, ValidationError>(MappingError.Create("An error for the ages", typeof((int, int)), typeof(int))), 50).InRange(1).Data.WithValue((100, 200)).Verify(new object()).State.Should().Be(DataState.Invalid);
 		}
 	}
 }

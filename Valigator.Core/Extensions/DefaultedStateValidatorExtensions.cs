@@ -1,3 +1,4 @@
+// NOTE: GENERATED FILE //
 using Functional;
 using System;
 using System.Collections.Generic;
@@ -17,9 +18,6 @@ namespace Valigator
 
 		public static MappedDataSource<DefaultedStateValidator<TSource>, TSource, TValue> Map<TSource, TValue>(this DefaultedStateValidator<TSource> source, Func<TSource, Result<TValue, ValidationError>> mapper)
 			=> new MappedDataSource<DefaultedStateValidator<TSource>, TSource, TValue>(source, Mapping.Create(mapper));
-
-		public static MappedDataSource<DefaultedStateValidator<TSource>, TSource, TValue> MapWithErrorAndDefault<TSource, TValue>(this DefaultedStateValidator<TSource> source, Func<TSource, Result<TValue, ValidationError>> mapper, TValue defaultValue)
-			=> new MappedDataSource<DefaultedStateValidator<TSource>, TSource, TValue>(source, Mapping.Create(mapper, defaultValue));
 
 		public static DataSourceInverted<DefaultedStateValidator<TSource>, TValueValidator, TSource, TValue> Not<TSource, TValueValidator, TValue>(this DefaultedStateValidator<TSource> source, Func<DefaultedStateValidator<TSource>, DataSourceStandard<DefaultedStateValidator<TSource>, TValueValidator, TSource, TValue>> validatorFactory)
 			where TValueValidator : IValueValidator<TValue>
