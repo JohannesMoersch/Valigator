@@ -22,7 +22,7 @@ namespace Valigator.Tests.AspNetCore
 	{
 		private const string _invalidDespiteBeingInRange = "4";
 
-		public class TestOptionValidateModelBinderAttribute : ValidateModelBinderAttribute, IValidateType<Option<int>>
+		public class TestNullableValidateModelBinderAttribute : ValidateModelBinderAttribute, IValidateType<Option<int>>
 		{
 			public override async Task<Result<Option<object>, ValidationError[]>> BindModel(ModelBindingContext bindingContext)
 				=> (await Result.TryAsync(
@@ -45,7 +45,7 @@ namespace Valigator.Tests.AspNetCore
 				.Match(_ => _, f => f);
 
 
-			public Data<Option<int>> GetData() => Data.Optional<int>().InRange(greaterThan: -5, lessThan: 10);
+			public Data<Option<int>> GetData() => Data.Required<int>().Nullable().InRange(greaterThan: -5, lessThan: 10);
 		}
 
 		public class TestValidateModelBinderAttribute : ValidateModelBinderAttribute, IValidateType<int>
@@ -107,7 +107,7 @@ namespace Valigator.Tests.AspNetCore
 			[InlineData(null, "")]
 			public async Task ProducesError(string value, string errorMessage)
 			{
-				var context = new TestModelBindingContext(value);
+				var context = new TestModelBindingContext(value, "theName");
 				await new TestValidateModelBinderAttribute().BindModelAsync(context);
 				var errors = context.ModelState.SelectMany(modelState => modelState.Value.Errors.SelectMany(ex => (ex.Exception as ValigatorModelStateException).ValidationErrors.Select(error => error.Message))).ToArray();
 				if (errorMessage == null)
@@ -122,18 +122,18 @@ namespace Valigator.Tests.AspNetCore
 
 			[Fact]
 			public void SucceedsAsserting()
-				=> new TestOptionValidateModelBinderAttribute()
-					.Verify(typeof(Option<int>), 0)
+				=> new TestNullableValidateModelBinderAttribute()
+					.Verify(typeof(Option<int>), Option.Some(0))
 					.AssertSuccess();
 
 			[Fact]
 			public void ThrowsError()
-				=> Assert.Throws<ValidateAttributeDoesNotSupportTypeException>(() => new TestOptionValidateModelBinderAttribute().Verify(typeof(Option<float>), 1.0f));
+				=> Assert.Throws<ValidateAttributeDoesNotSupportTypeException>(() => new TestNullableValidateModelBinderAttribute().Verify(typeof(Option<float>), Option.Some(1.0f)));
 
 			[Fact]
 			public void SucceedsGettingDescriptor()
 			{
-				var descriptor = new TestOptionValidateModelBinderAttribute()
+				var descriptor = new TestNullableValidateModelBinderAttribute()
 					.GetDescriptor(typeof(Option<int>));
 			}
 
@@ -147,11 +147,11 @@ namespace Valigator.Tests.AspNetCore
 			[InlineData("-6", "RangeValidator_Int32")]
 			[InlineData("z", "Exception Error1")]
 			[InlineData("", "Exception Error1")]
-			[InlineData(null, "")]
+			[InlineData(null, null)]
 			public async Task ProducesError(string value, string errorMessage)
 			{
-				var context = new TestModelBindingContext(value);
-				await new TestOptionValidateModelBinderAttribute().BindModelAsync(context);
+				var context = new TestModelBindingContext(value, "theNameOptional");
+				await new TestNullableValidateModelBinderAttribute().BindModelAsync(context);
 				var errors = context.ModelState.SelectMany(modelState => modelState.Value.Errors.SelectMany(ex => (ex.Exception as ValigatorModelStateException).ValidationErrors.Select(error => error.Message))).ToArray();
 				if (errorMessage == null)
 					errors.Should().HaveCount(0);
@@ -172,7 +172,7 @@ namespace Valigator.Tests.AspNetCore
 		{
 			private IList<ParameterDescriptor> _parameterDescriptors = new List<ParameterDescriptor>(new[] { new ParameterDescriptor() { Name = "theName" } });
 
-			public TestModelBindingContext(string value)
+			public TestModelBindingContext(string value, string parameterName)
 			{
 				ValueProvider = CreateValueProvider(value);
 
@@ -180,11 +180,11 @@ namespace Valigator.Tests.AspNetCore
 				var actionDescriptor = new ActionDescriptor() { BoundProperties = _parameterDescriptors, Parameters = _parameterDescriptors };
 				ActionContext = new ActionContext(httpContext, new RouteData(), actionDescriptor);
 
-				var parameter = GetType().GetMethod(nameof(MethodForParameterInfo), BindingFlags.Instance | BindingFlags.NonPublic).GetParameters().FirstOrDefault(p => p.Name == "theName");
+				var parameter = GetType().GetMethod(nameof(MethodForParameterInfo), BindingFlags.Instance | BindingFlags.NonPublic).GetParameters().FirstOrDefault(p => p.Name == parameterName);
 				ModelMetadata = new EmptyModelMetadataProvider().GetMetadataForParameter(parameter);
 			}
 
-			private void MethodForParameterInfo(Option<int> theName)
+			private void MethodForParameterInfo(int theName, Option<int> theNameOptional)
 			{ }
 
 			public override ActionContext ActionContext { get; set; }
