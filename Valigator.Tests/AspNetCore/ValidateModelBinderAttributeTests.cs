@@ -22,6 +22,32 @@ namespace Valigator.Tests.AspNetCore
 	{
 		private const string _invalidDespiteBeingInRange = "4";
 
+		public class TestOptionValidateModelBinderAttribute : ValidateModelBinderAttribute, IValidateType<Option<int>>
+		{
+			public override async Task<Result<Option<object>, ValidationError[]>> BindModel(ModelBindingContext bindingContext)
+				=> (await Result.TryAsync(
+					() =>
+					{
+						var value = bindingContext?.ValueProvider?.GetValue(bindingContext.FieldName).TryFirst() ?? Option.None<string>();
+						var result = value
+							.Select(s => int.Parse(s))
+							.Match(v =>
+							{
+								if (v == int.Parse(_invalidDespiteBeingInRange))
+									return Result.Failure<Option<object>, ValidationError[]>(new[] { new ValidationError("Inner Error1", null) });
+								return Result.Success<Option<object>, ValidationError[]>(Option.Some((object)Option.Some(v)));
+							},
+							() => Result.Success<Option<object>, ValidationError[]>(Option.Some((object)Option.None<int>())));
+						return Task.FromResult(result);
+					},
+					ex => Result.Failure<Option<object>, ValidationError[]>(new[] { new ValidationError("Exception Error1", null) })
+				))
+				.Match(_ => _, f => f);
+
+
+			public Data<Option<int>> GetData() => Data.Optional<int>().InRange(greaterThan: -5, lessThan: 10);
+		}
+
 		public class TestValidateModelBinderAttribute : ValidateModelBinderAttribute, IValidateType<int>
 		{
 			public override async Task<Result<Option<object>, ValidationError[]>> BindModel(ModelBindingContext bindingContext)
@@ -48,7 +74,7 @@ namespace Valigator.Tests.AspNetCore
 			public Data<int> GetData() => Data.Required<int>().InRange(greaterThan: -5, lessThan: 10);
 		}
 
-		public class SomeWhenSuccess
+		public class RequiredInt
 		{
 
 			[Fact]
@@ -91,6 +117,49 @@ namespace Valigator.Tests.AspNetCore
 			}
 		}
 
+		public class OptionalInt
+		{
+
+			[Fact]
+			public void SucceedsAsserting()
+				=> new TestOptionValidateModelBinderAttribute()
+					.Verify(typeof(Option<int>), 0)
+					.AssertSuccess();
+
+			[Fact]
+			public void ThrowsError()
+				=> Assert.Throws<ValidateAttributeDoesNotSupportTypeException>(() => new TestOptionValidateModelBinderAttribute().Verify(typeof(Option<float>), 1.0f));
+
+			[Fact]
+			public void SucceedsGettingDescriptor()
+			{
+				var descriptor = new TestOptionValidateModelBinderAttribute()
+					.GetDescriptor(typeof(Option<int>));
+			}
+
+			[Theory]
+			[InlineData(_invalidDespiteBeingInRange, "Inner Error1")]
+			[InlineData("-4", null)]
+			[InlineData("9", null)]
+			[InlineData("10", "RangeValidator_Int32")]
+			[InlineData("11", "RangeValidator_Int32")]
+			[InlineData("-5", "RangeValidator_Int32")]
+			[InlineData("-6", "RangeValidator_Int32")]
+			[InlineData("z", "Exception Error1")]
+			[InlineData("", "Exception Error1")]
+			[InlineData(null, "")]
+			public async Task ProducesError(string value, string errorMessage)
+			{
+				var context = new TestModelBindingContext(value);
+				await new TestOptionValidateModelBinderAttribute().BindModelAsync(context);
+				var errors = context.ModelState.SelectMany(modelState => modelState.Value.Errors.SelectMany(ex => (ex.Exception as ValigatorModelStateException).ValidationErrors.Select(error => error.Message))).ToArray();
+				if (errorMessage == null)
+					errors.Should().HaveCount(0);
+				else
+					errors.Should().BeEquivalentTo(new[] { errorMessage });
+			}
+		}
+
 		private class TestParameterInfo : ParameterInfo
 		{
 			public TestParameterInfo(string name)
@@ -115,7 +184,7 @@ namespace Valigator.Tests.AspNetCore
 				ModelMetadata = new EmptyModelMetadataProvider().GetMetadataForParameter(parameter);
 			}
 
-			private void MethodForParameterInfo(int theName)
+			private void MethodForParameterInfo(Option<int> theName)
 			{ }
 
 			public override ActionContext ActionContext { get; set; }
