@@ -30,11 +30,7 @@ namespace Valigator
 		{
 			(await BindModel(bindingContext))
 				.Match(
-					s => Result.Success<object, ValidationError[]>(s),
-					f => Result.Failure<object, ValidationError[]>(f)
-				)
-				.Match(
-					value => this.Verify(value.GetType(), value),
+					value => value.Match(success => this.Verify(bindingContext.ModelType, success), () => this.Verify(bindingContext.ModelType)),
 					f => Result.Failure<object, ValidationError[]>(f)
 				)
 				.Match(
@@ -78,6 +74,6 @@ namespace Valigator
 					() => bindingContext.ActionContext.ActionDescriptor.Parameters.FirstOrDefault(descriptor => descriptor.Name == bindingContext.ModelMetadata.ParameterName)
 				);
 
-		public abstract Task<Result<object, ValidationError[]>> BindModel(ModelBindingContext bindingContext);
+		public abstract Task<Result<Option<object>, ValidationError[]>> BindModel(ModelBindingContext bindingContext);
 	}
 }

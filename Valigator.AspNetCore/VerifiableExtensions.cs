@@ -13,9 +13,14 @@ namespace Valigator
 		private static readonly ConcurrentDictionary<Type, Func<IVerifiable, bool, object, Result<object, ValidationError[]>>> _verifyMethods = new ConcurrentDictionary<Type, Func<IVerifiable, bool, object, Result<object, ValidationError[]>>>();
 
 		public static Result<object, ValidationError[]> Verify(this IVerifiable validateAttribute, Type type, object value)
-			=> _verifyMethods
+		{
+			if (value != null && !type.IsAssignableFrom(value.GetType()))
+				throw new TypeMismatchException(type, value.GetType());
+
+			return _verifyMethods
 				.GetOrAdd(type, t => GenerateVerifyMethod(type))
 				.Invoke(validateAttribute, true, value);
+		}
 
 		public static Result<object, ValidationError[]> Verify(this IVerifiable validateAttribute, Type type)
 			=> _verifyMethods
