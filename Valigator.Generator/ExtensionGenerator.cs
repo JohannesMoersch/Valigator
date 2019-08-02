@@ -73,7 +73,7 @@ namespace Valigator.Generator
 				.Replace("__TSourceType__", joinSourceAndValue ? (sourceDefinition.ValueType == ValueType.Array ? $"{valueGenericName}[]" : valueGenericName) : (sourceDefinition.ValueType == ValueType.Array ? "TSource[]" : "TSource"))
 				.Replace("__TValueType__", sourceDefinition.ValueType == ValueType.Array ? $"{valueGenericName}[]" : valueGenericName)
 				.Replace("__ExtensionName__", extension?.ExtensionName ?? String.Empty)
-				.Replace("__GenericParameters__", !joinSourceAndValue || genericParameters.Any() ? $"<{String.Join(", ", joinSourceAndValue ? genericParameters : new[] { "TSource" }.Concat(genericParameters))}>" : String.Empty)
+				.Replace("__GenericParameters__", !joinSourceAndValue || genericParameters.Any() ? $"<{String.Join(", ", (joinSourceAndValue ? genericParameters : new[] { "TSource" }.Concat(genericParameters)).Concat(validatorOne?.GenericParameterNames ?? Enumerable.Empty<string>()).Concat(validatorTwo?.GenericParameterNames ?? Enumerable.Empty<string>()).Concat(extension?.Validator.GenericParameterNames ?? Enumerable.Empty<string>()))}>" : String.Empty)
 				.Replace("__ExtensionParameters__", String.Join(String.Empty, extension?.Parameters.Where(p => !p.Value.HasValue()).Select(p => $", {p.GetTypeName(GetValueForValidator(sourceDefinition, extension?.Validator, valueGenericName))} {p.Name}{p.DefaultValue.Match(v => $" = {v}", () => String.Empty)}") ?? Enumerable.Empty<string>()))
 				.Replace("__Parameters__", String.Join(", ", extension?.Parameters.Select(p => p.Value.Match(v => v, () => p.Name)) ?? Enumerable.Empty<string>()));
 

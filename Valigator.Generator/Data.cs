@@ -37,7 +37,8 @@ namespace Valigator.Generator
 				new ValidatorDefinition(ValidatorGroups.InSet, $"InSetValidator<{ValueReplacementString}>", ValueType.Value, Option.None<string>()),
 				new ValidatorDefinition(ValidatorGroups.StringLength, "StringLengthValidator", ValueType.Value, Option.Some("string")),
 				new ValidatorDefinition(ValidatorGroups.ItemCount, $"ItemCountValidator<{ValueReplacementString}>", ValueType.Array, Option.None<string>()),
-				new ValidatorDefinition(ValidatorGroups.Unique, $"UniqueValidator<{ValueReplacementString}>", ValueType.Array, Option.None<string>())
+				new ValidatorDefinition(ValidatorGroups.Unique, $"UniqueValidator<{ValueReplacementString}, {ValueReplacementString}>", ValueType.Array, Option.None<string>()),
+				new ValidatorDefinition(ValidatorGroups.Unique, $"UniqueValidator<{ValueReplacementString}, TUniqueKey>", ValueType.Array, Option.None<string>(), "TUniqueKey")
 			}
 			.Concat(CreateRangeValidators())
 			.ToArray();
@@ -78,7 +79,8 @@ namespace Valigator.Generator
 				new ExtensionDefinition(Validators.First(v => v.Identifier == ValidatorGroups.Equals), "NotEmpty", new[] { new ParameterDefinition("String.Empty") }, true, "string"),
 				new ExtensionDefinition(Validators.First(v => v.Identifier == ValidatorGroups.Equals), "NotEmpty", new[] { new ParameterDefinition("Guid.Empty") }, true, "Guid"),
 				new ExtensionDefinition(Validators.First(v => v.Identifier == ValidatorGroups.ItemCount), "ItemCount", new[] { new ParameterDefinition($"int?", "minimumItems", Option.Some("null")), new ParameterDefinition($"int?", "maximumItems", Option.Some("null")) }, false),
-				new ExtensionDefinition(Validators.First(v => v.Identifier == ValidatorGroups.Unique), "Unique", Array.Empty<ParameterDefinition>(), false)
+				new ExtensionDefinition(Validators.First(v => v.Identifier == ValidatorGroups.Unique && !v.GenericParameterNames.Any()), "Unique", new[] { new ParameterDefinition($"Func<{ValueReplacementString}, TUniqueKey>", "selector", Option.Some("_ => _")) }, false),
+				new ExtensionDefinition(Validators.First(v => v.Identifier == ValidatorGroups.Unique && v.GenericParameterNames.Any()), "Unique", new[] { new ParameterDefinition($"Func<{ValueReplacementString}, TUniqueKey>", "selector") }, false)
 			}
 			.Concat(CreateRangeExtensions())
 			.ToArray();
