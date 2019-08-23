@@ -84,7 +84,10 @@ namespace Valigator
 			if (State == DataState.Valid || State == DataState.Invalid)
 				throw new DataAlreadyVerifiedException();
 
-			return _dataContainer.Verify(model, State == DataState.Set, _value);
+			if (!_dataContainer.IsValid(model, _value).TryGetValue(out var _, out var failure))
+				return WithErrors(failure);
+
+			return new Data<TValue>(DataState.Valid, _value, _dataContainer);
 		}
 
 		public static implicit operator TValue(Data<TValue> data)

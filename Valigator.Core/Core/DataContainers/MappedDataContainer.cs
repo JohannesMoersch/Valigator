@@ -9,6 +9,8 @@ namespace Valigator.Core.DataContainers
 	{
 		public DataDescriptor DataDescriptor { get; }
 
+		private Mapping<TSource, TValue> _mapping;
+
 		public Data<TValue> Verify(Data<TValue> data, object model, bool isSet, TValue value) 
 			=> throw new NotImplementedException();
 
