@@ -1,6 +1,7 @@
 ﻿using System;
 using Functional;
 using Valigator.Core;
+using Valigator.Core.Core.DataContainers;
 using Valigator.Core.Helpers;
 
 namespace Valigator
@@ -9,7 +10,7 @@ namespace Valigator
 	{
 		private readonly TValue _value;
 
-		private readonly IDataValidatorOrErrors<TValue, TValue> _dataValidator;
+		private readonly IDataContainer<TValue> _dataContainer;
 
 		public DataState State { get; }
 
@@ -31,26 +32,29 @@ namespace Valigator
 		}
 
 		public DataDescriptor DataDescriptor
-			=> State != DataState.Uninitialized ? _dataValidator.DataDescriptor : throw new DataNotInitializedException();
+			=> State != DataState.Uninitialized ? _dataContainer.DataDescriptor : throw new DataNotInitializedException();
 
-		public Data(IDataValidatorOrErrors<TValue, TValue> dataValidator)
+		internal Data(IDataContainer<TValue> dataContainer)
 		{
 			State = DataState.UnSet;
-			_dataValidator = dataValidator ?? throw new ArgumentNullException(nameof(dataValidator));
+			_dataContainer = dataContainer ?? throw new ArgumentNullException(nameof(dataContainer));
 			_value = default;
 		}
 
-		private Data(DataState state, TValue value, IDataValidatorOrErrors<TValue, TValue> dataValidator)
+		private Data(DataState state, TValue value, IDataContainer<TValue> dataContainer)
 		{
 			State = state;
-			_dataValidator = dataValidator;
+			_dataContainer = dataContainer;
 			_value = value;
 		}
 
 		public Data<TValue> WithValue(TValue value)
 		{
+			if (value == null)
+				throw new ArgumentNullException(nameof(value));
+
 			if (State == DataState.UnSet)
-				return new Data<TValue>(DataState.Set, value, _dataValidator);
+				return new Data<TValue>(DataState.Set, value, _dataContainer);
 
 			if (State == DataState.Uninitialized)
 				throw new DataNotInitializedException();
@@ -59,12 +63,12 @@ namespace Valigator
 		}
 
 		public Data<TValue> WithErrors(params ValidationError[] validationErrors)
-			=> new Data<TValue>(DataState.Invalid, default, new DataValidatorAndErrors<TValue, TValue>(_dataValidator, validationErrors));
+			=> new Data<TValue>(DataState.Invalid, default, new ErrorDataContainer<TValue>(_dataContainer.DataDescriptor, validationErrors));
 
 		public Result<TValue, ValidationError[]> TryGetValue()
 		{
 			if (State == DataState.Invalid)
-				return Result.Failure<TValue, ValidationError[]>(_dataValidator.GetErrors().Match(_ => _, () => default));
+				return Result.Failure<TValue, ValidationError[]>(_dataContainer.GetErrors().Match(_ => _, () => default));
 
 			return Result.Success<TValue, ValidationError[]>(Value);
 		}
@@ -80,10 +84,7 @@ namespace Valigator
 			if (State == DataState.Valid || State == DataState.Invalid)
 				throw new DataAlreadyVerifiedException();
 
-			if (_dataValidator.Validate(model, State == DataState.Set, _value).TryGetValue(out var success, out var failure))
-				return new Data<TValue>(DataState.Valid, success, _dataValidator);
-			else
-				return WithErrors(failure);
+			return _dataContainer.Verify(model, State == DataState.Set, _value);
 		}
 
 		public static implicit operator TValue(Data<TValue> data)

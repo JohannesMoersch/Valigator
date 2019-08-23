@@ -8,7 +8,7 @@ using Valigator.Core.ValueDescriptors;
 
 namespace Valigator.Core
 {
-	public class NullableDataValidator<TStateValidator, TValueValidatorOne, TSource, TValue> : IDataValidatorOrErrors<Option<TSource>>
+	public class NullableDataValidator<TStateValidator, TValueValidatorOne, TSource, TValue> : IDataValidatorOrErrors<Option<TSource>, TValue>
 		where TStateValidator : IStateValidator<Option<TSource>>
 		where TValueValidatorOne : IValueValidator<TValue>
 	{
@@ -27,17 +27,17 @@ namespace Valigator.Core
 			_mapper = mapper;
 		}
 
-		public Result<Option<TSource>, ValidationError[]> Validate(object model, bool isSet, Option<TSource> value)
+		public Result<Option<TValue>, ValidationError[]> Validate(object model, bool isSet, Option<TSource> value)
 		{
 			if (_stateValidator.Validate(model, isSet, value).TryGetValue(out var success, out var failure))
 			{
 				if (!success.TryGetValue(out var some))
-					return Result.Success<Option<TSource>, ValidationError[]>(success);
+					return Result.Success<Option<TValue>, ValidationError[]>(success);
 
 				return ValidatorHelpers.Validate(success, some, _valueValidatorOne, _mapper);
 			}
 
-			return Result.Failure<Option<TSource>, ValidationError[]>(failure);
+			return Result.Failure<Option<TValue>, ValidationError[]>(failure);
 		}
 
 		public Option<ValidationError[]> GetErrors()

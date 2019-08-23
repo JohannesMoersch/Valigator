@@ -8,7 +8,7 @@ using Valigator.Core.ValueDescriptors;
 
 namespace Valigator.Core
 {
-	public class DataValidator<TStateValidator, TValueValidatorOne, TSource, TValue> : IDataValidatorOrErrors<TSource>
+	public class DataValidator<TStateValidator, TValueValidatorOne, TSource, TValue> : IDataValidatorOrErrors<TSource, TValue>
 		where TStateValidator : IStateValidator<TSource>
 		where TValueValidatorOne : IValueValidator<TValue>
 	{
@@ -27,12 +27,12 @@ namespace Valigator.Core
 			_mapper = mapper;
 		}
 
-		public Result<TSource, ValidationError[]> Validate(object model, bool isSet, TSource value)
+		public Result<TValue, ValidationError[]> Validate(object model, bool isSet, TSource value)
 		{
 			if (_stateValidator.Validate(model, isSet, value).TryGetValue(out var success, out var failure))
 				return ValidatorHelpers.Validate(success, success, _valueValidatorOne, _mapper);
 
-			return Result.Failure<TSource, ValidationError[]>(failure);
+			return Result.Failure<TValue, ValidationError[]>(failure);
 		}
 
 		public Option<ValidationError[]> GetErrors()

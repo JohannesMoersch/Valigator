@@ -7,7 +7,7 @@ using Valigator.Core.ValueDescriptors;
 
 namespace Valigator.Core
 {
-	public class DataValidator<TStateValidator, TSource> : IDataValidatorOrErrors<TSource>
+	public class DataValidator<TStateValidator, TSource, TValue> : IDataValidatorOrErrors<TSource, TValue>
 		where TStateValidator : IStateValidator<TSource>
 	{
 		public DataDescriptor DataDescriptor => new DataDescriptor(typeof(TSource), _stateValidator.GetDescriptor(), _stateValidator.GetImplicitValueDescriptors());
@@ -17,17 +17,12 @@ namespace Valigator.Core
 		public DataValidator(TStateValidator stateValidator) 
 			=> _stateValidator = stateValidator;
 
-		public Result<TSource, ValidationError[]> Validate(object model, bool isSet, TSource value)
+		public Result<TValue, ValidationError[]> Validate(object model, bool isSet, TSource value)
 		{
 			if (_stateValidator.Validate(model, isSet, value).TryGetValue(out var success, out var failure))
-			{
-				if (Model.Verify(success).TryGetValue(out var _, out var modelErrors))
-					return Result.Success<TSource, ValidationError[]>(success);
+				return ValidatorHelpers.Validate(success, success, _mapper);
 
-				return Result.Failure<TSource, ValidationError[]>(modelErrors);
-			}
-
-			return Result.Failure<TSource, ValidationError[]>(failure);
+			return Result.Failure<TValue, ValidationError[]>(failure);
 		}
 
 		public Option<ValidationError[]> GetErrors()

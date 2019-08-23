@@ -9,6 +9,9 @@ namespace Valigator.Core
 {
 	internal static class ValidatorHelpers
 	{
+		public static Result<TInput, ValidationError[]> Validate<TInput, TSource, TValue>(TInput success, TSource some, Mapping<TSource, TValue> mapper)
+			=> Validate(success, some, null, null, null, mapper);
+
 		public static Result<TInput, ValidationError[]> Validate<TInput, TSource, TValue>(TInput success, TSource some, IValueValidator<TValue> valueValidatorOne, Mapping<TSource, TValue> mapper)
 			=> Validate(success, some, valueValidatorOne, null, null, mapper);
 
