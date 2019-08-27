@@ -6,6 +6,14 @@ namespace Valigator.Core
 {
 	public static class Mapping
 	{
+		private class DelegateCache<TValue, TError>
+		{
+			public static readonly Func<TValue, Result<TValue, TError>> Success = value => Result.Success<TValue, TError>(value);
+		}
+
+		public static Mapping<TValue, TValue> CreatePassthrough<TValue>()
+			=> new Mapping<TValue, TValue>(DelegateCache<TValue, ValidationError[]>.Success, Data.Required<TValue>());
+
 		public static Mapping<TInput, TResult> Create<TInput, TResult>(Func<TInput, Result<TResult, ValidationError[]>> mapper, Data<TInput> sourceValidations)
 			=> new Mapping<TInput, TResult>(mapper, sourceValidations);
 
@@ -50,6 +58,8 @@ namespace Valigator.Core
 
 					return Result.Failure<TValue, ValidationError[]>(f);
 				}
+
+				return Result.Failure<TValue, ValidationError[]>(Array.Empty<ValidationError>());
 			}
 
 			return Result.Failure<TValue, ValidationError[]>(failure);
