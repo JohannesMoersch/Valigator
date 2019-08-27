@@ -31,9 +31,12 @@ namespace Valigator.Core
 			_sourceValidations = sourceValidations;
 		}
 
-		public Result<TValue, ValidationError[]> Map(object model, TSource input)
+		public Result<TValue, ValidationError[]> Map(TSource input)
 		{
-			var verifiedInput = _sourceValidations.WithValue(input).Verify(model).TryGetValue();
+			var verifiedInput = _sourceValidations
+				.WithValue(input)
+				.Verify(Option.None<TSource>())
+				.TryGetValue();
 
 			if (verifiedInput.TryGetValue(out var success, out var failure))
 			{

@@ -3,25 +3,24 @@ using System.Collections.Generic;
 using System.Text;
 using Functional;
 
-namespace Valigator.Core.Core.DataContainers
+namespace Valigator.Core.DataContainers
 {
 	internal class ErrorDataContainer<TValue> : IDataContainer<TValue>
 	{
 		private readonly ValidationError[] _validationErrors;
 
-		public DataDescriptor DataDescriptor { get; }
+		private readonly Func<DataDescriptor> _dataDescriptorFactory;
 
-		public ErrorDataContainer(DataDescriptor dataDescriptor, ValidationError[] validationErrors)
+		public DataDescriptor DataDescriptor => _dataDescriptorFactory.Invoke();
+
+		public ErrorDataContainer(Func<DataDescriptor> dataDescriptorFactory, ValidationError[] validationErrors)
 		{
-			DataDescriptor = dataDescriptor;
+			_dataDescriptorFactory = dataDescriptorFactory;
 			_validationErrors = validationErrors ?? throw new ArgumentNullException(nameof(validationErrors));
 		}
 
-		public Data<TValue> Verify(Data<TValue> data, object model, bool isSet, TValue value) 
-			=> throw new NotSupportedException();
-
-		public Data<TValue> WithValue(Data<TValue> data, TValue value) 
-			=> throw new NotSupportedException();
+		Result<Unit, ValidationError[]> IDataContainer<TValue>.IsValid(Option<object> model, TValue value)
+			=> Result.Failure<Unit, ValidationError[]>(_validationErrors);
 
 		public Option<ValidationError[]> GetErrors()
 			=> Option.Some(_validationErrors);

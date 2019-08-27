@@ -5,17 +5,38 @@ using Functional;
 
 namespace Valigator.Core.DataContainers
 {
-	internal class MappedDataContainer<TSource, TValue> : IDataContainer<TValue>, IAcceptValue<TValue, TSource>
+	internal class MappedDataContainer<TStateValidator, TValueValidatorOne, TValueValidatorTwo, TValueValidatorThree, TSource, TValue> : IDataContainer<TValue>, IAcceptValue<TValue, TSource>
+		where TStateValidator : IStateValidator<TValue, TValue>
+		where TValueValidatorOne : IValueValidator<TValue>
+		where TValueValidatorTwo : IValueValidator<TValue>
+		where TValueValidatorThree : IValueValidator<TValue>
 	{
-		public DataDescriptor DataDescriptor { get; }
+		private readonly Mapping<TSource, TValue> _mapping;
 
-		private Mapping<TSource, TValue> _mapping;
+		private readonly TStateValidator _stateValidator;
 
-		public Data<TValue> Verify(Data<TValue> data, object model, bool isSet, TValue value) 
-			=> throw new NotImplementedException();
+		private readonly TValueValidatorOne _valueValidatorOne;
 
-		public Data<TValue> WithValue(Data<TValue> data, Option<TSource> value) 
-			=> throw new NotImplementedException();
+		private readonly TValueValidatorTwo _valueValidatorTwo;
+
+		private readonly TValueValidatorThree _valueValidatorThree;
+
+		public DataDescriptor DataDescriptor => DataDescriptor.Create(_mapping, _stateValidator, _valueValidatorOne, _valueValidatorTwo, _valueValidatorThree);
+
+		public MappedDataContainer(Mapping<TSource, TValue> mapping, TStateValidator stateValidator, TValueValidatorOne valueValidatorOne, TValueValidatorTwo valueValidatorTwo, TValueValidatorThree valueValidatorThree)
+		{
+			_mapping = mapping;
+			_stateValidator = stateValidator;
+			_valueValidatorOne = valueValidatorOne;
+			_valueValidatorTwo = valueValidatorTwo;
+			_valueValidatorThree = valueValidatorThree;
+		}
+
+		public Data<TValue> WithValue(Data<TValue> data, Option<TSource> value)
+			=> data.WithMappedValidatedValue(value, _mapping, _stateValidator);
+
+		public Result<Unit, ValidationError[]> IsValid(Option<object> model, TValue value)
+			=> this.IsValid(model, value, _valueValidatorOne, _valueValidatorTwo, _valueValidatorThree);
 
 		Option<ValidationError[]> IDataContainer<TValue>.GetErrors()
 			=> Option.None<ValidationError[]>();

@@ -1,7 +1,7 @@
 ﻿using System;
 using Functional;
 using Valigator.Core;
-using Valigator.Core.Core.DataContainers;
+using Valigator.Core.DataContainers;
 using Valigator.Core.Helpers;
 
 namespace Valigator
@@ -63,21 +63,32 @@ namespace Valigator
 		}
 
 		public Data<TValue> WithErrors(params ValidationError[] validationErrors)
-			=> new Data<TValue>(DataState.Invalid, default, new ErrorDataContainer<TValue>(_dataContainer.DataDescriptor, validationErrors));
+		{
+			var dataContainer = _dataContainer;
+			return new Data<TValue>(DataState.Invalid, default, new ErrorDataContainer<TValue>(() => dataContainer.DataDescriptor, validationErrors));
+		}
 
 		public Result<TValue, ValidationError[]> TryGetValue()
 		{
 			if (State == DataState.Invalid)
-				return Result.Failure<TValue, ValidationError[]>(_dataContainer.GetErrors().Match(_ => _, () => default));
+			{
+				if (_dataContainer.GetErrors().TryGetValue(out var some))
+					return Result.Failure<TValue, ValidationError[]>(some);
+
+				return Result.Failure<TValue, ValidationError[]>(Array.Empty<ValidationError>());
+			}
 
 			return Result.Success<TValue, ValidationError[]>(Value);
 		}
 
-		public Data<TValue> Verify(object model)
-		{
-			if (model == null)
-				throw new ArgumentNullException(nameof(model));
+		public Data<TValue> Verify()
+			=> Verify(Option.None<object>());
 
+		public Data<TValue> Verify(object model)
+			=> Verify(Option.Some(model ?? throw new ArgumentNullException(nameof(model))));
+
+		private Data<TValue> Verify(Option<object> model)
+		{
 			if (State == DataState.Uninitialized)
 				throw new DataNotInitializedException();
 

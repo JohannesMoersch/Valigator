@@ -35,5 +35,25 @@ namespace Valigator.Core
 			hashCode = hashCode * -1521134295 + EqualityComparer<IStateDescriptor>.Default.GetHashCode(StateDescriptor);
 			return ValueDescriptors.Aggregate(hashCode, (current, descriptor) => current * -1521134295 + EqualityComparer<IValueDescriptor>.Default.GetHashCode(descriptor));
 		}
+
+		public static DataDescriptor Create<TDataValue, TValidateValue, TValue>(ICollectionStateValidator<TDataValue, TValue> stateValidator, params IValueValidator<TValidateValue>[] valueDescriptors)
+		{
+
+		}
+
+		public static DataDescriptor Create<TDataValue, TValidateValue, TValue>(IStateValidator<TDataValue, TValue> stateValidator, params IValueValidator<TValidateValue>[] valueDescriptors)
+		{
+
+		}
+
+		public static DataDescriptor Create<TDataValue, TValidateValue, TSource, TValue>(Mapping<TSource, TValue> mapping, ICollectionStateValidator<TDataValue, TValue> stateValidator, params IValueValidator<TValidateValue>[] valueDescriptors)
+		{
+
+		}
+
+		public static DataDescriptor Create<TDataValue, TValidateValue, TSource, TValue>(Mapping<TSource, TValue> mapping, IStateValidator<TDataValue, TValue> stateValidator, params IValueValidator<TValidateValue>[] valueDescriptors)
+		{
+
+		}
 	}
 }

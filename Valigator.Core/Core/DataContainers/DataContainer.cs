@@ -5,15 +5,35 @@ using Functional;
 
 namespace Valigator.Core.DataContainers
 {
-	internal class DataContainer<TValue> : IDataContainer<TValue>, IAcceptValue<TValue, TValue>
+	internal class DataContainer<TStateValidator, TValueValidatorOne, TValueValidatorTwo, TValueValidatorThree, TValue> : IDataContainer<TValue>, IAcceptValue<TValue, TValue>
+		where TStateValidator : IStateValidator<TValue, TValue>
+		where TValueValidatorOne : IValueValidator<TValue>
+		where TValueValidatorTwo : IValueValidator<TValue>
+		where TValueValidatorThree : IValueValidator<TValue>
 	{
-		public DataDescriptor DataDescriptor { get; }
+		private readonly TStateValidator _stateValidator;
 
-		public Data<TValue> Verify(Data<TValue> data, object model, bool isSet, TValue value) 
-			=> throw new NotImplementedException();
+		private readonly TValueValidatorOne _valueValidatorOne;
 
-		public Data<TValue> WithValue(Data<TValue> data, Option<TValue> value) 
-			=> throw new NotImplementedException();
+		private readonly TValueValidatorTwo _valueValidatorTwo;
+
+		private readonly TValueValidatorThree _valueValidatorThree;
+
+		public DataDescriptor DataDescriptor => DataDescriptor.Create(_stateValidator, _valueValidatorOne, _valueValidatorTwo, _valueValidatorThree);
+
+		public DataContainer(TStateValidator stateValidator, TValueValidatorOne valueValidatorOne, TValueValidatorTwo valueValidatorTwo, TValueValidatorThree valueValidatorThree)
+		{
+			_stateValidator = stateValidator;
+			_valueValidatorOne = valueValidatorOne;
+			_valueValidatorTwo = valueValidatorTwo;
+			_valueValidatorThree = valueValidatorThree;
+		}
+
+		public Data<TValue> WithValue(Data<TValue> data, Option<TValue> value)
+			=> data.WithValidatedValue(value, _stateValidator);
+
+		public Result<Unit, ValidationError[]> IsValid(Option<object> model, TValue value)
+			=> this.IsValid(model, value, _valueValidatorOne, _valueValidatorTwo, _valueValidatorThree);
 
 		Option<ValidationError[]> IDataContainer<TValue>.GetErrors()
 			=> Option.None<ValidationError[]>();

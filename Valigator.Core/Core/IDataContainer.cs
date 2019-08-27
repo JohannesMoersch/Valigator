@@ -9,7 +9,7 @@ namespace Valigator.Core
 	{
 		DataDescriptor DataDescriptor { get; }
 
-		Result<Unit, ValidationError[]> IsValid(object model, TValue value);
+		Result<Unit, ValidationError[]> IsValid(Option<object> model, TValue value);
 
 		Option<ValidationError[]> GetErrors();
 	}
