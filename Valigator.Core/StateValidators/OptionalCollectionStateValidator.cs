@@ -27,7 +27,7 @@ namespace Valigator.Core.StateValidators
 			=> new OptionalNullableCollectionStateValidator<TValue>(_item);
 
 		IStateDescriptor IStateValidator<Option<TValue[]>, Option<TValue>[]>.GetDescriptor()
-			=> new OptionalCollectionStateDescriptor(false, _item.DataDescriptor);
+			=> new OptionalCollectionStateDescriptor(false, false, _item.DataDescriptor);
 
 		IValueDescriptor[] IStateValidator<Option<TValue[]>, Option<TValue>[]>.GetImplicitValueDescriptors()
 			=> new[] { new NotNullDescriptor() };

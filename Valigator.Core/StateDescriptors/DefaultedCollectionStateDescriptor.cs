@@ -8,13 +8,16 @@ namespace Valigator.Core.StateDescriptors
 	{
 		public bool Nullable { get; }
 
+		public bool ItemsNullable { get; }
+
 		public object DefaultValue { get; }
 
 		public DataDescriptor ItemDescriptor { get; }
 
-		public DefaultedCollectionStateDescriptor(bool nullable, object defaultValue, DataDescriptor itemDescriptor)
+		public DefaultedCollectionStateDescriptor(bool nullable, bool itemsNullable, object defaultValue, DataDescriptor itemDescriptor)
 		{
 			Nullable = nullable;
+			ItemsNullable = itemsNullable;
 			DefaultValue = defaultValue;
 			ItemDescriptor = itemDescriptor;
 		}

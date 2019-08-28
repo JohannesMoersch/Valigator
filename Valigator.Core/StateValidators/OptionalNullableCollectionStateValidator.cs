@@ -23,7 +23,7 @@ namespace Valigator.Core.StateValidators
 			=> _item = item;
 
 		IStateDescriptor IStateValidator<Option<Option<TValue>[]>, Option<TValue>[]>.GetDescriptor()
-			=> new OptionalCollectionStateDescriptor(false, _item.DataDescriptor);
+			=> new OptionalCollectionStateDescriptor(false, true, _item.DataDescriptor);
 
 		IValueDescriptor[] IStateValidator<Option<Option<TValue>[]>, Option<TValue>[]>.GetImplicitValueDescriptors()
 			=> Array.Empty<IValueDescriptor>();

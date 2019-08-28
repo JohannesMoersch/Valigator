@@ -8,11 +8,14 @@ namespace Valigator.Core.StateDescriptors
 	{
 		public bool Nullable { get; }
 
+		public bool ItemsNullable { get; }
+
 		public DataDescriptor ItemDescriptor { get; }
 
-		public RequiredCollectionStateDescriptor(bool nullable, DataDescriptor itemDescriptor)
+		public RequiredCollectionStateDescriptor(bool nullable, bool itemsNullable, DataDescriptor itemDescriptor)
 		{
 			Nullable = nullable;
+			ItemsNullable = itemsNullable;
 			ItemDescriptor = itemDescriptor;
 		}
 
