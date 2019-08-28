@@ -65,5 +65,33 @@ namespace Valigator.Core.StateValidators
 
 			return Result.Unit<ValidationError[]>();
 		}
+
+		public static Result<TValue[], ValidationError[]> ValidateCollectionNotNull<T1, T2, TValue>(this ICollectionStateValidator<T1, T2> _, Option<TValue>[] values)
+		{
+			List<ValidationError> errors = null;
+
+			var results = new TValue[values.Length];
+
+			for (int i = 0; i < values.Length; ++i)
+			{
+				if (values[i].TryGetValue(out var some))
+					results[i] = some;
+				else
+				{
+					var error = ValidationErrors.NotNull();
+					error.Path.AddIndex(i);
+
+					if (errors == null)
+						errors = new List<ValidationError>();
+
+					errors.Add(error);
+				}
+			}
+
+			if (errors != null)
+				return Result.Failure<TValue[], ValidationError[]>(errors.ToArray());
+
+			return Result.Success<TValue[], ValidationError[]>(results);
+		}
 	}
 }

@@ -49,33 +49,14 @@ namespace Valigator.Core.StateValidators
 
 		Result<Option<TValue[]>, ValidationError[]> IStateValidator<Option<TValue[]>, Option<TValue>[]>.Validate(Option<Option<Option<TValue>[]>> value)
 		{
-			List<ValidationError> errors = null;
 			if (value.TryGetValue(out var isSet))
 			{
 				if (isSet.TryGetValue(out var notNull))
 				{
-					var values = new TValue[notNull.Length];
+					if (this.ValidateCollectionNotNull(notNull).TryGetValue(out var success, out var failure))
+						return Result.Success<Option<TValue[]>, ValidationError[]>(Option.Some(success));
 
-					for (int i = 0; i < notNull.Length; ++i)
-					{
-						if (notNull[i].TryGetValue(out var some))
-							values[i] = some;
-						else
-						{
-							var error = ValidationErrors.NotNull();
-							error.Path.AddIndex(i);
-
-							if (errors == null)
-								errors = new List<ValidationError>();
-
-							errors.Add(error);
-						}
-					}
-
-					if (errors != null)
-						return Result.Failure<Option<TValue[]>, ValidationError[]>(errors.ToArray());
-
-					return Result.Success<Option<TValue[]>, ValidationError[]>(Option.Some(values));
+					return Result.Failure<Option<TValue[]>, ValidationError[]>(failure);
 				}
 
 				return Result.Success<Option<TValue[]>, ValidationError[]>(Option.None<TValue[]>());
