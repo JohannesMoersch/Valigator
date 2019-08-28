@@ -9,5 +9,6 @@ namespace Valigator.Core
 {
 	public interface ICollectionStateValidator<TDataValue, TValue> : IStateValidator<TDataValue, Option<TValue>[]>
 	{
+		Result<Unit, ValidationError[]> IsValid(Option<object> model, TDataValue value);
 	}
 }

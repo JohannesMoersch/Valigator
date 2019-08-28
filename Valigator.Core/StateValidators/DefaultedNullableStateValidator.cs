@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Functional;
+using Valigator.Core.DataContainers;
 using Valigator.Core.Helpers;
 using Valigator.Core.StateDescriptors;
 using Valigator.Core.ValueDescriptors;
@@ -9,9 +10,12 @@ using Valigator.Core.ValueValidators;
 
 namespace Valigator.Core.StateValidators
 {
-	public struct DefaultedNullableStateValidator<TValue> : IStateValidator<Option<TValue>>
+	public struct DefaultedNullableStateValidator<TValue> : IStateValidator<Option<TValue>, TValue>
 	{
-		private static DataValidator<DefaultedNullableStateValidator<TValue>, Option<TValue>> Instance { get; } = new DataValidator<DefaultedNullableStateValidator<TValue>, Option<TValue>>(default);
+		private static IDataContainer<Option<TValue>> Instance { get; } = CreateContainer(new DefaultedNullableStateValidator<TValue>(Option.None<TValue>()));
+
+		private static IDataContainer<Option<TValue>> CreateContainer(DefaultedNullableStateValidator<TValue> stateValidator)
+			=> new NullableDataContainer<DefaultedNullableStateValidator<TValue>, DummyValidator<TValue>, DummyValidator<TValue>, DummyValidator<TValue>, TValue, TValue>(Mapping.CreatePassthrough<TValue>(), stateValidator, DummyValidator<TValue>.Instance, DummyValidator<TValue>.Instance, DummyValidator<TValue>.Instance);
 
 		public Data<Option<TValue>> Data
 		{
@@ -20,7 +24,7 @@ namespace Valigator.Core.StateValidators
 				if (_defaultValueFactory == null && !_defaultValue.TryGetValue(out var value))
 					return new Data<Option<TValue>>(Instance);
 
-				return new Data<Option<TValue>>(new DataValidator<DefaultedNullableStateValidator<TValue>, Option<TValue>>(this));
+				return new Data<Option<TValue>>(CreateContainer(this));
 			}
 		}
 
@@ -30,7 +34,7 @@ namespace Valigator.Core.StateValidators
 
 		public DefaultedNullableStateValidator(TValue defaultValue)
 		{
-			_defaultValue = Option.Some(defaultValue != null ? defaultValue : throw new ArgumentNullException(nameof(defaultValue)));
+			_defaultValue = Option.Some(defaultValue != null ? defaultValue : throw new NullDefaultException());
 			_defaultValueFactory = null;
 		}
 
@@ -40,17 +44,22 @@ namespace Valigator.Core.StateValidators
 			_defaultValueFactory = defaultValueFactory ?? throw new ArgumentNullException(nameof(defaultValueFactory));
 		}
 
-		private TValue GetDefaultValue()
-			=> _defaultValueFactory != null ? _defaultValueFactory.Invoke() : _defaultValue.Match(_ => _, () => default);
+		private Option<TValue> GetDefaultValue()
+			=> Option.Some(this.GetDefaultValue(_defaultValue, _defaultValueFactory));
 
-		IStateDescriptor IStateValidator<Option<TValue>>.GetDescriptor()
+		IStateDescriptor IStateValidator<Option<TValue>, TValue>.GetDescriptor()
 			=> new DefaultedStateDescriptor(true, GetDefaultValue());
 
-		IValueDescriptor[] IStateValidator<Option<TValue>>.GetImplicitValueDescriptors()
+		IValueDescriptor[] IStateValidator<Option<TValue>, TValue>.GetImplicitValueDescriptors()
 			=> Array.Empty<IValueDescriptor>();
 
-		Result<Option<TValue>, ValidationError[]> IStateValidator<Option<TValue>>.Validate(object model, bool isSet, Option<TValue> value)
-			=> Result.Success<Option<TValue>, ValidationError[]>(isSet ? value : Option.Some(GetDefaultValue()));
+		Result<Option<TValue>, ValidationError[]> IStateValidator<Option<TValue>, TValue>.Validate(Option<Option<TValue>> value)
+		{
+			if (value.TryGetValue(out var isSet))
+				return Result.Success<Option<TValue>, ValidationError[]>(isSet);
+
+			return Result.Success<Option<TValue>, ValidationError[]>(GetDefaultValue());
+		}
 
 		public static implicit operator Data<Option<TValue>>(DefaultedNullableStateValidator<TValue> stateValidator)
 			=> stateValidator.Data;

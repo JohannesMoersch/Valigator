@@ -57,22 +57,41 @@ namespace Valigator.Core.DataContainers
 
 		public static Data<TDataValue> WithValidatedValue<TDataValue, TValue>(this Data<TDataValue> data, Option<TValue> value, IStateValidator<TDataValue, TValue> stateValidator)
 		{
-			if (stateValidator.WithValue(value).TryGetValue(out var success, out var failure))
+			if (stateValidator.Validate(Option.Some(value)).TryGetValue(out var success, out var failure))
 				return data.WithValue(success);
 
 			return data.WithErrors(failure);
 		}
 
-		public static Result<Unit, ValidationError[]> IsValid<TValue>(this IDataContainer<Option<TValue>> _, Option<object> model, Option<TValue> value, IValueValidator<TValue> validatorOne, IValueValidator<TValue> validatorTwo, IValueValidator<TValue> validatorThree)
+		public static Result<Unit, ValidationError[]> IsValid<TValue, TValidateValue>(this IDataContainer<Option<TValidateValue>> _, Option<object> model, Option<Option<TValidateValue>> value, IStateValidator<Option<TValidateValue>, TValue> stateValidator, IValueValidator<TValidateValue> validatorOne, IValueValidator<TValidateValue> validatorTwo, IValueValidator<TValidateValue> validatorThree)
+		{
+			if (value.TryGetValue(out var some))
+				return IsValid(model, some, validatorOne, validatorTwo, validatorThree);
+
+			if (stateValidator.Validate(Option.None<Option<TValue>>()).TryGetValue(out var success, out var failure))
+				return IsValid(model, success, validatorOne, validatorTwo, validatorThree);
+
+			return Result.Failure<Unit, ValidationError[]>(failure);
+		}
+
+		public static Result<Unit, ValidationError[]> IsValid<TValue, TValidateValue>(this IDataContainer<TValidateValue> _, Option<object> model, Option<TValidateValue> value, IStateValidator<TValidateValue, TValue> stateValidator, IValueValidator<TValidateValue> validatorOne, IValueValidator<TValidateValue> validatorTwo, IValueValidator<TValidateValue> validatorThree)
+		{
+			if (value.TryGetValue(out var some))
+				return IsValid(model, some, validatorOne, validatorTwo, validatorThree);
+
+			if (stateValidator.Validate(Option.None<Option<TValue>>()).TryGetValue(out var success, out var failure))
+				return IsValid(model, success, validatorOne, validatorTwo, validatorThree);
+
+			return Result.Failure<Unit, ValidationError[]>(failure);
+		}
+
+		private static Result<Unit, ValidationError[]> IsValid<TValue>(Option<object> model, Option<TValue> value, IValueValidator<TValue> validatorOne, IValueValidator<TValue> validatorTwo, IValueValidator<TValue> validatorThree)
 		{
 			if (value.TryGetValue(out var some))
 				return IsValid(model, some, validatorOne, validatorTwo, validatorThree);
 
 			return Result.Unit<ValidationError[]>();
 		}
-
-		public static Result<Unit, ValidationError[]> IsValid<TValue>(this IDataContainer<TValue> _, Option<object> model, TValue value, IValueValidator<TValue> validatorOne, IValueValidator<TValue> validatorTwo, IValueValidator<TValue> validatorThree)
-			=> IsValid(model, value, validatorOne, validatorTwo, validatorThree);
 
 		private static Result<Unit, ValidationError[]> IsValid<TValue>(Option<object> model, TValue value, IValueValidator<TValue> validatorOne, IValueValidator<TValue> validatorTwo, IValueValidator<TValue> validatorThree)
 		{

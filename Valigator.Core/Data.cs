@@ -12,6 +12,9 @@ namespace Valigator
 
 		private readonly IDataContainer<TValue> _dataContainer;
 
+		public IDataContainer DataContainer
+			=> State != DataState.Uninitialized ? _dataContainer : throw new DataNotInitializedException();
+
 		public DataState State { get; }
 
 		public TValue Value

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Valigator.Core.StateDescriptors;
 using Valigator.Core.ValueDescriptors;
+using Valigator.Core.ValueValidators;
 
 namespace Valigator.Core
 {
@@ -40,15 +41,15 @@ namespace Valigator.Core
 		}
 
 		public static DataDescriptor Create<TDataValue, TValidateValue, TValue>(ICollectionStateValidator<TDataValue, TValue> stateValidator, params IValueValidator<TValidateValue>[] valueDescriptors)
-			=> new DataDescriptor(typeof(TValue[]), typeof(TValue[]), stateValidator.GetDescriptor(), valueDescriptors.OfType<IValueValidator<TValidateValue>>().Select(v => v.GetDescriptor()).ToArray());
+			=> new DataDescriptor(typeof(TValue[]), typeof(TValue[]), stateValidator.GetDescriptor(), valueDescriptors.Where(v => !(v is DummyValidator<TValidateValue>)).Select(v => v.GetDescriptor()).ToArray());
 
 		public static DataDescriptor Create<TDataValue, TValidateValue, TValue>(IStateValidator<TDataValue, TValue> stateValidator, params IValueValidator<TValidateValue>[] valueDescriptors)
-			=> new DataDescriptor(typeof(TValue), typeof(TValue), stateValidator.GetDescriptor(), valueDescriptors.OfType<IValueValidator<TValidateValue>>().Select(v => v.GetDescriptor()).ToArray());
+			=> new DataDescriptor(typeof(TValue), typeof(TValue), stateValidator.GetDescriptor(), valueDescriptors.Where(v => !(v is DummyValidator<TValidateValue>)).Select(v => v.GetDescriptor()).ToArray());
 
 		public static DataDescriptor Create<TDataValue, TValidateValue, TSource, TValue>(Mapping<TSource, TValue> _, ICollectionStateValidator<TDataValue, TValue> stateValidator, params IValueValidator<TValidateValue>[] valueDescriptors)
-			=> new DataDescriptor(typeof(TSource[]), typeof(TValue[]), stateValidator.GetDescriptor(), valueDescriptors.OfType<IValueValidator<TValidateValue>>().Select(v => v.GetDescriptor()).ToArray());
+			=> new DataDescriptor(typeof(TSource[]), typeof(TValue[]), stateValidator.GetDescriptor(), valueDescriptors.Where(v => !(v is DummyValidator<TValidateValue>)).Select(v => v.GetDescriptor()).ToArray());
 
 		public static DataDescriptor Create<TDataValue, TValidateValue, TSource, TValue>(Mapping<TSource, TValue> _, IStateValidator<TDataValue, TValue> stateValidator, params IValueValidator<TValidateValue>[] valueDescriptors)
-			=> new DataDescriptor(typeof(TSource), typeof(TValue), stateValidator.GetDescriptor(), valueDescriptors.OfType<IValueValidator<TValidateValue>>().Select(v => v.GetDescriptor()).ToArray());
+			=> new DataDescriptor(typeof(TSource), typeof(TValue), stateValidator.GetDescriptor(), valueDescriptors.Where(v => !(v is DummyValidator<TValidateValue>)).Select(v => v.GetDescriptor()).ToArray());
 	}
 }
