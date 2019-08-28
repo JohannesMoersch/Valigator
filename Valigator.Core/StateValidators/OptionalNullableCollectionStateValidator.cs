@@ -9,13 +9,13 @@ using Valigator.Core.ValueValidators;
 
 namespace Valigator.Core.StateValidators
 {
-	public struct OptionalCollectionNullableStateValidator<TValue> : IStateValidator<Option<TValue[]>>
+	public struct OptionalNullableCollectionStateValidator<TValue> : IStateValidator<Option<TValue[]>>
 	{
-		public Data<Option<TValue[]>> Data => new DataSource<OptionalCollectionNullableStateValidator<TValue>, Option<TValue[]>>(this);
+		public Data<Option<TValue[]>> Data => new DataSource<OptionalNullableCollectionStateValidator<TValue>, Option<TValue[]>>(this);
 
 		private readonly Data<TValue> _item;
 
-		public OptionalCollectionNullableStateValidator(Data<TValue> item)
+		public OptionalNullableCollectionStateValidator(Data<TValue> item)
 			=> _item = item;
 
 		IStateDescriptor IStateValidator<Option<TValue[]>>.GetDescriptor()
@@ -29,7 +29,7 @@ namespace Valigator.Core.StateValidators
 				? (value.TryGetValue(out var v) ? _item.VerifyCollection(model, v).Select(Option.Some) : Result.Success<Option<TValue[]>, ValidationError[]>(value))
 				: Result.Success<Option<TValue[]>, ValidationError[]>(Option.None<TValue[]>());
 
-		public static implicit operator Data<Option<TValue[]>>(OptionalCollectionNullableStateValidator<TValue> stateValidator)
+		public static implicit operator Data<Option<TValue[]>>(OptionalNullableCollectionStateValidator<TValue> stateValidator)
 			=> stateValidator.Data;
 	}
 }

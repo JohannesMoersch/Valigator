@@ -14,17 +14,17 @@ namespace Valigator.Generator
 		public static SourceDefinition[] Sources { get; }
 			= new[]
 			{
-				SourceDefinition.Create(typeof(DefaultedCollectionNullableStateValidator<>)),
+				SourceDefinition.Create(typeof(DefaultedNullableCollectionStateValidator<>)),
 				SourceDefinition.Create(typeof(DefaultedCollectionStateValidator<>)),
-				SourceDefinition.Create(typeof(OptionalCollectionNullableStateValidator<>)),
+				SourceDefinition.Create(typeof(OptionalNullableCollectionStateValidator<>)),
 				SourceDefinition.Create(typeof(OptionalCollectionStateValidator<>)),
-				SourceDefinition.Create(typeof(RequiredCollectionNullableStateValidator<>)),
+				SourceDefinition.Create(typeof(RequiredNullableCollectionStateValidator<>)),
 				SourceDefinition.Create(typeof(RequiredCollectionStateValidator<>)),
-				SourceDefinition.Create(typeof(DefaultedNullableStateValidator<>)),
+				SourceDefinition.Create(typeof(NullableDefaultedStateValidator<>)),
 				SourceDefinition.Create(typeof(DefaultedStateValidator<>)),
-				SourceDefinition.Create(typeof(OptionalNullableStateValidator<>)),
+				SourceDefinition.Create(typeof(NullableOptionalStateValidator<>)),
 				SourceDefinition.Create(typeof(OptionalStateValidator<>)),
-				SourceDefinition.Create(typeof(RequiredNullableStateValidator<>)),
+				SourceDefinition.Create(typeof(NullableRequiredStateValidator<>)),
 				SourceDefinition.Create(typeof(RequiredStateValidator<>))
 			};
 

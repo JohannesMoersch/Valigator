@@ -10,9 +10,9 @@ namespace Valigator
 	{
 		// Defaulted Nullable Collection
 
-		public static NullableDataSourceStandard<DefaultedCollectionNullableStateValidator<TValue>, TValueValidator, TValue[], TValue[]> Add<TValueValidator, TValue>(this DefaultedCollectionNullableStateValidator<TValue> defaultedCollection, TValueValidator valueValidator)
+		public static NullableDataSourceStandard<DefaultedNullableCollectionStateValidator<TValue>, TValueValidator, TValue[], TValue[]> Add<TValueValidator, TValue>(this DefaultedNullableCollectionStateValidator<TValue> defaultedCollection, TValueValidator valueValidator)
 			where TValueValidator : IValueValidator<TValue[]>
-			=> new NullableDataSourceStandard<DefaultedCollectionNullableStateValidator<TValue>, TValueValidator, TValue[], TValue[]>(defaultedCollection, valueValidator, Mapping.Create<TValue[], TValue[]>(_ => _));
+			=> new NullableDataSourceStandard<DefaultedNullableCollectionStateValidator<TValue>, TValueValidator, TValue[], TValue[]>(defaultedCollection, valueValidator, Mapping.Create<TValue[], TValue[]>(_ => _));
 
 		// Defaulted Collection
 
@@ -22,9 +22,9 @@ namespace Valigator
 
 		// Optional Nullable Collection
 
-		public static NullableDataSourceStandard<OptionalCollectionNullableStateValidator<TValue>, TValueValidator, TValue[], TValue[]> Add<TValueValidator, TValue>(this OptionalCollectionNullableStateValidator<TValue> optionalCollection, TValueValidator valueValidator)
+		public static NullableDataSourceStandard<OptionalNullableCollectionStateValidator<TValue>, TValueValidator, TValue[], TValue[]> Add<TValueValidator, TValue>(this OptionalNullableCollectionStateValidator<TValue> optionalCollection, TValueValidator valueValidator)
 			where TValueValidator : IValueValidator<TValue[]>
-			=> new NullableDataSourceStandard<OptionalCollectionNullableStateValidator<TValue>, TValueValidator, TValue[], TValue[]>(optionalCollection, valueValidator, Mapping.Create<TValue[], TValue[]>(_ => _));
+			=> new NullableDataSourceStandard<OptionalNullableCollectionStateValidator<TValue>, TValueValidator, TValue[], TValue[]>(optionalCollection, valueValidator, Mapping.Create<TValue[], TValue[]>(_ => _));
 
 		// Optional Collection
 
@@ -34,9 +34,9 @@ namespace Valigator
 
 		// Required Nullable Collection
 
-		public static NullableDataSourceStandard<RequiredCollectionNullableStateValidator<TValue>, TValueValidator, TValue[], TValue[]> Add<TValueValidator, TValue>(this RequiredCollectionNullableStateValidator<TValue> requiredCollection, TValueValidator valueValidator)
+		public static NullableDataSourceStandard<RequiredNullableCollectionStateValidator<TValue>, TValueValidator, TValue[], TValue[]> Add<TValueValidator, TValue>(this RequiredNullableCollectionStateValidator<TValue> requiredCollection, TValueValidator valueValidator)
 			where TValueValidator : IValueValidator<TValue[]>
-			=> new NullableDataSourceStandard<RequiredCollectionNullableStateValidator<TValue>, TValueValidator, TValue[], TValue[]>(requiredCollection, valueValidator, Mapping.Create<TValue[], TValue[]>(_ => _));
+			=> new NullableDataSourceStandard<RequiredNullableCollectionStateValidator<TValue>, TValueValidator, TValue[], TValue[]>(requiredCollection, valueValidator, Mapping.Create<TValue[], TValue[]>(_ => _));
 
 		// Required Collection
 
@@ -46,9 +46,9 @@ namespace Valigator
 
 		// Defaulted Nullable
 
-		public static NullableDataSourceStandard<DefaultedNullableStateValidator<TValue>, TValueValidator, TValue, TValue> Add<TValueValidator, TValue>(this DefaultedNullableStateValidator<TValue> defaulted, TValueValidator valueValidator)
+		public static NullableDataSourceStandard<NullableDefaultedStateValidator<TValue>, TValueValidator, TValue, TValue> Add<TValueValidator, TValue>(this NullableDefaultedStateValidator<TValue> defaulted, TValueValidator valueValidator)
 			where TValueValidator : IValueValidator<TValue>
-			=> new NullableDataSourceStandard<DefaultedNullableStateValidator<TValue>, TValueValidator, TValue, TValue>(defaulted, valueValidator, Mapping.Create<TValue, TValue>(_ => _));
+			=> new NullableDataSourceStandard<NullableDefaultedStateValidator<TValue>, TValueValidator, TValue, TValue>(defaulted, valueValidator, Mapping.Create<TValue, TValue>(_ => _));
 
 		// Defaulted
 
@@ -58,9 +58,9 @@ namespace Valigator
 
 		// Optional Nullable
 
-		public static NullableDataSourceStandard<OptionalNullableStateValidator<TValue>, TValueValidator, TValue, TValue> Add<TValueValidator, TValue>(this OptionalNullableStateValidator<TValue> optional, TValueValidator valueValidator)
+		public static NullableDataSourceStandard<NullableOptionalStateValidator<TValue>, TValueValidator, TValue, TValue> Add<TValueValidator, TValue>(this NullableOptionalStateValidator<TValue> optional, TValueValidator valueValidator)
 			where TValueValidator : IValueValidator<TValue>
-			=> new NullableDataSourceStandard<OptionalNullableStateValidator<TValue>, TValueValidator, TValue, TValue>(optional, valueValidator, Mapping.Create<TValue, TValue>(_ => _));
+			=> new NullableDataSourceStandard<NullableOptionalStateValidator<TValue>, TValueValidator, TValue, TValue>(optional, valueValidator, Mapping.Create<TValue, TValue>(_ => _));
 
 		// Optional
 
@@ -70,9 +70,9 @@ namespace Valigator
 
 		// Required Nullable
 
-		public static NullableDataSourceStandard<RequiredNullableStateValidator<TValue>, TValueValidator, TValue, TValue> Add<TValueValidator, TValue>(this RequiredNullableStateValidator<TValue> required, TValueValidator valueValidator)
+		public static NullableDataSourceStandard<NullableRequiredStateValidator<TValue>, TValueValidator, TValue, TValue> Add<TValueValidator, TValue>(this NullableRequiredStateValidator<TValue> required, TValueValidator valueValidator)
 			where TValueValidator : IValueValidator<TValue>
-			=> new NullableDataSourceStandard<RequiredNullableStateValidator<TValue>, TValueValidator, TValue, TValue>(required, valueValidator, Mapping.Create<TValue, TValue>(_ => _));
+			=> new NullableDataSourceStandard<NullableRequiredStateValidator<TValue>, TValueValidator, TValue, TValue>(required, valueValidator, Mapping.Create<TValue, TValue>(_ => _));
 
 		// Required
 

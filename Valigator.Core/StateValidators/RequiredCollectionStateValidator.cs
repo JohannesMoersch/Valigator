@@ -19,8 +19,8 @@ namespace Valigator.Core.StateValidators
 		public RequiredCollectionStateValidator(Data<TValue> item)
 			=> _item = item;
 
-		public RequiredCollectionNullableStateValidator<TValue> Nullable()
-			=> new RequiredCollectionNullableStateValidator<TValue>(_item);
+		public RequiredNullableCollectionStateValidator<TValue> Nullable()
+			=> new RequiredNullableCollectionStateValidator<TValue>(_item);
 
 		IStateDescriptor IStateValidator<TValue[]>.GetDescriptor()
 			=> new RequiredCollectionStateDescriptor(false, _item.DataDescriptor);

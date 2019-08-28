@@ -10,7 +10,7 @@ using Valigator.Core.ValueValidators;
 
 namespace Valigator.Core.StateValidators
 {
-	public struct OptionalCollectionStateValidator<TValue> : IStateValidator<Option<TValue[]>>
+	public struct OptionalCollectionStateValidator<TValue> : ICollectionStateValidator<Option<TValue[]>>
 	{
 		public Data<Option<TValue[]>> Data => new DataSource<OptionalCollectionStateValidator<TValue>, Option<TValue[]>>(this);
 
@@ -19,8 +19,8 @@ namespace Valigator.Core.StateValidators
 		public OptionalCollectionStateValidator(Data<TValue> item)
 			=> _item = item;
 
-		public OptionalCollectionNullableStateValidator<TValue> Nullable()
-			=> new OptionalCollectionNullableStateValidator<TValue>(_item);
+		public OptionalNullableCollectionStateValidator<TValue> Nullable()
+			=> new OptionalNullableCollectionStateValidator<TValue>(_item);
 
 		IStateDescriptor IStateValidator<Option<TValue[]>>.GetDescriptor()
 			=> new OptionalCollectionStateDescriptor(false, _item.DataDescriptor);

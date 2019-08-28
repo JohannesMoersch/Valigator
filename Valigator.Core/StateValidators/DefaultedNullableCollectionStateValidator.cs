@@ -10,10 +10,10 @@ using Valigator.Core.ValueValidators;
 
 namespace Valigator.Core.StateValidators
 {
-	public struct DefaultedCollectionNullableStateValidator<TValue> : ICollectionStateValidator<Option<TValue>[], TValue>
+	public struct DefaultedNullableCollectionStateValidator<TValue> : ICollectionStateValidator<Option<TValue>[], TValue>
 	{
-		private static IDataContainer<Option<TValue>[]> CreateContainer(DefaultedCollectionNullableStateValidator<TValue> stateValidator)
-			=> new CollectionNullableDataContainer<DefaultedCollectionNullableStateValidator<TValue>, DummyValidator<Option<TValue>[]>, DummyValidator<Option<TValue>[]>, DummyValidator<Option<TValue>[]>, TValue, TValue>(Mapping.CreatePassthrough<TValue>(), stateValidator, DummyValidator<Option<TValue>[]>.Instance, DummyValidator<Option<TValue>[]>.Instance, DummyValidator<Option<TValue>[]>.Instance);
+		private static IDataContainer<Option<TValue>[]> CreateContainer(DefaultedNullableCollectionStateValidator<TValue> stateValidator)
+			=> new CollectionNullableDataContainer<DefaultedNullableCollectionStateValidator<TValue>, DummyValidator<Option<TValue>[]>, DummyValidator<Option<TValue>[]>, DummyValidator<Option<TValue>[]>, TValue, TValue>(Mapping.CreatePassthrough<TValue>(), stateValidator, DummyValidator<Option<TValue>[]>.Instance, DummyValidator<Option<TValue>[]>.Instance, DummyValidator<Option<TValue>[]>.Instance);
 
 		public Data<Option<TValue>[]> Data => new Data<Option<TValue>[]>(CreateContainer(this));
 
@@ -23,14 +23,14 @@ namespace Valigator.Core.StateValidators
 
 		private readonly Func<Option<TValue>[]> _defaultValueFactory;
 
-		public DefaultedCollectionNullableStateValidator(Data<Option<TValue>> item, Option<TValue>[] defaultValue)
+		public DefaultedNullableCollectionStateValidator(Data<Option<TValue>> item, Option<TValue>[] defaultValue)
 		{
 			_item = item;
 			_defaultValue = Option.Some(defaultValue ?? throw new NullDefaultException());
 			_defaultValueFactory = default;
 		}
 
-		public DefaultedCollectionNullableStateValidator(Data<Option<TValue>> item, Func<Option<TValue>[]> defaultValueFactory)
+		public DefaultedNullableCollectionStateValidator(Data<Option<TValue>> item, Func<Option<TValue>[]> defaultValueFactory)
 		{
 			_item = item;
 			_defaultValue = default;
@@ -44,7 +44,7 @@ namespace Valigator.Core.StateValidators
 			=> new DefaultedCollectionStateDescriptor(true, GetDefaultValue(), _item.DataDescriptor);
 
 		IValueDescriptor[] IStateValidator<Option<TValue>[], Option<TValue>[]>.GetImplicitValueDescriptors()
-			=> Array.Empty<IValueDescriptor>();
+			=> new[] { new NotNullDescriptor() };
 
 		Result<Option<TValue>[], ValidationError[]> IStateValidator<Option<TValue>[], Option<TValue>[]>.Validate(Option<Option<Option<TValue>[]>> value)
 		{
@@ -60,31 +60,9 @@ namespace Valigator.Core.StateValidators
 		}
 
 		public Result<Unit, ValidationError[]> IsValid(Option<object> model, Option<TValue>[] value)
-		{
-			List<ValidationError> errors = null;
-			for (int i = 0; i < value.Length; ++i)
-			{
-				if (!_item.WithValue(value[i]).Verify(model).TryGetValue().TryGetValue(out var _, out var failure))
-				{
-					foreach (var error in errors)
-						error.Path.AddIndex(i);
+			=> this.IsCollectionValid(_item, model, value);
 
-					if (errors == null)
-						errors = new List<ValidationError>();
-
-					errors.AddRange(failure);
-				}
-			}
-
-			if (errors != null)
-				return Result.Failure<Unit, ValidationError[]>(errors.ToArray());
-
-			return Result.Unit<ValidationError[]>();
-		}
-
-		public Result<Option<TValue>[], ValidationError[]> Validate(Option<Option<Option<TValue>[]>> value) => throw new NotImplementedException();
-
-		public static implicit operator Data<Option<TValue>[]>(DefaultedCollectionNullableStateValidator<TValue> stateValidator)
+		public static implicit operator Data<Option<TValue>[]>(DefaultedNullableCollectionStateValidator<TValue> stateValidator)
 			=> stateValidator.Data;
 	}
 }

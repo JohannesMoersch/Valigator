@@ -10,12 +10,12 @@ using Valigator.Core.ValueValidators;
 
 namespace Valigator.Core.StateValidators
 {
-	public struct DefaultedNullableStateValidator<TValue> : IStateValidator<Option<TValue>, TValue>
+	public struct NullableDefaultedStateValidator<TValue> : IStateValidator<Option<TValue>, TValue>
 	{
-		private static IDataContainer<Option<TValue>> Instance { get; } = CreateContainer(new DefaultedNullableStateValidator<TValue>(Option.None<TValue>()));
+		private static IDataContainer<Option<TValue>> Instance { get; } = CreateContainer(new NullableDefaultedStateValidator<TValue>(Option.None<TValue>()));
 
-		private static IDataContainer<Option<TValue>> CreateContainer(DefaultedNullableStateValidator<TValue> stateValidator)
-			=> new NullableDataContainer<DefaultedNullableStateValidator<TValue>, DummyValidator<TValue>, DummyValidator<TValue>, DummyValidator<TValue>, TValue, TValue>(Mapping.CreatePassthrough<TValue>(), stateValidator, DummyValidator<TValue>.Instance, DummyValidator<TValue>.Instance, DummyValidator<TValue>.Instance);
+		private static IDataContainer<Option<TValue>> CreateContainer(NullableDefaultedStateValidator<TValue> stateValidator)
+			=> new NullableDataContainer<NullableDefaultedStateValidator<TValue>, DummyValidator<TValue>, DummyValidator<TValue>, DummyValidator<TValue>, TValue, TValue>(Mapping.CreatePassthrough<TValue>(), stateValidator, DummyValidator<TValue>.Instance, DummyValidator<TValue>.Instance, DummyValidator<TValue>.Instance);
 
 		public Data<Option<TValue>> Data
 		{
@@ -32,13 +32,13 @@ namespace Valigator.Core.StateValidators
 
 		private readonly Func<TValue> _defaultValueFactory;
 
-		public DefaultedNullableStateValidator(TValue defaultValue)
+		public NullableDefaultedStateValidator(TValue defaultValue)
 		{
 			_defaultValue = Option.Some(defaultValue != null ? defaultValue : throw new NullDefaultException());
 			_defaultValueFactory = null;
 		}
 
-		public DefaultedNullableStateValidator(Func<TValue> defaultValueFactory)
+		public NullableDefaultedStateValidator(Func<TValue> defaultValueFactory)
 		{
 			_defaultValue = Option.None<TValue>();
 			_defaultValueFactory = defaultValueFactory ?? throw new ArgumentNullException(nameof(defaultValueFactory));
@@ -61,7 +61,7 @@ namespace Valigator.Core.StateValidators
 			return Result.Success<Option<TValue>, ValidationError[]>(GetDefaultValue());
 		}
 
-		public static implicit operator Data<Option<TValue>>(DefaultedNullableStateValidator<TValue> stateValidator)
+		public static implicit operator Data<Option<TValue>>(NullableDefaultedStateValidator<TValue> stateValidator)
 			=> stateValidator.Data;
 	}
 }

@@ -85,27 +85,7 @@ namespace Valigator.Core.StateValidators
 		}
 
 		public Result<Unit, ValidationError[]> IsValid(Option<object> model, TValue[] value)
-		{
-			List<ValidationError> errors = null;
-			for (int i = 0; i < value.Length; ++i)
-			{
-				if (!_item.WithValue(value[i]).Verify(model).TryGetValue().TryGetValue(out var _, out var failure))
-				{
-					foreach (var error in errors)
-						error.Path.AddIndex(i);
-
-					if (errors == null)
-						errors = new List<ValidationError>();
-
-					errors.AddRange(failure);
-				}
-			}
-
-			if (errors != null)
-				return Result.Failure<Unit, ValidationError[]>(errors.ToArray());
-
-			return Result.Unit<ValidationError[]>();
-		}
+			=> this.IsCollectionValid(_item, model, value);
 
 		public static implicit operator Data<TValue[]>(DefaultedCollectionStateValidator<TValue> stateValidator)
 			=> stateValidator.Data;

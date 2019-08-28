@@ -44,15 +44,15 @@ namespace Valigator.Core.StateValidators
 			_defaultValueFactory = defaultValueFactory;
 		}
 
-		public DefaultedNullableStateValidator<TValue> Nullable()
+		public NullableDefaultedStateValidator<TValue> Nullable()
 		{
 			if (_defaultValueFactory != null)
-				return new DefaultedNullableStateValidator<TValue>(_defaultValueFactory);
+				return new NullableDefaultedStateValidator<TValue>(_defaultValueFactory);
 
 			if (_defaultValue.TryGetValue(out var some))
-				return new DefaultedNullableStateValidator<TValue>(some);
+				return new NullableDefaultedStateValidator<TValue>(some);
 
-			return new DefaultedNullableStateValidator<TValue>();
+			return new NullableDefaultedStateValidator<TValue>();
 		}
 
 		private TValue GetDefaultValue()
