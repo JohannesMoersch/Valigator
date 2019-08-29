@@ -8,7 +8,8 @@ namespace Valigator.Core.DataContainers
 {
 	internal static class DataContainerHelpers
 	{
-		public static Data<TDataValue> WithMappedValidatedValue<TDataValue, TSource, TValue>(this Data<TDataValue> data, Option<TSource> value, Mapping<TSource, TValue> mapping, IStateValidator<TDataValue, TValue> stateValidator)
+		public static Data<TDataValue> WithMappedValidatedValue<TDataValue, TSource, TValue, TStateValidator>(this Data<TDataValue> data, Option<TSource> value, Mapping<TSource, TValue> mapping, TStateValidator stateValidator)
+			where TStateValidator : IStateValidator<TDataValue, TValue>
 		{
 			if (value.TryGetValue(out var some))
 			{
@@ -21,7 +22,8 @@ namespace Valigator.Core.DataContainers
 			return data.WithValidatedValue(Option.None<TValue>(), stateValidator);
 		}
 
-		public static Data<TDataValue> WithMappedValidatedValue<TDataValue, TSource, TValue>(this Data<TDataValue> data, Option<Option<TSource>[]> value, Mapping<TSource, TValue> mapping, ICollectionStateValidator<TDataValue, TValue> stateValidator)
+		public static Data<TDataValue> WithMappedValidatedValue<TDataValue, TSource, TValue, TCollectionStateValidator>(this Data<TDataValue> data, Option<Option<TSource>[]> value, Mapping<TSource, TValue> mapping, TCollectionStateValidator stateValidator)
+			where TCollectionStateValidator : ICollectionStateValidator<TDataValue, TValue>
 		{
 			if (value.TryGetValue(out var some))
 			{
@@ -55,7 +57,8 @@ namespace Valigator.Core.DataContainers
 			return data.WithValidatedValue(Option.None<Option<TValue>[]>(), stateValidator);
 		}
 
-		public static Data<TDataValue> WithValidatedValue<TDataValue, TValue>(this Data<TDataValue> data, Option<TValue> value, IStateValidator<TDataValue, TValue> stateValidator)
+		public static Data<TDataValue> WithValidatedValue<TDataValue, TValue, TStateValidator>(this Data<TDataValue> data, Option<TValue> value, TStateValidator stateValidator)
+			where TStateValidator : IStateValidator<TDataValue, TValue>
 		{
 			if (stateValidator.Validate(Option.Some(value)).TryGetValue(out var success, out var failure))
 				return data.WithValue(success);
@@ -63,7 +66,11 @@ namespace Valigator.Core.DataContainers
 			return data.WithErrors(failure);
 		}
 
-		public static Result<Unit, ValidationError[]> IsValid<TValue, TValidateValue>(this IDataContainer<Option<TValidateValue>> _, Option<object> model, Option<Option<TValidateValue>> value, IStateValidator<Option<TValidateValue>, TValue> stateValidator, IValueValidator<TValidateValue> validatorOne, IValueValidator<TValidateValue> validatorTwo, IValueValidator<TValidateValue> validatorThree)
+		public static Result<Unit, ValidationError[]> IsValid<TValue, TValidateValue, TStateValidator, TValidatorOne, TValidatorTwo, TValidatorThree>(this IDataContainer<Option<TValidateValue>> _, Option<object> model, Option<Option<TValidateValue>> value, TStateValidator stateValidator, TValidatorOne validatorOne, TValidatorTwo validatorTwo, TValidatorThree validatorThree)
+			where TStateValidator : IStateValidator<Option<TValidateValue>, TValue>
+			where TValidatorOne : IValueValidator<TValidateValue>
+			where TValidatorTwo : IValueValidator<TValidateValue>
+			where TValidatorThree : IValueValidator<TValidateValue>
 		{
 			if (value.TryGetValue(out var some))
 				return IsValid(model, some, validatorOne, validatorTwo, validatorThree);
@@ -74,7 +81,11 @@ namespace Valigator.Core.DataContainers
 			return Result.Failure<Unit, ValidationError[]>(failure);
 		}
 
-		public static Result<Unit, ValidationError[]> IsValid<TValue, TValidateValue>(this IDataContainer<TValidateValue> _, Option<object> model, Option<TValidateValue> value, IStateValidator<TValidateValue, TValue> stateValidator, IValueValidator<TValidateValue> validatorOne, IValueValidator<TValidateValue> validatorTwo, IValueValidator<TValidateValue> validatorThree)
+		public static Result<Unit, ValidationError[]> IsValid<TValue, TValidateValue, TStateValidator, TValidatorOne, TValidatorTwo, TValidatorThree>(this IDataContainer<TValidateValue> _, Option<object> model, Option<TValidateValue> value, TStateValidator stateValidator, TValidatorOne validatorOne, TValidatorTwo validatorTwo, TValidatorThree validatorThree)
+			where TStateValidator : IStateValidator<TValidateValue, TValue>
+			where TValidatorOne : IValueValidator<TValidateValue>
+			where TValidatorTwo : IValueValidator<TValidateValue>
+			where TValidatorThree : IValueValidator<TValidateValue>
 		{
 			if (value.TryGetValue(out var some))
 				return IsValid(model, some, validatorOne, validatorTwo, validatorThree);
@@ -85,7 +96,10 @@ namespace Valigator.Core.DataContainers
 			return Result.Failure<Unit, ValidationError[]>(failure);
 		}
 
-		private static Result<Unit, ValidationError[]> IsValid<TValue>(Option<object> model, Option<TValue> value, IValueValidator<TValue> validatorOne, IValueValidator<TValue> validatorTwo, IValueValidator<TValue> validatorThree)
+		private static Result<Unit, ValidationError[]> IsValid<TValue, TValidatorOne, TValidatorTwo, TValidatorThree>(Option<object> model, Option<TValue> value, TValidatorOne validatorOne, TValidatorTwo validatorTwo, TValidatorThree validatorThree)
+			where TValidatorOne : IValueValidator<TValue>
+			where TValidatorTwo : IValueValidator<TValue>
+			where TValidatorThree : IValueValidator<TValue>
 		{
 			if (value.TryGetValue(out var some))
 				return IsValid(model, some, validatorOne, validatorTwo, validatorThree);
@@ -93,7 +107,11 @@ namespace Valigator.Core.DataContainers
 			return Result.Unit<ValidationError[]>();
 		}
 
-		private static Result<Unit, ValidationError[]> IsValid<TValue>(Option<object> model, TValue value, IValueValidator<TValue> validatorOne, IValueValidator<TValue> validatorTwo, IValueValidator<TValue> validatorThree)
+		private static Result<Unit, ValidationError[]> IsValid<TValue, TValidatorOne, TValidatorTwo, TValidatorThree>(Option<object> model, TValue value, TValidatorOne validatorOne, TValidatorTwo validatorTwo, TValidatorThree validatorThree)
+
+			where TValidatorOne : IValueValidator<TValue>
+			where TValidatorTwo : IValueValidator<TValue>
+			where TValidatorThree : IValueValidator<TValue>
 		{
 			if (!model.TryGetValue(out var _))
 			{
