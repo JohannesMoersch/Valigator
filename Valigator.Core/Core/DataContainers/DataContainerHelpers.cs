@@ -66,37 +66,7 @@ namespace Valigator.Core.DataContainers
 			return data.WithErrors(failure);
 		}
 
-		public static Result<Unit, ValidationError[]> IsValid<TValue, TValidateValue, TStateValidator, TValidatorOne, TValidatorTwo, TValidatorThree>(this IDataContainer<Option<TValidateValue>> _, Option<object> model, Option<Option<TValidateValue>> value, TValue defaultValue, TStateValidator stateValidator, TValidatorOne validatorOne, TValidatorTwo validatorTwo, TValidatorThree validatorThree)
-			where TStateValidator : IStateValidator<Option<TValidateValue>, TValue>
-			where TValidatorOne : IValueValidator<TValidateValue>
-			where TValidatorTwo : IValueValidator<TValidateValue>
-			where TValidatorThree : IValueValidator<TValidateValue>
-		{
-			if (value.TryGetValue(out var some))
-				return IsValid(model, some, validatorOne, validatorTwo, validatorThree);
-
-			if (stateValidator.Validate(Option.None<Option<TValue>>()).TryGetValue(out var success, out var failure))
-				return IsValid(model, success, validatorOne, validatorTwo, validatorThree);
-
-			return Result.Failure<Unit, ValidationError[]>(failure);
-		}
-
-		public static Result<Unit, ValidationError[]> IsValid<TValue, TValidateValue, TStateValidator, TValidatorOne, TValidatorTwo, TValidatorThree>(this IDataContainer<TValidateValue> _, Option<object> model, Option<TValidateValue> value, TValue defaultValue, TStateValidator stateValidator, TValidatorOne validatorOne, TValidatorTwo validatorTwo, TValidatorThree validatorThree)
-			where TStateValidator : IStateValidator<TValidateValue, TValue>
-			where TValidatorOne : IValueValidator<TValidateValue>
-			where TValidatorTwo : IValueValidator<TValidateValue>
-			where TValidatorThree : IValueValidator<TValidateValue>
-		{
-			if (value.TryGetValue(out var some))
-				return IsValid(model, some, validatorOne, validatorTwo, validatorThree);
-
-			if (stateValidator.Validate(Option.None<Option<TValue>>()).TryGetValue(out var success, out var failure))
-				return IsValid(model, success, validatorOne, validatorTwo, validatorThree);
-
-			return Result.Failure<Unit, ValidationError[]>(failure);
-		}
-
-		private static Result<Unit, ValidationError[]> IsValid<TValue, TValidatorOne, TValidatorTwo, TValidatorThree>(Option<object> model, Option<TValue> value, TValidatorOne validatorOne, TValidatorTwo validatorTwo, TValidatorThree validatorThree)
+		public static Result<Unit, ValidationError[]> IsValid<TValue, TValidatorOne, TValidatorTwo, TValidatorThree>(this IDataContainer<Option<TValue>> _, Option<object> model, Option<TValue> value, TValidatorOne validatorOne, TValidatorTwo validatorTwo, TValidatorThree validatorThree)
 			where TValidatorOne : IValueValidator<TValue>
 			where TValidatorTwo : IValueValidator<TValue>
 			where TValidatorThree : IValueValidator<TValue>
@@ -106,6 +76,12 @@ namespace Valigator.Core.DataContainers
 
 			return Result.Unit<ValidationError[]>();
 		}
+
+		public static Result<Unit, ValidationError[]> IsValid<TValue, TValidatorOne, TValidatorTwo, TValidatorThree>(this IDataContainer<TValue> _, Option<object> model, TValue value, TValidatorOne validatorOne, TValidatorTwo validatorTwo, TValidatorThree validatorThree)
+			where TValidatorOne : IValueValidator<TValue>
+			where TValidatorTwo : IValueValidator<TValue>
+			where TValidatorThree : IValueValidator<TValue>
+			=> IsValid(model, value, validatorOne, validatorTwo, validatorThree);
 
 		private static Result<Unit, ValidationError[]> IsValid<TValue, TValidatorOne, TValidatorTwo, TValidatorThree>(Option<object> model, TValue value, TValidatorOne validatorOne, TValidatorTwo validatorTwo, TValidatorThree validatorThree)
 

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Functional;
+using Valigator.Core.Helpers;
 
 namespace Valigator.Core.DataContainers
 {
@@ -36,7 +38,17 @@ namespace Valigator.Core.DataContainers
 			=> data.WithMappedValidatedValue(value, _mapping, _stateValidator);
 
 		public Result<Unit, ValidationError[]> IsValid(Option<object> model, Option<Option<Option<TValue>[]>> value)
-			=> this.IsValid(model, value, default(Option<TValue>[]), _stateValidator, _valueValidatorOne, _valueValidatorTwo, _valueValidatorThree);
+		{
+			if (value.TryGetValue(out var some) || _stateValidator.Validate(Option.None<Option<Option<TValue>[]>>()).TryGetValue(out some, out var failure))
+			{
+				if (_stateValidator.IsValid(model, some).TryGetValue(out var _, out var itemErrors) & this.IsValid(model, some, _valueValidatorOne, _valueValidatorTwo, _valueValidatorThree).TryGetValue(out var __, out var collectionErrors))
+					return Result.Unit<ValidationError[]>();
+
+				return Result.Failure<Unit, ValidationError[]>(collectionErrors.Concat(itemErrors).ToArray());
+			}
+
+			return Result.Failure<Unit, ValidationError[]>(failure);
+		}
 
 		Option<ValidationError[]> IDataContainer<Option<Option<TValue>[]>>.GetErrors()
 			=> Option.None<ValidationError[]>();

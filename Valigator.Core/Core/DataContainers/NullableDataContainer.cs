@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Functional;
+using Valigator.Core.Helpers;
 
 namespace Valigator.Core.DataContainers
 {
@@ -36,7 +37,12 @@ namespace Valigator.Core.DataContainers
 			=> data.WithMappedValidatedValue(value, _mapping, _stateValidator);
 
 		public Result<Unit, ValidationError[]> IsValid(Option<object> model, Option<Option<TValue>> value)
-			=> this.IsValid(model, value, default(TValue), _stateValidator, _valueValidatorOne, _valueValidatorTwo, _valueValidatorThree);
+		{
+			if (value.TryGetValue(out var some) || _stateValidator.Validate(Option.None<Option<TValue>>()).TryGetValue(out some, out var failure))
+				return this.IsValid(model, some, _valueValidatorOne, _valueValidatorTwo, _valueValidatorThree);
+
+			return Result.Failure<Unit, ValidationError[]>(failure);
+		}
 
 		Option<ValidationError[]> IDataContainer<Option<TValue>>.GetErrors()
 			=> Option.None<ValidationError[]>();
