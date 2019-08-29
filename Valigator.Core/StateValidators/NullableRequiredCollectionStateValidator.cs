@@ -11,26 +11,23 @@ using Valigator.Core.ValueValidators;
 
 namespace Valigator.Core.StateValidators
 {
-	public struct OptionalCollectionStateValidator<TValue> : ICollectionStateValidator<Option<TValue[]>, TValue>
+	public struct NullableRequiredCollectionStateValidator<TValue> : ICollectionStateValidator<Option<TValue[]>, TValue>
 	{
-		private static IDataContainer<Option<TValue[]>> CreateContainer(OptionalCollectionStateValidator<TValue> stateValidator)
-			=> new NullableCollectionDataContainer<OptionalCollectionStateValidator<TValue>, DummyValidator<TValue[]>, DummyValidator<TValue[]>, DummyValidator<TValue[]>, TValue, TValue>(Mapping.CreatePassthrough<TValue>(), stateValidator, DummyValidator<TValue[]>.Instance, DummyValidator<TValue[]>.Instance, DummyValidator<TValue[]>.Instance);
+		private static IDataContainer<Option<TValue[]>> CreateContainer(NullableRequiredCollectionStateValidator<TValue> stateValidator)
+			=> new NullableCollectionDataContainer<NullableRequiredCollectionStateValidator<TValue>, DummyValidator<TValue[]>, DummyValidator<TValue[]>, DummyValidator<TValue[]>, TValue, TValue>(Mapping.CreatePassthrough<TValue>(), stateValidator, DummyValidator<TValue[]>.Instance, DummyValidator<TValue[]>.Instance, DummyValidator<TValue[]>.Instance);
 
 		public Data<Option<TValue[]>> Data => new Data<Option<TValue[]>>(CreateContainer(this));
 
 		private readonly Data<TValue> _item;
 
-		public OptionalCollectionStateValidator(Data<TValue> item)
+		public NullableRequiredCollectionStateValidator(Data<TValue> item) 
 			=> _item = item;
-
-		public OptionalNullableCollectionStateValidator<TValue> Nullable()
-			=> new OptionalNullableCollectionStateValidator<TValue>(_item);
 
 		IStateDescriptor IStateValidator<Option<TValue[]>, Option<TValue>[]>.GetDescriptor()
 			=> new CollectionStateDescriptor(Option.None<object[]>(), _item.DataDescriptor);
 
 		IValueDescriptor[] IStateValidator<Option<TValue[]>, Option<TValue>[]>.GetImplicitValueDescriptors()
-			=> new[] { new NotNullDescriptor() };
+			=> new IValueDescriptor[] { new RequiredDescriptor() };
 
 		Result<Option<TValue[]>, ValidationError[]> IStateValidator<Option<TValue[]>, Option<TValue>[]>.Validate(Option<Option<Option<TValue>[]>> value)
 		{
@@ -44,16 +41,16 @@ namespace Valigator.Core.StateValidators
 					return Result.Failure<Option<TValue[]>, ValidationError[]>(failure);
 				}
 
-				return Result.Failure<Option<TValue[]>, ValidationError[]>(new[] { ValidationErrors.NotNull() });
+				return Result.Success<Option<TValue[]>, ValidationError[]>(Option.None<TValue[]>());
 			}
 
-			return Result.Success<Option<TValue[]>, ValidationError[]>(Option.None<TValue[]>());
+			return Result.Failure<Option<TValue[]>, ValidationError[]>(new[] { ValidationErrors.Required() });
 		}
 
 		public Result<Unit, ValidationError[]> IsValid(Option<object> model, Option<TValue[]> value)
 			=> this.IsCollectionValid(_item, model, value);
 
-		public static implicit operator Data<Option<TValue[]>>(OptionalCollectionStateValidator<TValue> stateValidator)
+		public static implicit operator Data<Option<TValue[]>>(NullableRequiredCollectionStateValidator<TValue> stateValidator)
 			=> stateValidator.Data;
 	}
 }

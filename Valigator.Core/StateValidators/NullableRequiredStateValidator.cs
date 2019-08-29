@@ -20,7 +20,7 @@ namespace Valigator.Core.StateValidators
 		public Data<Option<TValue>> Data => new Data<Option<TValue>>(Instance);
 
 		IStateDescriptor IStateValidator<Option<TValue>, TValue>.GetDescriptor()
-			=> new RequiredStateDescriptor(false);
+			=> new StateDescriptor(Option.None<object>());
 
 		IValueDescriptor[] IStateValidator<Option<TValue>, TValue>.GetImplicitValueDescriptors()
 			=> new IValueDescriptor[] { new RequiredDescriptor() };

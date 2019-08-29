@@ -23,7 +23,7 @@ namespace Valigator.Core.StateValidators
 			=> new NullableRequiredStateValidator<TValue>();
 
 		IStateDescriptor IStateValidator<TValue, TValue>.GetDescriptor()
-			=> new RequiredStateDescriptor(false);
+			=> new StateDescriptor(Option.None<object>());
 
 		IValueDescriptor[] IStateValidator<TValue, TValue>.GetImplicitValueDescriptors()
 			=> new IValueDescriptor[] { new RequiredDescriptor(), new NotNullDescriptor() };

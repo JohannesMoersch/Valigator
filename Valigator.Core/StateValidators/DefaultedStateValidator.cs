@@ -59,7 +59,7 @@ namespace Valigator.Core.StateValidators
 			=> this.GetDefaultValue(_defaultValue, _defaultValueFactory);
 
 		IStateDescriptor IStateValidator<TValue, TValue>.GetDescriptor()
-			=> new DefaultedStateDescriptor(false, GetDefaultValue());
+			=> new StateDescriptor(Option.Some<object>(GetDefaultValue()));
 
 		IValueDescriptor[] IStateValidator<TValue, TValue>.GetImplicitValueDescriptors()
 			=> new[] { new NotNullDescriptor() };
