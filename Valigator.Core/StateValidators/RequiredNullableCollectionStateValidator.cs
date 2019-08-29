@@ -22,6 +22,9 @@ namespace Valigator.Core.StateValidators
 		public RequiredNullableCollectionStateValidator(Data<Option<TValue>> item)
 			=> _item = item;
 
+		public NullableRequiredNullableCollectionStateValidator<TValue> Nullable()
+			=> new NullableRequiredNullableCollectionStateValidator<TValue>(_item);
+
 		IStateDescriptor IStateValidator<Option<TValue>[], Option<TValue>[]>.GetDescriptor()
 			=> new CollectionStateDescriptor(Option.None<object[]>(), _item.DataDescriptor);
 
@@ -42,7 +45,7 @@ namespace Valigator.Core.StateValidators
 		}
 
 		public Result<Unit, ValidationError[]> IsValid(Option<object> model, Option<TValue>[] value)
-			=> this.IsCollectionValid(_item, model, value);
+			=> StateValidatorHelpers.IsCollectionValid(_item, model, value);
 
 		public static implicit operator Data<Option<TValue>[]>(RequiredNullableCollectionStateValidator<TValue> stateValidator)
 			=> stateValidator.Data;

@@ -38,10 +38,10 @@ namespace Valigator.Core.StateValidators
 		}
 
 		private Option<Option<TValue>[]> GetDefaultValue()
-			=> Option.Some(this.GetDefaultValue(_defaultValue, _defaultValueFactory));
+			=> Option.Some(StateValidatorHelpers.GetDefaultValue(_defaultValue, _defaultValueFactory));
 
 		IStateDescriptor IStateValidator<Option<Option<TValue>[]>, Option<TValue>[]>.GetDescriptor()
-			=> new CollectionStateDescriptor(this.GetDefaultValueForDescriptor(_defaultValue, _defaultValueFactory), _item.DataDescriptor);
+			=> new CollectionStateDescriptor(StateValidatorHelpers.GetDefaultValueForDescriptor(_defaultValue, _defaultValueFactory), _item.DataDescriptor);
 
 		IValueDescriptor[] IStateValidator<Option<Option<TValue>[]>, Option<TValue>[]>.GetImplicitValueDescriptors()
 			=> Array.Empty<IValueDescriptor>();
@@ -55,7 +55,7 @@ namespace Valigator.Core.StateValidators
 		}
 
 		public Result<Unit, ValidationError[]> IsValid(Option<object> model, Option<Option<TValue>[]> value)
-			=> this.IsCollectionValid(_item, model, value);
+			=> StateValidatorHelpers.IsCollectionValid(_item, model, value);
 
 		public static implicit operator Data<Option<Option<TValue>[]>>(NullableDefaultedNullableCollectionStateValidator<TValue> stateValidator)
 			=> stateValidator.Data;

@@ -22,6 +22,9 @@ namespace Valigator.Core.StateValidators
 		public OptionalNullableCollectionStateValidator(Data<Option<TValue>> item)
 			=> _item = item;
 
+		public NullableOptionalNullableCollectionStateValidator<TValue> Nullable()
+			=> new NullableOptionalNullableCollectionStateValidator<TValue>(_item);
+
 		IStateDescriptor IStateValidator<Option<Option<TValue>[]>, Option<TValue>[]>.GetDescriptor()
 			=> new CollectionStateDescriptor(Option.None<object[]>(), _item.DataDescriptor);
 
@@ -37,7 +40,7 @@ namespace Valigator.Core.StateValidators
 		}
 
 		public Result<Unit, ValidationError[]> IsValid(Option<object> model, Option<Option<TValue>[]> value)
-			=> this.IsCollectionValid(_item, model, value);
+			=> StateValidatorHelpers.IsCollectionValid(_item, model, value);
 
 		public Result<Option<Option<TValue>[]>, ValidationError[]> Validate() => throw new NotImplementedException();
 

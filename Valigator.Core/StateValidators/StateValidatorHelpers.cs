@@ -9,7 +9,7 @@ namespace Valigator.Core.StateValidators
 {
 	public static class StateValidatorHelpers
 	{
-		public static TValue GetDefaultValue<T1, T2, TValue>(this IStateValidator<T1, T2> _, Option<TValue> defaultValue, Func<TValue> defaultValueFactory)
+		public static TValue GetDefaultValue<TValue>(Option<TValue> defaultValue, Func<TValue> defaultValueFactory)
 		{
 			if (defaultValueFactory != null)
 			{
@@ -24,30 +24,30 @@ namespace Valigator.Core.StateValidators
 			return defaultValue.TryGetValue(out var some) ? some : default;
 		}
 
-		public static Option<object[]> GetDefaultValueForDescriptor<TDataValue, TValue>(this ICollectionStateValidator<TDataValue, TValue> _, Option<TValue[]> defaultValue, Func<TValue[]> defaultValueFactory)
+		public static Option<object[]> GetDefaultValueForDescriptor<TValue>(Option<TValue[]> defaultValue, Func<TValue[]> defaultValueFactory)
 			=> Option
 				.Some
 				(
-					GetDefaultValue(_, defaultValue, defaultValueFactory)
+					GetDefaultValue(defaultValue, defaultValueFactory)
 					.Cast<object>()
 					.ToArray()
 				);
 
-		public static Option<object[]> GetDefaultValueForDescriptor<TDataValue, TValue>(this ICollectionStateValidator<TDataValue, TValue> _, Option<Option<TValue>[]> defaultValue, Func<Option<TValue>[]> defaultValueFactory)
+		public static Option<object[]> GetDefaultValueForDescriptor<TDataValue, TValue>(Option<Option<TValue>[]> defaultValue, Func<Option<TValue>[]> defaultValueFactory)
 			=> Option
 				.Some
 				(
-					GetDefaultValue(_, defaultValue, defaultValueFactory)
+					GetDefaultValue(defaultValue, defaultValueFactory)
 					.Select(v => v.TryGetValue(out var some) ? (object)some : null)
 					.ToArray()
 				);
 
-		public static Result<Unit, ValidationError[]> IsCollectionValid<T1, T2, TValue>(this ICollectionStateValidator<T1, T2> _, Data<TValue> data, Option<object> model, Option<TValue[]> value)
+		public static Result<Unit, ValidationError[]> IsCollectionValid<TValue>(Data<TValue> data, Option<object> model, Option<TValue[]> value)
 			=> value.TryGetValue(out var some)
-				? IsCollectionValid(_, data, model, some)
+				? IsCollectionValid(data, model, some)
 				: Result.Unit<ValidationError[]>();
 
-		public static Result<Unit, ValidationError[]> IsCollectionValid<T1, T2, TValue>(this ICollectionStateValidator<T1, T2> _, Data<TValue> data, Option<object> model, TValue[] value)
+		public static Result<Unit, ValidationError[]> IsCollectionValid<TValue>(Data<TValue> data, Option<object> model, TValue[] value)
 		{
 			List<ValidationError> errors = null;
 			for (int i = 0; i < value.Length; ++i)
@@ -70,7 +70,7 @@ namespace Valigator.Core.StateValidators
 			return Result.Unit<ValidationError[]>();
 		}
 
-		public static Result<TValue[], ValidationError[]> ValidateCollectionNotNull<T1, T2, TValue>(this ICollectionStateValidator<T1, T2> _, Option<TValue>[] values)
+		public static Result<TValue[], ValidationError[]> ValidateCollectionNotNull<TValue>(Option<TValue>[] values)
 		{
 			List<ValidationError> errors = null;
 

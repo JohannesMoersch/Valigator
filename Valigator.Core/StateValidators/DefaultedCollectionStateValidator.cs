@@ -38,11 +38,22 @@ namespace Valigator.Core.StateValidators
 			_defaultValueFactory = defaultValueFactory ?? throw new ArgumentNullException(nameof(defaultValueFactory));
 		}
 
+		public NullableDefaultedCollectionStateValidator<TValue> Nullable()
+		{
+			if (_defaultValueFactory != null)
+				return new NullableDefaultedCollectionStateValidator<TValue>(_item, _defaultValueFactory);
+
+			if (_defaultValue.TryGetValue(out var some))
+				return new NullableDefaultedCollectionStateValidator<TValue>(_item, some);
+
+			return new NullableDefaultedCollectionStateValidator<TValue>();
+		}
+
 		private TValue[] GetDefaultValue()
-			=> this.GetDefaultValue(_defaultValue, _defaultValueFactory);
+			=> StateValidatorHelpers.GetDefaultValue(_defaultValue, _defaultValueFactory);
 
 		IStateDescriptor IStateValidator<TValue[], Option<TValue>[]>.GetDescriptor()
-			=> new CollectionStateDescriptor(this.GetDefaultValueForDescriptor(_defaultValue, _defaultValueFactory), _item.DataDescriptor);
+			=> new CollectionStateDescriptor(StateValidatorHelpers.GetDefaultValueForDescriptor(_defaultValue, _defaultValueFactory), _item.DataDescriptor);
 
 		IValueDescriptor[] IStateValidator<TValue[], Option<TValue>[]>.GetImplicitValueDescriptors()
 			=> new[] { new NotNullDescriptor() };
@@ -53,7 +64,7 @@ namespace Valigator.Core.StateValidators
 			{
 				if (isSet.TryGetValue(out var notNull))
 				{
-					if (this.ValidateCollectionNotNull(notNull).TryGetValue(out var success, out var failure))
+					if (StateValidatorHelpers.ValidateCollectionNotNull(notNull).TryGetValue(out var success, out var failure))
 						return Result.Success<TValue[], ValidationError[]>(success);
 
 					return Result.Failure<TValue[], ValidationError[]>(failure);
@@ -66,7 +77,7 @@ namespace Valigator.Core.StateValidators
 		}
 
 		public Result<Unit, ValidationError[]> IsValid(Option<object> model, TValue[] value)
-			=> this.IsCollectionValid(_item, model, value);
+			=> StateValidatorHelpers.IsCollectionValid(_item, model, value);
 
 		public static implicit operator Data<TValue[]>(DefaultedCollectionStateValidator<TValue> stateValidator)
 			=> stateValidator.Data;

@@ -23,8 +23,8 @@ namespace Valigator.Core.StateValidators
 		public OptionalCollectionStateValidator(Data<TValue> item)
 			=> _item = item;
 
-		public OptionalNullableCollectionStateValidator<TValue> Nullable()
-			=> new OptionalNullableCollectionStateValidator<TValue>(_item);
+		public NullableOptionalCollectionStateValidator<TValue> Nullable()
+			=> new NullableOptionalCollectionStateValidator<TValue>(_item);
 
 		IStateDescriptor IStateValidator<Option<TValue[]>, Option<TValue>[]>.GetDescriptor()
 			=> new CollectionStateDescriptor(Option.None<object[]>(), _item.DataDescriptor);
@@ -38,7 +38,7 @@ namespace Valigator.Core.StateValidators
 			{
 				if (isSet.TryGetValue(out var notNull))
 				{
-					if (this.ValidateCollectionNotNull(notNull).TryGetValue(out var success, out var failure))
+					if (StateValidatorHelpers.ValidateCollectionNotNull(notNull).TryGetValue(out var success, out var failure))
 						return Result.Success<Option<TValue[]>, ValidationError[]>(Option.Some(success));
 
 					return Result.Failure<Option<TValue[]>, ValidationError[]>(failure);
@@ -51,7 +51,7 @@ namespace Valigator.Core.StateValidators
 		}
 
 		public Result<Unit, ValidationError[]> IsValid(Option<object> model, Option<TValue[]> value)
-			=> this.IsCollectionValid(_item, model, value);
+			=> StateValidatorHelpers.IsCollectionValid(_item, model, value);
 
 		public static implicit operator Data<Option<TValue[]>>(OptionalCollectionStateValidator<TValue> stateValidator)
 			=> stateValidator.Data;

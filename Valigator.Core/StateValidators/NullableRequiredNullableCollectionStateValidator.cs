@@ -37,7 +37,7 @@ namespace Valigator.Core.StateValidators
 		}
 
 		public Result<Unit, ValidationError[]> IsValid(Option<object> model, Option<Option<TValue>[]> value)
-			=> this.IsCollectionValid(_item, model, value);
+			=> StateValidatorHelpers.IsCollectionValid(_item, model, value);
 
 		public static implicit operator Data<Option<Option<TValue>[]>>(NullableRequiredNullableCollectionStateValidator<TValue> stateValidator)
 			=> stateValidator.Data;
