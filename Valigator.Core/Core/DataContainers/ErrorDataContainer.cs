@@ -19,7 +19,7 @@ namespace Valigator.Core.DataContainers
 			_validationErrors = validationErrors ?? throw new ArgumentNullException(nameof(validationErrors));
 		}
 
-		Result<Unit, ValidationError[]> IDataContainer<TValue>.IsValid(Option<object> model, TValue value)
+		Result<Unit, ValidationError[]> IDataContainer<TValue>.IsValid(Option<object> model, Option<TValue> value)
 			=> Result.Failure<Unit, ValidationError[]>(_validationErrors);
 
 		public Option<ValidationError[]> GetErrors()

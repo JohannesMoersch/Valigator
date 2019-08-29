@@ -12,7 +12,7 @@ namespace Valigator.Core.StateValidators
 {
 	public struct NullableDefaultedStateValidator<TValue> : IStateValidator<Option<TValue>, TValue>
 	{
-		private static IDataContainer<Option<TValue>> Instance { get; } = CreateContainer(new NullableDefaultedStateValidator<TValue>(Option.None<TValue>()));
+		private static IDataContainer<Option<TValue>> Instance { get; } = CreateContainer(new NullableDefaultedStateValidator<TValue>(default(TValue)));
 
 		private static IDataContainer<Option<TValue>> CreateContainer(NullableDefaultedStateValidator<TValue> stateValidator)
 			=> new NullableDataContainer<NullableDefaultedStateValidator<TValue>, DummyValidator<TValue>, DummyValidator<TValue>, DummyValidator<TValue>, TValue, TValue>(Mapping.CreatePassthrough<TValue>(), stateValidator, DummyValidator<TValue>.Instance, DummyValidator<TValue>.Instance, DummyValidator<TValue>.Instance);
