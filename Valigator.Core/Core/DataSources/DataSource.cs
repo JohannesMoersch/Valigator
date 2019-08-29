@@ -5,8 +5,8 @@ using Valigator.Core.ValueValidators;
 
 namespace Valigator.Core.DataSources
 {
-	public struct DataSource<TStateValidator, TSource>
-		where TStateValidator : IStateValidator<TSource>
+	public struct DataSource<TStateValidator, TDataValue, TValue, TSource>
+		where TStateValidator : IStateValidator<TDataValue, TValue>
 	{
 		private readonly TStateValidator _stateValidator;
 

@@ -36,7 +36,7 @@ namespace Valigator.Core.DataContainers
 			=> data.WithMappedValidatedValue(value, _mapping, _stateValidator);
 
 		public Result<Unit, ValidationError[]> IsValid(Option<object> model, Option<Option<TValue[]>> value)
-			=> this.IsValid(model, value, _stateValidator, _valueValidatorOne, _valueValidatorTwo, _valueValidatorThree);
+			=> this.IsValid(model, value, default(Option<TValue>[]), _stateValidator, _valueValidatorOne, _valueValidatorTwo, _valueValidatorThree);
 
 		Option<ValidationError[]> IDataContainer<Option<TValue[]>>.GetErrors()
 			=> Option.None<ValidationError[]>();

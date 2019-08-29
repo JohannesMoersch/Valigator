@@ -66,7 +66,7 @@ namespace Valigator.Core.DataContainers
 			return data.WithErrors(failure);
 		}
 
-		public static Result<Unit, ValidationError[]> IsValid<TValue, TValidateValue, TStateValidator, TValidatorOne, TValidatorTwo, TValidatorThree>(this IDataContainer<Option<TValidateValue>> _, Option<object> model, Option<Option<TValidateValue>> value, TStateValidator stateValidator, TValidatorOne validatorOne, TValidatorTwo validatorTwo, TValidatorThree validatorThree)
+		public static Result<Unit, ValidationError[]> IsValid<TValue, TValidateValue, TStateValidator, TValidatorOne, TValidatorTwo, TValidatorThree>(this IDataContainer<Option<TValidateValue>> _, Option<object> model, Option<Option<TValidateValue>> value, TValue defaultValue, TStateValidator stateValidator, TValidatorOne validatorOne, TValidatorTwo validatorTwo, TValidatorThree validatorThree)
 			where TStateValidator : IStateValidator<Option<TValidateValue>, TValue>
 			where TValidatorOne : IValueValidator<TValidateValue>
 			where TValidatorTwo : IValueValidator<TValidateValue>
@@ -81,7 +81,7 @@ namespace Valigator.Core.DataContainers
 			return Result.Failure<Unit, ValidationError[]>(failure);
 		}
 
-		public static Result<Unit, ValidationError[]> IsValid<TValue, TValidateValue, TStateValidator, TValidatorOne, TValidatorTwo, TValidatorThree>(this IDataContainer<TValidateValue> _, Option<object> model, Option<TValidateValue> value, TStateValidator stateValidator, TValidatorOne validatorOne, TValidatorTwo validatorTwo, TValidatorThree validatorThree)
+		public static Result<Unit, ValidationError[]> IsValid<TValue, TValidateValue, TStateValidator, TValidatorOne, TValidatorTwo, TValidatorThree>(this IDataContainer<TValidateValue> _, Option<object> model, Option<TValidateValue> value, TValue defaultValue, TStateValidator stateValidator, TValidatorOne validatorOne, TValidatorTwo validatorTwo, TValidatorThree validatorThree)
 			where TStateValidator : IStateValidator<TValidateValue, TValue>
 			where TValidatorOne : IValueValidator<TValidateValue>
 			where TValidatorTwo : IValueValidator<TValidateValue>
