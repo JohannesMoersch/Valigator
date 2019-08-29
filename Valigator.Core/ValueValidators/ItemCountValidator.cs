@@ -12,6 +12,8 @@ namespace Valigator.Core.ValueValidators
 		private readonly Option<int> _minimumItems;
 		private readonly Option<int> _maximumItems;
 
+		bool IValueValidator<TValue[]>.RequiresModel => false;
+
 		public ItemCountValidator(int? minimumItems, int? maximumItems)
 		{
 			if (!minimumItems.HasValue && !maximumItems.HasValue)
@@ -33,7 +35,7 @@ namespace Valigator.Core.ValueValidators
 		IValueDescriptor IValueValidator<TValue[]>.GetDescriptor()
 			=> new ItemCountDescriptor(_minimumItems, _maximumItems);
 
-		bool IValueValidator<TValue[]>.IsValid(TValue[] value)
+		bool IValueValidator<TValue[]>.IsValid(Option<object> model, TValue[] value)
 		{
 			if (_minimumItems.TryGetValue(out var minimum) && value.Length < minimum)
 				return false;
