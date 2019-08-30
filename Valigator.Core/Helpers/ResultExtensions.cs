@@ -38,5 +38,4 @@ namespace Valigator.Core.Helpers
 				? Result.Success<TResult, TFailure>(resultSelector.Invoke(success))
 				: Result.Failure<TResult, TFailure>(failure);
 	}
-	}
 }
