@@ -5,7 +5,7 @@ using Valigator.Core.ValueValidators;
 
 namespace Valigator.Core.DataSources
 {
-	public struct DataSourceStandardInvertedStandard<TDataContainerFactory, TDataValue, TValue, TSource, TValueValidatorOne, TValueValidatorTwo, TValueValidatorThree>
+	public struct DataSourceStandardInvertedStandard<TDataContainerFactory, TDataValue, TValue, TValueValidatorOne, TValueValidatorTwo, TValueValidatorThree>
 		where TDataContainerFactory : struct, IDataContainerFactory<TDataValue, TValue>
 		where TValueValidatorOne : struct, IValueValidator<TValue>
 		where TValueValidatorTwo : struct, IValueValidator<TValue>
@@ -26,10 +26,10 @@ namespace Valigator.Core.DataSources
 			_valueValidatorThree = valueValidatorThree;
 		}
 
-		public DataSourceStandardInvertedInverted<TDataContainerFactory, TDataValue, TValue, TSource, TValueValidatorOne, TValueValidatorTwo, TValueValidatorThree> InvertThree()
-			=> new DataSourceStandardInvertedInverted<TDataContainerFactory, TDataValue, TValue, TSource, TValueValidatorOne, TValueValidatorTwo, TValueValidatorThree>(_dataContainerFactory, _valueValidatorOne, _valueValidatorTwo, _valueValidatorThree);
+		public DataSourceStandardInvertedInverted<TDataContainerFactory, TDataValue, TValue, TValueValidatorOne, TValueValidatorTwo, TValueValidatorThree> InvertThree()
+			=> new DataSourceStandardInvertedInverted<TDataContainerFactory, TDataValue, TValue, TValueValidatorOne, TValueValidatorTwo, TValueValidatorThree>(_dataContainerFactory, _valueValidatorOne, _valueValidatorTwo, _valueValidatorThree);
 
-		public static implicit operator Data<TDataValue>(DataSourceStandardInvertedStandard<TDataContainerFactory, TDataValue, TValue, TSource, TValueValidatorOne, TValueValidatorTwo, TValueValidatorThree> dataSource)
+		public static implicit operator Data<TDataValue>(DataSourceStandardInvertedStandard<TDataContainerFactory, TDataValue, TValue, TValueValidatorOne, TValueValidatorTwo, TValueValidatorThree> dataSource)
 			=> dataSource.Data;
 	}
 }

@@ -5,7 +5,7 @@ using Valigator.Core.ValueValidators;
 
 namespace Valigator.Core.DataSources
 {
-	public struct DataSourceStandard<TDataContainerFactory, TDataValue, TValue, TSource, TValueValidatorOne>
+	public struct DataSourceStandard<TDataContainerFactory, TDataValue, TValue, TValueValidatorOne>
 		where TDataContainerFactory : struct, IDataContainerFactory<TDataValue, TValue>
 		where TValueValidatorOne : struct, IValueValidator<TValue>
 	{
@@ -20,14 +20,14 @@ namespace Valigator.Core.DataSources
 			_valueValidatorOne = valueValidatorOne;
 		}
 
-		public DataSourceStandardStandard<TDataContainerFactory, TDataValue, TValue, TSource, TValueValidatorOne, TValueValidatorTwo> Add<TValueValidatorTwo>(TValueValidatorTwo valueValidator)
+		public DataSourceStandardStandard<TDataContainerFactory, TDataValue, TValue, TValueValidatorOne, TValueValidatorTwo> Add<TValueValidatorTwo>(TValueValidatorTwo valueValidator)
 			where TValueValidatorTwo : struct, IValueValidator<TValue>
-			=> new DataSourceStandardStandard<TDataContainerFactory, TDataValue, TValue, TSource, TValueValidatorOne, TValueValidatorTwo>(_dataContainerFactory, _valueValidatorOne, valueValidator);
+			=> new DataSourceStandardStandard<TDataContainerFactory, TDataValue, TValue, TValueValidatorOne, TValueValidatorTwo>(_dataContainerFactory, _valueValidatorOne, valueValidator);
 
-		public DataSourceInverted<TDataContainerFactory, TDataValue, TValue, TSource, TValueValidatorOne> InvertOne()
-			=> new DataSourceInverted<TDataContainerFactory, TDataValue, TValue, TSource, TValueValidatorOne>(_dataContainerFactory, _valueValidatorOne);
+		public DataSourceInverted<TDataContainerFactory, TDataValue, TValue, TValueValidatorOne> InvertOne()
+			=> new DataSourceInverted<TDataContainerFactory, TDataValue, TValue, TValueValidatorOne>(_dataContainerFactory, _valueValidatorOne);
 
-		public static implicit operator Data<TDataValue>(DataSourceStandard<TDataContainerFactory, TDataValue, TValue, TSource, TValueValidatorOne> dataSource)
+		public static implicit operator Data<TDataValue>(DataSourceStandard<TDataContainerFactory, TDataValue, TValue, TValueValidatorOne> dataSource)
 			=> dataSource.Data;
 	}
 }

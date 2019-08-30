@@ -5,7 +5,7 @@ using Valigator.Core.ValueValidators;
 
 namespace Valigator.Core.DataSources
 {
-	public struct DataSourceInvertedInvertedInverted<TDataContainerFactory, TDataValue, TValue, TSource, TValueValidatorOne, TValueValidatorTwo, TValueValidatorThree>
+	public struct DataSourceInvertedInvertedInverted<TDataContainerFactory, TDataValue, TValue, TValueValidatorOne, TValueValidatorTwo, TValueValidatorThree>
 		where TDataContainerFactory : struct, IDataContainerFactory<TDataValue, TValue>
 		where TValueValidatorOne : struct, IValueValidator<TValue>
 		where TValueValidatorTwo : struct, IValueValidator<TValue>
@@ -26,7 +26,7 @@ namespace Valigator.Core.DataSources
 			_valueValidatorThree = valueValidatorThree;
 		}
 
-		public static implicit operator Data<TDataValue>(DataSourceInvertedInvertedInverted<TDataContainerFactory, TDataValue, TValue, TSource, TValueValidatorOne, TValueValidatorTwo, TValueValidatorThree> dataSource)
+		public static implicit operator Data<TDataValue>(DataSourceInvertedInvertedInverted<TDataContainerFactory, TDataValue, TValue, TValueValidatorOne, TValueValidatorTwo, TValueValidatorThree> dataSource)
 			=> dataSource.Data;
 	}
 }

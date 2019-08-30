@@ -5,7 +5,7 @@ using Functional;
 
 namespace Valigator.Core.DataContainers.Factories
 {
-	internal struct NullableCollectionNullableDataContainerFactory<TStateValidator, TSource, TValue> : IDataContainerFactory<Option<Option<TValue>[]>, Option<TValue>[]>
+	public struct NullableCollectionNullableDataContainerFactory<TStateValidator, TSource, TValue> : IDataContainerFactory<Option<Option<TValue>[]>, Option<TValue>[]>
 		where TStateValidator : struct, ICollectionStateValidator<Option<Option<TValue>[]>, TValue>
 	{
 		private readonly TStateValidator _stateValidator;

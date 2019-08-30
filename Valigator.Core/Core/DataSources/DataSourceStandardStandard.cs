@@ -5,7 +5,7 @@ using Valigator.Core.ValueValidators;
 
 namespace Valigator.Core.DataSources
 {
-	public struct DataSourceStandardStandard<TDataContainerFactory, TDataValue, TValue, TSource, TValueValidatorOne, TValueValidatorTwo>
+	public struct DataSourceStandardStandard<TDataContainerFactory, TDataValue, TValue, TValueValidatorOne, TValueValidatorTwo>
 		where TDataContainerFactory : struct, IDataContainerFactory<TDataValue, TValue>
 		where TValueValidatorOne : struct, IValueValidator<TValue>
 		where TValueValidatorTwo : struct, IValueValidator<TValue>
@@ -23,14 +23,14 @@ namespace Valigator.Core.DataSources
 			_valueValidatorTwo = valueValidatorTwo;
 		}
 
-		public DataSourceStandardStandardStandard<TDataContainerFactory, TDataValue, TValue, TSource, TValueValidatorOne, TValueValidatorTwo, TValueValidatorThree> Add<TValueValidatorThree>(TValueValidatorThree valueValidator)
+		public DataSourceStandardStandardStandard<TDataContainerFactory, TDataValue, TValue, TValueValidatorOne, TValueValidatorTwo, TValueValidatorThree> Add<TValueValidatorThree>(TValueValidatorThree valueValidator)
 			where TValueValidatorThree : struct, IValueValidator<TValue>
-			=> new DataSourceStandardStandardStandard<TDataContainerFactory, TDataValue, TValue, TSource, TValueValidatorOne, TValueValidatorTwo, TValueValidatorThree>(_dataContainerFactory, _valueValidatorOne, _valueValidatorTwo, valueValidator);
+			=> new DataSourceStandardStandardStandard<TDataContainerFactory, TDataValue, TValue, TValueValidatorOne, TValueValidatorTwo, TValueValidatorThree>(_dataContainerFactory, _valueValidatorOne, _valueValidatorTwo, valueValidator);
 
-		public DataSourceStandardInverted<TDataContainerFactory, TDataValue, TValue, TSource, TValueValidatorOne, TValueValidatorTwo> InvertTwo()
-			=> new DataSourceStandardInverted<TDataContainerFactory, TDataValue, TValue, TSource, TValueValidatorOne, TValueValidatorTwo>(_dataContainerFactory, _valueValidatorOne, _valueValidatorTwo);
+		public DataSourceStandardInverted<TDataContainerFactory, TDataValue, TValue, TValueValidatorOne, TValueValidatorTwo> InvertTwo()
+			=> new DataSourceStandardInverted<TDataContainerFactory, TDataValue, TValue, TValueValidatorOne, TValueValidatorTwo>(_dataContainerFactory, _valueValidatorOne, _valueValidatorTwo);
 
-		public static implicit operator Data<TDataValue>(DataSourceStandardStandard<TDataContainerFactory, TDataValue, TValue, TSource, TValueValidatorOne, TValueValidatorTwo> dataSource)
+		public static implicit operator Data<TDataValue>(DataSourceStandardStandard<TDataContainerFactory, TDataValue, TValue, TValueValidatorOne, TValueValidatorTwo> dataSource)
 			=> dataSource.Data;
 	}
 }

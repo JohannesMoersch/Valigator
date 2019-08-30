@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Valigator.Core.DataContainers.Factories
 {
-	internal struct DataContainerFactory<TStateValidator, TSource, TValue> : IDataContainerFactory<TValue, TValue>
+	public struct DataContainerFactory<TStateValidator, TSource, TValue> : IDataContainerFactory<TValue, TValue>
 		where TStateValidator : struct, IStateValidator<TValue, TValue>
 	{
 		private readonly TStateValidator _stateValidator;
