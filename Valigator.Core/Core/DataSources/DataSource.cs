@@ -5,17 +5,17 @@ using Valigator.Core.ValueValidators;
 
 namespace Valigator.Core.DataSources
 {
-	public struct DataSource<TStateValidator, TDataValue, TValue, TSource>
-		where TStateValidator : IStateValidator<TDataValue, TValue>
+	public struct DataSource<TDataContainerFactory, TDataValue, TValue, TSource>
+		where TDataContainerFactory : struct, IDataContainerFactory<TDataValue, TValue>
 	{
-		private readonly TStateValidator _stateValidator;
+		private readonly TDataContainerFactory _dataContainerFactory;
 
-		public Data<TSource> Data => new Data<TSource>(new DataValidator<TStateValidator, TSource>(_stateValidator));
+		public Data<TDataValue> Data => new Data<TDataValue>(_dataContainerFactory.Create(DummyValidator<TValue>.Instance, DummyValidator<TValue>.Instance, DummyValidator<TValue>.Instance));
 
-		public DataSource(TStateValidator stateValidator) 
-			=> _stateValidator = stateValidator;
+		public DataSource(TDataContainerFactory dataContainerFactory) 
+			=> _dataContainerFactory = dataContainerFactory;
 
-		public static implicit operator Data<TSource>(DataSource<TStateValidator, TSource> dataSource)
+		public static implicit operator Data<TDataValue>(DataSource<TDataContainerFactory, TDataValue, TValue, TSource> dataSource)
 			=> dataSource.Data;
 	}
 }

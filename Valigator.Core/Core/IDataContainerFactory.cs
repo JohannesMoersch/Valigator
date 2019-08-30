@@ -4,11 +4,11 @@ using System.Text;
 
 namespace Valigator.Core
 {
-	internal interface IDataContainerFactory<TDataValue, TValue>
+	public interface IDataContainerFactory<TDataValue, TValue>
 	{
-		IDataContainer<TDataValue> Create<TValidatorOne, TValidatorTwo, TValidatorThree>()
-			where TValidatorOne : IValueValidator<TValue>
-			where TValidatorTwo : IValueValidator<TValue>
-			where TValidatorThree : IValueValidator<TValue>;
+		IDataContainer<TDataValue> Create<TValueValidatorOne, TValueValidatorTwo, TValueValidatorThree>(TValueValidatorOne valueValidatorOne, TValueValidatorTwo valueValidatorTwo, TValueValidatorThree valueValidatorThree)
+			where TValueValidatorOne : struct, IValueValidator<TValue>
+			where TValueValidatorTwo : struct, IValueValidator<TValue>
+			where TValueValidatorThree : struct, IValueValidator<TValue>;
 	}
 }

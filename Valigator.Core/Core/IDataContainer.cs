@@ -7,7 +7,7 @@ namespace Valigator.Core
 {
 	public interface IDataContainer { }
 
-	internal interface IDataContainer<TValue> : IDataContainer
+	public interface IDataContainer<TValue> : IDataContainer
 	{
 		DataDescriptor DataDescriptor { get; }
 
