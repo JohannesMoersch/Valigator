@@ -23,6 +23,10 @@ namespace Valigator.Core.DataSources
 			_valueValidatorTwo = valueValidatorTwo;
 		}
 
+		public DataSourceInvertedInvertedStandard<TDataContainerFactory, TDataValue, TValue, TSource, TValueValidatorOne, TValueValidatorTwo, TValueValidatorThree> Add<TValueValidatorThree>(TValueValidatorThree valueValidator)
+			where TValueValidatorThree : struct, IValueValidator<TValue>
+			=> new DataSourceInvertedInvertedStandard<TDataContainerFactory, TDataValue, TValue, TSource, TValueValidatorOne, TValueValidatorTwo, TValueValidatorThree>(_dataContainerFactory, _valueValidatorOne, _valueValidatorTwo, valueValidator);
+
 		public static implicit operator Data<TDataValue>(DataSourceInvertedInverted<TDataContainerFactory, TDataValue, TValue, TSource, TValueValidatorOne, TValueValidatorTwo> dataSource)
 			=> dataSource.Data;
 	}

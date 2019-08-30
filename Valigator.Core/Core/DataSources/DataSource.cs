@@ -15,6 +15,10 @@ namespace Valigator.Core.DataSources
 		public DataSource(TDataContainerFactory dataContainerFactory) 
 			=> _dataContainerFactory = dataContainerFactory;
 
+		public DataSourceStandard<TDataContainerFactory, TDataValue, TValue, TSource, TValueValidatorOne> Add<TValueValidatorOne>(TValueValidatorOne valueValidator)
+			where TValueValidatorOne : struct, IValueValidator<TValue>
+			=> new DataSourceStandard<TDataContainerFactory, TDataValue, TValue, TSource, TValueValidatorOne>(_dataContainerFactory, valueValidator);
+
 		public static implicit operator Data<TDataValue>(DataSource<TDataContainerFactory, TDataValue, TValue, TSource> dataSource)
 			=> dataSource.Data;
 	}
