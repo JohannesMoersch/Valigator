@@ -17,20 +17,20 @@ namespace Valigator.Core.StateValidators
 
 		public Data<Option<TValue>[]> Data => new Data<Option<TValue>[]>(CreateContainer(this));
 
-		private readonly Data<Option<TValue>> _item;
+		private readonly Data<TValue> _item;
 
 		private readonly Option<Option<TValue>[]> _defaultValue;
 
 		private readonly Func<Option<TValue>[]> _defaultValueFactory;
 
-		public DefaultedNullableCollectionStateValidator(Data<Option<TValue>> item, Option<TValue>[] defaultValue)
+		public DefaultedNullableCollectionStateValidator(Data<TValue> item, Option<TValue>[] defaultValue)
 		{
 			_item = item;
 			_defaultValue = Option.Some(defaultValue ?? throw new NullDefaultException());
 			_defaultValueFactory = default;
 		}
 
-		public DefaultedNullableCollectionStateValidator(Data<Option<TValue>> item, Func<Option<TValue>[]> defaultValueFactory)
+		public DefaultedNullableCollectionStateValidator(Data<TValue> item, Func<Option<TValue>[]> defaultValueFactory)
 		{
 			_item = item;
 			_defaultValue = default;

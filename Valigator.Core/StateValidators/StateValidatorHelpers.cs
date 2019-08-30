@@ -42,6 +42,34 @@ namespace Valigator.Core.StateValidators
 					.ToArray()
 				);
 
+		public static Result<Unit, ValidationError[]> IsCollectionValid<TValue>(Data<TValue> data, Option<object> model, Option<Option<TValue>[]> value)
+			=> value.TryGetValue(out var some)
+				? IsCollectionValid(data, model, some)
+				: Result.Unit<ValidationError[]>();
+
+		public static Result<Unit, ValidationError[]> IsCollectionValid<TValue>(Data<TValue> data, Option<object> model, Option<TValue>[] value)
+		{
+			List<ValidationError> errors = null;
+			for (int i = 0; i < value.Length; ++i)
+			{
+				if (value[i].TryGetValue(out var some) && !data.WithValue(some).Verify(model).TryGetValue().TryGetValue(out var _, out var failure))
+				{
+					foreach (var error in errors)
+						error.Path.AddIndex(i);
+
+					if (errors == null)
+						errors = new List<ValidationError>();
+
+					errors.AddRange(failure);
+				}
+			}
+
+			if (errors != null)
+				return Result.Failure<Unit, ValidationError[]>(errors.ToArray());
+
+			return Result.Unit<ValidationError[]>();
+		}
+
 		public static Result<Unit, ValidationError[]> IsCollectionValid<TValue>(Data<TValue> data, Option<object> model, Option<TValue[]> value)
 			=> value.TryGetValue(out var some)
 				? IsCollectionValid(data, model, some)
