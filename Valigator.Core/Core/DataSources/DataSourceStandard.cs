@@ -1,35 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Valigator.Core.ValueValidators;
 
 namespace Valigator.Core.DataSources
 {
-	public struct DataSourceStandard<TStateValidator, TValueValidatorOne, TSource, TValue>
-		where TStateValidator : IStateValidator<TSource>
-		where TValueValidatorOne : IValueValidator<TValue>
+	public struct DataSourceStandard<TDataContainerFactory, TDataValue, TValue, TSource, TValueValidatorOne>
+		where TDataContainerFactory : struct, IDataContainerFactory<TDataValue, TValue>
+		where TValueValidatorOne : struct, IValueValidator<TValue>
 	{
-		private readonly TStateValidator _stateValidator;
+		private readonly TDataContainerFactory _dataContainerFactory;
 		private readonly TValueValidatorOne _valueValidatorOne;
 
-		private readonly Mapping<TSource, TValue> _mapper;
+		public Data<TDataValue> Data => new Data<TDataValue>(_dataContainerFactory.Create(_valueValidatorOne, DummyValidator<TValue>.Instance, DummyValidator<TValue>.Instance));
 
-		public Data<TSource> Data => new Data<TSource>(new DataValidator<TStateValidator, TValueValidatorOne, TSource, TValue>(_stateValidator, _valueValidatorOne, _mapper));
-
-		public DataSourceStandard(TStateValidator stateValidator, TValueValidatorOne valueValidatorOne, Mapping<TSource, TValue> mapper)
+		public DataSourceStandard(TDataContainerFactory dataContainerFactory, TValueValidatorOne valueValidatorOne)
 		{
-			_stateValidator = stateValidator;
+			_dataContainerFactory = dataContainerFactory;
 			_valueValidatorOne = valueValidatorOne;
-			_mapper = mapper;
 		}
 
-		internal DataSourceInverted<TStateValidator, TValueValidatorOne, TSource, TValue> InvertOne()
-			=> new DataSourceInverted<TStateValidator, TValueValidatorOne, TSource, TValue>(_stateValidator, _valueValidatorOne, _mapper);
-
-		internal DataSourceStandardStandard<TStateValidator, TValueValidatorOne, TValueValidatorTwo, TSource, TValue> Add<TValueValidatorTwo>(TValueValidatorTwo valueValidator)
-			where TValueValidatorTwo : IValueValidator<TValue>
-			=> new DataSourceStandardStandard<TStateValidator, TValueValidatorOne, TValueValidatorTwo, TSource, TValue>(_stateValidator, _valueValidatorOne, valueValidator, _mapper);
-
-		public static implicit operator Data<TSource>(DataSourceStandard<TStateValidator, TValueValidatorOne, TSource, TValue> dataSource)
+		public static implicit operator Data<TDataValue>(DataSourceStandard<TDataContainerFactory, TDataValue, TValue, TSource, TValueValidatorOne> dataSource)
 			=> dataSource.Data;
 	}
 }

@@ -5,31 +5,28 @@ using Valigator.Core.ValueValidators;
 
 namespace Valigator.Core.DataSources
 {
-	public struct DataSourceStandardInvertedInverted<TStateValidator, TValueValidatorOne, TValueValidatorTwo, TValueValidatorThree, TSource, TValue>
-		where TStateValidator : IStateValidator<TSource>
-		where TValueValidatorOne : IValueValidator<TValue>
-		where TValueValidatorTwo : IValueValidator<TValue>
-		where TValueValidatorThree : IValueValidator<TValue>
+	public struct DataSourceStandardInvertedInverted<TDataContainerFactory, TDataValue, TValue, TSource, TValueValidatorOne, TValueValidatorTwo, TValueValidatorThree>
+		where TDataContainerFactory : struct, IDataContainerFactory<TDataValue, TValue>
+		where TValueValidatorOne : struct, IValueValidator<TValue>
+		where TValueValidatorTwo : struct, IValueValidator<TValue>
+		where TValueValidatorThree : struct, IValueValidator<TValue>
 	{
-		private readonly TStateValidator _stateValidator;
+		private readonly TDataContainerFactory _dataContainerFactory;
 		private readonly TValueValidatorOne _valueValidatorOne;
 		private readonly TValueValidatorTwo _valueValidatorTwo;
 		private readonly TValueValidatorThree _valueValidatorThree;
 
-		private readonly Mapping<TSource, TValue> _mapper;
+		public Data<TDataValue> Data => new Data<TDataValue>(_dataContainerFactory.Create(_valueValidatorOne, new InvertValidator<TValueValidatorTwo, TValue>(_valueValidatorTwo), new InvertValidator<TValueValidatorThree, TValue>(_valueValidatorThree)));
 
-		public Data<TSource> Data => new Data<TSource>(new DataValidator<TStateValidator, TValueValidatorOne, InvertValidator<TValueValidatorTwo, TValue>, InvertValidator<TValueValidatorThree, TValue>, TSource, TValue>(_stateValidator, _valueValidatorOne, new InvertValidator<TValueValidatorTwo, TValue>(_valueValidatorTwo), new InvertValidator<TValueValidatorThree, TValue>(_valueValidatorThree), _mapper));
-
-		public DataSourceStandardInvertedInverted(TStateValidator stateValidator, TValueValidatorOne valueValidatorOne, TValueValidatorTwo valueValidatorTwo, TValueValidatorThree valueValidatorThree, Mapping<TSource, TValue> mapper)
+		public DataSourceStandardInvertedInverted(TDataContainerFactory dataContainerFactory, TValueValidatorOne valueValidatorOne, TValueValidatorTwo valueValidatorTwo, TValueValidatorThree valueValidatorThree)
 		{
-			_stateValidator = stateValidator;
+			_dataContainerFactory = dataContainerFactory;
 			_valueValidatorOne = valueValidatorOne;
 			_valueValidatorTwo = valueValidatorTwo;
 			_valueValidatorThree = valueValidatorThree;
-			_mapper = mapper;
 		}
 
-		public static implicit operator Data<TSource>(DataSourceStandardInvertedInverted<TStateValidator, TValueValidatorOne, TValueValidatorTwo, TValueValidatorThree, TSource, TValue> dataSource)
+		public static implicit operator Data<TDataValue>(DataSourceStandardInvertedInverted<TDataContainerFactory, TDataValue, TValue, TSource, TValueValidatorOne, TValueValidatorTwo, TValueValidatorThree> dataSource)
 			=> dataSource.Data;
 	}
 }
