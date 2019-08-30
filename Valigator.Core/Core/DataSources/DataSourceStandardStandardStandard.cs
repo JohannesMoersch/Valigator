@@ -25,6 +25,9 @@ namespace Valigator.Core.DataSources
 			_valueValidatorThree = valueValidatorThree;
 		}
 
+		public DataSourceStandardStandardInverted<TDataContainerFactory, TDataValue, TValue, TSource, TValueValidatorOne, TValueValidatorTwo, TValueValidatorThree> InvertThree()
+			=> new DataSourceStandardStandardInverted<TDataContainerFactory, TDataValue, TValue, TSource, TValueValidatorOne, TValueValidatorTwo, TValueValidatorThree>(_dataContainerFactory, _valueValidatorOne, _valueValidatorTwo, _valueValidatorThree);
+
 		public static implicit operator Data<TDataValue>(DataSourceStandardStandardStandard<TDataContainerFactory, TDataValue, TValue, TSource, TValueValidatorOne, TValueValidatorTwo, TValueValidatorThree> dataSource)
 			=> dataSource.Data;
 	}
