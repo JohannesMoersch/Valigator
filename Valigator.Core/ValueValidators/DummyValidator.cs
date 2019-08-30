@@ -9,17 +9,12 @@ namespace Valigator.Core.ValueValidators
 	{
 		public static DummyValidator<TValue> Instance { get; } = new DummyValidator<TValue>();
 
-		bool IValueValidator<TValue>.RequiresModel => throw new NotImplementedException();
+		bool IValueValidator<TValue>.RequiresModel => false;
 
-		private DummyValidator() { }
+		bool IValueValidator<TValue>.IsValid(Option<object> model, TValue value)
+			=> true;
 
-		IValueDescriptor IValueValidator<TValue>.GetDescriptor() 
-			=> throw new NotImplementedException();
-
-		ValidationError IValueValidator<TValue>.GetError(TValue value, bool inverted) 
-			=> throw new NotImplementedException();
-
-		bool IValueValidator<TValue>.IsValid(Option<object> model, TValue value) 
-			=> throw new NotImplementedException();
+		IValueDescriptor IValueValidator<TValue>.GetDescriptor() => throw new NotImplementedException();
+		ValidationError IValueValidator<TValue>.GetError(TValue value, bool inverted) => throw new NotImplementedException();
 	}
 }
