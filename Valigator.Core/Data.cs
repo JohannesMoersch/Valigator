@@ -98,7 +98,7 @@ namespace Valigator
 			if (State == DataState.Valid || State == DataState.Invalid)
 				throw new DataAlreadyVerifiedException();
 
-			if (!_dataContainer.IsValid(model, _value).TryGetValue(out var _, out var failure))
+			if (!_dataContainer.IsValid(model, Option.Create(State == DataState.Set, _value)).TryGetValue(out var _, out var failure))
 				return WithErrors(failure);
 
 			return new Data<TValue>(DataState.Valid, _value, _dataContainer);
