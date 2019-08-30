@@ -8,10 +8,10 @@ using Valigator.Core.Helpers;
 namespace Valigator.Core.DataContainers
 {
 	internal class NullableCollectionNullableDataContainer<TCollectionStateValidator, TValueValidatorOne, TValueValidatorTwo, TValueValidatorThree, TSource, TValue> : IDataContainer<Option<Option<TValue>[]>>, IAcceptCollectionValue<Option<Option<TValue>[]>, TSource>
-		where TCollectionStateValidator : ICollectionStateValidator<Option<Option<TValue>[]>, TValue>
-		where TValueValidatorOne : IValueValidator<Option<TValue>[]>
-		where TValueValidatorTwo : IValueValidator<Option<TValue>[]>
-		where TValueValidatorThree : IValueValidator<Option<TValue>[]>
+		where TCollectionStateValidator : struct, ICollectionStateValidator<Option<Option<TValue>[]>, TValue>
+		where TValueValidatorOne : struct, IValueValidator<Option<TValue>[]>
+		where TValueValidatorTwo : struct, IValueValidator<Option<TValue>[]>
+		where TValueValidatorThree : struct, IValueValidator<Option<TValue>[]>
 	{
 		private readonly Mapping<TSource, TValue> _mapping;
 

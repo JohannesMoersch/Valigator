@@ -9,7 +9,7 @@ namespace Valigator.Core.DataContainers
 	internal static class DataContainerHelpers
 	{
 		public static Data<TDataValue> WithMappedValidatedValue<TDataValue, TSource, TValue, TStateValidator>(this Data<TDataValue> data, Option<TSource> value, Mapping<TSource, TValue> mapping, TStateValidator stateValidator)
-			where TStateValidator : IStateValidator<TDataValue, TValue>
+			where TStateValidator : struct, IStateValidator<TDataValue, TValue>
 		{
 			if (value.TryGetValue(out var some))
 			{
@@ -23,7 +23,7 @@ namespace Valigator.Core.DataContainers
 		}
 
 		public static Data<TDataValue> WithMappedValidatedValue<TDataValue, TSource, TValue, TCollectionStateValidator>(this Data<TDataValue> data, Option<Option<TSource>[]> value, Mapping<TSource, TValue> mapping, TCollectionStateValidator stateValidator)
-			where TCollectionStateValidator : ICollectionStateValidator<TDataValue, TValue>
+			where TCollectionStateValidator : struct, ICollectionStateValidator<TDataValue, TValue>
 		{
 			if (value.TryGetValue(out var some))
 			{
@@ -58,7 +58,7 @@ namespace Valigator.Core.DataContainers
 		}
 
 		public static Data<TDataValue> WithValidatedValue<TDataValue, TValue, TStateValidator>(this Data<TDataValue> data, Option<TValue> value, TStateValidator stateValidator)
-			where TStateValidator : IStateValidator<TDataValue, TValue>
+			where TStateValidator : struct, IStateValidator<TDataValue, TValue>
 		{
 			if (stateValidator.Validate(Option.Some(value)).TryGetValue(out var success, out var failure))
 				return data.WithValue(success);
@@ -67,9 +67,9 @@ namespace Valigator.Core.DataContainers
 		}
 
 		public static Result<Unit, ValidationError[]> IsValid<TValue, TValidatorOne, TValidatorTwo, TValidatorThree>(this IDataContainer<Option<TValue>> _, Option<object> model, Option<TValue> value, TValidatorOne validatorOne, TValidatorTwo validatorTwo, TValidatorThree validatorThree)
-			where TValidatorOne : IValueValidator<TValue>
-			where TValidatorTwo : IValueValidator<TValue>
-			where TValidatorThree : IValueValidator<TValue>
+			where TValidatorOne : struct, IValueValidator<TValue>
+			where TValidatorTwo : struct, IValueValidator<TValue>
+			where TValidatorThree : struct, IValueValidator<TValue>
 		{
 			if (value.TryGetValue(out var some))
 				return IsValid(model, some, validatorOne, validatorTwo, validatorThree);
@@ -78,26 +78,25 @@ namespace Valigator.Core.DataContainers
 		}
 
 		public static Result<Unit, ValidationError[]> IsValid<TValue, TValidatorOne, TValidatorTwo, TValidatorThree>(this IDataContainer<TValue> _, Option<object> model, TValue value, TValidatorOne validatorOne, TValidatorTwo validatorTwo, TValidatorThree validatorThree)
-			where TValidatorOne : IValueValidator<TValue>
-			where TValidatorTwo : IValueValidator<TValue>
-			where TValidatorThree : IValueValidator<TValue>
+			where TValidatorOne : struct, IValueValidator<TValue>
+			where TValidatorTwo : struct, IValueValidator<TValue>
+			where TValidatorThree : struct, IValueValidator<TValue>
 			=> IsValid(model, value, validatorOne, validatorTwo, validatorThree);
 
 		private static Result<Unit, ValidationError[]> IsValid<TValue, TValidatorOne, TValidatorTwo, TValidatorThree>(Option<object> model, TValue value, TValidatorOne validatorOne, TValidatorTwo validatorTwo, TValidatorThree validatorThree)
-
-			where TValidatorOne : IValueValidator<TValue>
-			where TValidatorTwo : IValueValidator<TValue>
-			where TValidatorThree : IValueValidator<TValue>
+			where TValidatorOne : struct, IValueValidator<TValue>
+			where TValidatorTwo : struct, IValueValidator<TValue>
+			where TValidatorThree : struct, IValueValidator<TValue>
 		{
 			if (!model.TryGetValue(out var _))
 			{
-				if ((validatorOne?.RequiresModel ?? false) || (validatorTwo?.RequiresModel ?? false) || (validatorThree?.RequiresModel ?? false))
+				if (validatorOne.RequiresModel || validatorTwo.RequiresModel || validatorThree.RequiresModel)
 					throw new ModelRequiredException();
 			}
 
-			var oneValid = validatorOne?.IsValid(model, value) ?? true;
-			var twoValid = validatorTwo?.IsValid(model, value) ?? true;
-			var threeValid = validatorThree?.IsValid(model, value) ?? true;
+			var oneValid = validatorOne.IsValid(model, value);
+			var twoValid = validatorTwo.IsValid(model, value);
+			var threeValid = validatorThree.IsValid(model, value);
 
 			if (!oneValid || !twoValid || !threeValid)
 			{
