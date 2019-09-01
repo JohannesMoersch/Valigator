@@ -34,13 +34,15 @@ namespace Valigator.Core.StateValidators
 				);
 
 		public static Option<object[]> GetDefaultValueForDescriptor<TDataValue, TValue>(Option<Option<TValue>[]> defaultValue, Func<Option<TValue>[]> defaultValueFactory)
-			=> Option
-				.Some
-				(
-					GetDefaultValue(defaultValue, defaultValueFactory)
-					.Select(v => v.TryGetValue(out var some) ? (object)some : null)
-					.ToArray()
-				);
+		{
+			var values = GetDefaultValue(defaultValue, defaultValueFactory);
+			var ret = new object[values.Length];
+
+			for (int i = 0; i < values.Length; ++i)
+				ret[i] = values[i].TryGetValue(out var some) ? (object)some : null;
+
+			return Option.Some(ret);
+		}
 
 		public static Result<Unit, ValidationError[]> IsCollectionValid<TValue>(Data<TValue> data, Option<object> model, Option<Option<TValue>[]> value)
 			=> value.TryGetValue(out var some)
