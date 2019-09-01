@@ -17,6 +17,21 @@ namespace Valigator.Core.StateValidators
 		private static IDataContainer<Option<Option<TValue>[]>> CreateContainer(NullableRequiredNullableCollectionStateValidator<TValue> stateValidator)
 			=> new NullableCollectionNullableDataContainer<NullableRequiredNullableCollectionStateValidator<TValue>, DummyValidator<Option<TValue>[]>, DummyValidator<Option<TValue>[]>, DummyValidator<Option<TValue>[]>, TValue, TValue>(Mapping.CreatePassthrough<TValue>(), stateValidator, DummyValidator<Option<TValue>[]>.Instance, DummyValidator<Option<TValue>[]>.Instance, DummyValidator<Option<TValue>[]>.Instance);
 
+		public DataSource<NullableCollectionNullableDataContainerFactory<NullableRequiredNullableCollectionStateValidator<TValue>, TSource, TValue>, Option<Option<TValue>[]>, Option<TValue>[]> MappedFrom<TSource>(Func<TSource, TValue> mapper)
+			=> MappedFrom(Mapping.Create(mapper));
+
+		public DataSource<NullableCollectionNullableDataContainerFactory<NullableRequiredNullableCollectionStateValidator<TValue>, TSource, TValue>, Option<Option<TValue>[]>, Option<TValue>[]> MappedFrom<TSource>(Func<TSource, Result<TValue, ValidationError[]>> mapper)
+			=> MappedFrom(Mapping.Create(mapper));
+
+		public DataSource<NullableCollectionNullableDataContainerFactory<NullableRequiredNullableCollectionStateValidator<TValue>, TSource, TValue>, Option<Option<TValue>[]>, Option<TValue>[]> MappedFrom<TSource>(Func<TSource, TValue> mapper, Func<RequiredStateValidator<TSource>, Data<TSource>> sourceValidations)
+			=> MappedFrom(Mapping.Create(mapper, sourceValidations));
+
+		public DataSource<NullableCollectionNullableDataContainerFactory<NullableRequiredNullableCollectionStateValidator<TValue>, TSource, TValue>, Option<Option<TValue>[]>, Option<TValue>[]> MappedFrom<TSource>(Func<TSource, Result<TValue, ValidationError[]>> mapper, Func<RequiredStateValidator<TSource>, Data<TSource>> sourceValidations)
+			=> MappedFrom(Mapping.Create(mapper, sourceValidations));
+
+		private DataSource<NullableCollectionNullableDataContainerFactory<NullableRequiredNullableCollectionStateValidator<TValue>, TSource, TValue>, Option<Option<TValue>[]>, Option<TValue>[]> MappedFrom<TSource>(Mapping<TSource, TValue> mapping)
+			=> new DataSource<NullableCollectionNullableDataContainerFactory<NullableRequiredNullableCollectionStateValidator<TValue>, TSource, TValue>, Option<Option<TValue>[]>, Option<TValue>[]>(new NullableCollectionNullableDataContainerFactory<NullableRequiredNullableCollectionStateValidator<TValue>, TSource, TValue>(this, mapping));
+
 		public Data<Option<Option<TValue>[]>> Data => new Data<Option<Option<TValue>[]>>(CreateContainer(this));
 
 		private readonly Data<TValue> _item;

@@ -55,6 +55,21 @@ namespace Valigator.Core.StateValidators
 			where TValueValidator : struct, IValueValidator<TValue[]>
 			=> new DataSourceStandard<CollectionDataContainerFactory<DefaultedCollectionStateValidator<TValue>, TValue, TValue>, TValue[], TValue[], TValueValidator>(new CollectionDataContainerFactory<DefaultedCollectionStateValidator<TValue>, TValue, TValue>(this, Mapping.CreatePassthrough<TValue>()), valueValidator);
 
+		public DataSource<CollectionDataContainerFactory<DefaultedCollectionStateValidator<TValue>, TSource, TValue>, TValue[], TValue[]> MappedFrom<TSource>(Func<TSource, TValue> mapper)
+			=> MappedFrom(Mapping.Create(mapper));
+
+		public DataSource<CollectionDataContainerFactory<DefaultedCollectionStateValidator<TValue>, TSource, TValue>, TValue[], TValue[]> MappedFrom<TSource>(Func<TSource, Result<TValue, ValidationError[]>> mapper)
+			=> MappedFrom(Mapping.Create(mapper));
+
+		public DataSource<CollectionDataContainerFactory<DefaultedCollectionStateValidator<TValue>, TSource, TValue>, TValue[], TValue[]> MappedFrom<TSource>(Func<TSource, TValue> mapper, Func<RequiredStateValidator<TSource>, Data<TSource>> sourceValidations)
+			=> MappedFrom(Mapping.Create(mapper, sourceValidations));
+
+		public DataSource<CollectionDataContainerFactory<DefaultedCollectionStateValidator<TValue>, TSource, TValue>, TValue[], TValue[]> MappedFrom<TSource>(Func<TSource, Result<TValue, ValidationError[]>> mapper, Func<RequiredStateValidator<TSource>, Data<TSource>> sourceValidations)
+			=> MappedFrom(Mapping.Create(mapper, sourceValidations));
+
+		private DataSource<CollectionDataContainerFactory<DefaultedCollectionStateValidator<TValue>, TSource, TValue>, TValue[], TValue[]> MappedFrom<TSource>(Mapping<TSource, TValue> mapping)
+			=> new DataSource<CollectionDataContainerFactory<DefaultedCollectionStateValidator<TValue>, TSource, TValue>, TValue[], TValue[]>(new CollectionDataContainerFactory<DefaultedCollectionStateValidator<TValue>, TSource, TValue>(this, mapping));
+
 		private TValue[] GetDefaultValue()
 			=> StateValidatorHelpers.GetDefaultValue(_defaultValue, _defaultValueFactory);
 

@@ -29,6 +29,21 @@ namespace Valigator.Core.StateValidators
 			where TValueValidator : struct, IValueValidator<TValue[]>
 			=> new DataSourceStandard<NullableCollectionDataContainerFactory<NullableRequiredCollectionStateValidator<TValue>, TValue, TValue>, Option<TValue[]>, TValue[], TValueValidator>(new NullableCollectionDataContainerFactory<NullableRequiredCollectionStateValidator<TValue>, TValue, TValue>(this, Mapping.CreatePassthrough<TValue>()), valueValidator);
 
+		public DataSource<NullableCollectionDataContainerFactory<NullableRequiredCollectionStateValidator<TValue>, TSource, TValue>, Option<TValue[]>, TValue[]> MappedFrom<TSource>(Func<TSource, TValue> mapper)
+			=> MappedFrom(Mapping.Create(mapper));
+
+		public DataSource<NullableCollectionDataContainerFactory<NullableRequiredCollectionStateValidator<TValue>, TSource, TValue>, Option<TValue[]>, TValue[]> MappedFrom<TSource>(Func<TSource, Result<TValue, ValidationError[]>> mapper)
+			=> MappedFrom(Mapping.Create(mapper));
+
+		public DataSource<NullableCollectionDataContainerFactory<NullableRequiredCollectionStateValidator<TValue>, TSource, TValue>, Option<TValue[]>, TValue[]> MappedFrom<TSource>(Func<TSource, TValue> mapper, Func<RequiredStateValidator<TSource>, Data<TSource>> sourceValidations)
+			=> MappedFrom(Mapping.Create(mapper, sourceValidations));
+
+		public DataSource<NullableCollectionDataContainerFactory<NullableRequiredCollectionStateValidator<TValue>, TSource, TValue>, Option<TValue[]>, TValue[]> MappedFrom<TSource>(Func<TSource, Result<TValue, ValidationError[]>> mapper, Func<RequiredStateValidator<TSource>, Data<TSource>> sourceValidations)
+			=> MappedFrom(Mapping.Create(mapper, sourceValidations));
+
+		private DataSource<NullableCollectionDataContainerFactory<NullableRequiredCollectionStateValidator<TValue>, TSource, TValue>, Option<TValue[]>, TValue[]> MappedFrom<TSource>(Mapping<TSource, TValue> mapping)
+			=> new DataSource<NullableCollectionDataContainerFactory<NullableRequiredCollectionStateValidator<TValue>, TSource, TValue>, Option<TValue[]>, TValue[]>(new NullableCollectionDataContainerFactory<NullableRequiredCollectionStateValidator<TValue>, TSource, TValue>(this, mapping));
+
 		IStateDescriptor IStateValidator<Option<TValue[]>, Option<TValue>[]>.GetDescriptor()
 			=> new CollectionStateDescriptor(Option.None<object[]>(), _item.DataDescriptor);
 

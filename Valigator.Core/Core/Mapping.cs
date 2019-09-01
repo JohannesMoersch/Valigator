@@ -1,6 +1,7 @@
 ﻿using Functional;
 using System;
 using Valigator.Core.Helpers;
+using Valigator.Core.StateValidators;
 
 namespace Valigator.Core
 {
@@ -14,11 +15,23 @@ namespace Valigator.Core
 		public static Mapping<TValue, TValue> CreatePassthrough<TValue>()
 			=> new Mapping<TValue, TValue>(DelegateCache<TValue, ValidationError[]>.Success, Data.Required<TValue>());
 
-		public static Mapping<TInput, TResult> Create<TInput, TResult>(Func<TInput, Result<TResult, ValidationError[]>> mapper, Data<TInput> sourceValidations)
-			=> new Mapping<TInput, TResult>(mapper, sourceValidations);
+		public static Mapping<TInput, TResult> Create<TInput, TResult>(Func<TInput, Result<TResult, ValidationError[]>> mapper)
+			=> Create(mapper, Data.Required<TInput>());
+
+		public static Mapping<TInput, TResult> Create<TInput, TResult>(Func<TInput, TResult> mapper)
+			=> Create(mapper, Data.Required<TInput>());
+
+		public static Mapping<TInput, TResult> Create<TInput, TResult>(Func<TInput, Result<TResult, ValidationError[]>> mapper, Func<RequiredStateValidator<TInput>, Data<TInput>> sourceValidations)
+			=> Create(mapper, sourceValidations.Invoke(Data.Required<TInput>()));
+
+		public static Mapping<TInput, TResult> Create<TInput, TResult>(Func<TInput, TResult> mapper, Func<RequiredStateValidator<TInput>, Data<TInput>> sourceValidations)
+			=> Create(mapper, sourceValidations.Invoke(Data.Required<TInput>()));
 
 		public static Mapping<TInput, TResult> Create<TInput, TResult>(Func<TInput, TResult> mapper, Data<TInput> sourceValidations)
-			=> new Mapping<TInput, TResult>(i => Result.Success<TResult, ValidationError[]>(mapper(i)), sourceValidations);
+			=> new Mapping<TInput, TResult>(mapper, sourceValidations);
+
+		public static Mapping<TInput, TResult> Create<TInput, TResult>(Func<TInput, Result<TResult, ValidationError[]>> mapper, Data<TInput> sourceValidations)
+			=> new Mapping<TInput, TResult>(mapper, sourceValidations);
 	}
 
 	public struct Mapping<TSource, TValue>

@@ -61,6 +61,21 @@ namespace Valigator.Core.StateValidators
 			where TValueValidator : struct, IValueValidator<TValue>
 			=> new DataSourceStandard<DataContainerFactory<DefaultedStateValidator<TValue>, TValue, TValue>, TValue, TValue, TValueValidator>(new DataContainerFactory<DefaultedStateValidator<TValue>, TValue, TValue>(this, Mapping.CreatePassthrough<TValue>()), valueValidator);
 
+		public DataSource<DataContainerFactory<DefaultedStateValidator<TValue>, TSource, TValue>, TValue, TValue> MappedFrom<TSource>(Func<TSource, TValue> mapper)
+			=> MappedFrom(Mapping.Create(mapper));
+
+		public DataSource<DataContainerFactory<DefaultedStateValidator<TValue>, TSource, TValue>, TValue, TValue> MappedFrom<TSource>(Func<TSource, Result<TValue, ValidationError[]>> mapper)
+			=> MappedFrom(Mapping.Create(mapper));
+
+		public DataSource<DataContainerFactory<DefaultedStateValidator<TValue>, TSource, TValue>, TValue, TValue> MappedFrom<TSource>(Func<TSource, TValue> mapper, Func<RequiredStateValidator<TSource>, Data<TSource>> sourceValidations)
+			=> MappedFrom(Mapping.Create(mapper, sourceValidations));
+
+		public DataSource<DataContainerFactory<DefaultedStateValidator<TValue>, TSource, TValue>, TValue, TValue> MappedFrom<TSource>(Func<TSource, Result<TValue, ValidationError[]>> mapper, Func<RequiredStateValidator<TSource>, Data<TSource>> sourceValidations)
+			=> MappedFrom(Mapping.Create(mapper, sourceValidations));
+
+		private DataSource<DataContainerFactory<DefaultedStateValidator<TValue>, TSource, TValue>, TValue, TValue> MappedFrom<TSource>(Mapping<TSource, TValue> mapping)
+			=> new DataSource<DataContainerFactory<DefaultedStateValidator<TValue>, TSource, TValue>, TValue, TValue>(new DataContainerFactory<DefaultedStateValidator<TValue>, TSource, TValue>(this, mapping));
+
 		private TValue GetDefaultValue()
 			=> StateValidatorHelpers.GetDefaultValue(_defaultValue, _defaultValueFactory);
 
