@@ -7,6 +7,8 @@ using Valigator.Core.DataContainers;
 using Valigator.Core.StateDescriptors;
 using Valigator.Core.ValueDescriptors;
 using Valigator.Core.ValueValidators;
+using Valigator.Core.DataContainers.Factories;
+using Valigator.Core.DataSources;
 
 namespace Valigator.Core.StateValidators
 {
@@ -54,6 +56,10 @@ namespace Valigator.Core.StateValidators
 
 			return new NullableDefaultedStateValidator<TValue>();
 		}
+
+		public DataSourceStandard<DataContainerFactory<DefaultedStateValidator<TValue>, TValue, TValue>, TValue, TValue, TValueValidator> Add<TValueValidator>(TValueValidator valueValidator)
+			where TValueValidator : struct, IValueValidator<TValue>
+			=> new DataSourceStandard<DataContainerFactory<DefaultedStateValidator<TValue>, TValue, TValue>, TValue, TValue, TValueValidator>(new DataContainerFactory<DefaultedStateValidator<TValue>, TValue, TValue>(this, Mapping.CreatePassthrough<TValue>()), valueValidator);
 
 		private TValue GetDefaultValue()
 			=> StateValidatorHelpers.GetDefaultValue(_defaultValue, _defaultValueFactory);

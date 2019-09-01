@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using Functional;
 using Valigator.Core.DataContainers;
+using Valigator.Core.DataContainers.Factories;
+using Valigator.Core.DataSources;
 using Valigator.Core.Helpers;
 using Valigator.Core.StateDescriptors;
 using Valigator.Core.ValueDescriptors;
@@ -48,6 +50,10 @@ namespace Valigator.Core.StateValidators
 
 			return new NullableDefaultedCollectionStateValidator<TValue>();
 		}
+
+		public DataSourceStandard<CollectionDataContainerFactory<DefaultedCollectionStateValidator<TValue>, TValue, TValue>, TValue[], TValue[], TValueValidator> Add<TValueValidator>(TValueValidator valueValidator)
+			where TValueValidator : struct, IValueValidator<TValue[]>
+			=> new DataSourceStandard<CollectionDataContainerFactory<DefaultedCollectionStateValidator<TValue>, TValue, TValue>, TValue[], TValue[], TValueValidator>(new CollectionDataContainerFactory<DefaultedCollectionStateValidator<TValue>, TValue, TValue>(this, Mapping.CreatePassthrough<TValue>()), valueValidator);
 
 		private TValue[] GetDefaultValue()
 			=> StateValidatorHelpers.GetDefaultValue(_defaultValue, _defaultValueFactory);

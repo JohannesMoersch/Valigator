@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using Functional;
 using Valigator.Core.DataContainers;
+using Valigator.Core.DataContainers.Factories;
+using Valigator.Core.DataSources;
 using Valigator.Core.Helpers;
 using Valigator.Core.StateDescriptors;
 using Valigator.Core.ValueDescriptors;
@@ -25,6 +27,10 @@ namespace Valigator.Core.StateValidators
 
 		public NullableRequiredCollectionStateValidator<TValue> Nullable()
 			=> new NullableRequiredCollectionStateValidator<TValue>(_item);
+
+		public DataSourceStandard<CollectionDataContainerFactory<RequiredCollectionStateValidator<TValue>, TValue, TValue>, TValue[], TValue[], TValueValidator> Add<TValueValidator>(TValueValidator valueValidator)
+			where TValueValidator : struct, IValueValidator<TValue[]>
+			=> new DataSourceStandard<CollectionDataContainerFactory<RequiredCollectionStateValidator<TValue>, TValue, TValue>, TValue[], TValue[], TValueValidator>(new CollectionDataContainerFactory<RequiredCollectionStateValidator<TValue>, TValue, TValue>(this, Mapping.CreatePassthrough<TValue>()), valueValidator);
 
 		IStateDescriptor IStateValidator<TValue[], Option<TValue>[]>.GetDescriptor()
 			=> new CollectionStateDescriptor(Option.None<object[]>(), _item.DataDescriptor);

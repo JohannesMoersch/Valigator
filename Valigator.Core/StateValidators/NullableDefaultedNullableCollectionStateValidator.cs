@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using Functional;
 using Valigator.Core.DataContainers;
+using Valigator.Core.DataContainers.Factories;
+using Valigator.Core.DataSources;
 using Valigator.Core.Helpers;
 using Valigator.Core.StateDescriptors;
 using Valigator.Core.ValueDescriptors;
@@ -36,6 +38,10 @@ namespace Valigator.Core.StateValidators
 			_defaultValue = default;
 			_defaultValueFactory = defaultValueFactory ?? throw new ArgumentNullException(nameof(defaultValueFactory));
 		}
+
+		public DataSourceStandard<NullableCollectionNullableDataContainerFactory<NullableDefaultedNullableCollectionStateValidator<TValue>, TValue, TValue>, Option<Option<TValue>[]>, Option<TValue>[], TValueValidator> Add<TValueValidator>(TValueValidator valueValidator)
+			where TValueValidator : struct, IValueValidator<Option<TValue>[]>
+			=> new DataSourceStandard<NullableCollectionNullableDataContainerFactory<NullableDefaultedNullableCollectionStateValidator<TValue>, TValue, TValue>, Option<Option<TValue>[]>, Option<TValue>[], TValueValidator>(new NullableCollectionNullableDataContainerFactory<NullableDefaultedNullableCollectionStateValidator<TValue>, TValue, TValue>(this, Mapping.CreatePassthrough<TValue>()), valueValidator);
 
 		private Option<Option<TValue>[]> GetDefaultValue()
 			=> Option.Some(StateValidatorHelpers.GetDefaultValue(_defaultValue, _defaultValueFactory));

@@ -18,4 +18,8 @@
     <PackageReference Include="Functional.Primitives" Version="1.10.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Extensions\" />
+  </ItemGroup>
+
 </Project>
