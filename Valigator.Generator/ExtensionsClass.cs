@@ -14,6 +14,8 @@ using Functional;
 using System;
 using System.Collections.Generic;
 using Valigator.Core;
+using Valigator.Core.DataContainers.Factories;
+using Valigator.Core.DataSources;
 using Valigator.Core.StateValidators;
 using Valigator.Core.ValueValidators;
 
@@ -37,6 +39,9 @@ namespace Valigator
 					paths = Data.ValueValidationPaths;
 					break;
 				case ValueType.Array:
+					paths = Data.ArrayValidationPaths;
+					break;
+				case ValueType.NullableArray:
 					paths = Data.ArrayValidationPaths;
 					break;
 				default:

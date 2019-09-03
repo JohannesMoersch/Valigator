@@ -34,20 +34,40 @@ namespace Valigator.Generator
 
 		public static string GetValidatorValueType(this SourceDefinition sourceDefinition, string valueName, Option<ValidatorDefinition> validator)
 		{
-			if (sourceDefinition.ValueType != ValueType.Value && validator.Match(v => v.ValueType != ValueType.Value, () => false))
-				return valueName;
+			var validatorType = validator.Select(v => v.ValueType).ToNullable();
 
 			switch (sourceDefinition.ValueType)
 			{
 				case ValueType.Value:
-					return valueName;
+					switch (validatorType ?? ValueType.Value)
+					{
+						case ValueType.Value:
+							return valueName;
+					}
+					break;
 				case ValueType.Array:
-					return $"{valueName}[]";
+					switch (validatorType ?? ValueType.Value)
+					{
+						case ValueType.Value:
+							return $"{valueName}[]";
+						case ValueType.Array:
+							return valueName;
+					}
+					break;
 				case ValueType.NullableArray:
-					return $"Option<{valueName}>[]";
+					switch (validatorType ?? ValueType.Value)
+					{
+						case ValueType.Value:
+							return $"Option<{valueName}>[]";
+						case ValueType.Array:
+							return $"Option<{valueName}>";
+						case ValueType.NullableArray:
+							return valueName;
+					}
+					break;
 			}
 
-			throw new Exception("Unrecognized source definition type.");
+			throw new Exception("Unsupported source and validator type combination.");
 		}
 
 		public static string GetDataValueType(this SourceDefinition sourceDefinition, string valueName)
