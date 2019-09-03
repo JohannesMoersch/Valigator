@@ -7,6 +7,7 @@ namespace Valigator.Generator
 	public enum ValueType
 	{
 		Value,
-		Array
+		Array,
+		NullableArray
 	}
 }

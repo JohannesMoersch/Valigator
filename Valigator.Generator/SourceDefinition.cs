@@ -22,13 +22,11 @@ namespace Valigator.Generator
 
 		public ValueType ValueType { get; }
 
-		public string GetSourceName(Option<string> valueTypeParameterName)
-			=> valueTypeParameterName
-				.Match
-				(
-					valueName => $"{_sourceName}<{valueName}>",
-					() => _sourceName
-				);
+		public string GetSourceName()
+			=> _sourceName;
+
+		public string GetSourceName(string valueTypeParameterName)
+			=> $"{_sourceName}<{valueTypeParameterName}>";
 
 		public static SourceDefinition Create(Type stateValidatorType)
 		{
@@ -37,10 +35,10 @@ namespace Valigator.Generator
 
 			var stateValidator = stateValidatorType
 				.GetInterfaces()
-				.FirstOrDefault(i => i.IsConstructedGenericType && i.GetGenericTypeDefinition() == typeof(IStateValidator<>));
+				.FirstOrDefault(i => i.IsConstructedGenericType && i.GetGenericTypeDefinition() == typeof(IStateValidator<,>));
 
 			if (stateValidator == null)
-				throw new ArgumentException($"Type should implement {typeof(IStateValidator<>).Name}.", nameof(stateValidatorType));
+				throw new ArgumentException($"Type should implement {typeof(IStateValidator<,>).Name}.", nameof(stateValidatorType));
 
 			var valueType = stateValidator.GetGenericArguments()[0];
 
@@ -54,6 +52,8 @@ namespace Valigator.Generator
 			=> new string(stateValidatorType.Name.TakeWhile(c => c != '`').ToArray());
 
 		private static ValueType GetValueType(Type valueType)
-			=> valueType.IsArray ? ValueType.Array : ValueType.Value;
+			=> valueType.IsArray 
+				? (valueType.GetElementType().IsConstructedGenericType && valueType.GetElementType().GetGenericTypeDefinition() == typeof(Option<>) ? ValueType.NullableArray : ValueType.Array)
+				: ValueType.Value;
 	}
 }
