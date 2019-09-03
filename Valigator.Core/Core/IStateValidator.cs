@@ -7,14 +7,14 @@ using Valigator.Core.ValueDescriptors;
 
 namespace Valigator.Core
 {
-	public interface IStateValidator<TValue>
+	public interface IStateValidator<TDataValue, TValue>
 	{
-		Data<TValue> Data { get; }
+		Data<TDataValue> Data { get; }
 
 		IStateDescriptor GetDescriptor();
 
 		IValueDescriptor[] GetImplicitValueDescriptors();
 
-		Result<TValue, ValidationError[]> Validate(object model, bool isSet, TValue value);
+		Result<TDataValue, ValidationError[]> Validate(Option<Option<TValue>> value);
 	}
 }

@@ -12,6 +12,8 @@ namespace Valigator.Core.ValueValidators
 		private readonly Option<decimal> _minimumDecimalPlaces;
 		private readonly Option<decimal> _maximumDecimalPlaces;
 
+		bool IValueValidator<decimal>.RequiresModel => false;
+
 		public PrecisionValidator(decimal? minimumDecimalPlaces, decimal? maximumDecimalPlaces)
 		{
 			if (!minimumDecimalPlaces.HasValue && !maximumDecimalPlaces.HasValue)
@@ -34,7 +36,7 @@ namespace Valigator.Core.ValueValidators
 		IValueDescriptor IValueValidator<decimal>.GetDescriptor()
 			=> new PrecisionDescriptor(_minimumDecimalPlaces, _maximumDecimalPlaces);
 
-		bool IValueValidator<decimal>.IsValid(decimal value)
+		bool IValueValidator<decimal>.IsValid(Option<object> model, decimal value)
 		{
 			var currentPrecision = GetPrecision(value);
 

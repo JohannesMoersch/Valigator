@@ -12,6 +12,8 @@ namespace Valigator.Core.ValueValidators
 		private readonly Option<int> _minimumLength;
 		private readonly Option<int> _maximumLength;
 
+		bool IValueValidator<string>.RequiresModel => false;
+
 		public StringLengthValidator(int? minimumLength, int? maximumLength)
 		{
 			if (!minimumLength.HasValue && !maximumLength.HasValue)
@@ -33,7 +35,7 @@ namespace Valigator.Core.ValueValidators
 		IValueDescriptor IValueValidator<string>.GetDescriptor()
 			=> new StringLengthDescriptor(_minimumLength, _maximumLength);
 
-		bool IValueValidator<string>.IsValid(string value)
+		bool IValueValidator<string>.IsValid(Option<object> model, string value)
 		{
 			if (_minimumLength.TryGetValue(out var minimum) && value.Length < minimum)
 				return false;

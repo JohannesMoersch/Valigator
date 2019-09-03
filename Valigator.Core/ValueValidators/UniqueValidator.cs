@@ -2,16 +2,19 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Functional;
 using Valigator.Core.ValueDescriptors;
 
 namespace Valigator.Core.ValueValidators
 {
 	public struct UniqueValidator<TValue> : IValueValidator<TValue[]>
 	{
+		bool IValueValidator<TValue[]>.RequiresModel => false;
+
 		IValueDescriptor IValueValidator<TValue[]>.GetDescriptor()
 			=> new UniqueDescriptor();
 
-		bool IValueValidator<TValue[]>.IsValid(TValue[] value)
+		bool IValueValidator<TValue[]>.IsValid(Option<object> model, TValue[] value)
 			=> value.Length <= 1 ? true : !GetDuplicates(value).Any();
 
 		ValidationError IValueValidator<TValue[]>.GetError(TValue[] value, bool inverted)

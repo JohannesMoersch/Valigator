@@ -3,15 +3,21 @@ using System.Collections.Generic;
 using System.Text;
 using Functional;
 using Valigator.Core.Helpers;
+using Valigator.Core.DataContainers;
 using Valigator.Core.StateDescriptors;
 using Valigator.Core.ValueDescriptors;
 using Valigator.Core.ValueValidators;
+using Valigator.Core.DataContainers.Factories;
+using Valigator.Core.DataSources;
 
 namespace Valigator.Core.StateValidators
 {
-	public struct DefaultedStateValidator<TValue> : IStateValidator<TValue>
+	public struct DefaultedStateValidator<TValue> : IStateValidator<TValue, TValue>
 	{
-		private static DataValidator<DefaultedStateValidator<TValue>, TValue> Instance { get; } = new DataValidator<DefaultedStateValidator<TValue>, TValue>(default);
+		private static IDataContainer<TValue> Instance { get; } = CreateContainer(new DefaultedStateValidator<TValue>(default(TValue)));
+
+		private static IDataContainer<TValue> CreateContainer(DefaultedStateValidator<TValue> stateValidator)
+			=> new DataContainer<DefaultedStateValidator<TValue>, DummyValidator<TValue>, DummyValidator<TValue>, DummyValidator<TValue>, TValue, TValue>(Mapping.CreatePassthrough<TValue>(), stateValidator, DummyValidator<TValue>.Instance, DummyValidator<TValue>.Instance, DummyValidator<TValue>.Instance);
 
 		public Data<TValue> Data
 		{
@@ -20,7 +26,7 @@ namespace Valigator.Core.StateValidators
 				if (_defaultValueFactory == null && !_defaultValue.TryGetValue(out var value))
 					return new Data<TValue>(Instance);
 
-				return new Data<TValue>(new DataValidator<DefaultedStateValidator<TValue>, TValue>(this));
+				return new Data<TValue>(CreateContainer(this));
 			}
 		}
 
@@ -30,7 +36,7 @@ namespace Valigator.Core.StateValidators
 
 		public DefaultedStateValidator(TValue defaultValue)
 		{
-			_defaultValue = Option.Some(defaultValue != null ? defaultValue : throw new ArgumentNullException(nameof(defaultValue)));
+			_defaultValue = Option.Some(defaultValue != null ? defaultValue : throw new NullDefaultException());
 			_defaultValueFactory = null;
 		}
 
@@ -40,30 +46,57 @@ namespace Valigator.Core.StateValidators
 			_defaultValueFactory = defaultValueFactory;
 		}
 
-		public DefaultedNullableStateValidator<TValue> Nullable()
+		public NullableDefaultedStateValidator<TValue> Nullable()
 		{
 			if (_defaultValueFactory != null)
-				return new DefaultedNullableStateValidator<TValue>(_defaultValueFactory);
+				return new NullableDefaultedStateValidator<TValue>(_defaultValueFactory);
 
-			if (_defaultValue.TryGetValue(out var value))
-				return new DefaultedNullableStateValidator<TValue>(value);
+			if (_defaultValue.TryGetValue(out var some))
+				return new NullableDefaultedStateValidator<TValue>(some);
 
-			return new DefaultedNullableStateValidator<TValue>();
+			return new NullableDefaultedStateValidator<TValue>();
 		}
 
+		public DataSourceStandard<DataContainerFactory<DefaultedStateValidator<TValue>, TValue, TValue>, TValue, TValue, TValueValidator> Add<TValueValidator>(TValueValidator valueValidator)
+			where TValueValidator : struct, IValueValidator<TValue>
+			=> new DataSourceStandard<DataContainerFactory<DefaultedStateValidator<TValue>, TValue, TValue>, TValue, TValue, TValueValidator>(new DataContainerFactory<DefaultedStateValidator<TValue>, TValue, TValue>(this, Mapping.CreatePassthrough<TValue>()), valueValidator);
+
+		public DataSource<DataContainerFactory<DefaultedStateValidator<TValue>, TSource, TValue>, TValue, TValue> MappedFrom<TSource>(Func<TSource, TValue> mapper)
+			=> MappedFrom(Mapping.Create(mapper));
+
+		public DataSource<DataContainerFactory<DefaultedStateValidator<TValue>, TSource, TValue>, TValue, TValue> MappedFrom<TSource>(Func<TSource, Result<TValue, ValidationError[]>> mapper)
+			=> MappedFrom(Mapping.Create(mapper));
+
+		public DataSource<DataContainerFactory<DefaultedStateValidator<TValue>, TSource, TValue>, TValue, TValue> MappedFrom<TSource>(Func<TSource, TValue> mapper, Func<RequiredStateValidator<TSource>, Data<TSource>> sourceValidations)
+			=> MappedFrom(Mapping.Create(mapper, sourceValidations));
+
+		public DataSource<DataContainerFactory<DefaultedStateValidator<TValue>, TSource, TValue>, TValue, TValue> MappedFrom<TSource>(Func<TSource, Result<TValue, ValidationError[]>> mapper, Func<RequiredStateValidator<TSource>, Data<TSource>> sourceValidations)
+			=> MappedFrom(Mapping.Create(mapper, sourceValidations));
+
+		private DataSource<DataContainerFactory<DefaultedStateValidator<TValue>, TSource, TValue>, TValue, TValue> MappedFrom<TSource>(Mapping<TSource, TValue> mapping)
+			=> new DataSource<DataContainerFactory<DefaultedStateValidator<TValue>, TSource, TValue>, TValue, TValue>(new DataContainerFactory<DefaultedStateValidator<TValue>, TSource, TValue>(this, mapping));
+
 		private TValue GetDefaultValue()
-			=> _defaultValueFactory != null ? _defaultValueFactory.Invoke() : _defaultValue.Match(_ => _, () => default);
+			=> StateValidatorHelpers.GetDefaultValue(_defaultValue, _defaultValueFactory);
 
-		IStateDescriptor IStateValidator<TValue>.GetDescriptor()
-			=> new DefaultedStateDescriptor(false, GetDefaultValue());
+		IStateDescriptor IStateValidator<TValue, TValue>.GetDescriptor()
+			=> new StateDescriptor(Option.Some<object>(GetDefaultValue()));
 
-		IValueDescriptor[] IStateValidator<TValue>.GetImplicitValueDescriptors()
+		IValueDescriptor[] IStateValidator<TValue, TValue>.GetImplicitValueDescriptors()
 			=> new[] { new NotNullDescriptor() };
 
-		Result<TValue, ValidationError[]> IStateValidator<TValue>.Validate(object model, bool isSet, TValue value)
-			=> !isSet || value != null
-				? Result.Success<TValue, ValidationError[]>(isSet ? value : GetDefaultValue())
-				: Result.Failure<TValue, ValidationError[]>(new[] { ValidationErrors.NotNull() });
+		Result<TValue, ValidationError[]> IStateValidator<TValue, TValue>.Validate(Option<Option<TValue>> value)
+		{
+			if (value.TryGetValue(out var isSet))
+			{
+				if (isSet.TryGetValue(out var notNull))
+					return Result.Success<TValue, ValidationError[]>(notNull);
+
+				return Result.Failure<TValue, ValidationError[]>(new[] { ValidationErrors.NotNull() });
+			}
+
+			return Result.Success<TValue, ValidationError[]>(GetDefaultValue());
+		}
 
 		public static implicit operator Data<TValue>(DefaultedStateValidator<TValue> stateValidator)
 			=> stateValidator.Data;

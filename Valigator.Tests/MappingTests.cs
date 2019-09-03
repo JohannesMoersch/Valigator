@@ -39,7 +39,7 @@ namespace Valigator.Tests
 
 		public class RequiredNullable
 		{
-			private static RequiredNullableStateValidator<T> CreateData<T>() => Data.Required<T>().Nullable();
+			private static NullableRequiredStateValidator<T> CreateData<T>() => Data.Required<T>().Nullable();
 
 			[Fact]
 			public void InvalidBecauseFailureResult()
@@ -97,7 +97,7 @@ namespace Valigator.Tests
 
 		public class OptionalNullable
 		{
-			private static OptionalNullableStateValidator<T> CreateData<T>() => Data.Optional<T>().Nullable();
+			private static NullableOptionalStateValidator<T> CreateData<T>() => Data.Optional<T>().Nullable();
 
 			[Fact]
 			public void InvalidBecauseFailureResult()
@@ -155,7 +155,7 @@ namespace Valigator.Tests
 
 		public class DefaultedNullable
 		{
-			private static DefaultedNullableStateValidator<T> CreateData<T>(T value) => Data.Defaulted<T>(value).Nullable();
+			private static NullableDefaultedStateValidator<T> CreateData<T>(T value) => Data.Defaulted<T>(value).Nullable();
 
 			[Fact]
 			public void InvalidBecauseFailureResult()

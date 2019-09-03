@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Functional;
 using Valigator.Core.ValueDescriptors;
 
 namespace Valigator.Core.ValueValidators
@@ -11,6 +12,8 @@ namespace Valigator.Core.ValueValidators
 
 		private readonly Func<TValue, bool> _validator;
 
+		bool IValueValidator<TValue>.RequiresModel => false;
+
 		public CustomValidator(string description, Func<TValue, bool> validator)
 		{
 			_description = description ?? throw new ArgumentNullException(nameof(description));
@@ -20,7 +23,7 @@ namespace Valigator.Core.ValueValidators
 		IValueDescriptor IValueValidator<TValue>.GetDescriptor()
 			=> new CustomDescriptor(_description);
 
-		bool IValueValidator<TValue>.IsValid(TValue value)
+		bool IValueValidator<TValue>.IsValid(Option<object> model, TValue value)
 			=> _validator.Invoke(value);
 
 		ValidationError IValueValidator<TValue>.GetError(TValue value, bool inverted)

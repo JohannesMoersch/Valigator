@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Functional;
 using Valigator.Core.ValueDescriptors;
 
 namespace Valigator.Core.ValueValidators
@@ -11,6 +12,8 @@ namespace Valigator.Core.ValueValidators
 		private readonly TValue[] _options;
 
 		private readonly ISet<TValue> _optionSet;
+
+		bool IValueValidator<TValue>.RequiresModel => false;
 
 		public InSetValidator(TValue[] options)
 		{
@@ -27,7 +30,7 @@ namespace Valigator.Core.ValueValidators
 		IValueDescriptor IValueValidator<TValue>.GetDescriptor()
 			=> new InSetDescriptor((_options.AsEnumerable() ?? _optionSet).Cast<object>().ToArray());
 
-		bool IValueValidator<TValue>.IsValid(TValue value)
+		bool IValueValidator<TValue>.IsValid(Option<object> model, TValue value)
 			=> _options != null
 				? _options.Contains(value)
 				: _optionSet.Contains(value);

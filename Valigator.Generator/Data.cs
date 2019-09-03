@@ -14,18 +14,24 @@ namespace Valigator.Generator
 		public static SourceDefinition[] Sources { get; }
 			= new[]
 			{
-				SourceDefinition.Create(typeof(DefaultedCollectionNullableStateValidator<>)),
 				SourceDefinition.Create(typeof(DefaultedCollectionStateValidator<>)),
-				SourceDefinition.Create(typeof(OptionalCollectionNullableStateValidator<>)),
+				SourceDefinition.Create(typeof(DefaultedNullableCollectionStateValidator<>)),
+				SourceDefinition.Create(typeof(NullableDefaultedCollectionStateValidator<>)),
+				SourceDefinition.Create(typeof(NullableDefaultedNullableCollectionStateValidator<>)),
 				SourceDefinition.Create(typeof(OptionalCollectionStateValidator<>)),
-				SourceDefinition.Create(typeof(RequiredCollectionNullableStateValidator<>)),
+				SourceDefinition.Create(typeof(OptionalNullableCollectionStateValidator<>)),
+				SourceDefinition.Create(typeof(NullableOptionalCollectionStateValidator<>)),
+				SourceDefinition.Create(typeof(NullableOptionalNullableCollectionStateValidator<>)),
 				SourceDefinition.Create(typeof(RequiredCollectionStateValidator<>)),
-				SourceDefinition.Create(typeof(DefaultedNullableStateValidator<>)),
+				SourceDefinition.Create(typeof(RequiredNullableCollectionStateValidator<>)),
+				SourceDefinition.Create(typeof(NullableRequiredCollectionStateValidator<>)),
+				SourceDefinition.Create(typeof(NullableRequiredNullableCollectionStateValidator<>)),
 				SourceDefinition.Create(typeof(DefaultedStateValidator<>)),
-				SourceDefinition.Create(typeof(OptionalNullableStateValidator<>)),
+				SourceDefinition.Create(typeof(NullableDefaultedStateValidator<>)),
 				SourceDefinition.Create(typeof(OptionalStateValidator<>)),
-				SourceDefinition.Create(typeof(RequiredNullableStateValidator<>)),
-				SourceDefinition.Create(typeof(RequiredStateValidator<>))
+				SourceDefinition.Create(typeof(NullableOptionalStateValidator<>)),
+				SourceDefinition.Create(typeof(RequiredStateValidator<>)),
+				SourceDefinition.Create(typeof(NullableRequiredStateValidator<>))
 			};
 
 		public static ValidatorDefinition[] Validators { get; }

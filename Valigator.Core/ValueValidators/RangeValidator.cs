@@ -15,6 +15,8 @@ namespace Valigator.Core.ValueValidators
 		private readonly Option<byte> _greaterThanValue;
 		private readonly bool _greaterThanOrEqualTo;
 
+		bool IValueValidator<byte>.RequiresModel => false;
+
 		public RangeValidator_Byte(byte? greaterThan, byte? greaterThanOrEqualTo, byte? lessThan, byte? lessThanOrEqualTo)
 		{
 			if (!(lessThan ?? lessThanOrEqualTo).HasValue && !(greaterThan ?? greaterThanOrEqualTo).HasValue)
@@ -38,7 +40,7 @@ namespace Valigator.Core.ValueValidators
 		IValueDescriptor IValueValidator<byte>.GetDescriptor()
 			=> new RangeDescriptor(_lessThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _lessThanOrEqualTo, _greaterThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _greaterThanOrEqualTo);
 
-		bool IValueValidator<byte>.IsValid(byte value)
+		bool IValueValidator<byte>.IsValid(Option<object> model, byte value)
 		{
 			if (_lessThanValue.TryGetValue(out var lessThan) && (_lessThanOrEqualTo ? value > lessThan : value >= lessThan))
 				return false;
@@ -59,6 +61,8 @@ namespace Valigator.Core.ValueValidators
 		private readonly bool _lessThanOrEqualTo;
 		private readonly Option<sbyte> _greaterThanValue;
 		private readonly bool _greaterThanOrEqualTo;
+
+		bool IValueValidator<sbyte>.RequiresModel => false;
 
 		public RangeValidator_SByte(sbyte? greaterThan, sbyte? greaterThanOrEqualTo, sbyte? lessThan, sbyte? lessThanOrEqualTo)
 		{
@@ -83,7 +87,7 @@ namespace Valigator.Core.ValueValidators
 		IValueDescriptor IValueValidator<sbyte>.GetDescriptor()
 			=> new RangeDescriptor(_lessThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _lessThanOrEqualTo, _greaterThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _greaterThanOrEqualTo);
 
-		bool IValueValidator<sbyte>.IsValid(sbyte value)
+		bool IValueValidator<sbyte>.IsValid(Option<object> model, sbyte value)
 		{
 			if (_lessThanValue.TryGetValue(out var lessThan) && (_lessThanOrEqualTo ? value > lessThan : value >= lessThan))
 				return false;
@@ -104,6 +108,8 @@ namespace Valigator.Core.ValueValidators
 		private readonly bool _lessThanOrEqualTo;
 		private readonly Option<short> _greaterThanValue;
 		private readonly bool _greaterThanOrEqualTo;
+
+		bool IValueValidator<short>.RequiresModel => false;
 
 		public RangeValidator_Int16(short? greaterThan, short? greaterThanOrEqualTo, short? lessThan, short? lessThanOrEqualTo)
 		{
@@ -128,7 +134,7 @@ namespace Valigator.Core.ValueValidators
 		IValueDescriptor IValueValidator<short>.GetDescriptor()
 			=> new RangeDescriptor(_lessThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _lessThanOrEqualTo, _greaterThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _greaterThanOrEqualTo);
 
-		bool IValueValidator<short>.IsValid(short value)
+		bool IValueValidator<short>.IsValid(Option<object> model, short value)
 		{
 			if (_lessThanValue.TryGetValue(out var lessThan) && (_lessThanOrEqualTo ? value > lessThan : value >= lessThan))
 				return false;
@@ -149,6 +155,8 @@ namespace Valigator.Core.ValueValidators
 		private readonly bool _lessThanOrEqualTo;
 		private readonly Option<ushort> _greaterThanValue;
 		private readonly bool _greaterThanOrEqualTo;
+
+		bool IValueValidator<ushort>.RequiresModel => false;
 
 		public RangeValidator_UInt16(ushort? greaterThan, ushort? greaterThanOrEqualTo, ushort? lessThan, ushort? lessThanOrEqualTo)
 		{
@@ -173,7 +181,7 @@ namespace Valigator.Core.ValueValidators
 		IValueDescriptor IValueValidator<ushort>.GetDescriptor()
 			=> new RangeDescriptor(_lessThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _lessThanOrEqualTo, _greaterThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _greaterThanOrEqualTo);
 
-		bool IValueValidator<ushort>.IsValid(ushort value)
+		bool IValueValidator<ushort>.IsValid(Option<object> model, ushort value)
 		{
 			if (_lessThanValue.TryGetValue(out var lessThan) && (_lessThanOrEqualTo ? value > lessThan : value >= lessThan))
 				return false;
@@ -194,6 +202,8 @@ namespace Valigator.Core.ValueValidators
 		private readonly bool _lessThanOrEqualTo;
 		private readonly Option<int> _greaterThanValue;
 		private readonly bool _greaterThanOrEqualTo;
+
+		bool IValueValidator<int>.RequiresModel => false;
 
 		public RangeValidator_Int32(int? greaterThan, int? greaterThanOrEqualTo, int? lessThan, int? lessThanOrEqualTo)
 		{
@@ -218,7 +228,7 @@ namespace Valigator.Core.ValueValidators
 		IValueDescriptor IValueValidator<int>.GetDescriptor()
 			=> new RangeDescriptor(_lessThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _lessThanOrEqualTo, _greaterThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _greaterThanOrEqualTo);
 
-		bool IValueValidator<int>.IsValid(int value)
+		bool IValueValidator<int>.IsValid(Option<object> model, int value)
 		{
 			if (_lessThanValue.TryGetValue(out var lessThan) && (_lessThanOrEqualTo ? value > lessThan : value >= lessThan))
 				return false;
@@ -239,6 +249,8 @@ namespace Valigator.Core.ValueValidators
 		private readonly bool _lessThanOrEqualTo;
 		private readonly Option<uint> _greaterThanValue;
 		private readonly bool _greaterThanOrEqualTo;
+
+		bool IValueValidator<uint>.RequiresModel => false;
 
 		public RangeValidator_UInt32(uint? greaterThan, uint? greaterThanOrEqualTo, uint? lessThan, uint? lessThanOrEqualTo)
 		{
@@ -263,7 +275,7 @@ namespace Valigator.Core.ValueValidators
 		IValueDescriptor IValueValidator<uint>.GetDescriptor()
 			=> new RangeDescriptor(_lessThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _lessThanOrEqualTo, _greaterThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _greaterThanOrEqualTo);
 
-		bool IValueValidator<uint>.IsValid(uint value)
+		bool IValueValidator<uint>.IsValid(Option<object> model, uint value)
 		{
 			if (_lessThanValue.TryGetValue(out var lessThan) && (_lessThanOrEqualTo ? value > lessThan : value >= lessThan))
 				return false;
@@ -284,6 +296,8 @@ namespace Valigator.Core.ValueValidators
 		private readonly bool _lessThanOrEqualTo;
 		private readonly Option<long> _greaterThanValue;
 		private readonly bool _greaterThanOrEqualTo;
+
+		bool IValueValidator<long>.RequiresModel => false;
 
 		public RangeValidator_Int64(long? greaterThan, long? greaterThanOrEqualTo, long? lessThan, long? lessThanOrEqualTo)
 		{
@@ -308,7 +322,7 @@ namespace Valigator.Core.ValueValidators
 		IValueDescriptor IValueValidator<long>.GetDescriptor()
 			=> new RangeDescriptor(_lessThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _lessThanOrEqualTo, _greaterThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _greaterThanOrEqualTo);
 
-		bool IValueValidator<long>.IsValid(long value)
+		bool IValueValidator<long>.IsValid(Option<object> model, long value)
 		{
 			if (_lessThanValue.TryGetValue(out var lessThan) && (_lessThanOrEqualTo ? value > lessThan : value >= lessThan))
 				return false;
@@ -329,6 +343,8 @@ namespace Valigator.Core.ValueValidators
 		private readonly bool _lessThanOrEqualTo;
 		private readonly Option<ulong> _greaterThanValue;
 		private readonly bool _greaterThanOrEqualTo;
+
+		bool IValueValidator<ulong>.RequiresModel => false;
 
 		public RangeValidator_UInt64(ulong? greaterThan, ulong? greaterThanOrEqualTo, ulong? lessThan, ulong? lessThanOrEqualTo)
 		{
@@ -353,7 +369,7 @@ namespace Valigator.Core.ValueValidators
 		IValueDescriptor IValueValidator<ulong>.GetDescriptor()
 			=> new RangeDescriptor(_lessThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _lessThanOrEqualTo, _greaterThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _greaterThanOrEqualTo);
 
-		bool IValueValidator<ulong>.IsValid(ulong value)
+		bool IValueValidator<ulong>.IsValid(Option<object> model, ulong value)
 		{
 			if (_lessThanValue.TryGetValue(out var lessThan) && (_lessThanOrEqualTo ? value > lessThan : value >= lessThan))
 				return false;
@@ -374,6 +390,8 @@ namespace Valigator.Core.ValueValidators
 		private readonly bool _lessThanOrEqualTo;
 		private readonly Option<float> _greaterThanValue;
 		private readonly bool _greaterThanOrEqualTo;
+
+		bool IValueValidator<float>.RequiresModel => false;
 
 		public RangeValidator_Single(float? greaterThan, float? greaterThanOrEqualTo, float? lessThan, float? lessThanOrEqualTo)
 		{
@@ -398,7 +416,7 @@ namespace Valigator.Core.ValueValidators
 		IValueDescriptor IValueValidator<float>.GetDescriptor()
 			=> new RangeDescriptor(_lessThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _lessThanOrEqualTo, _greaterThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _greaterThanOrEqualTo);
 
-		bool IValueValidator<float>.IsValid(float value)
+		bool IValueValidator<float>.IsValid(Option<object> model, float value)
 		{
 			if (_lessThanValue.TryGetValue(out var lessThan) && (_lessThanOrEqualTo ? value > lessThan : value >= lessThan))
 				return false;
@@ -419,6 +437,8 @@ namespace Valigator.Core.ValueValidators
 		private readonly bool _lessThanOrEqualTo;
 		private readonly Option<double> _greaterThanValue;
 		private readonly bool _greaterThanOrEqualTo;
+
+		bool IValueValidator<double>.RequiresModel => false;
 
 		public RangeValidator_Double(double? greaterThan, double? greaterThanOrEqualTo, double? lessThan, double? lessThanOrEqualTo)
 		{
@@ -443,7 +463,7 @@ namespace Valigator.Core.ValueValidators
 		IValueDescriptor IValueValidator<double>.GetDescriptor()
 			=> new RangeDescriptor(_lessThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _lessThanOrEqualTo, _greaterThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _greaterThanOrEqualTo);
 
-		bool IValueValidator<double>.IsValid(double value)
+		bool IValueValidator<double>.IsValid(Option<object> model, double value)
 		{
 			if (_lessThanValue.TryGetValue(out var lessThan) && (_lessThanOrEqualTo ? value > lessThan : value >= lessThan))
 				return false;
@@ -464,6 +484,8 @@ namespace Valigator.Core.ValueValidators
 		private readonly bool _lessThanOrEqualTo;
 		private readonly Option<decimal> _greaterThanValue;
 		private readonly bool _greaterThanOrEqualTo;
+
+		bool IValueValidator<decimal>.RequiresModel => false;
 
 		public RangeValidator_Decimal(decimal? greaterThan, decimal? greaterThanOrEqualTo, decimal? lessThan, decimal? lessThanOrEqualTo)
 		{
@@ -488,7 +510,7 @@ namespace Valigator.Core.ValueValidators
 		IValueDescriptor IValueValidator<decimal>.GetDescriptor()
 			=> new RangeDescriptor(_lessThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _lessThanOrEqualTo, _greaterThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _greaterThanOrEqualTo);
 
-		bool IValueValidator<decimal>.IsValid(decimal value)
+		bool IValueValidator<decimal>.IsValid(Option<object> model, decimal value)
 		{
 			if (_lessThanValue.TryGetValue(out var lessThan) && (_lessThanOrEqualTo ? value > lessThan : value >= lessThan))
 				return false;
@@ -509,6 +531,8 @@ namespace Valigator.Core.ValueValidators
 		private readonly bool _lessThanOrEqualTo;
 		private readonly Option<DateTime> _greaterThanValue;
 		private readonly bool _greaterThanOrEqualTo;
+
+		bool IValueValidator<DateTime>.RequiresModel => false;
 
 		public RangeValidator_DateTime(DateTime? greaterThan, DateTime? greaterThanOrEqualTo, DateTime? lessThan, DateTime? lessThanOrEqualTo)
 		{
@@ -533,7 +557,7 @@ namespace Valigator.Core.ValueValidators
 		IValueDescriptor IValueValidator<DateTime>.GetDescriptor()
 			=> new RangeDescriptor(_lessThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _lessThanOrEqualTo, _greaterThanValue.Match(value => Option.Some<object>(value), Option.None<object>), _greaterThanOrEqualTo);
 
-		bool IValueValidator<DateTime>.IsValid(DateTime value)
+		bool IValueValidator<DateTime>.IsValid(Option<object> model, DateTime value)
 		{
 			if (_lessThanValue.TryGetValue(out var lessThan) && (_lessThanOrEqualTo ? value > lessThan : value >= lessThan))
 				return false;

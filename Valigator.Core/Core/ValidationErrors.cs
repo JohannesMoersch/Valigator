@@ -8,6 +8,9 @@ namespace Valigator.Core
 	public static class ValidationErrors
 	{
 		public static ValidationError NotNull()
-			=> new ValidationError("Value cannot be null", new NotNullDescriptor());
+			=> new ValidationError("Value cannot be null.", new NotNullDescriptor());
+
+		public static ValidationError Required()
+			=> new ValidationError("Value is required.", new RequiredDescriptor());
 	}
 }

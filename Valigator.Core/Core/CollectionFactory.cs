@@ -12,11 +12,17 @@ namespace Valigator.Core
 		public CollectionFactory(Data<TValue> item) 
 			=> _item = item;
 
+		public NullableCollectionFactory<TValue> ItemsNullable()
+			=> new NullableCollectionFactory<TValue>(_item);
+
 		public RequiredCollectionStateValidator<TValue> Required()
 			=> new RequiredCollectionStateValidator<TValue>(_item);
 
 		public OptionalCollectionStateValidator<TValue> Optional()
 			=> new OptionalCollectionStateValidator<TValue>(_item);
+
+		public DefaultedCollectionStateValidator<TValue> Defaulted()
+			=> new DefaultedCollectionStateValidator<TValue>(_item, Array.Empty<TValue>());
 
 		public DefaultedCollectionStateValidator<TValue> Defaulted(TValue[] defaultValue)
 			=> new DefaultedCollectionStateValidator<TValue>(_item, defaultValue);

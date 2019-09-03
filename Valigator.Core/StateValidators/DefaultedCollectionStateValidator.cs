@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Functional;
+using Valigator.Core.DataContainers;
+using Valigator.Core.DataContainers.Factories;
+using Valigator.Core.DataSources;
 using Valigator.Core.Helpers;
 using Valigator.Core.StateDescriptors;
 using Valigator.Core.ValueDescriptors;
@@ -10,51 +13,92 @@ using Valigator.Core.ValueValidators;
 
 namespace Valigator.Core.StateValidators
 {
-	public struct DefaultedCollectionStateValidator<TValue> : IStateValidator<TValue[]>
+	public struct DefaultedCollectionStateValidator<TValue> : ICollectionStateValidator<TValue[], TValue>
 	{
-		public Data<TValue[]> Data => new DataSource<DefaultedCollectionStateValidator<TValue>, TValue[]>(this);
+		private static IDataContainer<TValue[]> CreateContainer(DefaultedCollectionStateValidator<TValue> stateValidator)
+			=> new CollectionDataContainer<DefaultedCollectionStateValidator<TValue>, DummyValidator<TValue[]>, DummyValidator<TValue[]>, DummyValidator<TValue[]>, TValue, TValue>(Mapping.CreatePassthrough<TValue>(), stateValidator, DummyValidator<TValue[]>.Instance, DummyValidator<TValue[]>.Instance, DummyValidator<TValue[]>.Instance);
+
+		public Data<TValue[]> Data => new Data<TValue[]>(CreateContainer(this));
 
 		private readonly Data<TValue> _item;
 
-		private readonly TValue[] _defaultValue;
+		private readonly Option<TValue[]> _defaultValue;
 
 		private readonly Func<TValue[]> _defaultValueFactory;
 
 		public DefaultedCollectionStateValidator(Data<TValue> item, TValue[] defaultValue)
 		{
 			_item = item;
-			_defaultValue = defaultValue ?? throw new ArgumentNullException(nameof(defaultValue));
-			_defaultValueFactory = null;
+			_defaultValue = Option.Some(defaultValue ?? throw new NullDefaultException());
+			_defaultValueFactory = default;
 		}
 
 		public DefaultedCollectionStateValidator(Data<TValue> item, Func<TValue[]> defaultValueFactory)
 		{
 			_item = item;
-			_defaultValue = null;
+			_defaultValue = default;
 			_defaultValueFactory = defaultValueFactory ?? throw new ArgumentNullException(nameof(defaultValueFactory));
 		}
 
-		public DefaultedCollectionNullableStateValidator<TValue> Nullable()
+		public NullableDefaultedCollectionStateValidator<TValue> Nullable()
 		{
 			if (_defaultValueFactory != null)
-				return new DefaultedCollectionNullableStateValidator<TValue>(_item, _defaultValueFactory);
+				return new NullableDefaultedCollectionStateValidator<TValue>(_item, _defaultValueFactory);
 
-			return new DefaultedCollectionNullableStateValidator<TValue>(_item, _defaultValue);
+			if (_defaultValue.TryGetValue(out var some))
+				return new NullableDefaultedCollectionStateValidator<TValue>(_item, some);
+
+			return new NullableDefaultedCollectionStateValidator<TValue>();
 		}
 
+		public DataSourceStandard<CollectionDataContainerFactory<DefaultedCollectionStateValidator<TValue>, TValue, TValue>, TValue[], TValue[], TValueValidator> Add<TValueValidator>(TValueValidator valueValidator)
+			where TValueValidator : struct, IValueValidator<TValue[]>
+			=> new DataSourceStandard<CollectionDataContainerFactory<DefaultedCollectionStateValidator<TValue>, TValue, TValue>, TValue[], TValue[], TValueValidator>(new CollectionDataContainerFactory<DefaultedCollectionStateValidator<TValue>, TValue, TValue>(this, Mapping.CreatePassthrough<TValue>()), valueValidator);
+
+		public DataSource<CollectionDataContainerFactory<DefaultedCollectionStateValidator<TValue>, TSource, TValue>, TValue[], TValue[]> MappedFrom<TSource>(Func<TSource, TValue> mapper)
+			=> MappedFrom(Mapping.Create(mapper));
+
+		public DataSource<CollectionDataContainerFactory<DefaultedCollectionStateValidator<TValue>, TSource, TValue>, TValue[], TValue[]> MappedFrom<TSource>(Func<TSource, Result<TValue, ValidationError[]>> mapper)
+			=> MappedFrom(Mapping.Create(mapper));
+
+		public DataSource<CollectionDataContainerFactory<DefaultedCollectionStateValidator<TValue>, TSource, TValue>, TValue[], TValue[]> MappedFrom<TSource>(Func<TSource, TValue> mapper, Func<RequiredStateValidator<TSource>, Data<TSource>> sourceValidations)
+			=> MappedFrom(Mapping.Create(mapper, sourceValidations));
+
+		public DataSource<CollectionDataContainerFactory<DefaultedCollectionStateValidator<TValue>, TSource, TValue>, TValue[], TValue[]> MappedFrom<TSource>(Func<TSource, Result<TValue, ValidationError[]>> mapper, Func<RequiredStateValidator<TSource>, Data<TSource>> sourceValidations)
+			=> MappedFrom(Mapping.Create(mapper, sourceValidations));
+
+		private DataSource<CollectionDataContainerFactory<DefaultedCollectionStateValidator<TValue>, TSource, TValue>, TValue[], TValue[]> MappedFrom<TSource>(Mapping<TSource, TValue> mapping)
+			=> new DataSource<CollectionDataContainerFactory<DefaultedCollectionStateValidator<TValue>, TSource, TValue>, TValue[], TValue[]>(new CollectionDataContainerFactory<DefaultedCollectionStateValidator<TValue>, TSource, TValue>(this, mapping));
+
 		private TValue[] GetDefaultValue()
-			=> _defaultValueFactory != null ? _defaultValueFactory.Invoke() : _defaultValue;
+			=> StateValidatorHelpers.GetDefaultValue(_defaultValue, _defaultValueFactory);
 
-		IStateDescriptor IStateValidator<TValue[]>.GetDescriptor()
-			=> new DefaultedCollectionStateDescriptor(false, GetDefaultValue(), _item.DataDescriptor);
+		IStateDescriptor IStateValidator<TValue[], Option<TValue>[]>.GetDescriptor()
+			=> new CollectionStateDescriptor(StateValidatorHelpers.GetDefaultValueForDescriptor(_defaultValue, _defaultValueFactory), _item.DataDescriptor);
 
-		IValueDescriptor[] IStateValidator<TValue[]>.GetImplicitValueDescriptors()
+		IValueDescriptor[] IStateValidator<TValue[], Option<TValue>[]>.GetImplicitValueDescriptors()
 			=> new[] { new NotNullDescriptor() };
 
-		Result<TValue[], ValidationError[]> IStateValidator<TValue[]>.Validate(object model, bool isSet, TValue[] value)
-			=> isSet
-				? (value != null ? _item.VerifyCollection(model, value) : Result.Failure<TValue[], ValidationError[]>(new[] { ValidationErrors.NotNull() }))
-				: _item.VerifyCollection(model, GetDefaultValue());
+		Result<TValue[], ValidationError[]> IStateValidator<TValue[], Option<TValue>[]>.Validate(Option<Option<Option<TValue>[]>> value)
+		{
+			if (value.TryGetValue(out var isSet))
+			{
+				if (isSet.TryGetValue(out var notNull))
+				{
+					if (StateValidatorHelpers.ValidateCollectionNotNull(notNull).TryGetValue(out var success, out var failure))
+						return Result.Success<TValue[], ValidationError[]>(success);
+
+					return Result.Failure<TValue[], ValidationError[]>(failure);
+				}
+
+				return Result.Failure<TValue[], ValidationError[]>(new[] { ValidationErrors.NotNull() });
+			}
+
+			return Result.Success<TValue[], ValidationError[]>(GetDefaultValue());
+		}
+
+		public Result<Unit, ValidationError[]> IsValid(Option<object> model, TValue[] value)
+			=> StateValidatorHelpers.IsCollectionValid(_item, model, value);
 
 		public static implicit operator Data<TValue[]>(DefaultedCollectionStateValidator<TValue> stateValidator)
 			=> stateValidator.Data;

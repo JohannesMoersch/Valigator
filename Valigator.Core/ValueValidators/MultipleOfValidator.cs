@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Functional;
 using Valigator.Core.ValueDescriptors;
 
 namespace Valigator.Core.ValueValidators
@@ -8,6 +9,8 @@ namespace Valigator.Core.ValueValidators
 	public struct MultipleOfValidator_Byte : IValueValidator<byte>
 	{
 		private readonly byte _divisor;
+
+		bool IValueValidator<byte>.RequiresModel => false;
 
 		public MultipleOfValidator_Byte(byte divisor)
 		{
@@ -20,7 +23,7 @@ namespace Valigator.Core.ValueValidators
 		IValueDescriptor IValueValidator<byte>.GetDescriptor()
 			=> new MultipleOfDescriptor(_divisor);
 
-		bool IValueValidator<byte>.IsValid(byte value)
+		bool IValueValidator<byte>.IsValid(Option<object> model, byte value)
 			=> value % _divisor == 0;
 
 		ValidationError IValueValidator<byte>.GetError(byte value, bool inverted)
@@ -30,6 +33,8 @@ namespace Valigator.Core.ValueValidators
 	public struct MultipleOfValidator_SByte : IValueValidator<sbyte>
 	{
 		private readonly sbyte _divisor;
+
+		bool IValueValidator<sbyte>.RequiresModel => false;
 
 		public MultipleOfValidator_SByte(sbyte divisor)
 		{
@@ -42,7 +47,7 @@ namespace Valigator.Core.ValueValidators
 		IValueDescriptor IValueValidator<sbyte>.GetDescriptor()
 			=> new MultipleOfDescriptor(_divisor);
 
-		bool IValueValidator<sbyte>.IsValid(sbyte value)
+		bool IValueValidator<sbyte>.IsValid(Option<object> model, sbyte value)
 			=> value % _divisor == 0;
 
 		ValidationError IValueValidator<sbyte>.GetError(sbyte value, bool inverted)
@@ -52,6 +57,8 @@ namespace Valigator.Core.ValueValidators
 	public struct MultipleOfValidator_Int16 : IValueValidator<short>
 	{
 		private readonly short _divisor;
+
+		bool IValueValidator<short>.RequiresModel => false;
 
 		public MultipleOfValidator_Int16(short divisor)
 		{
@@ -64,7 +71,7 @@ namespace Valigator.Core.ValueValidators
 		IValueDescriptor IValueValidator<short>.GetDescriptor()
 			=> new MultipleOfDescriptor(_divisor);
 
-		bool IValueValidator<short>.IsValid(short value)
+		bool IValueValidator<short>.IsValid(Option<object> model, short value)
 			=> value % _divisor == 0;
 
 		ValidationError IValueValidator<short>.GetError(short value, bool inverted)
@@ -74,6 +81,8 @@ namespace Valigator.Core.ValueValidators
 	public struct MultipleOfValidator_UInt16 : IValueValidator<ushort>
 	{
 		private readonly ushort _divisor;
+
+		bool IValueValidator<ushort>.RequiresModel => false;
 
 		public MultipleOfValidator_UInt16(ushort divisor)
 		{
@@ -86,7 +95,7 @@ namespace Valigator.Core.ValueValidators
 		IValueDescriptor IValueValidator<ushort>.GetDescriptor()
 			=> new MultipleOfDescriptor(_divisor);
 
-		bool IValueValidator<ushort>.IsValid(ushort value)
+		bool IValueValidator<ushort>.IsValid(Option<object> model, ushort value)
 			=> value % _divisor == 0;
 
 		ValidationError IValueValidator<ushort>.GetError(ushort value, bool inverted)
@@ -96,6 +105,8 @@ namespace Valigator.Core.ValueValidators
 	public struct MultipleOfValidator_Int32 : IValueValidator<int>
 	{
 		private readonly int _divisor;
+
+		bool IValueValidator<int>.RequiresModel => false;
 
 		public MultipleOfValidator_Int32(int divisor)
 		{
@@ -108,7 +119,7 @@ namespace Valigator.Core.ValueValidators
 		IValueDescriptor IValueValidator<int>.GetDescriptor()
 			=> new MultipleOfDescriptor(_divisor);
 
-		bool IValueValidator<int>.IsValid(int value)
+		bool IValueValidator<int>.IsValid(Option<object> model, int value)
 			=> value % _divisor == 0;
 
 		ValidationError IValueValidator<int>.GetError(int value, bool inverted)
@@ -118,6 +129,8 @@ namespace Valigator.Core.ValueValidators
 	public struct MultipleOfValidator_UInt32 : IValueValidator<uint>
 	{
 		private readonly uint _divisor;
+
+		bool IValueValidator<uint>.RequiresModel => false;
 
 		public MultipleOfValidator_UInt32(uint divisor)
 		{
@@ -130,7 +143,7 @@ namespace Valigator.Core.ValueValidators
 		IValueDescriptor IValueValidator<uint>.GetDescriptor()
 			=> new MultipleOfDescriptor(_divisor);
 
-		bool IValueValidator<uint>.IsValid(uint value)
+		bool IValueValidator<uint>.IsValid(Option<object> model, uint value)
 			=> value % _divisor == 0;
 
 		ValidationError IValueValidator<uint>.GetError(uint value, bool inverted)
@@ -140,6 +153,8 @@ namespace Valigator.Core.ValueValidators
 	public struct MultipleOfValidator_Int64 : IValueValidator<long>
 	{
 		private readonly long _divisor;
+
+		bool IValueValidator<long>.RequiresModel => false;
 
 		public MultipleOfValidator_Int64(long divisor)
 		{
@@ -152,7 +167,7 @@ namespace Valigator.Core.ValueValidators
 		IValueDescriptor IValueValidator<long>.GetDescriptor()
 			=> new MultipleOfDescriptor(_divisor);
 
-		bool IValueValidator<long>.IsValid(long value)
+		bool IValueValidator<long>.IsValid(Option<object> model, long value)
 			=> value % _divisor == 0;
 
 		ValidationError IValueValidator<long>.GetError(long value, bool inverted)
@@ -162,6 +177,8 @@ namespace Valigator.Core.ValueValidators
 	public struct MultipleOfValidator_UInt64 : IValueValidator<ulong>
 	{
 		private readonly ulong _divisor;
+
+		bool IValueValidator<ulong>.RequiresModel => false;
 
 		public MultipleOfValidator_UInt64(ulong divisor)
 		{
@@ -174,7 +191,7 @@ namespace Valigator.Core.ValueValidators
 		IValueDescriptor IValueValidator<ulong>.GetDescriptor()
 			=> new MultipleOfDescriptor(_divisor);
 
-		bool IValueValidator<ulong>.IsValid(ulong value)
+		bool IValueValidator<ulong>.IsValid(Option<object> model, ulong value)
 			=> value % _divisor == 0;
 
 		ValidationError IValueValidator<ulong>.GetError(ulong value, bool inverted)

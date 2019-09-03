@@ -8,9 +8,11 @@ namespace Valigator.Core
 {
 	public interface IValueValidator<TValue>
 	{
+		bool RequiresModel { get; }
+
 		IValueDescriptor GetDescriptor();
 
-		bool IsValid(TValue value);
+		bool IsValid(Option<object> model, TValue value);
 
 		ValidationError GetError(TValue value, bool inverted);
 	}

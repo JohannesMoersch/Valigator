@@ -14,6 +14,8 @@ using Functional;
 using System;
 using System.Collections.Generic;
 using Valigator.Core;
+using Valigator.Core.DataContainers.Factories;
+using Valigator.Core.DataSources;
 using Valigator.Core.StateValidators;
 using Valigator.Core.ValueValidators;
 
@@ -39,6 +41,9 @@ namespace Valigator
 				case ValueType.Array:
 					paths = Data.ArrayValidationPaths;
 					break;
+				case ValueType.NullableArray:
+					paths = Data.ArrayValidationPaths;
+					break;
 				default:
 					return String.Empty;
 			}
@@ -48,11 +53,10 @@ namespace Valigator
 			foreach (var path in paths)
 				AddValidators(root, path);
 
-			var extensions = ExtensionGenerator.GenerateMapExtension(source)
-				.Concat(ExtensionGenerator.GenerateInvertExtensionOne(source))
+			var extensions = ExtensionGenerator.GenerateInvertExtensionOne(source)
 				.Concat(GenerateExtensions(source, root));
 
-			var header = _header.Replace("__StateValidator__", source.GetSourceName(Option.None<string>()));
+			var header = _header.Replace("__StateValidator__", source.GetSourceName());
 
 			return $"{header}{String.Join($"{Environment.NewLine}{Environment.NewLine}", extensions)}{_footer}";
 		}

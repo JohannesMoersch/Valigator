@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Functional;
 using Valigator.Core.ValueDescriptors;
 
 namespace Valigator.Core.ValueValidators
@@ -8,6 +9,8 @@ namespace Valigator.Core.ValueValidators
 	public struct EqualsValidator<TValue> : IValueValidator<TValue>
 	{
 		private readonly TValue _value;
+
+		bool IValueValidator<TValue>.RequiresModel => false;
 
 		public EqualsValidator(TValue value)
 		{
@@ -20,7 +23,7 @@ namespace Valigator.Core.ValueValidators
 		IValueDescriptor IValueValidator<TValue>.GetDescriptor()
 			=> new EqualsDescriptor(_value);
 
-		bool IValueValidator<TValue>.IsValid(TValue value)
+		bool IValueValidator<TValue>.IsValid(Option<object> model, TValue value)
 			=> Equals(_value, value);
 
 		ValidationError IValueValidator<TValue>.GetError(TValue value, bool inverted)
