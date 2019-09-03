@@ -80,8 +80,8 @@ namespace Valigator.Generator
 			return dataValueName;
 		}
 
-		public static string GetValidatorName(this ExtensionDefinition extension, SourceDefinition sourceDefinition, string valueGenericName)
-			=> extension.Validator.GetValidatorName(sourceDefinition.GetValidatorValueType(valueGenericName, Option.Some(extension.Validator)));
+		public static string GetName(this ValidatorDefinition validator, SourceDefinition sourceDefinition, string valueGenericName)
+			=> validator.GetValidatorName(sourceDefinition.GetValidatorValueType(valueGenericName, Option.Some(validator)));
 
 		public static string GetParameters(this ExtensionDefinition extension, SourceDefinition sourceDefinition, string valueGenericName)
 			=> String
@@ -105,7 +105,7 @@ namespace Valigator.Generator
 				.ToArray();
 
 			if (parameters.Any())
-				return $"<{String.Join(", ", genericParameters)}>";
+				return $"<{String.Join(", ", parameters)}>";
 
 			return String.Empty;
 		}
