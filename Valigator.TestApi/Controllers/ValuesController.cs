@@ -41,14 +41,14 @@ namespace Valigator.TestApi.Controllers
 		{
 			var value = bindingContext?.ValueProvider?.GetValue(bindingContext.FieldName).TryFirst() ?? Option.None<string>();
 			var result = value.Match(
-				s => Result.Success<Option<object>, ValidationError[]>(Option.Some<object>(new ComplexObject() { Value = int.Parse(s) })),
+				s => Result.Success<Option<object>, ValidationError[]>(Option.Some<object>(int.Parse(s))),
 				() => Result.Failure<Option<object>, ValidationError[]>(new[] { new ValidationError("Error1", null), new ValidationError("Error2", null) })
 			);
 
 			return Task.FromResult(result);
 		}
 
-		public Data<ComplexObject> GetData() => Data.Required<ComplexObject>().Map(o => o.Value).InRange(greaterThan: 5, lessThan: 10);
+		public Data<ComplexObject> GetData() => Data.Required<ComplexObject>().MappedFrom<int>(i => new ComplexObject() { Value = i }, o => o.InRange(greaterThan: 5, lessThan: 10));
 	}
 
 	[Route("api/[controller]")]

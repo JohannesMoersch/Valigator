@@ -25,12 +25,7 @@ namespace Valigator.Newtonsoft.Json
 		private object Read<TValue>(JsonReader reader, Data<TValue> existingValue, JsonSerializer serializer)
 		{
 			if (reader.TokenType == JsonToken.Null)
-			{
-				if (SupportsNull<TValue>.Value)
-					return existingValue.WithValue(default);
-				else
-					return existingValue.WithErrors(ValidationErrors.NotNull());
-			}
+				return existingValue.WithValue(Option.None<TValue>());
 
 			return existingValue.WithValue(serializer.Deserialize<TValue>(reader));
 		}
@@ -50,7 +45,7 @@ namespace Valigator.Newtonsoft.Json
 			var collectionOption = DeserializeCollection<TValue>(reader, serializer);
 
 			if (collectionOption.Match(_ => false, () => true))
-				return existingValue.WithValue(null);
+				return existingValue.WithNull();
 
 			var collection = collectionOption.Match(_ => _, () => default);
 

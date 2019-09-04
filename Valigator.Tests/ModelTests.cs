@@ -15,7 +15,7 @@ namespace Valigator.Tests
 
 		public Data<Stuff> Three { get; set; } = Data.Defaulted<Stuff>(() => new Stuff());
 
-		public Data<Wrapper> Four { get; set; } = Data.Required<Wrapper>().Map(wrapper => wrapper.A).GreaterThan(1);
+		public Data<Wrapper> Four { get; set; } = Data.Required<Wrapper>().MappedFrom<int>(i => new Wrapper() { A = i }, o => o.GreaterThan(1));
 
 		public Data<DateTime> Test { get; set; } = Data.Required<DateTime>().InRange(greaterThan: DateTime.Now).Assert("", _ => false);
 	}

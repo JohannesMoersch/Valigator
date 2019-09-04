@@ -27,7 +27,7 @@ namespace Valigator.Tests
 			=> Data
 				.Required<int?>()
 				.Data
-				.WithValue(null)
+				.WithNull()
 				.Verify(new object())
 				.TryGetValue()
 				.AssertFailure();
@@ -61,7 +61,7 @@ namespace Valigator.Tests
 				.Required<int>()
 				.Nullable()
 				.Data
-				.WithValue(null)
+				.WithNull()
 				.Verify(new object())
 				.TryGetValue()
 				.AssertSuccess()
@@ -95,7 +95,7 @@ namespace Valigator.Tests
 			=> Data
 				.Optional<int>()
 				.Data
-				.WithValue(null)
+				.WithNull()
 				.Verify(new object())
 				.TryGetValue()
 				.AssertFailure();
@@ -131,7 +131,7 @@ namespace Valigator.Tests
 				.Optional<int>()
 				.Nullable()
 				.Data
-				.WithValue(null)
+				.WithNull()
 				.Verify(new object())
 				.TryGetValue()
 				.AssertSuccess()
@@ -166,7 +166,7 @@ namespace Valigator.Tests
 			=> Data
 				.Defaulted<int?>(10)
 				.Data
-				.WithValue(null)
+				.WithNull()
 				.Verify(new object())
 				.TryGetValue()
 				.AssertFailure();
@@ -202,7 +202,7 @@ namespace Valigator.Tests
 				.Defaulted(10)
 				.Nullable()
 				.Data
-				.WithValue(null)
+				.WithNull()
 				.Verify(new object())
 				.TryGetValue()
 				.AssertSuccess()

@@ -51,7 +51,7 @@ namespace Valigator
 			_value = value;
 		}
 
-		public Data<TValue> WithValue(TValue value)
+		internal Data<TValue> WithValidatedValue(TValue value)
 		{
 			if (value == null)
 				throw new ArgumentNullException(nameof(value));

@@ -27,7 +27,7 @@ namespace Valigator.Tests
 				.Collection<int?>()
 				.Required()
 				.Data
-				.WithValue(null)
+				.WithNull()
 				.Verify(new object())
 				.TryGetValue()
 				.AssertFailure();
@@ -64,7 +64,7 @@ namespace Valigator.Tests
 				.Required()
 				.Nullable()
 				.Data
-				.WithValue(null)
+				.WithNull()
 				.Verify(new object())
 				.TryGetValue()
 				.AssertSuccess()
@@ -101,7 +101,7 @@ namespace Valigator.Tests
 				.Collection<int>()
 				.Optional()
 				.Data
-				.WithValue(null)
+				.WithNull()
 				.Verify(new object())
 				.TryGetValue()
 				.AssertFailure();
@@ -140,7 +140,7 @@ namespace Valigator.Tests
 				.Optional()
 				.Nullable()
 				.Data
-				.WithValue(null)
+				.WithNull()
 				.Verify(new object())
 				.TryGetValue()
 				.AssertSuccess()
@@ -177,7 +177,7 @@ namespace Valigator.Tests
 				.Collection<int?>()
 				.Defaulted(new int?[] { 10 })
 				.Data
-				.WithValue(null)
+				.WithNull()
 				.Verify(new object())
 				.TryGetValue()
 				.AssertFailure();
@@ -216,7 +216,7 @@ namespace Valigator.Tests
 				.Defaulted(new int?[] { 10 })
 				.Nullable()
 				.Data
-				.WithValue(null)
+				.WithNull()
 				.Verify(new object())
 				.TryGetValue()
 				.AssertSuccess()

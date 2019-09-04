@@ -54,7 +54,7 @@ namespace Valigator.Core.StateValidators
 			List<ValidationError> errors = null;
 			for (int i = 0; i < value.Length; ++i)
 			{
-				if (value[i].TryGetValue(out var some) && !data.WithValue(some).Verify(model).TryGetValue().TryGetValue(out var _, out var failure))
+				if (value[i].TryGetValue(out var some) && !data.WithValidatedValue(some).Verify(model).TryGetValue().TryGetValue(out var _, out var failure))
 				{
 					foreach (var error in errors)
 						error.Path.AddIndex(i);
@@ -82,7 +82,7 @@ namespace Valigator.Core.StateValidators
 			List<ValidationError> errors = null;
 			for (int i = 0; i < value.Length; ++i)
 			{
-				if (!data.WithValue(value[i]).Verify(model).TryGetValue().TryGetValue(out var _, out var failure))
+				if (!data.WithValidatedValue(value[i]).Verify(model).TryGetValue().TryGetValue(out var _, out var failure))
 				{
 					foreach (var error in errors)
 						error.Path.AddIndex(i);

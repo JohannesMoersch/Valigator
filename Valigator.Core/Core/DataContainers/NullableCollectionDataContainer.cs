@@ -37,6 +37,9 @@ namespace Valigator.Core.DataContainers
 		public Data<Option<TValue[]>> WithValue(Data<Option<TValue[]>> data, Option<Option<TSource>[]> value)
 			=> data.WithMappedValidatedValue(value, _mapping, _stateValidator);
 
+		public Data<Option<TValue[]>> WithNull(Data<Option<TValue[]>> data)
+			=> WithValue(data, Option.None<Option<TSource>[]>());
+
 		public Result<Unit, ValidationError[]> IsValid(Option<object> model, Option<Option<TValue[]>> value)
 		{
 			if (value.TryGetValue(out var some) || _stateValidator.Validate(Option.None<Option<Option<TValue>[]>>()).TryGetValue(out some, out var failure))

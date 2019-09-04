@@ -61,7 +61,7 @@ namespace Valigator.Core.DataContainers
 			where TStateValidator : struct, IStateValidator<TDataValue, TValue>
 		{
 			if (stateValidator.Validate(Option.Some(value)).TryGetValue(out var success, out var failure))
-				return data.WithValue(success);
+				return data.WithValidatedValue(success);
 
 			return data.WithErrors(failure);
 		}

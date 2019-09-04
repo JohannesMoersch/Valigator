@@ -55,7 +55,7 @@ namespace Valigator.Core
 		public Result<TValue, ValidationError[]> Map(TSource input)
 		{
 			var verifiedInput = _sourceValidations
-				.WithValue(input)
+				.WithValue(Option.Some(input))
 				.Verify(Option.None<TSource>())
 				.TryGetValue();
 
