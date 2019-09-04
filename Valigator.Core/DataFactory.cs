@@ -45,13 +45,5 @@ namespace Valigator
 
 			return new CollectionFactory<TValue>(dataFactory.Invoke(new RequiredStateValidator<TValue>()));
 		}
-
-		public static CollectionFactory<Option<TValue>> Collection<TValue>(Func<RequiredStateValidator<TValue>, Data<Option<TValue>>> dataFactory)
-		{
-			if (IsNullableValueType<TValue>.Value)
-				throw new NullableValueTypesNotSupportException("Use .ItemsNullable() instead of a nullable value type.");
-
-			return new CollectionFactory<Option<TValue>>(dataFactory.Invoke(new RequiredStateValidator<TValue>()));
-		}
 	}
 }

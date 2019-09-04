@@ -22,63 +22,38 @@ namespace Valigator.Newtonsoft.Json
 		public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
 			=> Read(reader, (dynamic)existingValue, serializer);
 
-		private object Read<TValue>(JsonReader reader, Data<TValue> existingValue, JsonSerializer serializer)
+		private Data<TValue> Read<TValue>(JsonReader reader, Data<TValue> existingValue, JsonSerializer serializer)
+			=> WithValue(existingValue, (dynamic)existingValue.DataContainer, reader, serializer);
+
+		private Data<Option<TValue>> Read<TValue>(JsonReader reader, Data<Option<TValue>> existingValue, JsonSerializer serializer)
+			=> WithValue(existingValue, (dynamic)existingValue.DataContainer, reader, serializer);
+
+		private Data<TValue[]> Read<TValue>(JsonReader reader, Data<TValue[]> existingValue, JsonSerializer serializer)
+			=> WithCollectionValue(existingValue, (dynamic)existingValue.DataContainer, reader, serializer);
+
+		private Data<Option<TValue>[]> Read<TValue>(JsonReader reader, Data<Option<TValue>[]> existingValue, JsonSerializer serializer)
+			=> WithCollectionValue(existingValue, (dynamic)existingValue.DataContainer, reader, serializer);
+
+		private Data<Option<TValue[]>> Read<TValue>(JsonReader reader, Data<Option<TValue[]>> existingValue, JsonSerializer serializer)
+			=> WithCollectionValue(existingValue, (dynamic)existingValue.DataContainer, reader, serializer);
+
+		private Data<Option<Option<TValue>[]>> Read<TValue>(JsonReader reader, Data<Option<Option<TValue>[]>> existingValue, JsonSerializer serializer)
+			=> WithCollectionValue(existingValue, (dynamic)existingValue.DataContainer, reader, serializer);
+
+		private static Data<TDataValue> WithValue<TDataValue, TValue>(Data<TDataValue> data, IAcceptValue<TDataValue, TValue> dataContainer, JsonReader reader, JsonSerializer serializer)
 		{
 			if (reader.TokenType == JsonToken.Null)
-				return existingValue.WithValue(Option.None<TValue>());
-
-			return existingValue.WithValue(serializer.Deserialize<TValue>(reader));
-		}
-
-		private object Read<TValue>(JsonReader reader, Data<Option<TValue>> existingValue, JsonSerializer serializer)
-		{
-			if (reader.TokenType == JsonToken.Null)
-				return existingValue.WithValue(Option.None<TValue>());
+				return data.WithNull();
 
 			var value = serializer.Deserialize<TValue>(reader);
 
-			return existingValue.WithValue(Option.Create(value != null, value));
+			return dataContainer.WithValue(data, Option.Create(value != null, value));
 		}
 
-		private object Read<TValue>(JsonReader reader, Data<TValue[]> existingValue, JsonSerializer serializer)
-		{
-			var collectionOption = DeserializeCollection<TValue>(reader, serializer);
+		private static Data<TDataValue> WithCollectionValue<TDataValue, TValue>(Data<TDataValue> data, IAcceptCollectionValue<TDataValue, TValue> dataContainer, JsonReader reader, JsonSerializer serializer)
+			=> dataContainer.WithValue(data, DeserializeCollection<TValue>(reader, serializer));
 
-			if (collectionOption.Match(_ => false, () => true))
-				return existingValue.WithNull();
-
-			var collection = collectionOption.Match(_ => _, () => default);
-
-			var result = new TValue[collection.Length];
-
-			List<ValidationError> errors = null;
-			for (int i = 0; i < collection.Length; ++i)
-			{
-				if (collection[i].Match(_ => true, () => false))
-					result[i] = collection[i].Match(_ => _, () => default);
-				else if (SupportsNull<TValue>.Value)
-					result[i] = default;
-				else
-				{
-					var error = ValidationErrors.NotNull();
-					error.Path.AddIndex(i);
-					(errors = (errors ?? new List<ValidationError>())).Add(error);
-				}
-			}
-
-			if (errors != null)
-				return existingValue.WithErrors(errors.ToArray());
-
-			return existingValue.WithValue(result);
-		}
-
-		private object Read<TValue>(JsonReader reader, Data<Option<TValue>[]> existingValue, JsonSerializer serializer)
-			=> existingValue.WithValue(DeserializeCollection<TValue>(reader, serializer).Match(_ => _, () => null));
-
-		private object Read<TValue>(JsonReader reader, Data<Option<Option<TValue>[]>> existingValue, JsonSerializer serializer)
-			=> existingValue.WithValue(DeserializeCollection<TValue>(reader, serializer));
-
-		private Option<Option<TValue>[]> DeserializeCollection<TValue>(JsonReader reader, JsonSerializer serializer)
+		private static Option<Option<TValue>[]> DeserializeCollection<TValue>(JsonReader reader, JsonSerializer serializer)
 		{
 			if (reader.TokenType == JsonToken.Null)
 				return Option.None<Option<TValue>[]>();
