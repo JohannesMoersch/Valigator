@@ -66,10 +66,7 @@ namespace Valigator
 		}
 
 		public Data<TValue> WithErrors(params ValidationError[] validationErrors)
-		{
-			var dataContainer = _dataContainer;
-			return new Data<TValue>(DataState.Invalid, default, new ErrorDataContainer<TValue>(() => dataContainer.DataDescriptor, validationErrors));
-		}
+			=> new Data<TValue>(DataState.UnSet, default, GetErrorDataContainer(_dataContainer, validationErrors));
 
 		public Result<TValue, ValidationError[]> TryGetValue()
 		{
@@ -98,11 +95,17 @@ namespace Valigator
 			if (State == DataState.Valid || State == DataState.Invalid)
 				throw new DataAlreadyVerifiedException();
 
-			if (!_dataContainer.IsValid(model, Option.Create(State == DataState.Set, _value)).TryGetValue(out var _, out var failure))
-				return WithErrors(failure);
+			if (_dataContainer is ErrorDataContainer<TValue>)
+				return new Data<TValue>(DataState.Invalid, default, _dataContainer);
 
-			return new Data<TValue>(DataState.Valid, _value, _dataContainer);
+			if (_dataContainer.IsValid(model, Option.Create(State == DataState.Set, _value)).TryGetValue(out var value, out var failure))
+				return new Data<TValue>(DataState.Valid, value, _dataContainer);
+
+			return new Data<TValue>(DataState.Invalid, default, GetErrorDataContainer(_dataContainer, failure));
 		}
+
+		private static IDataContainer<TValue> GetErrorDataContainer(IDataContainer<TValue> dataContainer, ValidationError[] validationErrors)
+			=> new ErrorDataContainer<TValue>(() => dataContainer.DataDescriptor, validationErrors);
 
 		public static implicit operator TValue(Data<TValue> data)
 			=> data.Value;

@@ -39,12 +39,15 @@ namespace Valigator.Core.DataContainers
 		public Data<TValue> WithNull(Data<TValue> data)
 			=> WithValue(data, Option.None<TSource>());
 
-		public Result<Unit, ValidationError[]> IsValid(Option<object> model, Option<TValue> value)
+		public Result<TValue, ValidationError[]> IsValid(Option<object> model, Option<TValue> value)
 		{
 			if (value.TryGetValue(out var some) || _stateValidator.Validate(Option.None<Option<TValue>>()).TryGetValue(out some, out var failure))
-				return this.IsValid(model, some, _valueValidatorOne, _valueValidatorTwo, _valueValidatorThree);
+			{
+				if (this.IsValid(model, some, _valueValidatorOne, _valueValidatorTwo, _valueValidatorThree).TryGetValue(out var _, out failure))
+					return Result.Success<TValue, ValidationError[]>(some);
+			}
 
-			return Result.Failure<Unit, ValidationError[]>(failure);
+			return Result.Failure<TValue, ValidationError[]>(failure);
 		}
 
 		Option<ValidationError[]> IDataContainer<TValue>.GetErrors()

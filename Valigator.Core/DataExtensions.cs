@@ -85,33 +85,7 @@ namespace Valigator
 		public static Data<TValue> WithNull<TValue>(this Data<TValue> data)
 			=> data.DataContainer is IAcceptValue<TValue> dataContainer
 				? dataContainer.WithNull(data)
-				: throw new NotSupportedException($"This variant of {nameof(WithNull)} only supports Data<Option<T>> data types.");
-
-		public static Data<Option<TValue>> WithNull<TValue>(this Data<Option<TValue>> data)
-			=> data.DataContainer is IAcceptValue<Option<TValue>> dataContainer
-				? dataContainer.WithNull(data)
-				: throw new NotSupportedException($"This variant of {nameof(WithNull)} only supports Data<Option<T>> data types.");
-
-		public static Data<TValue[]> WithNull<TValue>(this Data<TValue[]> data)
-			=> data.DataContainer is IAcceptValue<TValue[]> dataContainer
-				? dataContainer.WithNull(data)
-				: throw new NotSupportedException($"This variant of {nameof(WithNull)} only supports Data<Option<T>> data types.");
-
-		public static Data<Option<TValue[]>> WithNull<TValue>(this Data<Option<TValue[]>> data)
-			=> data.DataContainer is IAcceptValue<Option<TValue[]>> dataContainer
-				? dataContainer.WithNull(data)
-				: throw new NotSupportedException($"This variant of {nameof(WithNull)} only supports Data<Option<T>> data types.");
-
-		public static Data<Option<TValue>[]> WithNull<TValue>(this Data<Option<TValue>[]> data)
-			=> data.DataContainer is IAcceptValue<Option<TValue>[]> dataContainer
-				? dataContainer.WithNull(data)
-				: throw new NotSupportedException($"This variant of {nameof(WithNull)} only supports Data<Option<T>> data types.");
-
-		public static Data<Option<Option<TValue>[]>> WithNull<TValue>(this Data<Option<Option<TValue>[]>> data)
-			=> data.DataContainer is IAcceptValue<Option<Option<TValue>[]>> dataContainer
-				? dataContainer.WithNull(data)
-				: throw new NotSupportedException($"This variant of {nameof(WithNull)} only supports Data<Option<T>> data types.");
-
+				: throw new NotSupportedException($"This variant of {nameof(WithNull)} does not support this type.");
 		private static Option<Option<TValue>[]> ToOptionArray<TValue>(TValue[] values)
 		{
 			if (values == null)

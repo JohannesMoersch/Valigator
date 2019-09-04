@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Functional;
 using Valigator.Core.StateValidators;
@@ -21,6 +22,16 @@ namespace Valigator.Core
 
 		public DefaultedNullableCollectionStateValidator<TValue> Defaulted()
 			=> new DefaultedNullableCollectionStateValidator<TValue>(_item, Array.Empty<Option<TValue>>());
+
+		public DefaultedNullableCollectionStateValidator<TValue> Defaulted<T>(T?[] defaultValue)
+			where T : struct, TValue
+		{
+			var arr = new Option<TValue>[defaultValue.Length];
+			for (int i = 0; i < defaultValue.Length; ++i)
+				arr[i] = Option.Create(defaultValue[i].HasValue, (TValue)defaultValue[i].Value);
+
+			return new DefaultedNullableCollectionStateValidator<TValue>(_item, arr);
+		}
 
 		public DefaultedNullableCollectionStateValidator<TValue> Defaulted(Option<TValue>[] defaultValue)
 			=> new DefaultedNullableCollectionStateValidator<TValue>(_item, defaultValue);

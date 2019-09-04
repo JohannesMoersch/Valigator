@@ -11,7 +11,8 @@ namespace Valigator.Tests
 		[Fact]
 		public void RequiredWithValue()
 			=> Data
-				.Collection<int?>()
+				.Collection<int>()
+				.ItemsNullable()
 				.Required()
 				.Data
 				.WithValue(new int?[] { 5 })
@@ -19,12 +20,13 @@ namespace Valigator.Tests
 				.TryGetValue()
 				.AssertSuccess()
 				.Should()
-				.BeEquivalentTo(new int?[] { 5 });
+				.BeEquivalentToNullables(new int?[] { 5 });
 
 		[Fact]
 		public void RequiredWithNull()
 			=> Data
-				.Collection<int?>()
+				.Collection<int>()
+				.ItemsNullable()
 				.Required()
 				.Data
 				.WithNull()
@@ -35,7 +37,8 @@ namespace Valigator.Tests
 		[Fact]
 		public void RequiredAndUnset()
 			=> Data
-				.Collection<int?>()
+				.Collection<int>()
+				.ItemsNullable()
 				.Required()
 				.Data
 				.Verify(new object())
@@ -45,7 +48,8 @@ namespace Valigator.Tests
 		[Fact]
 		public void RequiredNullableWithValue()
 			=> Data
-				.Collection<int?>()
+				.Collection<int>()
+				.ItemsNullable()
 				.Required()
 				.Nullable()
 				.Data
@@ -55,12 +59,13 @@ namespace Valigator.Tests
 				.AssertSuccess()
 				.AssertSome()
 				.Should()
-				.BeEquivalentTo(new int?[] { 5 });
+				.BeEquivalentToNullables(new int?[] { 5 });
 
 		[Fact]
 		public void RequiredNullableWithNull()
 			=> Data
-				.Collection<int?>()
+				.Collection<int>()
+				.ItemsNullable()
 				.Required()
 				.Nullable()
 				.Data
@@ -73,7 +78,8 @@ namespace Valigator.Tests
 		[Fact]
 		public void RequiredNullableAndUnset()
 			=> Data
-				.Collection<int?>()
+				.Collection<int>()
+				.ItemsNullable()
 				.Required()
 				.Nullable()
 				.Data
@@ -161,7 +167,8 @@ namespace Valigator.Tests
 		[Fact]
 		public void DefaultedWithValue()
 			=> Data
-				.Collection<int?>()
+				.Collection<int>()
+				.ItemsNullable()
 				.Defaulted(new int?[] { 10 })
 				.Data
 				.WithValue(new int?[] { 5 })
@@ -169,12 +176,13 @@ namespace Valigator.Tests
 				.TryGetValue()
 				.AssertSuccess()
 				.Should()
-				.BeEquivalentTo(new int?[] { 5 });
+				.BeEquivalentToNullables(new int?[] { 5 });
 
 		[Fact]
 		public void DefaultedWithNull()
 			=> Data
-				.Collection<int?>()
+				.Collection<int>()
+				.ItemsNullable()
 				.Defaulted(new int?[] { 10 })
 				.Data
 				.WithNull()
@@ -185,19 +193,21 @@ namespace Valigator.Tests
 		[Fact]
 		public void DefaultedAndUnset()
 			=> Data
-				.Collection<int?>()
+				.Collection<int>()
+				.ItemsNullable()
 				.Defaulted(new int?[] { 10 })
 				.Data
 				.Verify(new object())
 				.TryGetValue()
 				.AssertSuccess()
 				.Should()
-				.BeEquivalentTo(new int?[] { 10 });
+				.BeEquivalentToNullables(new int?[] { 10 });
 
 		[Fact]
 		public void DefaultedNullableWithValue()
 			=> Data
-				.Collection<int?>()
+				.Collection<int>()
+				.ItemsNullable()
 				.Defaulted(new int?[] { 10 })
 				.Nullable()
 				.Data
@@ -207,12 +217,13 @@ namespace Valigator.Tests
 				.AssertSuccess()
 				.AssertSome()
 				.Should()
-				.BeEquivalentTo(new int?[] { 5 });
+				.BeEquivalentToNullables(new int?[] { 5 });
 
 		[Fact]
 		public void DefaultedNullableWithNull()
 			=> Data
-				.Collection<int?>()
+				.Collection<int>()
+				.ItemsNullable()
 				.Defaulted(new int?[] { 10 })
 				.Nullable()
 				.Data
@@ -225,7 +236,8 @@ namespace Valigator.Tests
 		[Fact]
 		public void DefaultedNullableAndUnset()
 			=> Data
-				.Collection<int?>()
+				.Collection<int>()
+				.ItemsNullable()
 				.Defaulted(new int?[] { 10 })
 				.Nullable()
 				.Data
@@ -234,6 +246,6 @@ namespace Valigator.Tests
 				.AssertSuccess()
 				.AssertSome()
 				.Should()
-				.BeEquivalentTo(new int?[] { 10 });
+				.BeEquivalentToNullables(new int?[] { 10 });
 	}
 }
