@@ -13,24 +13,24 @@ namespace Valigator.Core
 		}
 
 		public static Mapping<TValue, TValue> CreatePassthrough<TValue>()
-			=> new Mapping<TValue, TValue>(DelegateCache<TValue, ValidationError[]>.Success, Data.Required<TValue>());
+			=> new Mapping<TValue, TValue>(DelegateCache<TValue, ValidationError[]>.Success, Option.None<Data<TValue>>());
 
 		public static Mapping<TInput, TResult> Create<TInput, TResult>(Func<TInput, Result<TResult, ValidationError[]>> mapper)
-			=> Create(mapper, Data.Required<TInput>());
+			=> Create(mapper, Option.None<Data<TInput>>());
 
 		public static Mapping<TInput, TResult> Create<TInput, TResult>(Func<TInput, TResult> mapper)
-			=> Create(mapper, Data.Required<TInput>());
+			=> Create(mapper, Option.None<Data<TInput>>());
 
 		public static Mapping<TInput, TResult> Create<TInput, TResult>(Func<TInput, Result<TResult, ValidationError[]>> mapper, Func<RequiredStateValidator<TInput>, Data<TInput>> sourceValidations)
-			=> Create(mapper, sourceValidations.Invoke(Data.Required<TInput>()));
+			=> Create(mapper, Option.Some(sourceValidations.Invoke(Data.Required<TInput>())));
 
 		public static Mapping<TInput, TResult> Create<TInput, TResult>(Func<TInput, TResult> mapper, Func<RequiredStateValidator<TInput>, Data<TInput>> sourceValidations)
-			=> Create(mapper, sourceValidations.Invoke(Data.Required<TInput>()));
+			=> Create(mapper, Option.Some(sourceValidations.Invoke(Data.Required<TInput>())));
 
-		public static Mapping<TInput, TResult> Create<TInput, TResult>(Func<TInput, TResult> mapper, Data<TInput> sourceValidations)
+		private static Mapping<TInput, TResult> Create<TInput, TResult>(Func<TInput, TResult> mapper, Option<Data<TInput>> sourceValidations)
 			=> new Mapping<TInput, TResult>(mapper, sourceValidations);
 
-		public static Mapping<TInput, TResult> Create<TInput, TResult>(Func<TInput, Result<TResult, ValidationError[]>> mapper, Data<TInput> sourceValidations)
+		private static Mapping<TInput, TResult> Create<TInput, TResult>(Func<TInput, Result<TResult, ValidationError[]>> mapper, Option<Data<TInput>> sourceValidations)
 			=> new Mapping<TInput, TResult>(mapper, sourceValidations);
 	}
 
@@ -38,15 +38,15 @@ namespace Valigator.Core
 	{
 		private readonly object _mapper;
 
-		private readonly Data<TSource> _sourceValidations;
+		private readonly Option<Data<TSource>> _sourceValidations;
 
-		internal Mapping(Func<TSource, TValue> mapper, Data<TSource> sourceValidations)
+		internal Mapping(Func<TSource, TValue> mapper, Option<Data<TSource>> sourceValidations)
 		{
 			_mapper = mapper;
 			_sourceValidations = sourceValidations;
 		}
 
-		internal Mapping(Func<TSource, Result<TValue, ValidationError[]>> mapper, Data<TSource> sourceValidations)
+		internal Mapping(Func<TSource, Result<TValue, ValidationError[]>> mapper, Option<Data<TSource>> sourceValidations)
 		{
 			_mapper = mapper;
 			_sourceValidations = sourceValidations;
@@ -54,10 +54,16 @@ namespace Valigator.Core
 
 		public Result<TValue, ValidationError[]> Map(TSource input)
 		{
-			var verifiedInput = _sourceValidations
-				.WithValue(Option.Some(input))
-				.Verify(Option.None<TSource>())
-				.TryGetValue();
+			Result<TSource, ValidationError[]> verifiedInput;
+			if (_sourceValidations.TryGetValue(out var some))
+			{
+				verifiedInput = some
+					.WithValue(Option.Some(input))
+					.Verify(Option.None<TSource>())
+					.TryGetValue();
+			}
+			else
+				verifiedInput = Result.Success<TSource, ValidationError[]>(input);
 
 			if (verifiedInput.TryGetValue(out var success, out var failure))
 			{
