@@ -39,7 +39,7 @@ namespace Valigator.Tests
 
 			var model = new TestModel();
 			model.Test = model.Test.WithValue(DateTime.Now.AddDays(-1));
-			model.Four = model.Four.WithValue(new Wrapper() { A = -5 });
+			model.Four = model.Four.WithMappedValue(-5);
 
 			var result = Model.Verify(model);
 		}

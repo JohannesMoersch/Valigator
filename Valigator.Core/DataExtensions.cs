@@ -10,77 +10,149 @@ namespace Valigator
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static class DataExtensions
 	{
-		public static Data<TDataValue> WithValue<TDataValue, TValue>(this Data<TDataValue> data, TValue value)
+		public static Data<TValue> WithValue<TValue>(this Data<TValue> data, TValue value)
 			=> data.WithValue(Option.Create(value != null, value));
 
-		public static Data<TDataValue> WithValue<TDataValue, TValue>(this Data<TDataValue> data, TValue? value)
+		public static Data<TValue> WithValue<TValue>(this Data<TValue> data, TValue? value)
 			where TValue : struct
 			=> data.WithValue(Option.FromNullable(value));
 
-		public static Data<TDataValue> WithValue<TDataValue, TValue>(this Data<TDataValue> data, Option<TValue> value)
+		public static Data<TValue> WithValue<TValue>(this Data<TValue> data, Option<TValue> value)
+			=> data.DataContainer is IAcceptValue<TValue, TValue> dataContainer
+				? dataContainer.WithValue(data, value)
+				: throw new NotSupportedException($"This variant of {nameof(WithValue)} only supports Data<Option<T>> data types.");
+
+		public static Data<Option<TValue>> WithValue<TValue>(this Data<Option<TValue>> data, TValue value)
+			=> data.WithValue(Option.Create(value != null, value));
+
+		public static Data<Option<TValue>> WithValue<TValue>(this Data<Option<TValue>> data, TValue? value)
+			where TValue : struct
+			=> data.WithValue(Option.FromNullable(value));
+
+		public static Data<Option<TValue>> WithValue<TValue>(this Data<Option<TValue>> data, Option<TValue> value)
+			=> data.DataContainer is IAcceptValue<Option<TValue>, TValue> dataContainer
+				? dataContainer.WithValue(data, value)
+				: throw new NotSupportedException($"This variant of {nameof(WithValue)} only supports Data<Option<T>> data types.");
+
+		public static Data<TValue[]> WithValue<TValue>(this Data<TValue[]> data, TValue[] value)
+			=> data.WithValue(ToOptionArray(value));
+
+		public static Data<TValue[]> WithValue<TValue>(this Data<TValue[]> data, TValue?[] value)
+			where TValue : struct
+			=> data.WithValue(ToOptionArray(value));
+
+		public static Data<TValue[]> WithValue<TValue>(this Data<TValue[]> data, Option<Option<TValue>[]> value)
+			=> data.DataContainer is IAcceptCollectionValue<TValue[], TValue> dataContainer
+				? dataContainer.WithValue(data, value)
+				: throw new NotSupportedException($"This variant of {nameof(WithValue)} only supports Data<Option<T>> data types.");
+
+		public static Data<Option<TValue[]>> WithValue<TValue>(this Data<Option<TValue[]>> data, TValue[] value)
+			=> data.WithValue(ToOptionArray(value));
+
+		public static Data<Option<TValue[]>> WithValue<TValue>(this Data<Option<TValue[]>> data, TValue?[] value)
+			where TValue : struct
+			=> data.WithValue(ToOptionArray(value));
+
+		public static Data<Option<TValue[]>> WithValue<TValue>(this Data<Option<TValue[]>> data, Option<Option<TValue>[]> value)
+			=> data.DataContainer is IAcceptCollectionValue<Option<TValue[]>, TValue> dataContainer
+				? dataContainer.WithValue(data, value)
+				: throw new NotSupportedException($"This variant of {nameof(WithValue)} only supports Data<Option<T>> data types.");
+
+		public static Data<Option<TValue>[]> WithValue<TValue>(this Data<Option<TValue>[]> data, TValue[] value)
+			=> data.WithValue(ToOptionArray(value));
+
+		public static Data<Option<TValue>[]> WithValue<TValue>(this Data<Option<TValue>[]> data, TValue?[] value)
+			where TValue : struct
+			=> data.WithValue(ToOptionArray(value));
+
+		public static Data<Option<TValue>[]> WithValue<TValue>(this Data<Option<TValue>[]> data, Option<Option<TValue>[]> value)
+			=> data.DataContainer is IAcceptCollectionValue<Option<TValue>[], TValue> dataContainer
+				? dataContainer.WithValue(data, value)
+				: throw new NotSupportedException($"This variant of {nameof(WithValue)} only supports Data<Option<T>> data types.");
+
+		public static Data<Option<Option<TValue>[]>> WithValue<TValue>(this Data<Option<Option<TValue>[]>> data, TValue[] value)
+			=> data.WithValue(ToOptionArray(value));
+
+		public static Data<Option<Option<TValue>[]>> WithValue<TValue>(this Data<Option<Option<TValue>[]>> data, TValue?[] value)
+			where TValue : struct
+			=> data.WithValue(ToOptionArray(value));
+
+		public static Data<Option<Option<TValue>[]>> WithValue<TValue>(this Data<Option<Option<TValue>[]>> data, Option<Option<TValue>[]> value)
+			=> data.DataContainer is IAcceptCollectionValue<Option<Option<TValue>[]>, TValue> dataContainer
+				? dataContainer.WithValue(data, value)
+				: throw new NotSupportedException($"This variant of {nameof(WithValue)} only supports Data<Option<T>> data types.");
+
+		public static Data<TDataValue> WithMappedValue<TDataValue, TValue>(this Data<TDataValue> data, TValue value)
+			=> data.WithMappedValue(Option.Create(value != null, value));
+
+		public static Data<TDataValue> WithMappedValue<TDataValue, TValue>(this Data<TDataValue> data, TValue? value)
+			where TValue : struct
+			=> data.WithMappedValue(Option.FromNullable(value));
+
+		public static Data<TDataValue> WithMappedValue<TDataValue, TValue>(this Data<TDataValue> data, Option<TValue> value)
 			=> data.DataContainer is IAcceptValue<TDataValue, TValue> dataContainer
 				? dataContainer.WithValue(data, value)
-				: throw new NotSupportedException($"This variant of {nameof(WithValue)} only supports Data<Option<T>> data types.");
+				: throw new NotSupportedException($"This variant of {nameof(WithMappedValue)} only supports Data<Option<T>> data types.");
 
-		public static Data<Option<TDataValue>> WithValue<TDataValue, TValue>(this Data<Option<TDataValue>> data, TValue value)
-			=> data.WithValue(Option.Create(value != null, value));
+		public static Data<Option<TDataValue>> WithMappedValue<TDataValue, TValue>(this Data<Option<TDataValue>> data, TValue value)
+			=> data.WithMappedValue(Option.Create(value != null, value));
 
-		public static Data<Option<TDataValue>> WithValue<TDataValue, TValue>(this Data<Option<TDataValue>> data, TValue? value)
+		public static Data<Option<TDataValue>> WithMappedValue<TDataValue, TValue>(this Data<Option<TDataValue>> data, TValue? value)
 			where TValue : struct
-			=> data.WithValue(Option.FromNullable(value));
+			=> data.WithMappedValue(Option.FromNullable(value));
 
-		public static Data<Option<TDataValue>> WithValue<TDataValue, TValue>(this Data<Option<TDataValue>> data, Option<TValue> value)
+		public static Data<Option<TDataValue>> WithMappedValue<TDataValue, TValue>(this Data<Option<TDataValue>> data, Option<TValue> value)
 			=> data.DataContainer is IAcceptValue<Option<TDataValue>, TValue> dataContainer
 				? dataContainer.WithValue(data, value)
-				: throw new NotSupportedException($"This variant of {nameof(WithValue)} only supports Data<Option<T>> data types.");
+				: throw new NotSupportedException($"This variant of {nameof(WithMappedValue)} only supports Data<Option<T>> data types.");
 
-		public static Data<TDataValue[]> WithValue<TDataValue, TValue>(this Data<TDataValue[]> data, TValue[] value)
-			=> data.WithValue(ToOptionArray(value));
+		public static Data<TDataValue[]> WithMappedValue<TDataValue, TValue>(this Data<TDataValue[]> data, TValue[] value)
+			=> data.WithMappedValue(ToOptionArray(value));
 
-		public static Data<TDataValue[]> WithValue<TDataValue, TValue>(this Data<TDataValue[]> data, TValue?[] value)
+		public static Data<TDataValue[]> WithMappedValue<TDataValue, TValue>(this Data<TDataValue[]> data, TValue?[] value)
 			where TValue : struct
-			=> data.WithValue(ToOptionArray(value));
+			=> data.WithMappedValue(ToOptionArray(value));
 
-		public static Data<TDataValue[]> WithValue<TDataValue, TValue>(this Data<TDataValue[]> data, Option<Option<TValue>[]> value)
+		public static Data<TDataValue[]> WithMappedValue<TDataValue, TValue>(this Data<TDataValue[]> data, Option<Option<TValue>[]> value)
 			=> data.DataContainer is IAcceptCollectionValue<TDataValue[], TValue> dataContainer
 				? dataContainer.WithValue(data, value)
-				: throw new NotSupportedException($"This variant of {nameof(WithValue)} only supports Data<Option<T>> data types.");
+				: throw new NotSupportedException($"This variant of {nameof(WithMappedValue)} only supports Data<Option<T>> data types.");
 
-		public static Data<Option<TDataValue[]>> WithValue<TDataValue, TValue>(this Data<Option<TDataValue[]>> data, TValue[] value)
-			=> data.WithValue(ToOptionArray(value));
+		public static Data<Option<TDataValue[]>> WithMappedValue<TDataValue, TValue>(this Data<Option<TDataValue[]>> data, TValue[] value)
+			=> data.WithMappedValue(ToOptionArray(value));
 
-		public static Data<Option<TDataValue[]>> WithValue<TDataValue, TValue>(this Data<Option<TDataValue[]>> data, TValue?[] value)
+		public static Data<Option<TDataValue[]>> WithMappedValue<TDataValue, TValue>(this Data<Option<TDataValue[]>> data, TValue?[] value)
 			where TValue : struct
-			=> data.WithValue(ToOptionArray(value));
+			=> data.WithMappedValue(ToOptionArray(value));
 
-		public static Data<Option<TDataValue[]>> WithValue<TDataValue, TValue>(this Data<Option<TDataValue[]>> data, Option<Option<TValue>[]> value)
+		public static Data<Option<TDataValue[]>> WithMappedValue<TDataValue, TValue>(this Data<Option<TDataValue[]>> data, Option<Option<TValue>[]> value)
 			=> data.DataContainer is IAcceptCollectionValue<Option<TDataValue[]>, TValue> dataContainer
 				? dataContainer.WithValue(data, value)
-				: throw new NotSupportedException($"This variant of {nameof(WithValue)} only supports Data<Option<T>> data types.");
+				: throw new NotSupportedException($"This variant of {nameof(WithMappedValue)} only supports Data<Option<T>> data types.");
 
-		public static Data<Option<TDataValue>[]> WithValue<TDataValue, TValue>(this Data<Option<TDataValue>[]> data, TValue[] value)
-			=> data.WithValue(ToOptionArray(value));
+		public static Data<Option<TDataValue>[]> WithMappedValue<TDataValue, TValue>(this Data<Option<TDataValue>[]> data, TValue[] value)
+			=> data.WithMappedValue(ToOptionArray(value));
 
-		public static Data<Option<TDataValue>[]> WithValue<TDataValue, TValue>(this Data<Option<TDataValue>[]> data, TValue?[] value)
+		public static Data<Option<TDataValue>[]> WithMappedValue<TDataValue, TValue>(this Data<Option<TDataValue>[]> data, TValue?[] value)
 			where TValue : struct
-			=> data.WithValue(ToOptionArray(value));
+			=> data.WithMappedValue(ToOptionArray(value));
 
-		public static Data<Option<TDataValue>[]> WithValue<TDataValue, TValue>(this Data<Option<TDataValue>[]> data, Option<Option<TValue>[]> value)
+		public static Data<Option<TDataValue>[]> WithMappedValue<TDataValue, TValue>(this Data<Option<TDataValue>[]> data, Option<Option<TValue>[]> value)
 			=> data.DataContainer is IAcceptCollectionValue<Option<TDataValue>[], TValue> dataContainer
 				? dataContainer.WithValue(data, value)
-				: throw new NotSupportedException($"This variant of {nameof(WithValue)} only supports Data<Option<T>> data types.");
+				: throw new NotSupportedException($"This variant of {nameof(WithMappedValue)} only supports Data<Option<T>> data types.");
 
-		public static Data<Option<Option<TDataValue>[]>> WithValue<TDataValue, TValue>(this Data<Option<Option<TDataValue>[]>> data, TValue[] value)
-			=> data.WithValue(ToOptionArray(value));
+		public static Data<Option<Option<TDataValue>[]>> WithMappedValue<TDataValue, TValue>(this Data<Option<Option<TDataValue>[]>> data, TValue[] value)
+			=> data.WithMappedValue(ToOptionArray(value));
 
-		public static Data<Option<Option<TDataValue>[]>> WithValue<TDataValue, TValue>(this Data<Option<Option<TDataValue>[]>> data, TValue?[] value)
+		public static Data<Option<Option<TDataValue>[]>> WithMappedValue<TDataValue, TValue>(this Data<Option<Option<TDataValue>[]>> data, TValue?[] value)
 			where TValue : struct
-			=> data.WithValue(ToOptionArray(value));
+			=> data.WithMappedValue(ToOptionArray(value));
 
-		public static Data<Option<Option<TDataValue>[]>> WithValue<TDataValue, TValue>(this Data<Option<Option<TDataValue>[]>> data, Option<Option<TValue>[]> value)
+		public static Data<Option<Option<TDataValue>[]>> WithMappedValue<TDataValue, TValue>(this Data<Option<Option<TDataValue>[]>> data, Option<Option<TValue>[]> value)
 			=> data.DataContainer is IAcceptCollectionValue<Option<Option<TDataValue>[]>, TValue> dataContainer
 				? dataContainer.WithValue(data, value)
-				: throw new NotSupportedException($"This variant of {nameof(WithValue)} only supports Data<Option<T>> data types.");
+				: throw new NotSupportedException($"This variant of {nameof(WithMappedValue)} only supports Data<Option<T>> data types.");
 
 		public static Data<TValue> WithNull<TValue>(this Data<TValue> data)
 			=> data.DataContainer is IAcceptValue<TValue> dataContainer

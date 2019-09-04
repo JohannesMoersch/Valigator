@@ -20,7 +20,7 @@ namespace Valigator.Tests
 				=> CreateData<float>()
 					.MappedFrom<int>(x => Result.Failure<float, ValidationError[]>(_testErrors))
 					.Data
-					.WithValue(500)
+					.WithMappedValue(500)
 					.Verify(new object())
 					.TryGetValue()
 					.AssertFailure()
@@ -32,7 +32,7 @@ namespace Valigator.Tests
 				=> CreateData<float>()
 					.MappedFrom<int>(x => Result.Success<float, ValidationError[]>(x + 0.5f), o => o.InSet(100))
 					.Data
-					.WithValue(500)
+					.WithMappedValue(500)
 					.Verify(new object())
 					.TryGetValue()
 					.AssertFailure()
@@ -44,12 +44,12 @@ namespace Valigator.Tests
 				=> CreateData<float>()
 					.MappedFrom<int>(x => Result.Success<float, ValidationError[]>(x + 0.5f))
 					.Data
-					.WithValue(500)
+					.WithMappedValue(500)
 					.Verify(new object())
 					.TryGetValue()
-					.AssertFailure()
+					.AssertSuccess()
 					.Should()
-					.BeEquivalentTo(_testErrors);
+					.Be(500.5f);
 		}
 
 		public class RequiredNullable
@@ -61,7 +61,7 @@ namespace Valigator.Tests
 				=> CreateData<float>()
 					.MappedFrom<int>(x => Result.Failure<float, ValidationError[]>(_testErrors))
 					.Data
-					.WithValue(500)
+					.WithMappedValue(500)
 					.Verify(new object())
 					.TryGetValue()
 					.AssertFailure()
@@ -73,7 +73,7 @@ namespace Valigator.Tests
 				=> CreateData<float>()
 					.MappedFrom<int>(x => Result.Success<float, ValidationError[]>(x + 0.5f), o => o.InSet(100))
 					.Data
-					.WithValue(500)
+					.WithMappedValue(500)
 					.Verify(new object())
 					.TryGetValue()
 					.AssertFailure()
@@ -85,12 +85,13 @@ namespace Valigator.Tests
 				=> CreateData<float>()
 					.MappedFrom<int>(x => Result.Success<float, ValidationError[]>(x + 0.5f))
 					.Data
-					.WithValue(500)
+					.WithMappedValue(500)
 					.Verify(new object())
 					.TryGetValue()
-					.AssertFailure()
+					.AssertSuccess()
+					.AssertSome()
 					.Should()
-					.BeEquivalentTo(_testErrors);
+					.Be(500.5f);
 		}
 
 		public class Optional
@@ -102,7 +103,7 @@ namespace Valigator.Tests
 				=> CreateData<float>()
 					.MappedFrom<int>(x => Result.Failure<float, ValidationError[]>(_testErrors))
 					.Data
-					.WithValue(500)
+					.WithMappedValue(500)
 					.Verify(new object())
 					.TryGetValue()
 					.AssertFailure()
@@ -114,7 +115,7 @@ namespace Valigator.Tests
 				=> CreateData<float>()
 					.MappedFrom<int>(x => Result.Success<float, ValidationError[]>(x + 0.5f), o => o.InSet(100))
 					.Data
-					.WithValue(500)
+					.WithMappedValue(500)
 					.Verify(new object())
 					.TryGetValue()
 					.AssertFailure()
@@ -126,12 +127,13 @@ namespace Valigator.Tests
 				=> CreateData<float>()
 					.MappedFrom<int>(x => Result.Success<float, ValidationError[]>(x + 0.5f))
 					.Data
-					.WithValue(500)
+					.WithMappedValue(500)
 					.Verify(new object())
 					.TryGetValue()
-					.AssertFailure()
+					.AssertSuccess()
+					.AssertSome()
 					.Should()
-					.BeEquivalentTo(_testErrors);
+					.Be(500.5f);
 		}
 
 		public class OptionalNullable
@@ -143,7 +145,7 @@ namespace Valigator.Tests
 				=> CreateData<float>()
 					.MappedFrom<int>(x => Result.Failure<float, ValidationError[]>(_testErrors))
 					.Data
-					.WithValue(500)
+					.WithMappedValue(500)
 					.Verify(new object())
 					.TryGetValue()
 					.AssertFailure()
@@ -155,7 +157,7 @@ namespace Valigator.Tests
 				=> CreateData<float>()
 					.MappedFrom<int>(x => Result.Success<float, ValidationError[]>(x + 0.5f), o => o.InSet(100))
 					.Data
-					.WithValue(500)
+					.WithMappedValue(500)
 					.Verify(new object())
 					.TryGetValue()
 					.AssertFailure()
@@ -167,12 +169,13 @@ namespace Valigator.Tests
 				=> CreateData<float>()
 					.MappedFrom<int>(x => Result.Success<float, ValidationError[]>(x + 0.5f))
 					.Data
-					.WithValue(500)
+					.WithMappedValue(500)
 					.Verify(new object())
 					.TryGetValue()
-					.AssertFailure()
+					.AssertSuccess()
+					.AssertSome()
 					.Should()
-					.BeEquivalentTo(_testErrors);
+					.Be(500.5f);
 		}
 
 		public class Defaulted
@@ -184,7 +187,7 @@ namespace Valigator.Tests
 				=> CreateData<float>()
 					.MappedFrom<int>(x => Result.Failure<float, ValidationError[]>(_testErrors))
 					.Data
-					.WithValue(500)
+					.WithMappedValue(500)
 					.Verify(new object())
 					.TryGetValue()
 					.AssertFailure()
@@ -196,7 +199,7 @@ namespace Valigator.Tests
 				=> CreateData<float>()
 					.MappedFrom<int>(x => Result.Success<float, ValidationError[]>(x + 0.5f), o => o.InSet(100))
 					.Data
-					.WithValue(500)
+					.WithMappedValue(500)
 					.Verify(new object())
 					.TryGetValue()
 					.AssertFailure()
@@ -208,12 +211,12 @@ namespace Valigator.Tests
 				=> CreateData<float>()
 					.MappedFrom<int>(x => Result.Success<float, ValidationError[]>(x + 0.5f))
 					.Data
-					.WithValue(500)
+					.WithMappedValue(500)
 					.Verify(new object())
 					.TryGetValue()
-					.AssertFailure()
+					.AssertSuccess()
 					.Should()
-					.BeEquivalentTo(_testErrors);
+					.Be(500.5f);
 		}
 
 		public class DefaultedNullable
@@ -225,7 +228,7 @@ namespace Valigator.Tests
 				=> CreateData<float>()
 					.MappedFrom<int>(x => Result.Failure<float, ValidationError[]>(_testErrors))
 					.Data
-					.WithValue(500)
+					.WithMappedValue(500)
 					.Verify(new object())
 					.TryGetValue()
 					.AssertFailure()
@@ -237,7 +240,7 @@ namespace Valigator.Tests
 				=> CreateData<float>()
 					.MappedFrom<int>(x => Result.Success<float, ValidationError[]>(x + 0.5f), o => o.InSet(100))
 					.Data
-					.WithValue(500)
+					.WithMappedValue(500)
 					.Verify(new object())
 					.TryGetValue()
 					.AssertFailure()
@@ -249,12 +252,13 @@ namespace Valigator.Tests
 				=> CreateData<float>()
 					.MappedFrom<int>(x => Result.Success<float, ValidationError[]>(x + 0.5f))
 					.Data
-					.WithValue(500)
+					.WithMappedValue(500)
 					.Verify(new object())
 					.TryGetValue()
-					.AssertFailure()
+					.AssertSuccess()
+					.AssertSome()
 					.Should()
-					.BeEquivalentTo(_testErrors);
+					.Be(500.5f);
 		}
 	}
 }

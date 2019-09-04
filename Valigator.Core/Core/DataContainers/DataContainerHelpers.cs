@@ -98,14 +98,20 @@ namespace Valigator.Core.DataContainers
 			var twoValid = validatorTwo.IsValid(model, value);
 			var threeValid = validatorThree.IsValid(model, value);
 
-			if (!oneValid || !twoValid || !threeValid)
+			int count = (oneValid ? 0 : 1) + (twoValid ? 0 : 1) + (threeValid ? 0 : 1);
+			if (count > 0)
 			{
-				var errors = new[]
-				{
-					!oneValid ? validatorOne.GetError(value, false) : null,
-					!twoValid ? validatorTwo.GetError(value, false) : null,
-					!threeValid ? validatorThree.GetError(value, false) : null
-				};
+				var errors = new ValidationError[count];
+				int index = 0;
+
+				if (!oneValid)
+					errors[index++] = validatorOne.GetError(value, false);
+
+				if (!twoValid)
+					errors[index++] = validatorTwo.GetError(value, false);
+
+				if (!threeValid)
+					errors[index] = validatorThree.GetError(value, false);
 
 				return Result.Failure<Unit, ValidationError[]>(errors);
 			}
