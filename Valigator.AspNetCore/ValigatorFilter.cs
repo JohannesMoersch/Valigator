@@ -92,9 +92,9 @@ namespace Valigator.AspNetCore
 				Result<object, ValidationError[]> result;
 
 				if (isSet)
-					result = attribute.Verify(parameter.ParameterType, value);
+					result = attribute.Verify(Option.Create(value != null, value));
 				else
-					result = attribute.Verify(parameter.ParameterType);
+					result = attribute.Verify();
 
 				isSet = true;
 

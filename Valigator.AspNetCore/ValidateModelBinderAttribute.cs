@@ -30,7 +30,7 @@ namespace Valigator
 		{
 			(await BindModel(bindingContext))
 				.Match(
-					value => value.Match(success => this.Verify(bindingContext.ModelType, success), () => this.Verify(bindingContext.ModelType)),
+					value => value.Match(success => this.Verify(success), () => this.Verify()),
 					f => Result.Failure<object, ValidationError[]>(f)
 				)
 				.Match(
@@ -62,18 +62,32 @@ namespace Valigator
 				);
 		}
 
-		private Option<ParameterDescriptor> GetParameterDescriptorForProperty(ModelBindingContext bindingContext) 
-			=> Option.Create(
-					bindingContext.ModelMetadata.PropertyName != null, 
-					() => bindingContext.ActionContext.ActionDescriptor.BoundProperties.FirstOrDefault(descriptor => descriptor.Name == bindingContext.ModelMetadata.PropertyName)
-				);
+		private Option<ParameterDescriptor> GetParameterDescriptorForProperty(ModelBindingContext bindingContext)
+		{
+			if (bindingContext.ModelMetadata.PropertyName == null)
+				return Option.None<ParameterDescriptor>();
 
-		private Option<ParameterDescriptor> GetParameterDescriptorForParameter(ModelBindingContext bindingContext) 
-			=> Option.Create(
-					bindingContext.ModelMetadata.ParameterName != null, 
-					() => bindingContext.ActionContext.ActionDescriptor.Parameters.FirstOrDefault(descriptor => descriptor.Name == bindingContext.ModelMetadata.ParameterName)
-				);
+			var value = bindingContext.ActionContext.ActionDescriptor.BoundProperties.FirstOrDefault(descriptor => descriptor.Name == bindingContext.ModelMetadata.PropertyName);
 
-		public abstract Task<Result<Option<object>, ValidationError[]>> BindModel(ModelBindingContext bindingContext);
+			if (value == null)
+				return Option.None<ParameterDescriptor>();
+
+			return Option.Some(value);
+		}
+
+		private Option<ParameterDescriptor> GetParameterDescriptorForParameter(ModelBindingContext bindingContext)
+		{
+			if (bindingContext.ModelMetadata.ParameterName == null)
+				return Option.None<ParameterDescriptor>();
+
+			var value = bindingContext.ActionContext.ActionDescriptor.Parameters.FirstOrDefault(descriptor => descriptor.Name == bindingContext.ModelMetadata.ParameterName);
+
+			if (value == null)
+				return Option.None<ParameterDescriptor>();
+
+			return Option.Some(value);
+		}
+
+		public abstract Task<Result<Option<Option<object>>, ValidationError[]>> BindModel(ModelBindingContext bindingContext);
 	}
 }

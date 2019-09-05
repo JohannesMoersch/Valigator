@@ -37,12 +37,12 @@ namespace Valigator.TestApi.Controllers
 
 	public class TestValidateModelBinderAttribute : ValidateModelBinderAttribute, IValidateType<ComplexObject>
 	{
-		public override Task<Result<Option<object>, ValidationError[]>> BindModel(ModelBindingContext bindingContext)
+		public override Task<Result<Option<Option<object>>, ValidationError[]>> BindModel(ModelBindingContext bindingContext)
 		{
 			var value = bindingContext?.ValueProvider?.GetValue(bindingContext.FieldName).TryFirst() ?? Option.None<string>();
 			var result = value.Match(
-				s => Result.Success<Option<object>, ValidationError[]>(Option.Some<object>(int.Parse(s))),
-				() => Result.Failure<Option<object>, ValidationError[]>(new[] { new ValidationError("Error1", null), new ValidationError("Error2", null) })
+				s => Result.Success<Option<Option<object>>, ValidationError[]>(Option.Some(Option.Some<object>(int.Parse(s)))),
+				() => Result.Failure<Option<Option<object>>, ValidationError[]>(new[] { new ValidationError("Error1", null), new ValidationError("Error2", null) })
 			);
 
 			return Task.FromResult(result);

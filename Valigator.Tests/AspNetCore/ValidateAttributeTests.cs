@@ -19,12 +19,12 @@ namespace Valigator.Tests.AspNetCore
 		[Fact]
 		public void Test()
 			=> new TestValidateAttribute()
-				.Verify(typeof(int), 0)
+				.Verify(0)
 				.AssertSuccess();
 
 		[Fact]
 		public void Test2()
-			=> Assert.Throws<ValidateAttributeDoesNotSupportTypeException>(() => new TestValidateAttribute().Verify(typeof(float), 1.0f));
+			=> Assert.Throws<ValidateAttributeDoesNotSupportTypeException>(() => new TestValidateAttribute().Verify(1.0f));
 
 		[Fact]
 		public void Test3()

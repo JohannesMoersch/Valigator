@@ -3,60 +3,40 @@ using System.Collections.Concurrent;
 using System.Linq.Expressions;
 using System.Reflection;
 using Functional;
+using Valigator.Core;
 
 namespace Valigator
 {
 	public static class VerifiableExtensions
 	{
-		private static readonly object _obj = new object();
+		public static Result<object, ValidationError[]> Verify(this IVerifiable validateAttribute, object value)
+			=> ExecuteValidator((dynamic)validateAttribute, Option.Some(Option.Create(value != null, value)));
 
-		private static readonly ConcurrentDictionary<Type, Func<IVerifiable, bool, object, Result<object, ValidationError[]>>> _verifyMethods = new ConcurrentDictionary<Type, Func<IVerifiable, bool, object, Result<object, ValidationError[]>>>();
+		public static Result<object, ValidationError[]> Verify(this IVerifiable validateAttribute, Option<object> value) 
+			=> ExecuteValidator((dynamic)validateAttribute, Option.Some(value));
 
-		public static Result<object, ValidationError[]> Verify(this IVerifiable validateAttribute, Type type, object value)
+		public static Result<object, ValidationError[]> Verify(this IVerifiable validateAttribute)
+			=> ExecuteValidator((dynamic)validateAttribute, Option.None<Option<object>>());
+
+		private static Result<object, ValidationError[]> ExecuteValidator<TDataValue>(IValidateType<TDataValue> validator, Option<Option<object>> value)
 		{
-			if (value != null && !type.IsAssignableFrom(value.GetType()))
-				throw new TypeMismatchException(type, value.GetType());
+			var data = validator.GetData();
 
-			return _verifyMethods
-				.GetOrAdd(type, t => GenerateVerifyMethod(type))
-				.Invoke(validateAttribute, true, value);
+			return ExecuteValidator(data, (dynamic)data.DataContainer, value);
 		}
 
-		public static Result<object, ValidationError[]> Verify(this IVerifiable validateAttribute, Type type)
-			=> _verifyMethods
-				.GetOrAdd(type, t => GenerateVerifyMethod(type))
-				.Invoke(validateAttribute, false, null);
-
-		private static Func<IVerifiable, bool, object, Result<object, ValidationError[]>> GenerateVerifyMethod(Type type)
-		{
-			var validateType = typeof(IValidateType<>).MakeGenericType(type);
-
-			var validateMethod = typeof(ValidationHelpers).GetMethod(nameof(ValidationHelpers.ValidateType), BindingFlags.Public | BindingFlags.Static).MakeGenericMethod(type);
-			var getDataMethod = validateType.GetMethod(nameof(IValidateType<object>.GetData), BindingFlags.Public | BindingFlags.Instance);
-			var verifyMethod = typeof(VerifiableExtensions).GetMethod(nameof(PerformVerification), BindingFlags.NonPublic | BindingFlags.Static).MakeGenericMethod(type);
-
-			var attributeParameter = Expression.Parameter(typeof(IVerifiable), "attribute");
-			var convertedAttributeParameter = Expression.Convert(attributeParameter, typeof(object));
-			var isSetParameter = Expression.Parameter(typeof(bool), "isSet");
-			var valueParameter = Expression.Parameter(typeof(object), "value");
-
-			var validate = Expression.Call(validateMethod, convertedAttributeParameter);
-
-			var data = Expression.Call(Expression.Convert(attributeParameter, validateType), getDataMethod);
-			var verified = Expression.Call(verifyMethod, data, isSetParameter, valueParameter);
-
-			var block = Expression.Block(validate, verified);
-
-			return Expression.Lambda<Func<IVerifiable, bool, object, Result<object, ValidationError[]>>>(block, attributeParameter, isSetParameter, valueParameter).Compile();
-		}
-
-		private static Result<object, ValidationError[]> PerformVerification<TValue>(Data<TValue> data, bool isSet, object value)
-			=> (isSet ? data.WithValue((TValue)value) : data)
-				.Verify(_obj)
+		private static Result<object, ValidationError[]> ExecuteValidator<TDataValue, TValue>(Data<TDataValue> data, IAcceptValue<TDataValue, TValue> dataContainer, Option<Option<object>> value)
+			=> value
+				.Match
+				(
+					some => dataContainer.WithValue(data, some.Match(o => Option.Some((TValue)o), Option.None<TValue>)),
+					() => dataContainer.WithNull(data)
+				)
+				.Verify()
 				.TryGetValue()
 				.Match
 				(
-					v => Result.Success<object, ValidationError[]>(v),
+					o => Result.Success<object, ValidationError[]>(o),
 					Result.Failure<object, ValidationError[]>
 				);
 	}
