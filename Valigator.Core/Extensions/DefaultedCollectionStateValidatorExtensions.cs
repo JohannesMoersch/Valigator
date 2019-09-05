@@ -23,19 +23,19 @@ namespace Valigator
 		public static DataSourceStandard<CollectionDataContainerFactory<DefaultedCollectionStateValidator<TValue>, TValue, TValue>, TValue[], TValue[], CustomValidator<TValue[]>> Assert<TValue>(this DefaultedCollectionStateValidator<TValue> source, string description, Func<TValue[], bool> validator)
 			=> source.Add(new CustomValidator<TValue[]>(description, validator));
 
-		public static DataSourceStandard<CollectionDataContainerFactory<DefaultedCollectionStateValidator<TValue>, TValue, TValue>, TValue[], TValue[], CustomValidator<TValue[]>> Assert<TValue>(this DataSource<CollectionDataContainerFactory<DefaultedCollectionStateValidator<TValue>, TValue, TValue>, TValue[], TValue[]> source, string description, Func<TValue[], bool> validator)
+		public static DataSourceStandard<CollectionDataContainerFactory<DefaultedCollectionStateValidator<TValue>, TSource, TValue>, TValue[], TValue[], CustomValidator<TValue[]>> Assert<TSource, TValue>(this DataSource<CollectionDataContainerFactory<DefaultedCollectionStateValidator<TValue>, TSource, TValue>, TValue[], TValue[]> source, string description, Func<TValue[], bool> validator)
 			=> source.Add(new CustomValidator<TValue[]>(description, validator));
 
 		public static DataSourceStandard<CollectionDataContainerFactory<DefaultedCollectionStateValidator<TValue>, TValue, TValue>, TValue[], TValue[], UniqueValidator<TValue>> Unique<TValue>(this DefaultedCollectionStateValidator<TValue> source)
 			=> source.Add(new UniqueValidator<TValue>());
 
-		public static DataSourceStandard<CollectionDataContainerFactory<DefaultedCollectionStateValidator<TValue>, TValue, TValue>, TValue[], TValue[], UniqueValidator<TValue>> Unique<TValue>(this DataSource<CollectionDataContainerFactory<DefaultedCollectionStateValidator<TValue>, TValue, TValue>, TValue[], TValue[]> source)
+		public static DataSourceStandard<CollectionDataContainerFactory<DefaultedCollectionStateValidator<TValue>, TSource, TValue>, TValue[], TValue[], UniqueValidator<TValue>> Unique<TSource, TValue>(this DataSource<CollectionDataContainerFactory<DefaultedCollectionStateValidator<TValue>, TSource, TValue>, TValue[], TValue[]> source)
 			=> source.Add(new UniqueValidator<TValue>());
 
 		public static DataSourceStandard<CollectionDataContainerFactory<DefaultedCollectionStateValidator<TValue>, TValue, TValue>, TValue[], TValue[], ItemCountValidator<TValue>> ItemCount<TValue>(this DefaultedCollectionStateValidator<TValue> source, int? minimumItems = null, int? maximumItems = null)
 			=> source.Add(new ItemCountValidator<TValue>(minimumItems, maximumItems));
 
-		public static DataSourceStandard<CollectionDataContainerFactory<DefaultedCollectionStateValidator<TValue>, TValue, TValue>, TValue[], TValue[], ItemCountValidator<TValue>> ItemCount<TValue>(this DataSource<CollectionDataContainerFactory<DefaultedCollectionStateValidator<TValue>, TValue, TValue>, TValue[], TValue[]> source, int? minimumItems = null, int? maximumItems = null)
+		public static DataSourceStandard<CollectionDataContainerFactory<DefaultedCollectionStateValidator<TValue>, TSource, TValue>, TValue[], TValue[], ItemCountValidator<TValue>> ItemCount<TSource, TValue>(this DataSource<CollectionDataContainerFactory<DefaultedCollectionStateValidator<TValue>, TSource, TValue>, TValue[], TValue[]> source, int? minimumItems = null, int? maximumItems = null)
 			=> source.Add(new ItemCountValidator<TValue>(minimumItems, maximumItems));
 
 		public static DataSourceStandardStandard<CollectionDataContainerFactory<DefaultedCollectionStateValidator<TValue>, TSource, TValue>, TValue[], TValue[], UniqueValidator<TValue>, CustomValidator<TValue[]>> Assert<TSource, TValue>(this DataSourceStandard<CollectionDataContainerFactory<DefaultedCollectionStateValidator<TValue>, TSource, TValue>, TValue[], TValue[], UniqueValidator<TValue>> source, string description, Func<TValue[], bool> validator)

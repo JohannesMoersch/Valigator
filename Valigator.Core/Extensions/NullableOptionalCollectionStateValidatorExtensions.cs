@@ -23,19 +23,19 @@ namespace Valigator
 		public static DataSourceStandard<NullableCollectionDataContainerFactory<NullableOptionalCollectionStateValidator<TValue>, TValue, TValue>, Option<TValue[]>, TValue[], CustomValidator<TValue[]>> Assert<TValue>(this NullableOptionalCollectionStateValidator<TValue> source, string description, Func<TValue[], bool> validator)
 			=> source.Add(new CustomValidator<TValue[]>(description, validator));
 
-		public static DataSourceStandard<NullableCollectionDataContainerFactory<NullableOptionalCollectionStateValidator<TValue>, TValue, TValue>, Option<TValue[]>, TValue[], CustomValidator<TValue[]>> Assert<TValue>(this DataSource<NullableCollectionDataContainerFactory<NullableOptionalCollectionStateValidator<TValue>, TValue, TValue>, Option<TValue[]>, TValue[]> source, string description, Func<TValue[], bool> validator)
+		public static DataSourceStandard<NullableCollectionDataContainerFactory<NullableOptionalCollectionStateValidator<TValue>, TSource, TValue>, Option<TValue[]>, TValue[], CustomValidator<TValue[]>> Assert<TSource, TValue>(this DataSource<NullableCollectionDataContainerFactory<NullableOptionalCollectionStateValidator<TValue>, TSource, TValue>, Option<TValue[]>, TValue[]> source, string description, Func<TValue[], bool> validator)
 			=> source.Add(new CustomValidator<TValue[]>(description, validator));
 
 		public static DataSourceStandard<NullableCollectionDataContainerFactory<NullableOptionalCollectionStateValidator<TValue>, TValue, TValue>, Option<TValue[]>, TValue[], UniqueValidator<TValue>> Unique<TValue>(this NullableOptionalCollectionStateValidator<TValue> source)
 			=> source.Add(new UniqueValidator<TValue>());
 
-		public static DataSourceStandard<NullableCollectionDataContainerFactory<NullableOptionalCollectionStateValidator<TValue>, TValue, TValue>, Option<TValue[]>, TValue[], UniqueValidator<TValue>> Unique<TValue>(this DataSource<NullableCollectionDataContainerFactory<NullableOptionalCollectionStateValidator<TValue>, TValue, TValue>, Option<TValue[]>, TValue[]> source)
+		public static DataSourceStandard<NullableCollectionDataContainerFactory<NullableOptionalCollectionStateValidator<TValue>, TSource, TValue>, Option<TValue[]>, TValue[], UniqueValidator<TValue>> Unique<TSource, TValue>(this DataSource<NullableCollectionDataContainerFactory<NullableOptionalCollectionStateValidator<TValue>, TSource, TValue>, Option<TValue[]>, TValue[]> source)
 			=> source.Add(new UniqueValidator<TValue>());
 
 		public static DataSourceStandard<NullableCollectionDataContainerFactory<NullableOptionalCollectionStateValidator<TValue>, TValue, TValue>, Option<TValue[]>, TValue[], ItemCountValidator<TValue>> ItemCount<TValue>(this NullableOptionalCollectionStateValidator<TValue> source, int? minimumItems = null, int? maximumItems = null)
 			=> source.Add(new ItemCountValidator<TValue>(minimumItems, maximumItems));
 
-		public static DataSourceStandard<NullableCollectionDataContainerFactory<NullableOptionalCollectionStateValidator<TValue>, TValue, TValue>, Option<TValue[]>, TValue[], ItemCountValidator<TValue>> ItemCount<TValue>(this DataSource<NullableCollectionDataContainerFactory<NullableOptionalCollectionStateValidator<TValue>, TValue, TValue>, Option<TValue[]>, TValue[]> source, int? minimumItems = null, int? maximumItems = null)
+		public static DataSourceStandard<NullableCollectionDataContainerFactory<NullableOptionalCollectionStateValidator<TValue>, TSource, TValue>, Option<TValue[]>, TValue[], ItemCountValidator<TValue>> ItemCount<TSource, TValue>(this DataSource<NullableCollectionDataContainerFactory<NullableOptionalCollectionStateValidator<TValue>, TSource, TValue>, Option<TValue[]>, TValue[]> source, int? minimumItems = null, int? maximumItems = null)
 			=> source.Add(new ItemCountValidator<TValue>(minimumItems, maximumItems));
 
 		public static DataSourceStandardStandard<NullableCollectionDataContainerFactory<NullableOptionalCollectionStateValidator<TValue>, TSource, TValue>, Option<TValue[]>, TValue[], UniqueValidator<TValue>, CustomValidator<TValue[]>> Assert<TSource, TValue>(this DataSourceStandard<NullableCollectionDataContainerFactory<NullableOptionalCollectionStateValidator<TValue>, TSource, TValue>, Option<TValue[]>, TValue[], UniqueValidator<TValue>> source, string description, Func<TValue[], bool> validator)

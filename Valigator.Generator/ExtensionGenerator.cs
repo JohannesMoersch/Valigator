@@ -79,7 +79,7 @@ namespace Valigator.Generator
 			var genericParameters = dataType.Match(_ => Array.Empty<string>(), () => new[] { ValueGeneric });
 
 			yield return PopulateTemplate(_validatorExtensionTemplate, sourceDefinition, valueGenericName, genericParameters, null, null, extension, false, false, true);
-			yield return PopulateTemplate(_singleExtensionTemplate, sourceDefinition, valueGenericName, genericParameters, null, null, extension, false, false, true);
+			yield return PopulateTemplate(_singleExtensionTemplate, sourceDefinition, valueGenericName, genericParameters, null, null, extension, false, false);
 		}
 
 		public static IEnumerable<string> GenerateExtensionTwo(SourceDefinition sourceDefinition, Option<string> dataType, ValidatorDefinition validatorOne, ExtensionDefinition extension)

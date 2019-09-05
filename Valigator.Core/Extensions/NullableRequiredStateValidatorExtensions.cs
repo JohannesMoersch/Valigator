@@ -23,523 +23,523 @@ namespace Valigator
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<TValue>, TValue, TValue>, Option<TValue>, TValue, CustomValidator<TValue>> Assert<TValue>(this NullableRequiredStateValidator<TValue> source, string description, Func<TValue, bool> validator)
 			=> source.Add(new CustomValidator<TValue>(description, validator));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<TValue>, TValue, TValue>, Option<TValue>, TValue, CustomValidator<TValue>> Assert<TValue>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<TValue>, TValue, TValue>, Option<TValue>, TValue> source, string description, Func<TValue, bool> validator)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<TValue>, TSource, TValue>, Option<TValue>, TValue, CustomValidator<TValue>> Assert<TSource, TValue>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<TValue>, TSource, TValue>, Option<TValue>, TValue> source, string description, Func<TValue, bool> validator)
 			=> source.Add(new CustomValidator<TValue>(description, validator));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<TValue>, TValue, TValue>, Option<TValue>, TValue, EqualsValidator<TValue>> EqualTo<TValue>(this NullableRequiredStateValidator<TValue> source, TValue value)
 			=> source.Add(new EqualsValidator<TValue>(value));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<TValue>, TValue, TValue>, Option<TValue>, TValue, EqualsValidator<TValue>> EqualTo<TValue>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<TValue>, TValue, TValue>, Option<TValue>, TValue> source, TValue value)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<TValue>, TSource, TValue>, Option<TValue>, TValue, EqualsValidator<TValue>> EqualTo<TSource, TValue>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<TValue>, TSource, TValue>, Option<TValue>, TValue> source, TValue value)
 			=> source.Add(new EqualsValidator<TValue>(value));
 
 		public static DataSourceInverted<NullableDataContainerFactory<NullableRequiredStateValidator<string>, string, string>, Option<string>, string, EqualsValidator<string>> NotEmpty(this NullableRequiredStateValidator<string> source)
 			=> source.Not(s => s.Add(new EqualsValidator<string>(String.Empty)));
 
-		public static DataSourceInverted<NullableDataContainerFactory<NullableRequiredStateValidator<string>, string, string>, Option<string>, string, EqualsValidator<string>> NotEmpty(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<string>, string, string>, Option<string>, string> source)
+		public static DataSourceInverted<NullableDataContainerFactory<NullableRequiredStateValidator<string>, TSource, string>, Option<string>, string, EqualsValidator<string>> NotEmpty<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<string>, TSource, string>, Option<string>, string> source)
 			=> source.Not(s => s.Add(new EqualsValidator<string>(String.Empty)));
 
 		public static DataSourceInverted<NullableDataContainerFactory<NullableRequiredStateValidator<Guid>, Guid, Guid>, Option<Guid>, Guid, EqualsValidator<Guid>> NotEmpty(this NullableRequiredStateValidator<Guid> source)
 			=> source.Not(s => s.Add(new EqualsValidator<Guid>(Guid.Empty)));
 
-		public static DataSourceInverted<NullableDataContainerFactory<NullableRequiredStateValidator<Guid>, Guid, Guid>, Option<Guid>, Guid, EqualsValidator<Guid>> NotEmpty(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<Guid>, Guid, Guid>, Option<Guid>, Guid> source)
+		public static DataSourceInverted<NullableDataContainerFactory<NullableRequiredStateValidator<Guid>, TSource, Guid>, Option<Guid>, Guid, EqualsValidator<Guid>> NotEmpty<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<Guid>, TSource, Guid>, Option<Guid>, Guid> source)
 			=> source.Not(s => s.Add(new EqualsValidator<Guid>(Guid.Empty)));
 
 		public static DataSourceInverted<NullableDataContainerFactory<NullableRequiredStateValidator<byte>, byte, byte>, Option<byte>, byte, EqualsValidator<byte>> NotZero(this NullableRequiredStateValidator<byte> source)
 			=> source.Not(s => s.Add(new EqualsValidator<byte>(0)));
 
-		public static DataSourceInverted<NullableDataContainerFactory<NullableRequiredStateValidator<byte>, byte, byte>, Option<byte>, byte, EqualsValidator<byte>> NotZero(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<byte>, byte, byte>, Option<byte>, byte> source)
+		public static DataSourceInverted<NullableDataContainerFactory<NullableRequiredStateValidator<byte>, TSource, byte>, Option<byte>, byte, EqualsValidator<byte>> NotZero<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<byte>, TSource, byte>, Option<byte>, byte> source)
 			=> source.Not(s => s.Add(new EqualsValidator<byte>(0)));
 
 		public static DataSourceInverted<NullableDataContainerFactory<NullableRequiredStateValidator<sbyte>, sbyte, sbyte>, Option<sbyte>, sbyte, EqualsValidator<sbyte>> NotZero(this NullableRequiredStateValidator<sbyte> source)
 			=> source.Not(s => s.Add(new EqualsValidator<sbyte>(0)));
 
-		public static DataSourceInverted<NullableDataContainerFactory<NullableRequiredStateValidator<sbyte>, sbyte, sbyte>, Option<sbyte>, sbyte, EqualsValidator<sbyte>> NotZero(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<sbyte>, sbyte, sbyte>, Option<sbyte>, sbyte> source)
+		public static DataSourceInverted<NullableDataContainerFactory<NullableRequiredStateValidator<sbyte>, TSource, sbyte>, Option<sbyte>, sbyte, EqualsValidator<sbyte>> NotZero<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<sbyte>, TSource, sbyte>, Option<sbyte>, sbyte> source)
 			=> source.Not(s => s.Add(new EqualsValidator<sbyte>(0)));
 
 		public static DataSourceInverted<NullableDataContainerFactory<NullableRequiredStateValidator<short>, short, short>, Option<short>, short, EqualsValidator<short>> NotZero(this NullableRequiredStateValidator<short> source)
 			=> source.Not(s => s.Add(new EqualsValidator<short>(0)));
 
-		public static DataSourceInverted<NullableDataContainerFactory<NullableRequiredStateValidator<short>, short, short>, Option<short>, short, EqualsValidator<short>> NotZero(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<short>, short, short>, Option<short>, short> source)
+		public static DataSourceInverted<NullableDataContainerFactory<NullableRequiredStateValidator<short>, TSource, short>, Option<short>, short, EqualsValidator<short>> NotZero<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<short>, TSource, short>, Option<short>, short> source)
 			=> source.Not(s => s.Add(new EqualsValidator<short>(0)));
 
 		public static DataSourceInverted<NullableDataContainerFactory<NullableRequiredStateValidator<ushort>, ushort, ushort>, Option<ushort>, ushort, EqualsValidator<ushort>> NotZero(this NullableRequiredStateValidator<ushort> source)
 			=> source.Not(s => s.Add(new EqualsValidator<ushort>(0)));
 
-		public static DataSourceInverted<NullableDataContainerFactory<NullableRequiredStateValidator<ushort>, ushort, ushort>, Option<ushort>, ushort, EqualsValidator<ushort>> NotZero(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<ushort>, ushort, ushort>, Option<ushort>, ushort> source)
+		public static DataSourceInverted<NullableDataContainerFactory<NullableRequiredStateValidator<ushort>, TSource, ushort>, Option<ushort>, ushort, EqualsValidator<ushort>> NotZero<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<ushort>, TSource, ushort>, Option<ushort>, ushort> source)
 			=> source.Not(s => s.Add(new EqualsValidator<ushort>(0)));
 
 		public static DataSourceInverted<NullableDataContainerFactory<NullableRequiredStateValidator<int>, int, int>, Option<int>, int, EqualsValidator<int>> NotZero(this NullableRequiredStateValidator<int> source)
 			=> source.Not(s => s.Add(new EqualsValidator<int>(0)));
 
-		public static DataSourceInverted<NullableDataContainerFactory<NullableRequiredStateValidator<int>, int, int>, Option<int>, int, EqualsValidator<int>> NotZero(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<int>, int, int>, Option<int>, int> source)
+		public static DataSourceInverted<NullableDataContainerFactory<NullableRequiredStateValidator<int>, TSource, int>, Option<int>, int, EqualsValidator<int>> NotZero<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<int>, TSource, int>, Option<int>, int> source)
 			=> source.Not(s => s.Add(new EqualsValidator<int>(0)));
 
 		public static DataSourceInverted<NullableDataContainerFactory<NullableRequiredStateValidator<uint>, uint, uint>, Option<uint>, uint, EqualsValidator<uint>> NotZero(this NullableRequiredStateValidator<uint> source)
 			=> source.Not(s => s.Add(new EqualsValidator<uint>(0)));
 
-		public static DataSourceInverted<NullableDataContainerFactory<NullableRequiredStateValidator<uint>, uint, uint>, Option<uint>, uint, EqualsValidator<uint>> NotZero(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<uint>, uint, uint>, Option<uint>, uint> source)
+		public static DataSourceInverted<NullableDataContainerFactory<NullableRequiredStateValidator<uint>, TSource, uint>, Option<uint>, uint, EqualsValidator<uint>> NotZero<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<uint>, TSource, uint>, Option<uint>, uint> source)
 			=> source.Not(s => s.Add(new EqualsValidator<uint>(0)));
 
 		public static DataSourceInverted<NullableDataContainerFactory<NullableRequiredStateValidator<long>, long, long>, Option<long>, long, EqualsValidator<long>> NotZero(this NullableRequiredStateValidator<long> source)
 			=> source.Not(s => s.Add(new EqualsValidator<long>(0)));
 
-		public static DataSourceInverted<NullableDataContainerFactory<NullableRequiredStateValidator<long>, long, long>, Option<long>, long, EqualsValidator<long>> NotZero(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<long>, long, long>, Option<long>, long> source)
+		public static DataSourceInverted<NullableDataContainerFactory<NullableRequiredStateValidator<long>, TSource, long>, Option<long>, long, EqualsValidator<long>> NotZero<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<long>, TSource, long>, Option<long>, long> source)
 			=> source.Not(s => s.Add(new EqualsValidator<long>(0)));
 
 		public static DataSourceInverted<NullableDataContainerFactory<NullableRequiredStateValidator<ulong>, ulong, ulong>, Option<ulong>, ulong, EqualsValidator<ulong>> NotZero(this NullableRequiredStateValidator<ulong> source)
 			=> source.Not(s => s.Add(new EqualsValidator<ulong>(0)));
 
-		public static DataSourceInverted<NullableDataContainerFactory<NullableRequiredStateValidator<ulong>, ulong, ulong>, Option<ulong>, ulong, EqualsValidator<ulong>> NotZero(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<ulong>, ulong, ulong>, Option<ulong>, ulong> source)
+		public static DataSourceInverted<NullableDataContainerFactory<NullableRequiredStateValidator<ulong>, TSource, ulong>, Option<ulong>, ulong, EqualsValidator<ulong>> NotZero<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<ulong>, TSource, ulong>, Option<ulong>, ulong> source)
 			=> source.Not(s => s.Add(new EqualsValidator<ulong>(0)));
 
 		public static DataSourceInverted<NullableDataContainerFactory<NullableRequiredStateValidator<float>, float, float>, Option<float>, float, EqualsValidator<float>> NotZero(this NullableRequiredStateValidator<float> source)
 			=> source.Not(s => s.Add(new EqualsValidator<float>(0)));
 
-		public static DataSourceInverted<NullableDataContainerFactory<NullableRequiredStateValidator<float>, float, float>, Option<float>, float, EqualsValidator<float>> NotZero(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<float>, float, float>, Option<float>, float> source)
+		public static DataSourceInverted<NullableDataContainerFactory<NullableRequiredStateValidator<float>, TSource, float>, Option<float>, float, EqualsValidator<float>> NotZero<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<float>, TSource, float>, Option<float>, float> source)
 			=> source.Not(s => s.Add(new EqualsValidator<float>(0)));
 
 		public static DataSourceInverted<NullableDataContainerFactory<NullableRequiredStateValidator<double>, double, double>, Option<double>, double, EqualsValidator<double>> NotZero(this NullableRequiredStateValidator<double> source)
 			=> source.Not(s => s.Add(new EqualsValidator<double>(0)));
 
-		public static DataSourceInverted<NullableDataContainerFactory<NullableRequiredStateValidator<double>, double, double>, Option<double>, double, EqualsValidator<double>> NotZero(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<double>, double, double>, Option<double>, double> source)
+		public static DataSourceInverted<NullableDataContainerFactory<NullableRequiredStateValidator<double>, TSource, double>, Option<double>, double, EqualsValidator<double>> NotZero<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<double>, TSource, double>, Option<double>, double> source)
 			=> source.Not(s => s.Add(new EqualsValidator<double>(0)));
 
 		public static DataSourceInverted<NullableDataContainerFactory<NullableRequiredStateValidator<decimal>, decimal, decimal>, Option<decimal>, decimal, EqualsValidator<decimal>> NotZero(this NullableRequiredStateValidator<decimal> source)
 			=> source.Not(s => s.Add(new EqualsValidator<decimal>(0)));
 
-		public static DataSourceInverted<NullableDataContainerFactory<NullableRequiredStateValidator<decimal>, decimal, decimal>, Option<decimal>, decimal, EqualsValidator<decimal>> NotZero(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<decimal>, decimal, decimal>, Option<decimal>, decimal> source)
+		public static DataSourceInverted<NullableDataContainerFactory<NullableRequiredStateValidator<decimal>, TSource, decimal>, Option<decimal>, decimal, EqualsValidator<decimal>> NotZero<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<decimal>, TSource, decimal>, Option<decimal>, decimal> source)
 			=> source.Not(s => s.Add(new EqualsValidator<decimal>(0)));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<TValue>, TValue, TValue>, Option<TValue>, TValue, InSetValidator<TValue>> InSet<TValue>(this NullableRequiredStateValidator<TValue> source, params TValue[] options)
 			=> source.Add(new InSetValidator<TValue>(options));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<TValue>, TValue, TValue>, Option<TValue>, TValue, InSetValidator<TValue>> InSet<TValue>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<TValue>, TValue, TValue>, Option<TValue>, TValue> source, params TValue[] options)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<TValue>, TSource, TValue>, Option<TValue>, TValue, InSetValidator<TValue>> InSet<TSource, TValue>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<TValue>, TSource, TValue>, Option<TValue>, TValue> source, params TValue[] options)
 			=> source.Add(new InSetValidator<TValue>(options));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<TValue>, TValue, TValue>, Option<TValue>, TValue, InSetValidator<TValue>> InSet<TValue>(this NullableRequiredStateValidator<TValue> source, ISet<TValue> options)
 			=> source.Add(new InSetValidator<TValue>(options));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<TValue>, TValue, TValue>, Option<TValue>, TValue, InSetValidator<TValue>> InSet<TValue>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<TValue>, TValue, TValue>, Option<TValue>, TValue> source, ISet<TValue> options)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<TValue>, TSource, TValue>, Option<TValue>, TValue, InSetValidator<TValue>> InSet<TSource, TValue>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<TValue>, TSource, TValue>, Option<TValue>, TValue> source, ISet<TValue> options)
 			=> source.Add(new InSetValidator<TValue>(options));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<byte>, byte, byte>, Option<byte>, byte, MultipleOfValidator_Byte> MultipleOf(this NullableRequiredStateValidator<byte> source, byte divisor)
 			=> source.Add(new MultipleOfValidator_Byte(divisor));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<byte>, byte, byte>, Option<byte>, byte, MultipleOfValidator_Byte> MultipleOf(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<byte>, byte, byte>, Option<byte>, byte> source, byte divisor)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<byte>, TSource, byte>, Option<byte>, byte, MultipleOfValidator_Byte> MultipleOf<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<byte>, TSource, byte>, Option<byte>, byte> source, byte divisor)
 			=> source.Add(new MultipleOfValidator_Byte(divisor));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<sbyte>, sbyte, sbyte>, Option<sbyte>, sbyte, MultipleOfValidator_SByte> MultipleOf(this NullableRequiredStateValidator<sbyte> source, sbyte divisor)
 			=> source.Add(new MultipleOfValidator_SByte(divisor));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<sbyte>, sbyte, sbyte>, Option<sbyte>, sbyte, MultipleOfValidator_SByte> MultipleOf(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<sbyte>, sbyte, sbyte>, Option<sbyte>, sbyte> source, sbyte divisor)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<sbyte>, TSource, sbyte>, Option<sbyte>, sbyte, MultipleOfValidator_SByte> MultipleOf<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<sbyte>, TSource, sbyte>, Option<sbyte>, sbyte> source, sbyte divisor)
 			=> source.Add(new MultipleOfValidator_SByte(divisor));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<short>, short, short>, Option<short>, short, MultipleOfValidator_Int16> MultipleOf(this NullableRequiredStateValidator<short> source, short divisor)
 			=> source.Add(new MultipleOfValidator_Int16(divisor));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<short>, short, short>, Option<short>, short, MultipleOfValidator_Int16> MultipleOf(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<short>, short, short>, Option<short>, short> source, short divisor)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<short>, TSource, short>, Option<short>, short, MultipleOfValidator_Int16> MultipleOf<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<short>, TSource, short>, Option<short>, short> source, short divisor)
 			=> source.Add(new MultipleOfValidator_Int16(divisor));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<ushort>, ushort, ushort>, Option<ushort>, ushort, MultipleOfValidator_UInt16> MultipleOf(this NullableRequiredStateValidator<ushort> source, ushort divisor)
 			=> source.Add(new MultipleOfValidator_UInt16(divisor));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<ushort>, ushort, ushort>, Option<ushort>, ushort, MultipleOfValidator_UInt16> MultipleOf(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<ushort>, ushort, ushort>, Option<ushort>, ushort> source, ushort divisor)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<ushort>, TSource, ushort>, Option<ushort>, ushort, MultipleOfValidator_UInt16> MultipleOf<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<ushort>, TSource, ushort>, Option<ushort>, ushort> source, ushort divisor)
 			=> source.Add(new MultipleOfValidator_UInt16(divisor));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<int>, int, int>, Option<int>, int, MultipleOfValidator_Int32> MultipleOf(this NullableRequiredStateValidator<int> source, int divisor)
 			=> source.Add(new MultipleOfValidator_Int32(divisor));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<int>, int, int>, Option<int>, int, MultipleOfValidator_Int32> MultipleOf(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<int>, int, int>, Option<int>, int> source, int divisor)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<int>, TSource, int>, Option<int>, int, MultipleOfValidator_Int32> MultipleOf<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<int>, TSource, int>, Option<int>, int> source, int divisor)
 			=> source.Add(new MultipleOfValidator_Int32(divisor));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<uint>, uint, uint>, Option<uint>, uint, MultipleOfValidator_UInt32> MultipleOf(this NullableRequiredStateValidator<uint> source, uint divisor)
 			=> source.Add(new MultipleOfValidator_UInt32(divisor));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<uint>, uint, uint>, Option<uint>, uint, MultipleOfValidator_UInt32> MultipleOf(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<uint>, uint, uint>, Option<uint>, uint> source, uint divisor)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<uint>, TSource, uint>, Option<uint>, uint, MultipleOfValidator_UInt32> MultipleOf<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<uint>, TSource, uint>, Option<uint>, uint> source, uint divisor)
 			=> source.Add(new MultipleOfValidator_UInt32(divisor));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<long>, long, long>, Option<long>, long, MultipleOfValidator_Int64> MultipleOf(this NullableRequiredStateValidator<long> source, long divisor)
 			=> source.Add(new MultipleOfValidator_Int64(divisor));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<long>, long, long>, Option<long>, long, MultipleOfValidator_Int64> MultipleOf(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<long>, long, long>, Option<long>, long> source, long divisor)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<long>, TSource, long>, Option<long>, long, MultipleOfValidator_Int64> MultipleOf<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<long>, TSource, long>, Option<long>, long> source, long divisor)
 			=> source.Add(new MultipleOfValidator_Int64(divisor));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<ulong>, ulong, ulong>, Option<ulong>, ulong, MultipleOfValidator_UInt64> MultipleOf(this NullableRequiredStateValidator<ulong> source, ulong divisor)
 			=> source.Add(new MultipleOfValidator_UInt64(divisor));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<ulong>, ulong, ulong>, Option<ulong>, ulong, MultipleOfValidator_UInt64> MultipleOf(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<ulong>, ulong, ulong>, Option<ulong>, ulong> source, ulong divisor)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<ulong>, TSource, ulong>, Option<ulong>, ulong, MultipleOfValidator_UInt64> MultipleOf<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<ulong>, TSource, ulong>, Option<ulong>, ulong> source, ulong divisor)
 			=> source.Add(new MultipleOfValidator_UInt64(divisor));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<decimal>, decimal, decimal>, Option<decimal>, decimal, PrecisionValidator> Precision(this NullableRequiredStateValidator<decimal> source, decimal? minimumDecimalPlaces = null, decimal? maximumDecimalPlaces = null)
 			=> source.Add(new PrecisionValidator(minimumDecimalPlaces, maximumDecimalPlaces));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<decimal>, decimal, decimal>, Option<decimal>, decimal, PrecisionValidator> Precision(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<decimal>, decimal, decimal>, Option<decimal>, decimal> source, decimal? minimumDecimalPlaces = null, decimal? maximumDecimalPlaces = null)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<decimal>, TSource, decimal>, Option<decimal>, decimal, PrecisionValidator> Precision<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<decimal>, TSource, decimal>, Option<decimal>, decimal> source, decimal? minimumDecimalPlaces = null, decimal? maximumDecimalPlaces = null)
 			=> source.Add(new PrecisionValidator(minimumDecimalPlaces, maximumDecimalPlaces));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<byte>, byte, byte>, Option<byte>, byte, RangeValidator_Byte> GreaterThan(this NullableRequiredStateValidator<byte> source, byte value)
 			=> source.Add(new RangeValidator_Byte(value, null, null, null));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<byte>, byte, byte>, Option<byte>, byte, RangeValidator_Byte> GreaterThan(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<byte>, byte, byte>, Option<byte>, byte> source, byte value)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<byte>, TSource, byte>, Option<byte>, byte, RangeValidator_Byte> GreaterThan<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<byte>, TSource, byte>, Option<byte>, byte> source, byte value)
 			=> source.Add(new RangeValidator_Byte(value, null, null, null));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<byte>, byte, byte>, Option<byte>, byte, RangeValidator_Byte> GreaterThanOrEqualTo(this NullableRequiredStateValidator<byte> source, byte value)
 			=> source.Add(new RangeValidator_Byte(null, value, null, null));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<byte>, byte, byte>, Option<byte>, byte, RangeValidator_Byte> GreaterThanOrEqualTo(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<byte>, byte, byte>, Option<byte>, byte> source, byte value)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<byte>, TSource, byte>, Option<byte>, byte, RangeValidator_Byte> GreaterThanOrEqualTo<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<byte>, TSource, byte>, Option<byte>, byte> source, byte value)
 			=> source.Add(new RangeValidator_Byte(null, value, null, null));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<byte>, byte, byte>, Option<byte>, byte, RangeValidator_Byte> LessThan(this NullableRequiredStateValidator<byte> source, byte value)
 			=> source.Add(new RangeValidator_Byte(null, null, value, null));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<byte>, byte, byte>, Option<byte>, byte, RangeValidator_Byte> LessThan(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<byte>, byte, byte>, Option<byte>, byte> source, byte value)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<byte>, TSource, byte>, Option<byte>, byte, RangeValidator_Byte> LessThan<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<byte>, TSource, byte>, Option<byte>, byte> source, byte value)
 			=> source.Add(new RangeValidator_Byte(null, null, value, null));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<byte>, byte, byte>, Option<byte>, byte, RangeValidator_Byte> LessThanOrEqualTo(this NullableRequiredStateValidator<byte> source, byte value)
 			=> source.Add(new RangeValidator_Byte(null, null, null, value));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<byte>, byte, byte>, Option<byte>, byte, RangeValidator_Byte> LessThanOrEqualTo(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<byte>, byte, byte>, Option<byte>, byte> source, byte value)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<byte>, TSource, byte>, Option<byte>, byte, RangeValidator_Byte> LessThanOrEqualTo<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<byte>, TSource, byte>, Option<byte>, byte> source, byte value)
 			=> source.Add(new RangeValidator_Byte(null, null, null, value));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<byte>, byte, byte>, Option<byte>, byte, RangeValidator_Byte> InRange(this NullableRequiredStateValidator<byte> source, byte? greaterThan = null, byte? greaterThanOrEqualTo = null, byte? lessThan = null, byte? lessThanOrEqualTo = null)
 			=> source.Add(new RangeValidator_Byte(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<byte>, byte, byte>, Option<byte>, byte, RangeValidator_Byte> InRange(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<byte>, byte, byte>, Option<byte>, byte> source, byte? greaterThan = null, byte? greaterThanOrEqualTo = null, byte? lessThan = null, byte? lessThanOrEqualTo = null)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<byte>, TSource, byte>, Option<byte>, byte, RangeValidator_Byte> InRange<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<byte>, TSource, byte>, Option<byte>, byte> source, byte? greaterThan = null, byte? greaterThanOrEqualTo = null, byte? lessThan = null, byte? lessThanOrEqualTo = null)
 			=> source.Add(new RangeValidator_Byte(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<sbyte>, sbyte, sbyte>, Option<sbyte>, sbyte, RangeValidator_SByte> GreaterThan(this NullableRequiredStateValidator<sbyte> source, sbyte value)
 			=> source.Add(new RangeValidator_SByte(value, null, null, null));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<sbyte>, sbyte, sbyte>, Option<sbyte>, sbyte, RangeValidator_SByte> GreaterThan(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<sbyte>, sbyte, sbyte>, Option<sbyte>, sbyte> source, sbyte value)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<sbyte>, TSource, sbyte>, Option<sbyte>, sbyte, RangeValidator_SByte> GreaterThan<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<sbyte>, TSource, sbyte>, Option<sbyte>, sbyte> source, sbyte value)
 			=> source.Add(new RangeValidator_SByte(value, null, null, null));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<sbyte>, sbyte, sbyte>, Option<sbyte>, sbyte, RangeValidator_SByte> GreaterThanOrEqualTo(this NullableRequiredStateValidator<sbyte> source, sbyte value)
 			=> source.Add(new RangeValidator_SByte(null, value, null, null));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<sbyte>, sbyte, sbyte>, Option<sbyte>, sbyte, RangeValidator_SByte> GreaterThanOrEqualTo(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<sbyte>, sbyte, sbyte>, Option<sbyte>, sbyte> source, sbyte value)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<sbyte>, TSource, sbyte>, Option<sbyte>, sbyte, RangeValidator_SByte> GreaterThanOrEqualTo<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<sbyte>, TSource, sbyte>, Option<sbyte>, sbyte> source, sbyte value)
 			=> source.Add(new RangeValidator_SByte(null, value, null, null));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<sbyte>, sbyte, sbyte>, Option<sbyte>, sbyte, RangeValidator_SByte> LessThan(this NullableRequiredStateValidator<sbyte> source, sbyte value)
 			=> source.Add(new RangeValidator_SByte(null, null, value, null));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<sbyte>, sbyte, sbyte>, Option<sbyte>, sbyte, RangeValidator_SByte> LessThan(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<sbyte>, sbyte, sbyte>, Option<sbyte>, sbyte> source, sbyte value)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<sbyte>, TSource, sbyte>, Option<sbyte>, sbyte, RangeValidator_SByte> LessThan<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<sbyte>, TSource, sbyte>, Option<sbyte>, sbyte> source, sbyte value)
 			=> source.Add(new RangeValidator_SByte(null, null, value, null));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<sbyte>, sbyte, sbyte>, Option<sbyte>, sbyte, RangeValidator_SByte> LessThanOrEqualTo(this NullableRequiredStateValidator<sbyte> source, sbyte value)
 			=> source.Add(new RangeValidator_SByte(null, null, null, value));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<sbyte>, sbyte, sbyte>, Option<sbyte>, sbyte, RangeValidator_SByte> LessThanOrEqualTo(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<sbyte>, sbyte, sbyte>, Option<sbyte>, sbyte> source, sbyte value)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<sbyte>, TSource, sbyte>, Option<sbyte>, sbyte, RangeValidator_SByte> LessThanOrEqualTo<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<sbyte>, TSource, sbyte>, Option<sbyte>, sbyte> source, sbyte value)
 			=> source.Add(new RangeValidator_SByte(null, null, null, value));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<sbyte>, sbyte, sbyte>, Option<sbyte>, sbyte, RangeValidator_SByte> InRange(this NullableRequiredStateValidator<sbyte> source, sbyte? greaterThan = null, sbyte? greaterThanOrEqualTo = null, sbyte? lessThan = null, sbyte? lessThanOrEqualTo = null)
 			=> source.Add(new RangeValidator_SByte(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<sbyte>, sbyte, sbyte>, Option<sbyte>, sbyte, RangeValidator_SByte> InRange(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<sbyte>, sbyte, sbyte>, Option<sbyte>, sbyte> source, sbyte? greaterThan = null, sbyte? greaterThanOrEqualTo = null, sbyte? lessThan = null, sbyte? lessThanOrEqualTo = null)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<sbyte>, TSource, sbyte>, Option<sbyte>, sbyte, RangeValidator_SByte> InRange<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<sbyte>, TSource, sbyte>, Option<sbyte>, sbyte> source, sbyte? greaterThan = null, sbyte? greaterThanOrEqualTo = null, sbyte? lessThan = null, sbyte? lessThanOrEqualTo = null)
 			=> source.Add(new RangeValidator_SByte(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<short>, short, short>, Option<short>, short, RangeValidator_Int16> GreaterThan(this NullableRequiredStateValidator<short> source, short value)
 			=> source.Add(new RangeValidator_Int16(value, null, null, null));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<short>, short, short>, Option<short>, short, RangeValidator_Int16> GreaterThan(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<short>, short, short>, Option<short>, short> source, short value)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<short>, TSource, short>, Option<short>, short, RangeValidator_Int16> GreaterThan<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<short>, TSource, short>, Option<short>, short> source, short value)
 			=> source.Add(new RangeValidator_Int16(value, null, null, null));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<short>, short, short>, Option<short>, short, RangeValidator_Int16> GreaterThanOrEqualTo(this NullableRequiredStateValidator<short> source, short value)
 			=> source.Add(new RangeValidator_Int16(null, value, null, null));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<short>, short, short>, Option<short>, short, RangeValidator_Int16> GreaterThanOrEqualTo(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<short>, short, short>, Option<short>, short> source, short value)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<short>, TSource, short>, Option<short>, short, RangeValidator_Int16> GreaterThanOrEqualTo<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<short>, TSource, short>, Option<short>, short> source, short value)
 			=> source.Add(new RangeValidator_Int16(null, value, null, null));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<short>, short, short>, Option<short>, short, RangeValidator_Int16> LessThan(this NullableRequiredStateValidator<short> source, short value)
 			=> source.Add(new RangeValidator_Int16(null, null, value, null));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<short>, short, short>, Option<short>, short, RangeValidator_Int16> LessThan(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<short>, short, short>, Option<short>, short> source, short value)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<short>, TSource, short>, Option<short>, short, RangeValidator_Int16> LessThan<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<short>, TSource, short>, Option<short>, short> source, short value)
 			=> source.Add(new RangeValidator_Int16(null, null, value, null));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<short>, short, short>, Option<short>, short, RangeValidator_Int16> LessThanOrEqualTo(this NullableRequiredStateValidator<short> source, short value)
 			=> source.Add(new RangeValidator_Int16(null, null, null, value));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<short>, short, short>, Option<short>, short, RangeValidator_Int16> LessThanOrEqualTo(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<short>, short, short>, Option<short>, short> source, short value)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<short>, TSource, short>, Option<short>, short, RangeValidator_Int16> LessThanOrEqualTo<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<short>, TSource, short>, Option<short>, short> source, short value)
 			=> source.Add(new RangeValidator_Int16(null, null, null, value));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<short>, short, short>, Option<short>, short, RangeValidator_Int16> InRange(this NullableRequiredStateValidator<short> source, short? greaterThan = null, short? greaterThanOrEqualTo = null, short? lessThan = null, short? lessThanOrEqualTo = null)
 			=> source.Add(new RangeValidator_Int16(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<short>, short, short>, Option<short>, short, RangeValidator_Int16> InRange(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<short>, short, short>, Option<short>, short> source, short? greaterThan = null, short? greaterThanOrEqualTo = null, short? lessThan = null, short? lessThanOrEqualTo = null)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<short>, TSource, short>, Option<short>, short, RangeValidator_Int16> InRange<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<short>, TSource, short>, Option<short>, short> source, short? greaterThan = null, short? greaterThanOrEqualTo = null, short? lessThan = null, short? lessThanOrEqualTo = null)
 			=> source.Add(new RangeValidator_Int16(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<ushort>, ushort, ushort>, Option<ushort>, ushort, RangeValidator_UInt16> GreaterThan(this NullableRequiredStateValidator<ushort> source, ushort value)
 			=> source.Add(new RangeValidator_UInt16(value, null, null, null));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<ushort>, ushort, ushort>, Option<ushort>, ushort, RangeValidator_UInt16> GreaterThan(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<ushort>, ushort, ushort>, Option<ushort>, ushort> source, ushort value)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<ushort>, TSource, ushort>, Option<ushort>, ushort, RangeValidator_UInt16> GreaterThan<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<ushort>, TSource, ushort>, Option<ushort>, ushort> source, ushort value)
 			=> source.Add(new RangeValidator_UInt16(value, null, null, null));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<ushort>, ushort, ushort>, Option<ushort>, ushort, RangeValidator_UInt16> GreaterThanOrEqualTo(this NullableRequiredStateValidator<ushort> source, ushort value)
 			=> source.Add(new RangeValidator_UInt16(null, value, null, null));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<ushort>, ushort, ushort>, Option<ushort>, ushort, RangeValidator_UInt16> GreaterThanOrEqualTo(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<ushort>, ushort, ushort>, Option<ushort>, ushort> source, ushort value)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<ushort>, TSource, ushort>, Option<ushort>, ushort, RangeValidator_UInt16> GreaterThanOrEqualTo<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<ushort>, TSource, ushort>, Option<ushort>, ushort> source, ushort value)
 			=> source.Add(new RangeValidator_UInt16(null, value, null, null));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<ushort>, ushort, ushort>, Option<ushort>, ushort, RangeValidator_UInt16> LessThan(this NullableRequiredStateValidator<ushort> source, ushort value)
 			=> source.Add(new RangeValidator_UInt16(null, null, value, null));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<ushort>, ushort, ushort>, Option<ushort>, ushort, RangeValidator_UInt16> LessThan(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<ushort>, ushort, ushort>, Option<ushort>, ushort> source, ushort value)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<ushort>, TSource, ushort>, Option<ushort>, ushort, RangeValidator_UInt16> LessThan<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<ushort>, TSource, ushort>, Option<ushort>, ushort> source, ushort value)
 			=> source.Add(new RangeValidator_UInt16(null, null, value, null));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<ushort>, ushort, ushort>, Option<ushort>, ushort, RangeValidator_UInt16> LessThanOrEqualTo(this NullableRequiredStateValidator<ushort> source, ushort value)
 			=> source.Add(new RangeValidator_UInt16(null, null, null, value));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<ushort>, ushort, ushort>, Option<ushort>, ushort, RangeValidator_UInt16> LessThanOrEqualTo(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<ushort>, ushort, ushort>, Option<ushort>, ushort> source, ushort value)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<ushort>, TSource, ushort>, Option<ushort>, ushort, RangeValidator_UInt16> LessThanOrEqualTo<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<ushort>, TSource, ushort>, Option<ushort>, ushort> source, ushort value)
 			=> source.Add(new RangeValidator_UInt16(null, null, null, value));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<ushort>, ushort, ushort>, Option<ushort>, ushort, RangeValidator_UInt16> InRange(this NullableRequiredStateValidator<ushort> source, ushort? greaterThan = null, ushort? greaterThanOrEqualTo = null, ushort? lessThan = null, ushort? lessThanOrEqualTo = null)
 			=> source.Add(new RangeValidator_UInt16(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<ushort>, ushort, ushort>, Option<ushort>, ushort, RangeValidator_UInt16> InRange(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<ushort>, ushort, ushort>, Option<ushort>, ushort> source, ushort? greaterThan = null, ushort? greaterThanOrEqualTo = null, ushort? lessThan = null, ushort? lessThanOrEqualTo = null)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<ushort>, TSource, ushort>, Option<ushort>, ushort, RangeValidator_UInt16> InRange<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<ushort>, TSource, ushort>, Option<ushort>, ushort> source, ushort? greaterThan = null, ushort? greaterThanOrEqualTo = null, ushort? lessThan = null, ushort? lessThanOrEqualTo = null)
 			=> source.Add(new RangeValidator_UInt16(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<int>, int, int>, Option<int>, int, RangeValidator_Int32> GreaterThan(this NullableRequiredStateValidator<int> source, int value)
 			=> source.Add(new RangeValidator_Int32(value, null, null, null));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<int>, int, int>, Option<int>, int, RangeValidator_Int32> GreaterThan(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<int>, int, int>, Option<int>, int> source, int value)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<int>, TSource, int>, Option<int>, int, RangeValidator_Int32> GreaterThan<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<int>, TSource, int>, Option<int>, int> source, int value)
 			=> source.Add(new RangeValidator_Int32(value, null, null, null));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<int>, int, int>, Option<int>, int, RangeValidator_Int32> GreaterThanOrEqualTo(this NullableRequiredStateValidator<int> source, int value)
 			=> source.Add(new RangeValidator_Int32(null, value, null, null));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<int>, int, int>, Option<int>, int, RangeValidator_Int32> GreaterThanOrEqualTo(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<int>, int, int>, Option<int>, int> source, int value)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<int>, TSource, int>, Option<int>, int, RangeValidator_Int32> GreaterThanOrEqualTo<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<int>, TSource, int>, Option<int>, int> source, int value)
 			=> source.Add(new RangeValidator_Int32(null, value, null, null));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<int>, int, int>, Option<int>, int, RangeValidator_Int32> LessThan(this NullableRequiredStateValidator<int> source, int value)
 			=> source.Add(new RangeValidator_Int32(null, null, value, null));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<int>, int, int>, Option<int>, int, RangeValidator_Int32> LessThan(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<int>, int, int>, Option<int>, int> source, int value)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<int>, TSource, int>, Option<int>, int, RangeValidator_Int32> LessThan<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<int>, TSource, int>, Option<int>, int> source, int value)
 			=> source.Add(new RangeValidator_Int32(null, null, value, null));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<int>, int, int>, Option<int>, int, RangeValidator_Int32> LessThanOrEqualTo(this NullableRequiredStateValidator<int> source, int value)
 			=> source.Add(new RangeValidator_Int32(null, null, null, value));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<int>, int, int>, Option<int>, int, RangeValidator_Int32> LessThanOrEqualTo(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<int>, int, int>, Option<int>, int> source, int value)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<int>, TSource, int>, Option<int>, int, RangeValidator_Int32> LessThanOrEqualTo<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<int>, TSource, int>, Option<int>, int> source, int value)
 			=> source.Add(new RangeValidator_Int32(null, null, null, value));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<int>, int, int>, Option<int>, int, RangeValidator_Int32> InRange(this NullableRequiredStateValidator<int> source, int? greaterThan = null, int? greaterThanOrEqualTo = null, int? lessThan = null, int? lessThanOrEqualTo = null)
 			=> source.Add(new RangeValidator_Int32(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<int>, int, int>, Option<int>, int, RangeValidator_Int32> InRange(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<int>, int, int>, Option<int>, int> source, int? greaterThan = null, int? greaterThanOrEqualTo = null, int? lessThan = null, int? lessThanOrEqualTo = null)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<int>, TSource, int>, Option<int>, int, RangeValidator_Int32> InRange<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<int>, TSource, int>, Option<int>, int> source, int? greaterThan = null, int? greaterThanOrEqualTo = null, int? lessThan = null, int? lessThanOrEqualTo = null)
 			=> source.Add(new RangeValidator_Int32(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<uint>, uint, uint>, Option<uint>, uint, RangeValidator_UInt32> GreaterThan(this NullableRequiredStateValidator<uint> source, uint value)
 			=> source.Add(new RangeValidator_UInt32(value, null, null, null));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<uint>, uint, uint>, Option<uint>, uint, RangeValidator_UInt32> GreaterThan(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<uint>, uint, uint>, Option<uint>, uint> source, uint value)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<uint>, TSource, uint>, Option<uint>, uint, RangeValidator_UInt32> GreaterThan<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<uint>, TSource, uint>, Option<uint>, uint> source, uint value)
 			=> source.Add(new RangeValidator_UInt32(value, null, null, null));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<uint>, uint, uint>, Option<uint>, uint, RangeValidator_UInt32> GreaterThanOrEqualTo(this NullableRequiredStateValidator<uint> source, uint value)
 			=> source.Add(new RangeValidator_UInt32(null, value, null, null));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<uint>, uint, uint>, Option<uint>, uint, RangeValidator_UInt32> GreaterThanOrEqualTo(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<uint>, uint, uint>, Option<uint>, uint> source, uint value)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<uint>, TSource, uint>, Option<uint>, uint, RangeValidator_UInt32> GreaterThanOrEqualTo<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<uint>, TSource, uint>, Option<uint>, uint> source, uint value)
 			=> source.Add(new RangeValidator_UInt32(null, value, null, null));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<uint>, uint, uint>, Option<uint>, uint, RangeValidator_UInt32> LessThan(this NullableRequiredStateValidator<uint> source, uint value)
 			=> source.Add(new RangeValidator_UInt32(null, null, value, null));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<uint>, uint, uint>, Option<uint>, uint, RangeValidator_UInt32> LessThan(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<uint>, uint, uint>, Option<uint>, uint> source, uint value)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<uint>, TSource, uint>, Option<uint>, uint, RangeValidator_UInt32> LessThan<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<uint>, TSource, uint>, Option<uint>, uint> source, uint value)
 			=> source.Add(new RangeValidator_UInt32(null, null, value, null));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<uint>, uint, uint>, Option<uint>, uint, RangeValidator_UInt32> LessThanOrEqualTo(this NullableRequiredStateValidator<uint> source, uint value)
 			=> source.Add(new RangeValidator_UInt32(null, null, null, value));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<uint>, uint, uint>, Option<uint>, uint, RangeValidator_UInt32> LessThanOrEqualTo(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<uint>, uint, uint>, Option<uint>, uint> source, uint value)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<uint>, TSource, uint>, Option<uint>, uint, RangeValidator_UInt32> LessThanOrEqualTo<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<uint>, TSource, uint>, Option<uint>, uint> source, uint value)
 			=> source.Add(new RangeValidator_UInt32(null, null, null, value));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<uint>, uint, uint>, Option<uint>, uint, RangeValidator_UInt32> InRange(this NullableRequiredStateValidator<uint> source, uint? greaterThan = null, uint? greaterThanOrEqualTo = null, uint? lessThan = null, uint? lessThanOrEqualTo = null)
 			=> source.Add(new RangeValidator_UInt32(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<uint>, uint, uint>, Option<uint>, uint, RangeValidator_UInt32> InRange(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<uint>, uint, uint>, Option<uint>, uint> source, uint? greaterThan = null, uint? greaterThanOrEqualTo = null, uint? lessThan = null, uint? lessThanOrEqualTo = null)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<uint>, TSource, uint>, Option<uint>, uint, RangeValidator_UInt32> InRange<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<uint>, TSource, uint>, Option<uint>, uint> source, uint? greaterThan = null, uint? greaterThanOrEqualTo = null, uint? lessThan = null, uint? lessThanOrEqualTo = null)
 			=> source.Add(new RangeValidator_UInt32(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<long>, long, long>, Option<long>, long, RangeValidator_Int64> GreaterThan(this NullableRequiredStateValidator<long> source, long value)
 			=> source.Add(new RangeValidator_Int64(value, null, null, null));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<long>, long, long>, Option<long>, long, RangeValidator_Int64> GreaterThan(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<long>, long, long>, Option<long>, long> source, long value)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<long>, TSource, long>, Option<long>, long, RangeValidator_Int64> GreaterThan<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<long>, TSource, long>, Option<long>, long> source, long value)
 			=> source.Add(new RangeValidator_Int64(value, null, null, null));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<long>, long, long>, Option<long>, long, RangeValidator_Int64> GreaterThanOrEqualTo(this NullableRequiredStateValidator<long> source, long value)
 			=> source.Add(new RangeValidator_Int64(null, value, null, null));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<long>, long, long>, Option<long>, long, RangeValidator_Int64> GreaterThanOrEqualTo(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<long>, long, long>, Option<long>, long> source, long value)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<long>, TSource, long>, Option<long>, long, RangeValidator_Int64> GreaterThanOrEqualTo<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<long>, TSource, long>, Option<long>, long> source, long value)
 			=> source.Add(new RangeValidator_Int64(null, value, null, null));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<long>, long, long>, Option<long>, long, RangeValidator_Int64> LessThan(this NullableRequiredStateValidator<long> source, long value)
 			=> source.Add(new RangeValidator_Int64(null, null, value, null));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<long>, long, long>, Option<long>, long, RangeValidator_Int64> LessThan(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<long>, long, long>, Option<long>, long> source, long value)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<long>, TSource, long>, Option<long>, long, RangeValidator_Int64> LessThan<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<long>, TSource, long>, Option<long>, long> source, long value)
 			=> source.Add(new RangeValidator_Int64(null, null, value, null));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<long>, long, long>, Option<long>, long, RangeValidator_Int64> LessThanOrEqualTo(this NullableRequiredStateValidator<long> source, long value)
 			=> source.Add(new RangeValidator_Int64(null, null, null, value));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<long>, long, long>, Option<long>, long, RangeValidator_Int64> LessThanOrEqualTo(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<long>, long, long>, Option<long>, long> source, long value)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<long>, TSource, long>, Option<long>, long, RangeValidator_Int64> LessThanOrEqualTo<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<long>, TSource, long>, Option<long>, long> source, long value)
 			=> source.Add(new RangeValidator_Int64(null, null, null, value));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<long>, long, long>, Option<long>, long, RangeValidator_Int64> InRange(this NullableRequiredStateValidator<long> source, long? greaterThan = null, long? greaterThanOrEqualTo = null, long? lessThan = null, long? lessThanOrEqualTo = null)
 			=> source.Add(new RangeValidator_Int64(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<long>, long, long>, Option<long>, long, RangeValidator_Int64> InRange(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<long>, long, long>, Option<long>, long> source, long? greaterThan = null, long? greaterThanOrEqualTo = null, long? lessThan = null, long? lessThanOrEqualTo = null)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<long>, TSource, long>, Option<long>, long, RangeValidator_Int64> InRange<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<long>, TSource, long>, Option<long>, long> source, long? greaterThan = null, long? greaterThanOrEqualTo = null, long? lessThan = null, long? lessThanOrEqualTo = null)
 			=> source.Add(new RangeValidator_Int64(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<ulong>, ulong, ulong>, Option<ulong>, ulong, RangeValidator_UInt64> GreaterThan(this NullableRequiredStateValidator<ulong> source, ulong value)
 			=> source.Add(new RangeValidator_UInt64(value, null, null, null));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<ulong>, ulong, ulong>, Option<ulong>, ulong, RangeValidator_UInt64> GreaterThan(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<ulong>, ulong, ulong>, Option<ulong>, ulong> source, ulong value)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<ulong>, TSource, ulong>, Option<ulong>, ulong, RangeValidator_UInt64> GreaterThan<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<ulong>, TSource, ulong>, Option<ulong>, ulong> source, ulong value)
 			=> source.Add(new RangeValidator_UInt64(value, null, null, null));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<ulong>, ulong, ulong>, Option<ulong>, ulong, RangeValidator_UInt64> GreaterThanOrEqualTo(this NullableRequiredStateValidator<ulong> source, ulong value)
 			=> source.Add(new RangeValidator_UInt64(null, value, null, null));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<ulong>, ulong, ulong>, Option<ulong>, ulong, RangeValidator_UInt64> GreaterThanOrEqualTo(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<ulong>, ulong, ulong>, Option<ulong>, ulong> source, ulong value)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<ulong>, TSource, ulong>, Option<ulong>, ulong, RangeValidator_UInt64> GreaterThanOrEqualTo<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<ulong>, TSource, ulong>, Option<ulong>, ulong> source, ulong value)
 			=> source.Add(new RangeValidator_UInt64(null, value, null, null));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<ulong>, ulong, ulong>, Option<ulong>, ulong, RangeValidator_UInt64> LessThan(this NullableRequiredStateValidator<ulong> source, ulong value)
 			=> source.Add(new RangeValidator_UInt64(null, null, value, null));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<ulong>, ulong, ulong>, Option<ulong>, ulong, RangeValidator_UInt64> LessThan(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<ulong>, ulong, ulong>, Option<ulong>, ulong> source, ulong value)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<ulong>, TSource, ulong>, Option<ulong>, ulong, RangeValidator_UInt64> LessThan<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<ulong>, TSource, ulong>, Option<ulong>, ulong> source, ulong value)
 			=> source.Add(new RangeValidator_UInt64(null, null, value, null));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<ulong>, ulong, ulong>, Option<ulong>, ulong, RangeValidator_UInt64> LessThanOrEqualTo(this NullableRequiredStateValidator<ulong> source, ulong value)
 			=> source.Add(new RangeValidator_UInt64(null, null, null, value));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<ulong>, ulong, ulong>, Option<ulong>, ulong, RangeValidator_UInt64> LessThanOrEqualTo(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<ulong>, ulong, ulong>, Option<ulong>, ulong> source, ulong value)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<ulong>, TSource, ulong>, Option<ulong>, ulong, RangeValidator_UInt64> LessThanOrEqualTo<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<ulong>, TSource, ulong>, Option<ulong>, ulong> source, ulong value)
 			=> source.Add(new RangeValidator_UInt64(null, null, null, value));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<ulong>, ulong, ulong>, Option<ulong>, ulong, RangeValidator_UInt64> InRange(this NullableRequiredStateValidator<ulong> source, ulong? greaterThan = null, ulong? greaterThanOrEqualTo = null, ulong? lessThan = null, ulong? lessThanOrEqualTo = null)
 			=> source.Add(new RangeValidator_UInt64(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<ulong>, ulong, ulong>, Option<ulong>, ulong, RangeValidator_UInt64> InRange(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<ulong>, ulong, ulong>, Option<ulong>, ulong> source, ulong? greaterThan = null, ulong? greaterThanOrEqualTo = null, ulong? lessThan = null, ulong? lessThanOrEqualTo = null)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<ulong>, TSource, ulong>, Option<ulong>, ulong, RangeValidator_UInt64> InRange<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<ulong>, TSource, ulong>, Option<ulong>, ulong> source, ulong? greaterThan = null, ulong? greaterThanOrEqualTo = null, ulong? lessThan = null, ulong? lessThanOrEqualTo = null)
 			=> source.Add(new RangeValidator_UInt64(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<float>, float, float>, Option<float>, float, RangeValidator_Single> GreaterThan(this NullableRequiredStateValidator<float> source, float value)
 			=> source.Add(new RangeValidator_Single(value, null, null, null));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<float>, float, float>, Option<float>, float, RangeValidator_Single> GreaterThan(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<float>, float, float>, Option<float>, float> source, float value)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<float>, TSource, float>, Option<float>, float, RangeValidator_Single> GreaterThan<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<float>, TSource, float>, Option<float>, float> source, float value)
 			=> source.Add(new RangeValidator_Single(value, null, null, null));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<float>, float, float>, Option<float>, float, RangeValidator_Single> GreaterThanOrEqualTo(this NullableRequiredStateValidator<float> source, float value)
 			=> source.Add(new RangeValidator_Single(null, value, null, null));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<float>, float, float>, Option<float>, float, RangeValidator_Single> GreaterThanOrEqualTo(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<float>, float, float>, Option<float>, float> source, float value)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<float>, TSource, float>, Option<float>, float, RangeValidator_Single> GreaterThanOrEqualTo<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<float>, TSource, float>, Option<float>, float> source, float value)
 			=> source.Add(new RangeValidator_Single(null, value, null, null));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<float>, float, float>, Option<float>, float, RangeValidator_Single> LessThan(this NullableRequiredStateValidator<float> source, float value)
 			=> source.Add(new RangeValidator_Single(null, null, value, null));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<float>, float, float>, Option<float>, float, RangeValidator_Single> LessThan(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<float>, float, float>, Option<float>, float> source, float value)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<float>, TSource, float>, Option<float>, float, RangeValidator_Single> LessThan<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<float>, TSource, float>, Option<float>, float> source, float value)
 			=> source.Add(new RangeValidator_Single(null, null, value, null));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<float>, float, float>, Option<float>, float, RangeValidator_Single> LessThanOrEqualTo(this NullableRequiredStateValidator<float> source, float value)
 			=> source.Add(new RangeValidator_Single(null, null, null, value));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<float>, float, float>, Option<float>, float, RangeValidator_Single> LessThanOrEqualTo(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<float>, float, float>, Option<float>, float> source, float value)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<float>, TSource, float>, Option<float>, float, RangeValidator_Single> LessThanOrEqualTo<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<float>, TSource, float>, Option<float>, float> source, float value)
 			=> source.Add(new RangeValidator_Single(null, null, null, value));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<float>, float, float>, Option<float>, float, RangeValidator_Single> InRange(this NullableRequiredStateValidator<float> source, float? greaterThan = null, float? greaterThanOrEqualTo = null, float? lessThan = null, float? lessThanOrEqualTo = null)
 			=> source.Add(new RangeValidator_Single(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<float>, float, float>, Option<float>, float, RangeValidator_Single> InRange(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<float>, float, float>, Option<float>, float> source, float? greaterThan = null, float? greaterThanOrEqualTo = null, float? lessThan = null, float? lessThanOrEqualTo = null)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<float>, TSource, float>, Option<float>, float, RangeValidator_Single> InRange<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<float>, TSource, float>, Option<float>, float> source, float? greaterThan = null, float? greaterThanOrEqualTo = null, float? lessThan = null, float? lessThanOrEqualTo = null)
 			=> source.Add(new RangeValidator_Single(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<double>, double, double>, Option<double>, double, RangeValidator_Double> GreaterThan(this NullableRequiredStateValidator<double> source, double value)
 			=> source.Add(new RangeValidator_Double(value, null, null, null));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<double>, double, double>, Option<double>, double, RangeValidator_Double> GreaterThan(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<double>, double, double>, Option<double>, double> source, double value)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<double>, TSource, double>, Option<double>, double, RangeValidator_Double> GreaterThan<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<double>, TSource, double>, Option<double>, double> source, double value)
 			=> source.Add(new RangeValidator_Double(value, null, null, null));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<double>, double, double>, Option<double>, double, RangeValidator_Double> GreaterThanOrEqualTo(this NullableRequiredStateValidator<double> source, double value)
 			=> source.Add(new RangeValidator_Double(null, value, null, null));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<double>, double, double>, Option<double>, double, RangeValidator_Double> GreaterThanOrEqualTo(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<double>, double, double>, Option<double>, double> source, double value)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<double>, TSource, double>, Option<double>, double, RangeValidator_Double> GreaterThanOrEqualTo<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<double>, TSource, double>, Option<double>, double> source, double value)
 			=> source.Add(new RangeValidator_Double(null, value, null, null));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<double>, double, double>, Option<double>, double, RangeValidator_Double> LessThan(this NullableRequiredStateValidator<double> source, double value)
 			=> source.Add(new RangeValidator_Double(null, null, value, null));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<double>, double, double>, Option<double>, double, RangeValidator_Double> LessThan(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<double>, double, double>, Option<double>, double> source, double value)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<double>, TSource, double>, Option<double>, double, RangeValidator_Double> LessThan<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<double>, TSource, double>, Option<double>, double> source, double value)
 			=> source.Add(new RangeValidator_Double(null, null, value, null));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<double>, double, double>, Option<double>, double, RangeValidator_Double> LessThanOrEqualTo(this NullableRequiredStateValidator<double> source, double value)
 			=> source.Add(new RangeValidator_Double(null, null, null, value));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<double>, double, double>, Option<double>, double, RangeValidator_Double> LessThanOrEqualTo(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<double>, double, double>, Option<double>, double> source, double value)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<double>, TSource, double>, Option<double>, double, RangeValidator_Double> LessThanOrEqualTo<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<double>, TSource, double>, Option<double>, double> source, double value)
 			=> source.Add(new RangeValidator_Double(null, null, null, value));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<double>, double, double>, Option<double>, double, RangeValidator_Double> InRange(this NullableRequiredStateValidator<double> source, double? greaterThan = null, double? greaterThanOrEqualTo = null, double? lessThan = null, double? lessThanOrEqualTo = null)
 			=> source.Add(new RangeValidator_Double(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<double>, double, double>, Option<double>, double, RangeValidator_Double> InRange(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<double>, double, double>, Option<double>, double> source, double? greaterThan = null, double? greaterThanOrEqualTo = null, double? lessThan = null, double? lessThanOrEqualTo = null)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<double>, TSource, double>, Option<double>, double, RangeValidator_Double> InRange<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<double>, TSource, double>, Option<double>, double> source, double? greaterThan = null, double? greaterThanOrEqualTo = null, double? lessThan = null, double? lessThanOrEqualTo = null)
 			=> source.Add(new RangeValidator_Double(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<decimal>, decimal, decimal>, Option<decimal>, decimal, RangeValidator_Decimal> GreaterThan(this NullableRequiredStateValidator<decimal> source, decimal value)
 			=> source.Add(new RangeValidator_Decimal(value, null, null, null));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<decimal>, decimal, decimal>, Option<decimal>, decimal, RangeValidator_Decimal> GreaterThan(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<decimal>, decimal, decimal>, Option<decimal>, decimal> source, decimal value)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<decimal>, TSource, decimal>, Option<decimal>, decimal, RangeValidator_Decimal> GreaterThan<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<decimal>, TSource, decimal>, Option<decimal>, decimal> source, decimal value)
 			=> source.Add(new RangeValidator_Decimal(value, null, null, null));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<decimal>, decimal, decimal>, Option<decimal>, decimal, RangeValidator_Decimal> GreaterThanOrEqualTo(this NullableRequiredStateValidator<decimal> source, decimal value)
 			=> source.Add(new RangeValidator_Decimal(null, value, null, null));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<decimal>, decimal, decimal>, Option<decimal>, decimal, RangeValidator_Decimal> GreaterThanOrEqualTo(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<decimal>, decimal, decimal>, Option<decimal>, decimal> source, decimal value)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<decimal>, TSource, decimal>, Option<decimal>, decimal, RangeValidator_Decimal> GreaterThanOrEqualTo<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<decimal>, TSource, decimal>, Option<decimal>, decimal> source, decimal value)
 			=> source.Add(new RangeValidator_Decimal(null, value, null, null));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<decimal>, decimal, decimal>, Option<decimal>, decimal, RangeValidator_Decimal> LessThan(this NullableRequiredStateValidator<decimal> source, decimal value)
 			=> source.Add(new RangeValidator_Decimal(null, null, value, null));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<decimal>, decimal, decimal>, Option<decimal>, decimal, RangeValidator_Decimal> LessThan(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<decimal>, decimal, decimal>, Option<decimal>, decimal> source, decimal value)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<decimal>, TSource, decimal>, Option<decimal>, decimal, RangeValidator_Decimal> LessThan<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<decimal>, TSource, decimal>, Option<decimal>, decimal> source, decimal value)
 			=> source.Add(new RangeValidator_Decimal(null, null, value, null));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<decimal>, decimal, decimal>, Option<decimal>, decimal, RangeValidator_Decimal> LessThanOrEqualTo(this NullableRequiredStateValidator<decimal> source, decimal value)
 			=> source.Add(new RangeValidator_Decimal(null, null, null, value));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<decimal>, decimal, decimal>, Option<decimal>, decimal, RangeValidator_Decimal> LessThanOrEqualTo(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<decimal>, decimal, decimal>, Option<decimal>, decimal> source, decimal value)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<decimal>, TSource, decimal>, Option<decimal>, decimal, RangeValidator_Decimal> LessThanOrEqualTo<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<decimal>, TSource, decimal>, Option<decimal>, decimal> source, decimal value)
 			=> source.Add(new RangeValidator_Decimal(null, null, null, value));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<decimal>, decimal, decimal>, Option<decimal>, decimal, RangeValidator_Decimal> InRange(this NullableRequiredStateValidator<decimal> source, decimal? greaterThan = null, decimal? greaterThanOrEqualTo = null, decimal? lessThan = null, decimal? lessThanOrEqualTo = null)
 			=> source.Add(new RangeValidator_Decimal(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<decimal>, decimal, decimal>, Option<decimal>, decimal, RangeValidator_Decimal> InRange(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<decimal>, decimal, decimal>, Option<decimal>, decimal> source, decimal? greaterThan = null, decimal? greaterThanOrEqualTo = null, decimal? lessThan = null, decimal? lessThanOrEqualTo = null)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<decimal>, TSource, decimal>, Option<decimal>, decimal, RangeValidator_Decimal> InRange<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<decimal>, TSource, decimal>, Option<decimal>, decimal> source, decimal? greaterThan = null, decimal? greaterThanOrEqualTo = null, decimal? lessThan = null, decimal? lessThanOrEqualTo = null)
 			=> source.Add(new RangeValidator_Decimal(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<DateTime>, DateTime, DateTime>, Option<DateTime>, DateTime, RangeValidator_DateTime> GreaterThan(this NullableRequiredStateValidator<DateTime> source, DateTime value)
 			=> source.Add(new RangeValidator_DateTime(value, null, null, null));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<DateTime>, DateTime, DateTime>, Option<DateTime>, DateTime, RangeValidator_DateTime> GreaterThan(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<DateTime>, DateTime, DateTime>, Option<DateTime>, DateTime> source, DateTime value)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<DateTime>, TSource, DateTime>, Option<DateTime>, DateTime, RangeValidator_DateTime> GreaterThan<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<DateTime>, TSource, DateTime>, Option<DateTime>, DateTime> source, DateTime value)
 			=> source.Add(new RangeValidator_DateTime(value, null, null, null));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<DateTime>, DateTime, DateTime>, Option<DateTime>, DateTime, RangeValidator_DateTime> GreaterThanOrEqualTo(this NullableRequiredStateValidator<DateTime> source, DateTime value)
 			=> source.Add(new RangeValidator_DateTime(null, value, null, null));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<DateTime>, DateTime, DateTime>, Option<DateTime>, DateTime, RangeValidator_DateTime> GreaterThanOrEqualTo(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<DateTime>, DateTime, DateTime>, Option<DateTime>, DateTime> source, DateTime value)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<DateTime>, TSource, DateTime>, Option<DateTime>, DateTime, RangeValidator_DateTime> GreaterThanOrEqualTo<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<DateTime>, TSource, DateTime>, Option<DateTime>, DateTime> source, DateTime value)
 			=> source.Add(new RangeValidator_DateTime(null, value, null, null));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<DateTime>, DateTime, DateTime>, Option<DateTime>, DateTime, RangeValidator_DateTime> LessThan(this NullableRequiredStateValidator<DateTime> source, DateTime value)
 			=> source.Add(new RangeValidator_DateTime(null, null, value, null));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<DateTime>, DateTime, DateTime>, Option<DateTime>, DateTime, RangeValidator_DateTime> LessThan(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<DateTime>, DateTime, DateTime>, Option<DateTime>, DateTime> source, DateTime value)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<DateTime>, TSource, DateTime>, Option<DateTime>, DateTime, RangeValidator_DateTime> LessThan<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<DateTime>, TSource, DateTime>, Option<DateTime>, DateTime> source, DateTime value)
 			=> source.Add(new RangeValidator_DateTime(null, null, value, null));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<DateTime>, DateTime, DateTime>, Option<DateTime>, DateTime, RangeValidator_DateTime> LessThanOrEqualTo(this NullableRequiredStateValidator<DateTime> source, DateTime value)
 			=> source.Add(new RangeValidator_DateTime(null, null, null, value));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<DateTime>, DateTime, DateTime>, Option<DateTime>, DateTime, RangeValidator_DateTime> LessThanOrEqualTo(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<DateTime>, DateTime, DateTime>, Option<DateTime>, DateTime> source, DateTime value)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<DateTime>, TSource, DateTime>, Option<DateTime>, DateTime, RangeValidator_DateTime> LessThanOrEqualTo<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<DateTime>, TSource, DateTime>, Option<DateTime>, DateTime> source, DateTime value)
 			=> source.Add(new RangeValidator_DateTime(null, null, null, value));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<DateTime>, DateTime, DateTime>, Option<DateTime>, DateTime, RangeValidator_DateTime> InRange(this NullableRequiredStateValidator<DateTime> source, DateTime? greaterThan = null, DateTime? greaterThanOrEqualTo = null, DateTime? lessThan = null, DateTime? lessThanOrEqualTo = null)
 			=> source.Add(new RangeValidator_DateTime(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<DateTime>, DateTime, DateTime>, Option<DateTime>, DateTime, RangeValidator_DateTime> InRange(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<DateTime>, DateTime, DateTime>, Option<DateTime>, DateTime> source, DateTime? greaterThan = null, DateTime? greaterThanOrEqualTo = null, DateTime? lessThan = null, DateTime? lessThanOrEqualTo = null)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<DateTime>, TSource, DateTime>, Option<DateTime>, DateTime, RangeValidator_DateTime> InRange<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<DateTime>, TSource, DateTime>, Option<DateTime>, DateTime> source, DateTime? greaterThan = null, DateTime? greaterThanOrEqualTo = null, DateTime? lessThan = null, DateTime? lessThanOrEqualTo = null)
 			=> source.Add(new RangeValidator_DateTime(greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo));
 
 		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<string>, string, string>, Option<string>, string, StringLengthValidator> Length(this NullableRequiredStateValidator<string> source, int? minimumLength = null, int? maximumLength = null)
 			=> source.Add(new StringLengthValidator(minimumLength, maximumLength));
 
-		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<string>, string, string>, Option<string>, string, StringLengthValidator> Length(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<string>, string, string>, Option<string>, string> source, int? minimumLength = null, int? maximumLength = null)
+		public static DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<string>, TSource, string>, Option<string>, string, StringLengthValidator> Length<TSource>(this DataSource<NullableDataContainerFactory<NullableRequiredStateValidator<string>, TSource, string>, Option<string>, string> source, int? minimumLength = null, int? maximumLength = null)
 			=> source.Add(new StringLengthValidator(minimumLength, maximumLength));
 
 		public static DataSourceStandardStandard<NullableDataContainerFactory<NullableRequiredStateValidator<TValue>, TSource, TValue>, Option<TValue>, TValue, EqualsValidator<TValue>, CustomValidator<TValue>> Assert<TSource, TValue>(this DataSourceStandard<NullableDataContainerFactory<NullableRequiredStateValidator<TValue>, TSource, TValue>, Option<TValue>, TValue, EqualsValidator<TValue>> source, string description, Func<TValue, bool> validator)
