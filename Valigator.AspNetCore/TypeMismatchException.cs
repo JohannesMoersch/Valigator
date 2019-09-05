@@ -4,13 +4,13 @@ namespace Valigator
 {
 	public class TypeMismatchException : Exception
 	{
-		public TypeMismatchException(Type type1, Type type2)
+		public TypeMismatchException(Type typeOne, Type typeTwo)
 		{
-			Type1 = type1;
-			Type2 = type2;
+			TypeOne = typeOne;
+			TypeTwo = typeTwo;
 		}
 
-		public Type Type1 { get; }
-		public Type Type2 { get; }
+		public Type TypeOne { get; }
+		public Type TypeTwo { get; }
 	}
 }

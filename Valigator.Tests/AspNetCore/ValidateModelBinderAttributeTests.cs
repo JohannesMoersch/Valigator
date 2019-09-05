@@ -24,25 +24,27 @@ namespace Valigator.Tests.AspNetCore
 
 		public class TestNullableValidateModelBinderAttribute : ValidateModelBinderAttribute, IValidateType<Option<int>>
 		{
-			public override async Task<Result<Option<Option<object>>, ValidationError[]>> BindModel(ModelBindingContext bindingContext)
-				=> (await Result.TryAsync(
-					() =>
-					{
-						var value = bindingContext?.ValueProvider?.GetValue(bindingContext.FieldName).TryFirst() ?? Option.None<string>();
-						var result = value
-							.Select(s => int.Parse(s))
-							.Match(v =>
-							{
-								if (v == int.Parse(_invalidDespiteBeingInRange))
-									return Result.Failure<Option<Option<object>>, ValidationError[]>(new[] { new ValidationError("Inner Error1", null) });
-								return Result.Success<Option<Option<object>>, ValidationError[]>(Option.Some(Option.Some<object>(v)));
-							},
-							() => Result.Success<Option<Option<object>>, ValidationError[]>(Option.Some(Option.None<object>())));
-						return Task.FromResult(result);
-					},
-					ex => Result.Failure<Option<Option<object>>, ValidationError[]>(new[] { new ValidationError("Exception Error1", null) })
-				))
-				.Match(_ => _, f => f);
+			public override Task<BindResult> BindModel(ModelBindingContext bindingContext)
+				=> Result
+					.TryAsync
+					(
+						() =>
+						{
+							var value = bindingContext?.ValueProvider?.GetValue(bindingContext.FieldName).TryFirst() ?? Option.None<string>();
+							var result = value
+								.Select(s => int.Parse(s))
+								.Match(v =>
+									{
+										if (v == int.Parse(_invalidDespiteBeingInRange))
+											return BindResult.CreateFailed(new ValidationError("Inner Error1", null));
+										return BindResult.CreateSet(Option.Some<object>(v));
+									},
+									BindResult.CreateUnSet
+								);
+							return Task.FromResult(result);
+						}
+					)
+					.Match(_ => _, ex => BindResult.CreateFailed(new ValidationError("Exception Error1", null)));
 
 
 			public Data<Option<int>> GetData() => Data.Required<int>().Nullable().InRange(greaterThan: -5, lessThan: 10);
@@ -50,25 +52,27 @@ namespace Valigator.Tests.AspNetCore
 
 		public class TestValidateModelBinderAttribute : ValidateModelBinderAttribute, IValidateType<int>
 		{
-			public override async Task<Result<Option<Option<object>>, ValidationError[]>> BindModel(ModelBindingContext bindingContext)
-				=> (await Result.TryAsync(
-					() =>
-					{
-						var value = bindingContext?.ValueProvider?.GetValue(bindingContext.FieldName).TryFirst() ?? Option.None<string>();
-						var result = value
-							.Select(s => int.Parse(s))
-							.Match(v =>
-							{
-								if (v == int.Parse(_invalidDespiteBeingInRange))
-									return Result.Failure<Option<Option<object>>, ValidationError[]>(new[] { new ValidationError("Inner Error1", null) });
-								return Result.Success<Option<Option<object>>, ValidationError[]>(Option.Some(Option.Some((object)v)));
-							},
-							() => Result.Success<Option<Option<object>>, ValidationError[]>(Option.Some(Option.None<object>())));
-						return Task.FromResult(result);
-					},
-					ex => Result.Failure<Option<Option<object>>, ValidationError[]>(new[] { new ValidationError("Exception Error1", null) })
-				))
-				.Match(_ => _, f => f);
+			public override Task<BindResult> BindModel(ModelBindingContext bindingContext)
+				=> Result
+					.TryAsync
+					(
+						() =>
+						{
+							var value = bindingContext?.ValueProvider?.GetValue(bindingContext.FieldName).TryFirst() ?? Option.None<string>();
+							var result = value
+								.Select(s => int.Parse(s))
+								.Match(v =>
+									{
+										if (v == int.Parse(_invalidDespiteBeingInRange))
+											return BindResult.CreateFailed(new ValidationError("Inner Error1", null));
+										return BindResult.CreateSet(Option.Some((object)v));
+									},
+									BindResult.CreateUnSet
+								);
+							return Task.FromResult(result);
+						}
+					)
+					.Match(_ => _, ex => BindResult.CreateFailed(new ValidationError("Exception Error1", null)));
 
 
 			public Data<int> GetData() => Data.Required<int>().InRange(greaterThan: -5, lessThan: 10);

@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Functional;
 using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Valigator.AspNetCore;
 using Valigator.Core;
 
 namespace Valigator
@@ -30,7 +31,8 @@ namespace Valigator
 		{
 			(await BindModel(bindingContext))
 				.Match(
-					value => value.Match(success => this.Verify(success), () => this.Verify()),
+					set => this.Verify(set),
+					() => this.Verify(),
 					f => Result.Failure<object, ValidationError[]>(f)
 				)
 				.Match(
@@ -88,6 +90,6 @@ namespace Valigator
 			return Option.Some(value);
 		}
 
-		public abstract Task<Result<Option<Option<object>>, ValidationError[]>> BindModel(ModelBindingContext bindingContext);
+		public abstract Task<BindResult> BindModel(ModelBindingContext bindingContext);
 	}
 }

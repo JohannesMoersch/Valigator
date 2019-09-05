@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using Valigator.Core;
 
-namespace Valigator
+namespace Valigator.AspNetCore
 {
 	public static class DescriptorExtensions
 	{

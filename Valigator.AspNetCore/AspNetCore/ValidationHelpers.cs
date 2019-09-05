@@ -1,6 +1,6 @@
 ﻿using Valigator.AspNetCore;
 
-namespace Valigator
+namespace Valigator.AspNetCore
 {
 	internal static class ValidationHelpers
 	{

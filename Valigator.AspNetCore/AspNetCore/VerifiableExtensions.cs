@@ -5,7 +5,7 @@ using System.Reflection;
 using Functional;
 using Valigator.Core;
 
-namespace Valigator
+namespace Valigator.AspNetCore
 {
 	public static class VerifiableExtensions
 	{

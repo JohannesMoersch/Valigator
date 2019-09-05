@@ -6,6 +6,7 @@ using Functional;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Valigator;
+using Valigator.Core.ValueDescriptors;
 
 namespace Valigator.TestApi.Controllers
 {
@@ -37,16 +38,30 @@ namespace Valigator.TestApi.Controllers
 
 	public class TestValidateModelBinderAttribute : ValidateModelBinderAttribute, IValidateType<ComplexObject>
 	{
-		public override Task<Result<Option<Option<object>>, ValidationError[]>> BindModel(ModelBindingContext bindingContext)
+		public override Task<BindResult> BindModel(ModelBindingContext bindingContext)
 		{
 			var value = bindingContext?.ValueProvider?.GetValue(bindingContext.FieldName).TryFirst() ?? Option.None<string>();
-			var result = value.Match(
-				s => Result.Success<Option<Option<object>>, ValidationError[]>(Option.Some(Option.Some<object>(int.Parse(s)))),
-				() => Result.Failure<Option<Option<object>>, ValidationError[]>(new[] { new ValidationError("Error1", null), new ValidationError("Error2", null) })
-			);
+
+			var result = value
+				.Match
+				(
+					set => TryParseInt(set)
+						.Match
+						(
+							success => BindResult.CreateSet(Option.Some<object>(success)),
+							BindResult.CreateFailed
+						),
+					BindResult.CreateUnSet
+				);
 
 			return Task.FromResult(result);
 		}
+
+		private Result<Option<object>, ValidationError[]> TryParseInt(string str)
+			=> Int32
+				.TryParse(str, out var value)
+				? Result.Success<Option<object>, ValidationError[]>(Option.Some<object>(value))
+				: Result.Failure<Option<object>, ValidationError[]>(new[] { new ValidationError("Failed to parse.", new CustomDescriptor("")) });
 
 		public Data<ComplexObject> GetData() => Data.Required<ComplexObject>().MappedFrom<int>(i => new ComplexObject() { Value = i }, o => o.InRange(greaterThan: 5, lessThan: 10));
 	}

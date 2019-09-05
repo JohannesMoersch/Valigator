@@ -1,4 +1,4 @@
-﻿namespace Valigator
+﻿namespace Valigator.AspNetCore
 {
 	public interface IDescriptorProvider { }
 }
