@@ -108,7 +108,7 @@ namespace Valigator.Tests.AspNetCore
 			[InlineData("-6", "RangeValidator_Int32")]
 			[InlineData("z", "Exception Error1")]
 			[InlineData("", "Exception Error1")]
-			[InlineData(null, "")]
+			[InlineData(null, "Value cannot be null.")]
 			public async Task ProducesError(string value, string errorMessage)
 			{
 				var context = new TestModelBindingContext(value, "theName");
