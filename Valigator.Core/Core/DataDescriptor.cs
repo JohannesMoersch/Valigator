@@ -64,7 +64,7 @@ namespace Valigator.Core
 			foreach(var valueValidator in valueDescriptors.Where(v => !(v is DummyValidator<TValidateValue>)))
 				yield return valueValidator.GetDescriptor();
 
-			foreach(var implicitDescriptor in stateValidator.GetImplicitValueDescriptors())
+			foreach (var implicitDescriptor in stateValidator.GetImplicitValueDescriptors())
 				yield return implicitDescriptor;
 		}
 	}
