@@ -27,6 +27,13 @@ namespace Valigator.AspNetCore
 
 		private static Result<object, ValidationError[]> ExecuteValidator<TDataValue, TValue>(Data<TDataValue> data, IAcceptValue<TDataValue, TValue> dataContainer, Option<Option<object>> value)
 			=> value
+				.Match(
+					success => Option.Some(success.Match(
+						s => s is TValue ? success : throw new ValidateAttributeDoesNotSupportTypeException(s.GetType(), typeof(TValue)), 
+						() => success
+					)),
+					() => Option.None<Option<object>>()
+				)
 				.Match
 				(
 					some => dataContainer.WithValue(data, some.Match(o => Option.Some((TValue)o), Option.None<TValue>)),
