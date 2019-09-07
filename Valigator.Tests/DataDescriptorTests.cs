@@ -112,7 +112,7 @@ namespace Valigator.Tests
 				[Fact]
 				public void CollectionRequiredNotNull_ItemsRequiredNullable()
 				{
-					var data = Data.Collection<int>(v => v.InRange(0)).ItemsNullable().Required();
+					var data = Data.Collection<int>(v => v.Nullable().InRange(0)).Required();
 					data.Data.DataDescriptor.ValueDescriptors.Should().BeEquivalentTo(new IValueDescriptor[]
 					{
 						new RequiredDescriptor(),
@@ -129,7 +129,7 @@ namespace Valigator.Tests
 				[Fact]
 				public void CollectionRequiredNullable_ItemsRequiredNullable()
 				{
-					var data = Data.Collection<int>(v => v.InRange(0)).ItemsNullable().Required().Nullable();
+					var data = Data.Collection<int>(v => v.Nullable().InRange(0)).Required().Nullable();
 					data.Data.DataDescriptor.ValueDescriptors.Should().BeEquivalentTo(new IValueDescriptor[]
 					{
 						new RequiredDescriptor(),
@@ -178,7 +178,7 @@ namespace Valigator.Tests
 				[Fact]
 				public void CollectionDefaultedNotNull_ItemsRequiredNullable()
 				{
-					var data = Data.Collection<int>(v => v.InRange(0)).ItemsNullable().Defaulted();
+					var data = Data.Collection<int>(v => v.Nullable().InRange(0)).Defaulted();
 					data.Data.DataDescriptor.ValueDescriptors.Should().BeEquivalentTo(new IValueDescriptor[]
 					{
 						new NotNullDescriptor(),
@@ -194,7 +194,7 @@ namespace Valigator.Tests
 				[Fact]
 				public void CollectionDefaultedNullable_ItemsRequiredNullable()
 				{
-					var data = Data.Collection<int>(v => v.InRange(0)).ItemsNullable().Defaulted().Nullable();
+					var data = Data.Collection<int>(v => v.Nullable().InRange(0)).Defaulted().Nullable();
 					data.Data.DataDescriptor.ValueDescriptors.Should().BeEquivalentTo(new IValueDescriptor[]
 					{
 					});
@@ -242,7 +242,7 @@ namespace Valigator.Tests
 				[Fact]
 				public void CollectionOptionalNotNull_ItemsRequiredNullable()
 				{
-					var data = Data.Collection<int>(v => v.InRange(0)).ItemsNullable().Optional();
+					var data = Data.Collection<int>(v => v.Nullable().InRange(0)).Optional();
 					data.Data.DataDescriptor.ValueDescriptors.Should().BeEquivalentTo(new IValueDescriptor[]
 					{
 						new NotNullDescriptor(),
@@ -258,7 +258,7 @@ namespace Valigator.Tests
 				[Fact]
 				public void CollectionOptionalNullable_ItemsRequiredNullable()
 				{
-					var data = Data.Collection<int>(v => v.InRange(0)).ItemsNullable().Optional().Nullable();
+					var data = Data.Collection<int>(v => v.Nullable().InRange(0)).Optional().Nullable();
 					data.Data.DataDescriptor.ValueDescriptors.Should().BeEquivalentTo(new IValueDescriptor[]
 					{
 					});

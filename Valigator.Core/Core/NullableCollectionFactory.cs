@@ -9,9 +9,9 @@ namespace Valigator.Core
 {
 	public struct NullableCollectionFactory<TValue>
 	{
-		private readonly Data<TValue> _item;
+		private readonly Data<Option<TValue>> _item;
 
-		public NullableCollectionFactory(Data<TValue> item) 
+		public NullableCollectionFactory(Data<Option<TValue>> item) 
 			=> _item = item;
 
 		public RequiredNullableCollectionStateValidator<TValue> Required()

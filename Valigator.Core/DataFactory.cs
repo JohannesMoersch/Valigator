@@ -14,36 +14,64 @@ namespace Valigator
 			public static bool Value { get; } = Nullable.GetUnderlyingType(typeof(TValue)) != null;
 		}
 
+		private class IsOptionType<TValue>
+		{
+			public static bool Value { get; } = typeof(TValue).IsConstructedGenericType && typeof(TValue).GetGenericTypeDefinition() == typeof(Option<>);
+		}
+
 		public static RequiredStateValidator<TValue> Required<TValue>()
-			=> new RequiredStateValidator<TValue>();
+		{
+			ValidateType<TValue>();
+
+			return new RequiredStateValidator<TValue>();
+		}
 
 		public static OptionalStateValidator<TValue> Optional<TValue>()
-			=> new OptionalStateValidator<TValue>();
+		{
+			ValidateType<TValue>();
+
+			return new OptionalStateValidator<TValue>();
+		}
 
 		public static DefaultedStateValidator<TValue> Defaulted<TValue>()
 			where TValue : struct
-			=> new DefaultedStateValidator<TValue>(default(TValue));
-
-		public static DefaultedStateValidator<TValue> Defaulted<TValue>(TValue defaultValue)
-			=> new DefaultedStateValidator<TValue>(defaultValue);
-
-		public static DefaultedStateValidator<TValue> Defaulted<TValue>(Func<TValue> defaultValueFactory)
-			=> new DefaultedStateValidator<TValue>(defaultValueFactory);
-
-		public static CollectionFactory<TValue> Collection<TValue>()
 		{
-			if (IsNullableValueType<TValue>.Value)
-				throw new NullableValueTypesNotSupportException("Use .ItemsNullable() instead of a nullable value type.");
+			ValidateType<TValue>();
 
-			return new CollectionFactory<TValue>(Required<TValue>());
+			return new DefaultedStateValidator<TValue>(default(TValue));
 		}
 
-		public static CollectionFactory<TValue> Collection<TValue>(Func<RequiredStateValidator<TValue>, Data<TValue>> dataFactory)
+		public static DefaultedStateValidator<TValue> Defaulted<TValue>(TValue defaultValue)
 		{
-			if (IsNullableValueType<TValue>.Value)
-				throw new NullableValueTypesNotSupportException("Use .ItemsNullable() instead of a nullable value type.");
+			ValidateType<TValue>();
 
-			return new CollectionFactory<TValue>(dataFactory.Invoke(new RequiredStateValidator<TValue>()));
+			return new DefaultedStateValidator<TValue>(defaultValue);
+		}
+
+		public static DefaultedStateValidator<TValue> Defaulted<TValue>(Func<TValue> defaultValueFactory)
+		{
+			ValidateType<TValue>();
+
+			return new DefaultedStateValidator<TValue>(defaultValueFactory);
+		}
+
+		public static CollectionFactory<TValue> Collection<TValue>() 
+			=> new CollectionFactory<TValue>(Required<TValue>());
+
+		public static CollectionFactory<TValue> Collection<TValue>(Func<RequiredStateValidator<TValue>, Data<TValue>> dataFactory) 
+			=> new CollectionFactory<TValue>(dataFactory.Invoke(new RequiredStateValidator<TValue>()));
+
+		public static NullableCollectionFactory<TValue> Collection<TValue>(Func<RequiredStateValidator<TValue>, Data<Option<TValue>>> dataFactory) 
+			=> new NullableCollectionFactory<TValue>(dataFactory.Invoke(new RequiredStateValidator<TValue>()));
+
+		private static void ValidateType<TValue>()
+		{
+
+			if (IsNullableValueType<TValue>.Value)
+				throw new ValueTypesNotSupportException("Use .Nullable() instead of a nullable value type.");
+
+			if (IsOptionType<TValue>.Value)
+				throw new ValueTypesNotSupportException("Use .Nullable() instead of an Option type.");
 		}
 	}
 }

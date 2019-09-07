@@ -21,9 +21,9 @@ namespace Valigator.Tests.Newtonsoft
 
 			public Data<Option<int>> Stuff { get; set; } = Data.Required<int>().Nullable();
 
-			public Data<Option<SmallClass>[]> CollectionA { get; set; } = Data.Collection<SmallClass>().ItemsNullable().Required();
+			public Data<Option<SmallClass>[]> CollectionA { get; set; } = Data.Collection<SmallClass>(o => o.Nullable()).Required();
 
-			public Data<Option<Option<SmallClass>[]>> CollectionB { get; set; } = Data.Collection<SmallClass>(o => o).ItemsNullable().Required().Nullable();
+			public Data<Option<Option<SmallClass>[]>> CollectionB { get; set; } = Data.Collection<SmallClass>(o => o.Nullable()).Required().Nullable();
 
 			public Data<int[]> CollectionC { get; set; } = Data.Collection<int>().Required();
 		}

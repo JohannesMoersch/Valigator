@@ -12,20 +12,21 @@ namespace Valigator.Tests
 		[Fact]
 		public void RequiredWithValue()
 			=> Data
-				.Required<int?>()
+				.Required<int>()
+				.Nullable()
 				.Data
 				.WithValue(5)
 				.Verify(new object())
 				.TryGetValue()
 				.AssertSuccess()
-				.Value
+				.AssertSome()
 				.Should()
 				.Be(5);
 
 		[Fact]
 		public void RequiredWithNull()
 			=> Data
-				.Required<int?>()
+				.Required<int>()
 				.Data
 				.WithNull()
 				.Verify(new object())
@@ -35,7 +36,8 @@ namespace Valigator.Tests
 		[Fact]
 		public void RequiredAndUnset()
 			=> Data
-				.Required<int?>()
+				.Required<int>()
+				.Nullable()
 				.Data
 				.Verify(new object())
 				.TryGetValue()
@@ -151,20 +153,21 @@ namespace Valigator.Tests
 		[Fact]
 		public void DefaultedWithValue()
 			=> Data
-				.Defaulted<int?>(10)
+				.Defaulted(10)
+				.Nullable()
 				.Data
 				.WithValue(5)
 				.Verify(new object())
 				.TryGetValue()
 				.AssertSuccess()
-				.Value
+				.AssertSome()
 				.Should()
 				.Be(5);
 
 		[Fact]
 		public void DefaultedWithNull()
 			=> Data
-				.Defaulted<int?>(10)
+				.Defaulted(10)
 				.Data
 				.WithNull()
 				.Verify(new object())
@@ -174,11 +177,13 @@ namespace Valigator.Tests
 		[Fact]
 		public void DefaultedAndUnset()
 			=> Data
-				.Defaulted<int?>(10)
+				.Defaulted(10)
+				.Nullable()
 				.Data
 				.Verify(new object())
 				.TryGetValue()
 				.AssertSuccess()
+				.AssertSome()
 				.Should()
 				.Be(10);
 

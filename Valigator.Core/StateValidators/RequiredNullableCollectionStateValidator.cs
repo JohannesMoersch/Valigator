@@ -19,9 +19,9 @@ namespace Valigator.Core.StateValidators
 
 		public Data<Option<TValue>[]> Data => new Data<Option<TValue>[]>(CreateContainer(this));
 
-		private readonly Data<TValue> _item;
+		private readonly Data<Option<TValue>> _item;
 
-		public RequiredNullableCollectionStateValidator(Data<TValue> item)
+		public RequiredNullableCollectionStateValidator(Data<Option<TValue>> item)
 			=> _item = item;
 
 		public NullableRequiredNullableCollectionStateValidator<TValue> Nullable()

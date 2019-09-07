@@ -4,9 +4,9 @@ using System.Text;
 
 namespace Valigator
 {
-	public class NullableValueTypesNotSupportException : Exception
+	public class ValueTypesNotSupportException : Exception
 	{
-		public NullableValueTypesNotSupportException(string message) 
+		public ValueTypesNotSupportException(string message) 
 			: base(message)
 		{
 		}

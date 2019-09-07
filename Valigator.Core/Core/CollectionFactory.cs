@@ -12,9 +12,6 @@ namespace Valigator.Core
 		public CollectionFactory(Data<TValue> item) 
 			=> _item = item;
 
-		public NullableCollectionFactory<TValue> ItemsNullable()
-			=> new NullableCollectionFactory<TValue>(_item);
-
 		public RequiredCollectionStateValidator<TValue> Required()
 			=> new RequiredCollectionStateValidator<TValue>(_item);
 

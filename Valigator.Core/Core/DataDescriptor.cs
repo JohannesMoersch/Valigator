@@ -60,12 +60,9 @@ namespace Valigator.Core
 			=> GetValueDescriptors(stateValidator, valueDescriptors).Distinct().ToArray();
 
 		private static IEnumerable<IValueDescriptor> GetValueDescriptors<TDataValue, TValidateValue, TValue>(IStateValidator<TDataValue, TValue> stateValidator, params IValueValidator<TValidateValue>[] valueDescriptors)
-		{
-			foreach (var valueValidator in valueDescriptors.Where(v => !(v is DummyValidator<TValidateValue>)))
-				yield return valueValidator.GetDescriptor();
-
-			foreach (var implicitDescriptor in stateValidator.GetImplicitValueDescriptors())
-				yield return implicitDescriptor;
-		}
+			=> valueDescriptors
+				.Where(v => !(v is DummyValidator<TValidateValue>))
+				.Select(v => v.GetDescriptor())
+				.Concat(stateValidator.GetImplicitValueDescriptors());
 	}
 }
