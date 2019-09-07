@@ -28,7 +28,7 @@ namespace Valigator.Core
 		{
 			var arr = new Option<TValue>[defaultValue.Length];
 			for (int i = 0; i < defaultValue.Length; ++i)
-				arr[i] = Option.Create(defaultValue[i].HasValue, (TValue)defaultValue[i].Value);
+				arr[i] = defaultValue[i].HasValue ? Option.Some((TValue)defaultValue[i].Value) : Option.None<TValue>();
 
 			return new DefaultedNullableCollectionStateValidator<TValue>(_item, arr);
 		}
