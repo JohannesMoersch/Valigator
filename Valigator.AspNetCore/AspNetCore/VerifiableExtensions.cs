@@ -36,8 +36,13 @@ namespace Valigator.AspNetCore
 				)
 				.Match
 				(
-					some => dataContainer.WithValue(data, some.Match(o => Option.Some((TValue)o), Option.None<TValue>)),
-					() => dataContainer.WithNull(data)
+					some => some
+						.Match
+						(
+							o => dataContainer.WithValue(data, Option.Some((TValue)o)), 
+							() => dataContainer.WithNull(data)
+						),
+					() => data
 				)
 				.Verify()
 				.TryGetValue()
