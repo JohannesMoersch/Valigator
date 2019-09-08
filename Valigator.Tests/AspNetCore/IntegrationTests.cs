@@ -27,6 +27,16 @@ namespace Valigator.Tests.AspNetCore
 				.AssertJsonBody(str => str.Should().Be(@"""Value"""));
 
 		[Fact]
+		public Task WithNull()
+			=> CreateClient()
+				.BuildTest()
+				.Get("test/header")
+				.WithHeader("testheader", " ")
+				.Send()
+				.IsOk()
+				.AssertJsonBody(str => str.Should().Be(@"null"));
+
+		[Fact]
 		public Task WithUnSet()
 			=> CreateClient()
 				.BuildTest()

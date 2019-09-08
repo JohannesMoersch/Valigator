@@ -31,7 +31,14 @@ namespace Valigator.TestApi.Controllers
 					.TryFirst(s => s.Key.ToLower() == "testheader")
 					.Match
 					(
-						kvp => BindResult.CreateSet(Option.FromNullable<object>(kvp.Value.FirstOrDefault())),
+						kvp => BindResult
+							.CreateSet
+							(
+								Option
+								.FromNullable(kvp.Value.FirstOrDefault())
+								.Where(s => !String.IsNullOrWhiteSpace(s))
+								.Select(s => (object)s)
+							),
 						() => BindResult.CreateUnSet()
 					)
 				);

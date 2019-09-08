@@ -30,7 +30,11 @@ namespace Valigator.Tests.AspNetCore
 					(
 						() =>
 						{
-							var value = bindingContext?.ValueProvider?.GetValue(bindingContext.FieldName).TryFirst() ?? Option.None<string>();
+							var valueSet = bindingContext.ValueProvider.GetValue(bindingContext.FieldName);
+							if (!valueSet.Any())
+								return Task.FromResult(BindResult.CreateUnSet());
+
+							var value = Option.FromNullable(valueSet.FirstOrDefault());
 							var result = value
 								.Select(s => int.Parse(s))
 								.Match(v =>
@@ -39,7 +43,7 @@ namespace Valigator.Tests.AspNetCore
 											return BindResult.CreateFailed(new ValidationError("Inner Error1", null));
 										return BindResult.CreateSet(Option.Some<object>(v));
 									},
-									BindResult.CreateUnSet
+									() => BindResult.CreateSet(Option.None<object>())
 								);
 							return Task.FromResult(result);
 						}
@@ -58,7 +62,11 @@ namespace Valigator.Tests.AspNetCore
 					(
 						() =>
 						{
-							var value = bindingContext?.ValueProvider?.GetValue(bindingContext.FieldName).TryFirst() ?? Option.None<string>();
+							var valueSet = bindingContext.ValueProvider.GetValue(bindingContext.FieldName);
+							if (!valueSet.Any())
+								return Task.FromResult(BindResult.CreateUnSet());
+
+							var value = Option.FromNullable(valueSet.FirstOrDefault());
 							var result = value
 								.Select(s => int.Parse(s))
 								.Match(v =>
@@ -67,7 +75,7 @@ namespace Valigator.Tests.AspNetCore
 											return BindResult.CreateFailed(new ValidationError("Inner Error1", null));
 										return BindResult.CreateSet(Option.Some((object)v));
 									},
-									BindResult.CreateUnSet
+									() => BindResult.CreateSet(Option.None<object>())
 								);
 							return Task.FromResult(result);
 						}
@@ -207,7 +215,7 @@ namespace Valigator.Tests.AspNetCore
 			private static IValueProvider CreateValueProvider(string value)
 			{
 				var result = A.Fake<IValueProvider>();
-				A.CallTo(() => result.GetValue(A<string>.Ignored)).Returns(new ValueProviderResult(new Microsoft.Extensions.Primitives.StringValues(value)));
+				A.CallTo(() => result.GetValue(A<string>.Ignored)).Returns(new ValueProviderResult(new Microsoft.Extensions.Primitives.StringValues(new string[] { value })));
 				return result;
 			}
 
