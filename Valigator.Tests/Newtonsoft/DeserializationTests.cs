@@ -258,6 +258,16 @@ namespace Valigator.Tests.Newtonsoft
 					.BeEquivalentTo(new[] { 1, 2, 3 });
 
 			[Fact]
+			public void WithValueAndNull()
+				=> Deserialize<TestClass>(@"{""Value"":[1,null,3]}")
+					.Value
+					.Verify()
+					.TryGetValue()
+					.AssertFailure()
+					.Should()
+					.BeEquivalentTo(new[] { ValidationErrors.NotNull().AddPathIndex(1) });
+
+			[Fact]
 			public void WithNull()
 				=> Deserialize<TestClass>(@"{""Value"":null}")
 					.Value
@@ -295,6 +305,16 @@ namespace Valigator.Tests.Newtonsoft
 					.AssertSome()
 					.Should()
 					.BeEquivalentTo(new[] { 1, 2, 3 });
+
+			[Fact]
+			public void WithValueAndNull()
+				=> Deserialize<TestClass>(@"{""Value"":[1,null,3]}")
+					.Value
+					.Verify()
+					.TryGetValue()
+					.AssertFailure()
+					.Should()
+					.BeEquivalentTo(new[] { ValidationErrors.NotNull().AddPathIndex(1) });
 
 			[Fact]
 			public void WithNull()
@@ -335,6 +355,16 @@ namespace Valigator.Tests.Newtonsoft
 					.BeEquivalentTo(new[] { 1, 2, 3 });
 
 			[Fact]
+			public void WithValueAndNull()
+				=> Deserialize<TestClass>(@"{""Value"":[1,null,3]}")
+					.Value
+					.Verify()
+					.TryGetValue()
+					.AssertFailure()
+					.Should()
+					.BeEquivalentTo(new[] { ValidationErrors.NotNull().AddPathIndex(1) });
+
+			[Fact]
 			public void WithNull()
 				=> Deserialize<TestClass>(@"{""Value"":null}")
 					.Value
@@ -373,6 +403,16 @@ namespace Valigator.Tests.Newtonsoft
 					.BeEquivalentTo(new[] { 1, 2, 3 });
 
 			[Fact]
+			public void WithValueAndNull()
+				=> Deserialize<TestClass>(@"{""Value"":[1,null,3]}")
+					.Value
+					.Verify()
+					.TryGetValue()
+					.AssertFailure()
+					.Should()
+					.BeEquivalentTo(new[] { ValidationErrors.NotNull().AddPathIndex(1) });
+
+			[Fact]
 			public void WithNull()
 				=> Deserialize<TestClass>(@"{""Value"":null}")
 					.Value
@@ -407,6 +447,16 @@ namespace Valigator.Tests.Newtonsoft
 					.AssertSuccess()
 					.Should()
 					.BeEquivalentTo(new[] { 1, 2, 3 });
+
+			[Fact]
+			public void WithValueAndNull()
+				=> Deserialize<TestClass>(@"{""Value"":[1,null,3]}")
+					.Value
+					.Verify()
+					.TryGetValue()
+					.AssertFailure()
+					.Should()
+					.BeEquivalentTo(new[] { ValidationErrors.NotNull().AddPathIndex(1) });
 
 			[Fact]
 			public void WithNull()
@@ -448,6 +498,16 @@ namespace Valigator.Tests.Newtonsoft
 					.BeEquivalentTo(new[] { 1, 2, 3 });
 
 			[Fact]
+			public void WithValueAndNull()
+				=> Deserialize<TestClass>(@"{""Value"":[1,null,3]}")
+					.Value
+					.Verify()
+					.TryGetValue()
+					.AssertFailure()
+					.Should()
+					.BeEquivalentTo(new[] { ValidationErrors.NotNull().AddPathIndex(1) });
+
+			[Fact]
 			public void WithNull()
 				=> Deserialize<TestClass>(@"{""Value"":null}")
 					.Value
@@ -477,6 +537,16 @@ namespace Valigator.Tests.Newtonsoft
 
 			[Fact]
 			public void WithValue()
+				=> Deserialize<TestClass>(@"{""Value"":[1,2,3]}")
+					.Value
+					.Verify()
+					.TryGetValue()
+					.AssertSuccess()
+					.Should()
+					.BeEquivalentToNullables(new int?[] { 1, 2, 3 });
+
+			[Fact]
+			public void WithValueAndNull()
 				=> Deserialize<TestClass>(@"{""Value"":[1,null,3]}")
 					.Value
 					.Verify()
@@ -515,6 +585,17 @@ namespace Valigator.Tests.Newtonsoft
 
 			[Fact]
 			public void WithValue()
+				=> Deserialize<TestClass>(@"{""Value"":[1,2,3]}")
+					.Value
+					.Verify()
+					.TryGetValue()
+					.AssertSuccess()
+					.AssertSome()
+					.Should()
+					.BeEquivalentToNullables(new int?[] { 1, 2, 3 });
+
+			[Fact]
+			public void WithValueAndNull()
 				=> Deserialize<TestClass>(@"{""Value"":[1,null,3]}")
 					.Value
 					.Verify()
@@ -553,6 +634,17 @@ namespace Valigator.Tests.Newtonsoft
 
 			[Fact]
 			public void WithValue()
+				=> Deserialize<TestClass>(@"{""Value"":[1,2,3]}")
+					.Value
+					.Verify()
+					.TryGetValue()
+					.AssertSuccess()
+					.AssertSome()
+					.Should()
+					.BeEquivalentToNullables(new int?[] { 1, 2, 3 });
+
+			[Fact]
+			public void WithValueAndNull()
 				=> Deserialize<TestClass>(@"{""Value"":[1,null,3]}")
 					.Value
 					.Verify()
@@ -591,6 +683,17 @@ namespace Valigator.Tests.Newtonsoft
 
 			[Fact]
 			public void WithValue()
+				=> Deserialize<TestClass>(@"{""Value"":[1,2,3]}")
+					.Value
+					.Verify()
+					.TryGetValue()
+					.AssertSuccess()
+					.AssertSome()
+					.Should()
+					.BeEquivalentToNullables(new int?[] { 1, 2, 3 });
+
+			[Fact]
+			public void WithValueAndNull()
 				=> Deserialize<TestClass>(@"{""Value"":[1,null,3]}")
 					.Value
 					.Verify()
@@ -628,6 +731,16 @@ namespace Valigator.Tests.Newtonsoft
 
 			[Fact]
 			public void WithValue()
+				=> Deserialize<TestClass>(@"{""Value"":[1,2,3]}")
+					.Value
+					.Verify()
+					.TryGetValue()
+					.AssertSuccess()
+					.Should()
+					.BeEquivalentToNullables(new int?[] { 1, 2, 3 });
+
+			[Fact]
+			public void WithValueAndNull()
 				=> Deserialize<TestClass>(@"{""Value"":[1,null,3]}")
 					.Value
 					.Verify()
@@ -666,6 +779,17 @@ namespace Valigator.Tests.Newtonsoft
 
 			[Fact]
 			public void WithValue()
+				=> Deserialize<TestClass>(@"{""Value"":[1,2,3]}")
+					.Value
+					.Verify()
+					.TryGetValue()
+					.AssertSuccess()
+					.AssertSome()
+					.Should()
+					.BeEquivalentToNullables(new int?[] { 1, 2, 3 });
+
+			[Fact]
+			public void WithValueAndNull()
 				=> Deserialize<TestClass>(@"{""Value"":[1,null,3]}")
 					.Value
 					.Verify()
