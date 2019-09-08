@@ -55,7 +55,12 @@ namespace Valigator.Core.StateValidators
 		Result<Option<Option<TValue>[]>, ValidationError[]> IStateValidator<Option<Option<TValue>[]>, Option<TValue>[]>.Validate(Option<Option<Option<TValue>[]>> value)
 		{
 			if (value.TryGetValue(out var isSet))
-				return Result.Success<Option<Option<TValue>[]>, ValidationError[]>(isSet);
+			{
+				if (isSet.TryGetValue(out var notNull))
+					return Result.Success<Option<Option<TValue>[]>, ValidationError[]>(Option.Some(notNull));
+
+				return Result.Failure<Option<Option<TValue>[]>, ValidationError[]>(new[] { ValidationErrors.NotNull() });
+			}
 
 			return Result.Success<Option<Option<TValue>[]>, ValidationError[]>(Option.None<Option<TValue>[]>());
 		}

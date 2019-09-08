@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using FluentAssertions;
 using Functional;
 using Newtonsoft.Json;
 using Valigator.Core;
@@ -11,31 +12,691 @@ namespace Valigator.Tests.Newtonsoft
 {
 	public class DeserializationTests
 	{
-		public class SmallClass
+		public class Required
 		{
-			public int A { get; set; }
+			public class TestClass
+			{
+				public Data<int> Value { get; set; } = Data.Required<int>();
+			}
+
+			[Fact]
+			public void WithValue()
+				=> Deserialize<TestClass>(@"{""Value"":10}")
+					.Value
+					.Verify()
+					.TryGetValue()
+					.AssertSuccess()
+					.Should()
+					.Be(10);
+
+			[Fact]
+			public void WithNull()
+				=> Deserialize<TestClass>(@"{""Value"":null}")
+					.Value
+					.Verify()
+					.TryGetValue()
+					.AssertFailure()
+					.Should()
+					.BeEquivalentTo(new[] { ValidationErrors.NotNull() });
+
+			[Fact]
+			public void WithUnSet()
+				=> Deserialize<TestClass>(@"{}")
+					.Value
+					.Verify()
+					.TryGetValue()
+					.AssertFailure()
+					.Should()
+					.BeEquivalentTo(new[] { ValidationErrors.Required() });
 		}
-		public class TestModel
+
+		public class NullableRequired
 		{
-			public Data<int> Things { get; set; } = Data.Required<int>().MappedFrom<string>(Int32.Parse);
+			public class TestClass
+			{
+				public Data<Option<int>> Value { get; set; } = Data.Required<int>().Nullable();
+			}
 
-			public Data<Option<int>> Stuff { get; set; } = Data.Required<int>().Nullable();
+			[Fact]
+			public void WithValue()
+				=> Deserialize<TestClass>(@"{""Value"":10}")
+					.Value
+					.Verify()
+					.TryGetValue()
+					.AssertSuccess()
+					.AssertSome()
+					.Should()
+					.Be(10);
 
-			public Data<Option<SmallClass>[]> CollectionA { get; set; } = Data.Collection<SmallClass>(o => o.Nullable()).Required();
+			[Fact]
+			public void WithNull()
+				=> Deserialize<TestClass>(@"{""Value"":null}")
+					.Value
+					.Verify()
+					.TryGetValue()
+					.AssertSuccess()
+					.AssertNone();
 
-			public Data<Option<Option<SmallClass>[]>> CollectionB { get; set; } = Data.Collection<SmallClass>(o => o.Nullable()).Required().Nullable();
-
-			public Data<int[]> CollectionC { get; set; } = Data.Collection<int>().Required();
+			[Fact]
+			public void WithUnSet()
+				=> Deserialize<TestClass>(@"{}")
+					.Value
+					.Verify()
+					.TryGetValue()
+					.AssertFailure()
+					.Should()
+					.BeEquivalentTo(new[] { ValidationErrors.Required() });
 		}
 
-		[Fact]
-		public void Stuff()
+		public class Optional
 		{
-			var model = JsonConvert.DeserializeObject<TestModel>("{\"Things\": \"15\", \"Stuff\": null, \"CollectionA\": [ { \"A\": 5 }, null ], \"CollectionB\": null, \"CollectionC\": [ 5, 3 ]}", new ValigatorConverter());
+			public class TestClass
+			{
+				public Data<Option<int>> Value { get; set; } = Data.Optional<int>();
+			}
 
-			var errors = Model.Verify(model);
+			[Fact]
+			public void WithValue()
+				=> Deserialize<TestClass>(@"{""Value"":10}")
+					.Value
+					.Verify()
+					.TryGetValue()
+					.AssertSuccess()
+					.AssertSome()
+					.Should()
+					.Be(10);
 
-			var json = JsonConvert.SerializeObject(model, new ValigatorConverter());
+			[Fact]
+			public void WithNull()
+				=> Deserialize<TestClass>(@"{""Value"":null}")
+					.Value
+					.Verify()
+					.TryGetValue()
+					.AssertFailure()
+					.Should()
+					.BeEquivalentTo(new[] { ValidationErrors.NotNull() });
+
+			[Fact]
+			public void WithUnSet()
+				=> Deserialize<TestClass>(@"{}")
+					.Value
+					.Verify()
+					.TryGetValue()
+					.AssertSuccess()
+					.AssertNone();
 		}
+
+		public class NullableOptional
+		{
+			public class TestClass
+			{
+				public Data<Option<int>> Value { get; set; } = Data.Optional<int>().Nullable();
+			}
+
+			[Fact]
+			public void WithValue()
+				=> Deserialize<TestClass>(@"{""Value"":10}")
+					.Value
+					.Verify()
+					.TryGetValue()
+					.AssertSuccess()
+					.AssertSome()
+					.Should()
+					.Be(10);
+
+			[Fact]
+			public void WithNull()
+				=> Deserialize<TestClass>(@"{""Value"":null}")
+					.Value
+					.Verify()
+					.TryGetValue()
+					.AssertSuccess()
+					.AssertNone();
+
+			[Fact]
+			public void WithUnSet()
+				=> Deserialize<TestClass>(@"{}")
+					.Value
+					.Verify()
+					.TryGetValue()
+					.AssertSuccess()
+					.AssertNone();
+		}
+
+		public class Defaulted
+		{
+			public class TestClass
+			{
+				public Data<int> Value { get; set; } = Data.Defaulted<int>(5);
+			}
+
+			[Fact]
+			public void WithValue()
+				=> Deserialize<TestClass>(@"{""Value"":10}")
+					.Value
+					.Verify()
+					.TryGetValue()
+					.AssertSuccess()
+					.Should()
+					.Be(10);
+
+			[Fact]
+			public void WithNull()
+				=> Deserialize<TestClass>(@"{""Value"":null}")
+					.Value
+					.Verify()
+					.TryGetValue()
+					.AssertFailure()
+					.Should()
+					.BeEquivalentTo(new[] { ValidationErrors.NotNull() });
+
+			[Fact]
+			public void WithUnSet()
+				=> Deserialize<TestClass>(@"{}")
+					.Value
+					.Verify()
+					.TryGetValue()
+					.AssertSuccess()
+					.Should()
+					.Be(5);
+		}
+
+		public class NullableDefaulted
+		{
+			public class TestClass
+			{
+				public Data<Option<int>> Value { get; set; } = Data.Defaulted<int>(5).Nullable();
+			}
+
+			[Fact]
+			public void WithValue()
+				=> Deserialize<TestClass>(@"{""Value"":10}")
+					.Value
+					.Verify()
+					.TryGetValue()
+					.AssertSuccess()
+					.AssertSome()
+					.Should()
+					.Be(10);
+
+			[Fact]
+			public void WithNull()
+				=> Deserialize<TestClass>(@"{""Value"":null}")
+					.Value
+					.Verify()
+					.TryGetValue()
+					.AssertSuccess()
+					.AssertNone();
+
+			[Fact]
+			public void WithUnSet()
+				=> Deserialize<TestClass>(@"{}")
+					.Value
+					.Verify()
+					.TryGetValue()
+					.AssertSuccess()
+					.AssertSome()
+					.Should()
+					.Be(5);
+		}
+
+		public class RequiredCollection
+		{
+			public class TestClass
+			{
+				public Data<int[]> Value { get; set; } = Data.Collection<int>().Required();
+			}
+
+			[Fact]
+			public void WithValue()
+				=> Deserialize<TestClass>(@"{""Value"":[1,2,3]}")
+					.Value
+					.Verify()
+					.TryGetValue()
+					.AssertSuccess()
+					.Should()
+					.BeEquivalentTo(new[] { 1, 2, 3 });
+
+			[Fact]
+			public void WithNull()
+				=> Deserialize<TestClass>(@"{""Value"":null}")
+					.Value
+					.Verify()
+					.TryGetValue()
+					.AssertFailure()
+					.Should()
+					.BeEquivalentTo(new[] { ValidationErrors.NotNull() });
+
+			[Fact]
+			public void WithUnSet()
+				=> Deserialize<TestClass>(@"{}")
+					.Value
+					.Verify()
+					.TryGetValue()
+					.AssertFailure()
+					.Should()
+					.BeEquivalentTo(new[] { ValidationErrors.Required() });
+		}
+
+		public class NullableRequiredCollection
+		{
+			public class TestClass
+			{
+				public Data<Option<int[]>> Value { get; set; } = Data.Collection<int>().Required().Nullable();
+			}
+
+			[Fact]
+			public void WithValue()
+				=> Deserialize<TestClass>(@"{""Value"":[1,2,3]}")
+					.Value
+					.Verify()
+					.TryGetValue()
+					.AssertSuccess()
+					.AssertSome()
+					.Should()
+					.BeEquivalentTo(new[] { 1, 2, 3 });
+
+			[Fact]
+			public void WithNull()
+				=> Deserialize<TestClass>(@"{""Value"":null}")
+					.Value
+					.Verify()
+					.TryGetValue()
+					.AssertSuccess()
+					.AssertNone();
+
+			[Fact]
+			public void WithUnSet()
+				=> Deserialize<TestClass>(@"{}")
+					.Value
+					.Verify()
+					.TryGetValue()
+					.AssertFailure()
+					.Should()
+					.BeEquivalentTo(new[] { ValidationErrors.Required() });
+		}
+
+		public class OptionalCollection
+		{
+			public class TestClass
+			{
+				public Data<Option<int[]>> Value { get; set; } = Data.Collection<int>().Optional();
+			}
+
+			[Fact]
+			public void WithValue()
+				=> Deserialize<TestClass>(@"{""Value"":[1,2,3]}")
+					.Value
+					.Verify()
+					.TryGetValue()
+					.AssertSuccess()
+					.AssertSome()
+					.Should()
+					.BeEquivalentTo(new[] { 1, 2, 3 });
+
+			[Fact]
+			public void WithNull()
+				=> Deserialize<TestClass>(@"{""Value"":null}")
+					.Value
+					.Verify()
+					.TryGetValue()
+					.AssertFailure()
+					.Should()
+					.BeEquivalentTo(new[] { ValidationErrors.NotNull() });
+
+			[Fact]
+			public void WithUnSet()
+				=> Deserialize<TestClass>(@"{}")
+					.Value
+					.Verify()
+					.TryGetValue()
+					.AssertSuccess()
+					.AssertNone();
+		}
+
+		public class NullableOptionalCollection
+		{
+			public class TestClass
+			{
+				public Data<Option<int[]>> Value { get; set; } = Data.Collection<int>().Optional().Nullable();
+			}
+
+			[Fact]
+			public void WithValue()
+				=> Deserialize<TestClass>(@"{""Value"":[1,2,3]}")
+					.Value
+					.Verify()
+					.TryGetValue()
+					.AssertSuccess()
+					.AssertSome()
+					.Should()
+					.BeEquivalentTo(new[] { 1, 2, 3 });
+
+			[Fact]
+			public void WithNull()
+				=> Deserialize<TestClass>(@"{""Value"":null}")
+					.Value
+					.Verify()
+					.TryGetValue()
+					.AssertSuccess()
+					.AssertNone();
+
+			[Fact]
+			public void WithUnSet()
+				=> Deserialize<TestClass>(@"{}")
+					.Value
+					.Verify()
+					.TryGetValue()
+					.AssertSuccess()
+					.AssertNone();
+		}
+
+		public class DefaultedCollection
+		{
+			public class TestClass
+			{
+				public Data<int[]> Value { get; set; } = Data.Collection<int>().Defaulted(new[] { 4, 5 });
+			}
+
+			[Fact]
+			public void WithValue()
+				=> Deserialize<TestClass>(@"{""Value"":[1,2,3]}")
+					.Value
+					.Verify()
+					.TryGetValue()
+					.AssertSuccess()
+					.Should()
+					.BeEquivalentTo(new[] { 1, 2, 3 });
+
+			[Fact]
+			public void WithNull()
+				=> Deserialize<TestClass>(@"{""Value"":null}")
+					.Value
+					.Verify()
+					.TryGetValue()
+					.AssertFailure()
+					.Should()
+					.BeEquivalentTo(new[] { ValidationErrors.NotNull() });
+
+			[Fact]
+			public void WithUnSet()
+				=> Deserialize<TestClass>(@"{}")
+					.Value
+					.Verify()
+					.TryGetValue()
+					.AssertSuccess()
+					.Should()
+					.BeEquivalentTo(new[] { 4, 5 });
+		}
+
+		public class NullableDefaultedCollection
+		{
+			public class TestClass
+			{
+				public Data<Option<int[]>> Value { get; set; } = Data.Collection<int>().Defaulted(new[] { 4, 5 }).Nullable();
+			}
+
+			[Fact]
+			public void WithValue()
+				=> Deserialize<TestClass>(@"{""Value"":[1,2,3]}")
+					.Value
+					.Verify()
+					.TryGetValue()
+					.AssertSuccess()
+					.AssertSome()
+					.Should()
+					.BeEquivalentTo(new[] { 1, 2, 3 });
+
+			[Fact]
+			public void WithNull()
+				=> Deserialize<TestClass>(@"{""Value"":null}")
+					.Value
+					.Verify()
+					.TryGetValue()
+					.AssertSuccess()
+					.AssertNone();
+
+			[Fact]
+			public void WithUnSet()
+				=> Deserialize<TestClass>(@"{}")
+					.Value
+					.Verify()
+					.TryGetValue()
+					.AssertSuccess()
+					.AssertSome()
+					.Should()
+					.BeEquivalentTo(new[] { 4, 5 });
+		}
+
+		public class RequiredNullableCollection
+		{
+			public class TestClass
+			{
+				public Data<Option<int>[]> Value { get; set; } = Data.Collection<int>(o => o.Nullable()).Required();
+			}
+
+			[Fact]
+			public void WithValue()
+				=> Deserialize<TestClass>(@"{""Value"":[1,null,3]}")
+					.Value
+					.Verify()
+					.TryGetValue()
+					.AssertSuccess()
+					.Should()
+					.BeEquivalentToNullables(new int?[] { 1, null, 3 });
+
+			[Fact]
+			public void WithNull()
+				=> Deserialize<TestClass>(@"{""Value"":null}")
+					.Value
+					.Verify()
+					.TryGetValue()
+					.AssertFailure()
+					.Should()
+					.BeEquivalentTo(new[] { ValidationErrors.NotNull() });
+
+			[Fact]
+			public void WithUnSet()
+				=> Deserialize<TestClass>(@"{}")
+					.Value
+					.Verify()
+					.TryGetValue()
+					.AssertFailure()
+					.Should()
+					.BeEquivalentTo(new[] { ValidationErrors.Required() });
+		}
+
+		public class NullableRequiredNullableCollection
+		{
+			public class TestClass
+			{
+				public Data<Option<Option<int>[]>> Value { get; set; } = Data.Collection<int>(o => o.Nullable()).Required().Nullable();
+			}
+
+			[Fact]
+			public void WithValue()
+				=> Deserialize<TestClass>(@"{""Value"":[1,null,3]}")
+					.Value
+					.Verify()
+					.TryGetValue()
+					.AssertSuccess()
+					.AssertSome()
+					.Should()
+					.BeEquivalentToNullables(new int?[] { 1, null, 3 });
+
+			[Fact]
+			public void WithNull()
+				=> Deserialize<TestClass>(@"{""Value"":null}")
+					.Value
+					.Verify()
+					.TryGetValue()
+					.AssertSuccess()
+					.AssertNone();
+
+			[Fact]
+			public void WithUnSet()
+				=> Deserialize<TestClass>(@"{}")
+					.Value
+					.Verify()
+					.TryGetValue()
+					.AssertFailure()
+					.Should()
+					.BeEquivalentTo(new[] { ValidationErrors.Required() });
+		}
+
+		public class OptionalNullableCollection
+		{
+			public class TestClass
+			{
+				public Data<Option<Option<int>[]>> Value { get; set; } = Data.Collection<int>(o => o.Nullable()).Optional();
+			}
+
+			[Fact]
+			public void WithValue()
+				=> Deserialize<TestClass>(@"{""Value"":[1,null,3]}")
+					.Value
+					.Verify()
+					.TryGetValue()
+					.AssertSuccess()
+					.AssertSome()
+					.Should()
+					.BeEquivalentToNullables(new int?[] { 1, null, 3 });
+
+			[Fact]
+			public void WithNull()
+				=> Deserialize<TestClass>(@"{""Value"":null}")
+					.Value
+					.Verify()
+					.TryGetValue()
+					.AssertFailure()
+					.Should()
+					.BeEquivalentTo(new[] { ValidationErrors.NotNull() });
+
+			[Fact]
+			public void WithUnSet()
+				=> Deserialize<TestClass>(@"{}")
+					.Value
+					.Verify()
+					.TryGetValue()
+					.AssertSuccess()
+					.AssertNone();
+		}
+
+		public class NullableOptionalNullableCollection
+		{
+			public class TestClass
+			{
+				public Data<Option<Option<int>[]>> Value { get; set; } = Data.Collection<int>(o => o.Nullable()).Optional().Nullable();
+			}
+
+			[Fact]
+			public void WithValue()
+				=> Deserialize<TestClass>(@"{""Value"":[1,null,3]}")
+					.Value
+					.Verify()
+					.TryGetValue()
+					.AssertSuccess()
+					.AssertSome()
+					.Should()
+					.BeEquivalentToNullables(new int?[] { 1, null, 3 });
+
+			[Fact]
+			public void WithNull()
+				=> Deserialize<TestClass>(@"{""Value"":null}")
+					.Value
+					.Verify()
+					.TryGetValue()
+					.AssertSuccess()
+					.AssertNone();
+
+			[Fact]
+			public void WithUnSet()
+				=> Deserialize<TestClass>(@"{}")
+					.Value
+					.Verify()
+					.TryGetValue()
+					.AssertSuccess()
+					.AssertNone();
+		}
+
+		public class DefaultedNullableCollection
+		{
+			public class TestClass
+			{
+				public Data<Option<int>[]> Value { get; set; } = Data.Collection<int>(o => o.Nullable()).Defaulted(new int?[] { null, 5 });
+			}
+
+			[Fact]
+			public void WithValue()
+				=> Deserialize<TestClass>(@"{""Value"":[1,null,3]}")
+					.Value
+					.Verify()
+					.TryGetValue()
+					.AssertSuccess()
+					.Should()
+					.BeEquivalentToNullables(new int?[] { 1, null, 3 });
+
+			[Fact]
+			public void WithNull()
+				=> Deserialize<TestClass>(@"{""Value"":null}")
+					.Value
+					.Verify()
+					.TryGetValue()
+					.AssertFailure()
+					.Should()
+					.BeEquivalentTo(new[] { ValidationErrors.NotNull() });
+
+			[Fact]
+			public void WithUnSet()
+				=> Deserialize<TestClass>(@"{}")
+					.Value
+					.Verify()
+					.TryGetValue()
+					.AssertSuccess()
+					.Should()
+					.BeEquivalentToNullables(new int?[] { null, 5 });
+		}
+
+		public class NullableDefaultedNullableCollection
+		{
+			public class TestClass
+			{
+				public Data<Option<Option<int>[]>> Value { get; set; } = Data.Collection<int>(o => o.Nullable()).Defaulted(new int?[] { null, 5 }).Nullable();
+			}
+
+			[Fact]
+			public void WithValue()
+				=> Deserialize<TestClass>(@"{""Value"":[1,null,3]}")
+					.Value
+					.Verify()
+					.TryGetValue()
+					.AssertSuccess()
+					.AssertSome()
+					.Should()
+					.BeEquivalentToNullables(new int?[] { 1, null, 3 });
+
+			[Fact]
+			public void WithNull()
+				=> Deserialize<TestClass>(@"{""Value"":null}")
+					.Value
+					.Verify()
+					.TryGetValue()
+					.AssertSuccess()
+					.AssertNone();
+
+			[Fact]
+			public void WithUnSet()
+				=> Deserialize<TestClass>(@"{}")
+					.Value
+					.Verify()
+					.TryGetValue()
+					.AssertSuccess()
+					.AssertSome()
+					.Should()
+					.BeEquivalentToNullables(new int?[] { null, 5 });
+		}
+
+		private static T Deserialize<T>(string json)
+			=> JsonConvert.DeserializeObject<T>(json, new ValigatorConverter());
 	}
 }
