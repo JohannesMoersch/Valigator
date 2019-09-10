@@ -110,7 +110,7 @@ namespace Valigator.Tests.AspNetCore
 			[InlineData("-5", "RangeValidator_Int32")]
 			[InlineData("-6", "RangeValidator_Int32")]
 			[InlineData("z", "Not an Int")]
-			[InlineData("", "Not an Int")]
+			[InlineData("", "Value cannot be null.")]
 			[InlineData(null, "Value cannot be null.")]
 			public async Task ProducesError(string value, string errorMessage)
 			{
