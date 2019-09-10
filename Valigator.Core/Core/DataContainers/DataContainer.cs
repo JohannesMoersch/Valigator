@@ -36,6 +36,9 @@ namespace Valigator.Core.DataContainers
 		public Data<TValue> WithValue(Data<TValue> data, Option<TSource> value)
 			=> data.WithMappedValidatedValue(value, _mapping, _stateValidator);
 
+		public Data<TValue> WithUncheckedValue(Data<TValue> data, TValue value)
+			=> data.WithValidatedValue(value);
+
 		public Data<TValue> WithNull(Data<TValue> data)
 			=> WithValue(data, Option.None<TSource>());
 

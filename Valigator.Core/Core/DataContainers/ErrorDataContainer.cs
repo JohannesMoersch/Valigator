@@ -24,5 +24,8 @@ namespace Valigator.Core.DataContainers
 
 		public Option<ValidationError[]> GetErrors()
 			=> Option.Some(_validationErrors);
+
+		public Data<TValue> WithUncheckedValue(Data<TValue> data, TValue value)
+			=> data.WithValidatedValue(value);
 	}
 }
