@@ -84,13 +84,13 @@ namespace Valigator.Core.StateValidators
 			{
 				if (!data.WithValidatedValue(value[i]).Verify(model).TryGetValue().TryGetValue(out var _, out var failure))
 				{
-					foreach (var error in errors)
-						error.Path.AddIndex(i);
-
 					if (errors == null)
 						errors = new List<ValidationError>();
 
 					errors.AddRange(failure);
+
+					foreach (var error in failure)
+						error.Path.AddIndex(i);
 				}
 			}
 

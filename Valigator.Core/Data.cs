@@ -96,12 +96,12 @@ namespace Valigator
 				throw new DataAlreadyVerifiedException();
 
 			if (_dataContainer is ErrorDataContainer<TValue>)
-				return new Data<TValue>(DataState.Invalid, default, _dataContainer);
+				return new Data<TValue>(DataState.Invalid, _value, _dataContainer);
 
 			if (_dataContainer.IsValid(model, Option.Create(State == DataState.Set, _value)).TryGetValue(out var value, out var failure))
 				return new Data<TValue>(DataState.Valid, value, _dataContainer);
 
-			return new Data<TValue>(DataState.Invalid, default, GetErrorDataContainer(_dataContainer, failure));
+			return new Data<TValue>(DataState.Invalid, _value, GetErrorDataContainer(_dataContainer, failure));
 		}
 
 		private static IDataContainer<TValue> GetErrorDataContainer(IDataContainer<TValue> dataContainer, ValidationError[] validationErrors)

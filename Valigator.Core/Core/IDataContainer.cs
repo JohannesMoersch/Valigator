@@ -14,5 +14,10 @@ namespace Valigator.Core
 		Result<TValue, ValidationError[]> IsValid(Option<object> model, Option<TValue> value);
 
 		Option<ValidationError[]> GetErrors();
+
+		/// <summary>
+		/// Set a value and run value validators but not state validators.
+		/// </summary>
+		Data<TValue> WithUncheckedValue(Data<TValue> data, TValue value);
 	}
 }

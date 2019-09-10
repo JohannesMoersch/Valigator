@@ -10,6 +10,11 @@ namespace Valigator
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static class DataExtensions
 	{
+		public static Data<TValue> WithUncheckedValue<TValue>(this Data<TValue> data, TValue value)
+			=> data.DataContainer is IDataContainer<TValue> dataContainer 
+				? dataContainer.WithUncheckedValue(data, value)
+				: throw new NotSupportedException($"{nameof(data)}.{nameof(data.DataContainer)} must be a {nameof(IDataContainer<TValue>)}.");
+
 		public static Data<TValue> WithValue<TValue>(this Data<TValue> data, TValue value)
 			=> data.WithValue(Option.Create(value != null, value));
 

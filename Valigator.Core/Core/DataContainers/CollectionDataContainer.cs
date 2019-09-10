@@ -37,6 +37,9 @@ namespace Valigator.Core.DataContainers
 		public Data<TValue[]> WithValue(Data<TValue[]> data, Option<Option<TSource>[]> value)
 			=> data.WithMappedValidatedValue(value, _mapping, _stateValidator);
 
+		public Data<TValue[]> WithUncheckedValue(Data<TValue[]> data, TValue[] value)
+			=> data.WithValidatedValue(value);
+
 		public Data<TValue[]> WithNull(Data<TValue[]> data)
 			=> WithValue(data, Option.None<Option<TSource>[]>());
 
@@ -47,7 +50,7 @@ namespace Valigator.Core.DataContainers
 				if (_stateValidator.IsValid(model, some).TryGetValue(out var _, out var itemErrors) & this.IsValid(model, some, _valueValidatorOne, _valueValidatorTwo, _valueValidatorThree).TryGetValue(out var __, out var collectionErrors))
 					return Result.Success<TValue[], ValidationError[]>(some);
 
-				return Result.Failure<TValue[], ValidationError[]>(collectionErrors.Concat(itemErrors ?? Enumerable.Empty<ValidationError>()).ToArray());
+				return Result.Failure<TValue[], ValidationError[]>((collectionErrors ?? Array.Empty<ValidationError>()).Concat(itemErrors ?? Enumerable.Empty<ValidationError>()).ToArray());
 			}
 
 			return Result.Failure<TValue[], ValidationError[]>(failure);

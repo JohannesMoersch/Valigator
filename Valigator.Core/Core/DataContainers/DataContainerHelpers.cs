@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Functional;
 using Valigator.Core.Helpers;
@@ -42,7 +43,7 @@ namespace Valigator.Core.DataContainers
 
 							if (errors == null)
 								errors = new List<ValidationError>();
-							
+
 							errors.AddRange(failure);
 						}
 					}
@@ -94,12 +95,14 @@ namespace Valigator.Core.DataContainers
 					throw new ModelRequiredException();
 			}
 
+			var innerValid = Model.Verify(value).TryGetValue(out var _, out var innerErrors);
+
 			var oneValid = validatorOne.IsValid(model, value);
 			var twoValid = validatorTwo.IsValid(model, value);
 			var threeValid = validatorThree.IsValid(model, value);
 
-			int count = (oneValid ? 0 : 1) + (twoValid ? 0 : 1) + (threeValid ? 0 : 1);
-			if (count > 0)
+			int count = (oneValid ? 0 : 1) + (twoValid ? 0 : 1) + (threeValid ? 0 : 1) + (innerErrors?.Length ?? 0);
+			if (count > 0 || !innerValid)
 			{
 				var errors = new ValidationError[count];
 				int index = 0;
@@ -111,7 +114,13 @@ namespace Valigator.Core.DataContainers
 					errors[index++] = validatorTwo.GetError(value, false);
 
 				if (!threeValid)
-					errors[index] = validatorThree.GetError(value, false);
+					errors[index++] = validatorThree.GetError(value, false);
+
+				if (!innerValid)
+				{
+					foreach (var error in innerErrors)
+						errors[index++] = error;
+				}
 
 				return Result.Failure<Unit, ValidationError[]>(errors);
 			}
