@@ -78,7 +78,7 @@ namespace Valigator.Tests.AspNetCore
 				=> ConvertToInt(bindingContext.ValueProvider.GetValue(bindingContext.FieldName).FirstValue);
 
 			private static Option<Option<int>> ConvertToInt(string arg)
-				=> Int32.TryParse(arg, out var i) ? Option.Some(Option.Some(i)) : Option.Create(!String.IsNullOrWhiteSpace(arg), () => Option.None<int>());
+				=> Int32.TryParse(arg, out var i) ? Option.Some(Option.Some(i)) : Option.Create(String.IsNullOrWhiteSpace(arg), () => Option.None<int>());
 		}
 		//
 		public class RequiredInt
