@@ -40,28 +40,25 @@ namespace Valigator.TestApi.Controllers
 	{
 		public override Task<BindResult> BindModel(ModelBindingContext bindingContext)
 		{
-			var value = bindingContext?.ValueProvider?.GetValue(bindingContext.FieldName).TryFirst() ?? Option.None<string>();
 
-			var result = value
-				.Match
-				(
-					set => TryParseInt(set)
-						.Match
-						(
-							success => BindResult.CreateSet(Option.Some<object>(success)),
-							BindResult.CreateFailed
-						),
-					BindResult.CreateUnSet
-				);
+			var result = BindResult
+						.Create(
+							TryParseInt(bindingContext?.ValueProvider?.GetValue(bindingContext.FieldName).FirstValue)
+							.Match
+							(
+								success => GetData().WithMappedValue(success),
+								e => GetData().WithErrors(e)
+							)
+						);
 
 			return Task.FromResult(result);
 		}
 
-		private Result<Option<object>, ValidationError[]> TryParseInt(string str)
+		private Result<int, ValidationError[]> TryParseInt(string str)
 			=> Int32
 				.TryParse(str, out var value)
-				? Result.Success<Option<object>, ValidationError[]>(Option.Some<object>(value))
-				: Result.Failure<Option<object>, ValidationError[]>(new[] { new ValidationError("Failed to parse.", new CustomDescriptor("")) });
+				? Result.Success<int, ValidationError[]>(value)
+				: Result.Failure<int, ValidationError[]>(new[] { new ValidationError("Failed to parse.", new CustomDescriptor("")) });
 
 		public Data<ComplexObject> GetData() => Data.Required<ComplexObject>().MappedFrom<int>(i => new ComplexObject() { Value = i }, o => o.InRange(greaterThan: 5, lessThan: 10));
 	}

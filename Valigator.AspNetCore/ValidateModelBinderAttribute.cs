@@ -26,15 +26,10 @@ namespace Valigator
 		/// <inheritdoc />
 		public virtual BindingSource BindingSource { get; }
 
-		/// <inheritdoc />
-		public async Task BindModelAsync(ModelBindingContext bindingContext)
-		{
-			(await BindModel(bindingContext))
-				.Match(
-					set => this.Verify(set),
-					() => this.Verify(),
-					f => Result.Failure<object, ValidationError[]>(f)
-				)
+		private void Validate<TValue>(BindResult<TValue> value, ModelBindingContext bindingContext)
+			=> value.Data
+				.Verify()
+				.TryGetValue()
 				.Match(
 					s =>
 					{
@@ -46,23 +41,27 @@ namespace Valigator
 					{
 						GetParameterDescriptorForParameter(bindingContext)
 							.Match(
-								descriptor => Option.Some(descriptor), 
+								descriptor => Option.Some(descriptor),
 								() => GetParameterDescriptorForProperty(bindingContext)
 							)
 							.Match(
-								parameter => 
+								parameter =>
 								{
 									bindingContext.ModelState.TryAddModelException("ValigatorModelError", new ValigatorModelStateException(parameter, f));
 									return Unit.Value;
 								},
 								() => Unit.Value
 							);
-						
+
 						bindingContext.Result = ModelBindingResult.Failed();
 						return Unit.Value;
 					}
 				);
-		}
+
+		/// <inheritdoc />
+		public async Task BindModelAsync(ModelBindingContext bindingContext)
+			=> Validate((dynamic)await BindModel(bindingContext), bindingContext);
+				
 
 		private Option<ParameterDescriptor> GetParameterDescriptorForProperty(ModelBindingContext bindingContext)
 		{

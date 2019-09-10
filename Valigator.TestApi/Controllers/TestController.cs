@@ -16,7 +16,7 @@ namespace Valigator.TestApi.Controllers
 			=> new JsonResult(header.Match(_ => _, () => null));
 	}
 
-	public class DefaultedModelBinder : ValidateModelBinderAttribute, IValidateType<Option<string>>
+	public class DefaultedModelBinder : ValidateModelBinderAttribute
 	{
 		public Data<Option<string>> GetData() => Data.Defaulted("Default").Nullable();
 
@@ -24,22 +24,14 @@ namespace Valigator.TestApi.Controllers
 			=> Task
 				.FromResult
 				(
-					bindingContext
-					.HttpContext
-					.Request
-					.Headers
-					.TryFirst(s => s.Key.ToLower() == "testheader")
-					.Match
-					(
-						kvp => BindResult
-							.CreateSet
-							(
-								Option
-								.FromNullable(kvp.Value.FirstOrDefault())
-								.Where(s => !String.IsNullOrWhiteSpace(s))
-								.Select(s => (object)s)
-							),
-						() => BindResult.CreateUnSet()
+					BindResult.Create(
+						GetData().WithValue(Option.FromNullable(bindingContext
+						.HttpContext
+						.Request
+						.Headers
+						.FirstOrDefault(s => s.Key.ToLower() == "testheader")
+						.Value
+						.FirstOrDefault()))
 					)
 				);
 	}
