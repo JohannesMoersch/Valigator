@@ -87,10 +87,10 @@ namespace Valigator.Core.StateValidators
 					if (errors == null)
 						errors = new List<ValidationError>();
 
-					foreach (var error in errors)
-						error.Path.AddIndex(i);
-
 					errors.AddRange(failure);
+
+					foreach (var error in failure)
+						error.Path.AddIndex(i);
 				}
 			}
 

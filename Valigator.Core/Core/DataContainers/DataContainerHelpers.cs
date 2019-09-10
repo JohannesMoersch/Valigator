@@ -95,9 +95,7 @@ namespace Valigator.Core.DataContainers
 					throw new ModelRequiredException();
 			}
 
-			var innerValid = false;
-			var innerErrors = Array.Empty<ValidationError>();
-			//var innerValid = Model.Verify(value).TryGetValue(out var _, out var innerErrors);
+			var innerValid = Model.Verify(value).TryGetValue(out var _, out var innerErrors);
 
 			var oneValid = validatorOne.IsValid(model, value);
 			var twoValid = validatorTwo.IsValid(model, value);
