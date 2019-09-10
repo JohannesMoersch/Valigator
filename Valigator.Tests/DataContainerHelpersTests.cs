@@ -8,19 +8,77 @@ namespace Valigator.Tests
 		[Fact]
 		public void ShouldSucceedBecauseEverythingIsValid()
 		{
-			var nested = new NestedTestClass();
-			var second = new SecondNestedTestClass();
-			second.Int = second.Int.WithValue(201);
+			var nested1 = new NestedTestClass();
+			nested1.Int = nested1.Int.WithValue(101); 
+			
+			var nested2 = new NestedTestClass();
+			nested2.Int = nested2.Int.WithValue(101);
 
-			nested.Int = nested.Int.WithValue(101);
-			nested.SecondNestedTestClass = nested.SecondNestedTestClass.WithValue(second);
-			nested.SecondNestedCollection = nested.SecondNestedCollection.WithValue(new[] { second, second });
+			var second1 = new SecondNestedTestClass();
+			second1.Int = second1.Int.WithValue(201);
+
+			var second2 = new SecondNestedTestClass();
+			second2.Int = second2.Int.WithValue(201);
+			
+			nested1.SecondNestedTestClass = nested1.SecondNestedTestClass.WithValue(second1);
+			nested1.SecondNestedCollection = nested1.SecondNestedCollection.WithValue(new[] { second2 });
 
 			var sut = new TestClass();
-			sut.NestedTestClass = sut.NestedTestClass.WithValue(nested);
-			sut.NestedTestCollection = sut.NestedTestCollection.WithValue(new[] { nested, nested });
+			sut.NestedTestClass = sut.NestedTestClass.WithValue(nested1);
+			sut.NestedTestCollection = sut.NestedTestCollection.WithValue(new[] { nested2 });
 
-			Model.Verify(sut).AssertSuccess();
+			var result = Model.Verify(sut);
+			result.AssertSuccess();
+		}
+
+		[Fact]
+		public void ShouldFailBecauseNestedClassNotValid()
+		{
+			var nested1 = new NestedTestClass();
+			nested1.Int = nested1.Int.WithValue(1);
+
+			var nested2 = new NestedTestClass();
+			nested2.Int = nested2.Int.WithValue(101);
+
+			var second1 = new SecondNestedTestClass();
+			second1.Int = second1.Int.WithValue(201);
+
+			var second2 = new SecondNestedTestClass();
+			second2.Int = second2.Int.WithValue(201);
+
+			nested1.SecondNestedTestClass = nested1.SecondNestedTestClass.WithValue(second1);
+			nested1.SecondNestedCollection = nested1.SecondNestedCollection.WithValue(new[] { second2 });
+
+			var sut = new TestClass();
+			sut.NestedTestClass = sut.NestedTestClass.WithValue(nested1);
+			sut.NestedTestCollection = sut.NestedTestCollection.WithValue(new[] { nested2 });
+
+			var failures = Model.Verify(sut).AssertFailure();
+		}
+
+		[Fact]
+		public void ShouldFailBecauseNestedCollectionNotValid()
+		{
+			var nested1 = new NestedTestClass();
+			nested1.Int = nested1.Int.WithValue(101);
+
+			var nested2 = new NestedTestClass();
+			nested2.Int = nested2.Int.WithValue(1);
+
+			var second1 = new SecondNestedTestClass();
+			second1.Int = second1.Int.WithValue(201);
+
+			var second2 = new SecondNestedTestClass();
+			second2.Int = second2.Int.WithValue(201);
+
+			nested1.SecondNestedTestClass = nested1.SecondNestedTestClass.WithValue(second1);
+			nested1.SecondNestedCollection = nested1.SecondNestedCollection.WithValue(new[] { second2 });
+
+			var sut = new TestClass();
+			sut.NestedTestClass = sut.NestedTestClass.WithValue(nested1);
+			sut.NestedTestCollection = sut.NestedTestCollection.WithValue(new[] { nested2 });
+
+			var failures = Model.Verify(sut).AssertFailure();
 		}
 
 		private class TestClass
