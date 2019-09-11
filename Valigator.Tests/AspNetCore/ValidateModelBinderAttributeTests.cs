@@ -20,155 +20,112 @@ namespace Valigator.Tests.AspNetCore
 {
 	public class ValidateModelBinderAttributeTests
 	{
-		private const string _invalidDespiteBeingInRange = "4";
+		private const int _invalidDespiteBeingInRange = 4;
 
-		public class TestNullableValidateModelBinderAttribute : ValidateModelBinderAttribute, IValidateType<Option<int>>
+		public class TestMappedValidateModelBinderAttribute : ValidateModelBinderAttribute
 		{
 			public override Task<BindResult> BindModel(ModelBindingContext bindingContext)
-				=> Result
-					.TryAsync
-					(
-						() =>
-						{
-							var valueSet = bindingContext.ValueProvider.GetValue(bindingContext.FieldName);
-							if (!valueSet.Any())
-								return Task.FromResult(BindResult.CreateUnSet());
+				=> Task.FromResult(
+						BindResult.Create(
+							GetValue(bindingContext)
+							.Match(
+								s => s.Match(i => GetData().WithUncheckedValue(i), () => GetData().WithNull()),
+								() => GetData().WithErrors(new[] { MappingError.Create("Not an Int", typeof(string), typeof(int)) })
+							)
+						)
+					);
 
-							var value = Option.FromNullable(valueSet.FirstOrDefault());
-							var result = value
-								.Select(s => int.Parse(s))
-								.Match(v =>
-									{
-										if (v == int.Parse(_invalidDespiteBeingInRange))
-											return BindResult.CreateFailed(new ValidationError("Inner Error1", null));
-										return BindResult.CreateSet(Option.Some<object>(v));
-									},
-									() => BindResult.CreateSet(Option.None<object>())
-								);
-							return Task.FromResult(result);
-						}
-					)
-					.Match(_ => _, ex => BindResult.CreateFailed(new ValidationError("Exception Error1", null)));
+			private Data<int> GetData() => Data
+								.Required<int>()
+								.MappedFrom<string>(int.Parse, str => str.NotEmpty())
+								.InRange(greaterThan: -5, lessThan: 10)
+								.Assert("Inner Error1", i => i != _invalidDespiteBeingInRange);
 
 
-			public Data<Option<int>> GetData() => Data.Required<int>().Nullable().InRange(greaterThan: -5, lessThan: 10);
+			private static Option<Option<int>> GetValue(ModelBindingContext bindingContext)
+				=> ConvertToInt(bindingContext.ValueProvider.GetValue(bindingContext.FieldName).FirstValue);
+
+			private static Option<Option<int>> ConvertToInt(string arg)
+				=> Int32.TryParse(arg, out var i) ? Option.Some(Option.Some(i)) : Option.Create(String.IsNullOrWhiteSpace(arg), () => Option.None<int>());
 		}
 
-		public class TestValidateModelBinderAttribute : ValidateModelBinderAttribute, IValidateType<int>
+		public class TestValidateModelBinderAttribute : ValidateModelBinderAttribute
 		{
 			public override Task<BindResult> BindModel(ModelBindingContext bindingContext)
-				=> Result
-					.TryAsync
-					(
-						() =>
-						{
-							var valueSet = bindingContext.ValueProvider.GetValue(bindingContext.FieldName);
-							if (!valueSet.Any())
-								return Task.FromResult(BindResult.CreateUnSet());
+				=> Task.FromResult(
+						BindResult.Create(
+							GetValue(bindingContext)
+							.Match(
+								s => GetData().WithValue(s.Match(_ => _, () => (int?)null)),
+								() => GetData().WithErrors(new[] { MappingError.Create("Not an Int", typeof(string), typeof(int)) })
+							)
+						)
+					);
 
-							var value = Option.FromNullable(valueSet.FirstOrDefault());
-							var result = value
-								.Select(s => int.Parse(s))
-								.Match(v =>
-									{
-										if (v == int.Parse(_invalidDespiteBeingInRange))
-											return BindResult.CreateFailed(new ValidationError("Inner Error1", null));
-										return BindResult.CreateSet(Option.Some((object)v));
-									},
-									() => BindResult.CreateSet(Option.None<object>())
-								);
-							return Task.FromResult(result);
-						}
-					)
-					.Match(_ => _, ex => BindResult.CreateFailed(new ValidationError("Exception Error1", null)));
+			private Data<int> GetData() => Data
+								.Required<int>()
+								.InRange(greaterThan: -5, lessThan: 10)
+								.Assert("Inner Error1", i => i != _invalidDespiteBeingInRange);
 
 
-			public Data<int> GetData() => Data.Required<int>().InRange(greaterThan: -5, lessThan: 10);
+
+			private static Option<Option<int>> GetValue(ModelBindingContext bindingContext)
+				=> ConvertToInt(bindingContext.ValueProvider.GetValue(bindingContext.FieldName).FirstValue);
+
+			private static Option<Option<int>> ConvertToInt(string arg)
+				=> Int32.TryParse(arg, out var i) ? Option.Some(Option.Some(i)) : Option.Create(String.IsNullOrWhiteSpace(arg), () => Option.None<int>());
 		}
 
 		public class RequiredInt
 		{
-
-			[Fact]
-			public void SucceedsAsserting()
-				=> new TestValidateModelBinderAttribute()
-					.Verify(0)
-					.AssertSuccess();
-
-			[Fact]
-			public void ThrowsError()
-				=> Assert.Throws<ValidateAttributeDoesNotSupportTypeException>(() => new TestValidateModelBinderAttribute().Verify(1.0f));
-
-			[Fact]
-			public void SucceedsGettingDescriptor()
+			public class Unmapped
 			{
-				var descriptor = new TestValidateModelBinderAttribute()
-					.GetDescriptor(typeof(int));
+				[Theory]
+				[InlineData("4", "Inner Error1")]
+				[InlineData("-4", null)]
+				[InlineData("9", null)]
+				[InlineData("10", "RangeValidator_Int32")]
+				[InlineData("11", "RangeValidator_Int32")]
+				[InlineData("-5", "RangeValidator_Int32")]
+				[InlineData("-6", "RangeValidator_Int32")]
+				[InlineData("z", "Not an Int")]
+				[InlineData("", "Value cannot be null.")]
+				[InlineData(null, "Value cannot be null.")]
+				public async Task ProducesError(string value, string errorMessage)
+				{
+					var context = new TestModelBindingContext(value, "theName");
+					await new TestValidateModelBinderAttribute().BindModelAsync(context);
+					var errors = context.ModelState.SelectMany(modelState => modelState.Value.Errors.SelectMany(ex => (ex.Exception as ValigatorModelStateException).ValidationErrors.Select(error => error.Message))).ToArray();
+					if (errorMessage == null)
+						errors.Should().HaveCount(0);
+					else
+						errors.Should().BeEquivalentTo(new[] { errorMessage });
+				}
 			}
 
-			[Theory]
-			[InlineData(_invalidDespiteBeingInRange, "Inner Error1")]
-			[InlineData("-4", null)]
-			[InlineData("9", null)]
-			[InlineData("10", "RangeValidator_Int32")]
-			[InlineData("11", "RangeValidator_Int32")]
-			[InlineData("-5", "RangeValidator_Int32")]
-			[InlineData("-6", "RangeValidator_Int32")]
-			[InlineData("z", "Exception Error1")]
-			[InlineData("", "Exception Error1")]
-			[InlineData(null, "Value cannot be null.")]
-			public async Task ProducesError(string value, string errorMessage)
+			public class Mapped
 			{
-				var context = new TestModelBindingContext(value, "theName");
-				await new TestValidateModelBinderAttribute().BindModelAsync(context);
-				var errors = context.ModelState.SelectMany(modelState => modelState.Value.Errors.SelectMany(ex => (ex.Exception as ValigatorModelStateException).ValidationErrors.Select(error => error.Message))).ToArray();
-				if (errorMessage == null)
-					errors.Should().HaveCount(0);
-				else
-					errors.Should().BeEquivalentTo(new[] { errorMessage });
-			}
-		}
-
-		public class OptionalInt
-		{
-
-			[Fact]
-			public void SucceedsAsserting()
-				=> new TestNullableValidateModelBinderAttribute()
-					.Verify(null)
-					.AssertSuccess();
-
-			[Fact]
-			public void ThrowsError()
-				=> Assert.Throws<ValidateAttributeDoesNotSupportTypeException>(() => new TestNullableValidateModelBinderAttribute().Verify(1.0f));
-
-			[Fact]
-			public void SucceedsGettingDescriptor()
-			{
-				var descriptor = new TestNullableValidateModelBinderAttribute()
-					.GetDescriptor(typeof(Option<int>));
-			}
-
-			[Theory]
-			[InlineData(_invalidDespiteBeingInRange, "Inner Error1")]
-			[InlineData("-4", null)]
-			[InlineData("9", null)]
-			[InlineData("10", "RangeValidator_Int32")]
-			[InlineData("11", "RangeValidator_Int32")]
-			[InlineData("-5", "RangeValidator_Int32")]
-			[InlineData("-6", "RangeValidator_Int32")]
-			[InlineData("z", "Exception Error1")]
-			[InlineData("", "Exception Error1")]
-			[InlineData(null, null)]
-			public async Task ProducesError(string value, string errorMessage)
-			{
-				var context = new TestModelBindingContext(value, "theName");
-				await new TestNullableValidateModelBinderAttribute().BindModelAsync(context);
-				var errors = context.ModelState.SelectMany(modelState => modelState.Value.Errors.SelectMany(ex => (ex.Exception as ValigatorModelStateException).ValidationErrors.Select(error => error.Message))).ToArray();
-				if (errorMessage == null)
-					errors.Should().HaveCount(0);
-				else
-					errors.Should().BeEquivalentTo(new[] { errorMessage });
+				[Theory]
+				[InlineData("4", "Inner Error1")]
+				[InlineData("-4", null)]
+				[InlineData("9", null)]
+				[InlineData("10", "RangeValidator_Int32")]
+				[InlineData("11", "RangeValidator_Int32")]
+				[InlineData("-5", "RangeValidator_Int32")]
+				[InlineData("-6", "RangeValidator_Int32")]
+				[InlineData("z", "Not an Int")]
+				[InlineData("", "Value cannot be null.")]
+				[InlineData(null, "Value cannot be null.")]
+				public async Task ProducesError(string value, string errorMessage)
+				{
+					var context = new TestModelBindingContext(value, "theName");
+					await new TestMappedValidateModelBinderAttribute().BindModelAsync(context);
+					var errors = context.ModelState.SelectMany(modelState => modelState.Value.Errors.SelectMany(ex => (ex.Exception as ValigatorModelStateException).ValidationErrors.Select(error => error.Message))).ToArray();
+					if (errorMessage == null)
+						errors.Should().HaveCount(0);
+					else
+						errors.Should().BeEquivalentTo(new[] { errorMessage });
+				}
 			}
 		}
 

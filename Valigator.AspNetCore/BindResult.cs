@@ -5,28 +5,20 @@ using Functional;
 
 namespace Valigator
 {
-	public struct BindResult
+	public class BindResult
 	{
-		private readonly Result<Option<Option<object>>, ValidationError[]> _result;
+		public static BindResult Create<TValue>(Data<TValue> data)
+			=> BindResult<TValue>.Create(data);
+	}
 
-		private BindResult(Result<Option<Option<object>>, ValidationError[]> result)
-			=> _result = result;
+	internal class BindResult<TValue> : BindResult
+	{
+		public Data<TValue> Data { get; }
 
-		public TValue Match<TValue>(Func<Option<object>, TValue> set, Func<TValue> notSet, Func<ValidationError[], TValue> failed)
-			=> _result
-				.Match
-				(
-					success => success.Match(set, notSet),
-					failed
-				);
+		private BindResult(Data<TValue> data)
+			=> Data = data;
 
-		public static BindResult CreateSet(Option<object> value)
-			=> new BindResult(Result.Success<Option<Option<object>>, ValidationError[]>(Option.Some(value)));
-
-		public static BindResult CreateUnSet()
-			=> new BindResult(Result.Success<Option<Option<object>>, ValidationError[]>(Option.None<Option<object>>()));
-
-		public static BindResult CreateFailed(params ValidationError[] validationErrors)
-			=> new BindResult(Result.Failure<Option<Option<object>>, ValidationError[]>(validationErrors));
+		public new static BindResult<TDataValue> Create<TDataValue>(Data<TDataValue> data)
+			=> new BindResult<TDataValue>(data);
 	}
 }
