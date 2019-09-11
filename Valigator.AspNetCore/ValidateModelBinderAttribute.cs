@@ -10,7 +10,7 @@ using Valigator.Core;
 namespace Valigator
 {
 	[AttributeUsage(AttributeTargets.Parameter, AllowMultiple = true)]
-	public abstract class ValidateModelBinderAttribute : Attribute, IModelNameProvider, IBinderTypeProviderMetadata, IBindingSourceMetadata, IModelBinder, IVerifiable, IDescriptorProvider
+	public abstract class ValidateModelBinderAttribute : Attribute, IModelNameProvider, IBinderTypeProviderMetadata, IBindingSourceMetadata, IModelBinder
 	{
 		public ValidateModelBinderAttribute()
 		{
