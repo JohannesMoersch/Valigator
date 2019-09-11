@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using FluentAssertions;
 using Functional;
 using Newtonsoft.Json;
 using Valigator.Core;
+using Valigator.Core.ValueDescriptors;
 using Valigator.Newtonsoft.Json;
 using Xunit;
 
@@ -18,6 +20,23 @@ namespace Valigator.Tests.Newtonsoft
 			{
 				public Data<int> Value { get; set; } = Data.Required<int>();
 			}
+
+			public class TestGuidClass
+			{
+				public Data<Guid> Value { get; set; } = Data.Required<Guid>();
+			}
+
+			[Fact]
+			public void WithImproperlyFormedGuid()
+				=> Deserialize<TestGuidClass>(@"{""Value"":""118ae9cc-3b7e-42""}")
+						.Value
+						.Verify()
+						.TryGetValue()
+						.AssertFailure()
+						.First()
+						.ValueDescriptor
+						.Should()
+						.BeOfType<MappingDescriptor>();
 
 			[Fact]
 			public void WithValue()

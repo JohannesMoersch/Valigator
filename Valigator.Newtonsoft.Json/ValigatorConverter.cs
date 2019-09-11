@@ -45,9 +45,16 @@ namespace Valigator.Newtonsoft.Json
 			if (reader.TokenType == JsonToken.Null)
 				return data.WithNull();
 
-			var value = serializer.Deserialize<TValue>(reader);
+			try
+			{
+				var value = serializer.Deserialize<TValue>(reader);
 
-			return dataContainer.WithValue(data, Option.Create(value != null, value));
+				return dataContainer.WithValue(data, Option.Create(value != null, value));
+			}
+			catch (JsonSerializationException e)
+			{
+				return data.WithErrors(MappingError.Create(e.Message, typeof(string), typeof(TValue)));
+			}
 		}
 
 		private static Data<TDataValue> WithCollectionValue<TDataValue, TValue>(Data<TDataValue> data, IAcceptCollectionValue<TDataValue, TValue> dataContainer, JsonReader reader, JsonSerializer serializer)
