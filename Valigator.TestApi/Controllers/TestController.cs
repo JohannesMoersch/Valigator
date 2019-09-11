@@ -18,20 +18,22 @@ namespace Valigator.TestApi.Controllers
 
 	public class DefaultedModelBinder : ValidateModelBinderAttribute
 	{
-		public Data<Option<string>> GetData() => Data.Defaulted("Default").Nullable();
+		private readonly Data<Option<string>> _data = Data.Defaulted("Default").Nullable();
+		private readonly Data<string> _d = Data.Defaulted("Default");
 
 		public override Task<BindResult> BindModel(ModelBindingContext bindingContext)
 			=> Task
 				.FromResult
 				(
 					BindResult.Create(
-						GetData().WithValue(Option.FromNullable(bindingContext
+						Option.FromNullable(bindingContext
 						.HttpContext
 						.Request
 						.Headers
 						.FirstOrDefault(s => s.Key.ToLower() == "testheader")
 						.Value
-						.FirstOrDefault()))
+						.FirstOrDefault())
+						.Match(s => _data.WithValue(Option.Some(s)), () => _data)
 					)
 				);
 	}
