@@ -29,7 +29,7 @@ namespace Valigator.AspNetCore
 			=> value
 				.Match(
 					success => Option.Some(success.Match(
-						s => s is TValue && !(s is TDataValue) ? success : throw new ValidateAttributeDoesNotSupportTypeException(s.GetType(), typeof(TValue)), 
+						s => s is TValue ? success : throw new ValidateAttributeDoesNotSupportTypeException(s.GetType(), typeof(TValue)), 
 						() => success
 					)),
 					() => Option.None<Option<object>>()
@@ -39,7 +39,7 @@ namespace Valigator.AspNetCore
 					some => some
 						.Match
 						(
-							o => o is TDataValue ? data.WithUncheckedValue((TDataValue)o) : dataContainer.WithValue(data, Option.Some((TValue)o)), 
+							o => dataContainer.WithValue(data, Option.Some((TValue)o)), 
 							() => dataContainer.WithNull(data)
 						),
 					() => data
