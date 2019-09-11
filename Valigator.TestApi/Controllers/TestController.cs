@@ -19,7 +19,6 @@ namespace Valigator.TestApi.Controllers
 	public class DefaultedModelBinder : ValidateModelBinderAttribute
 	{
 		private readonly Data<Option<string>> _data = Data.Defaulted("Default").Nullable();
-		private readonly Data<string> _d = Data.Defaulted("Default");
 
 		public override Task<BindResult> BindModel(ModelBindingContext bindingContext)
 			=> Task
