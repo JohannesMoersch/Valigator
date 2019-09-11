@@ -50,16 +50,16 @@ namespace Valigator.Core.StateValidators
 			where TValueValidator : struct, IValueValidator<TValue>
 			=> new DataSourceStandard<NullableDataContainerFactory<NullableDefaultedStateValidator<TValue>, TValue, TValue>, Option<TValue>, TValue, TValueValidator>(new NullableDataContainerFactory<NullableDefaultedStateValidator<TValue>, TValue, TValue>(this, Mapping.CreatePassthrough<TValue>()), valueValidator);
 
-		public DataSource<NullableDataContainerFactory<NullableDefaultedStateValidator<TValue>, TSource, TValue>, Option<TValue>, TValue> MappedFrom<TSource>(Func<TSource, TValue> mapper)
+		public DataSource<NullableDataContainerFactory<NullableDefaultedStateValidator<TValue>, TSource, TValue>, Option<TValue>, TValue> MappedFrom<TSource>(Func<TSource, Option<TValue>> mapper)
 			=> MappedFrom(Mapping.Create(mapper));
 
-		public DataSource<NullableDataContainerFactory<NullableDefaultedStateValidator<TValue>, TSource, TValue>, Option<TValue>, TValue> MappedFrom<TSource>(Func<TSource, Result<TValue, ValidationError[]>> mapper)
+		public DataSource<NullableDataContainerFactory<NullableDefaultedStateValidator<TValue>, TSource, TValue>, Option<TValue>, TValue> MappedFrom<TSource>(Func<TSource, Result<Option<TValue>, ValidationError[]>> mapper)
 			=> MappedFrom(Mapping.Create(mapper));
 
-		public DataSource<NullableDataContainerFactory<NullableDefaultedStateValidator<TValue>, TSource, TValue>, Option<TValue>, TValue> MappedFrom<TSource>(Func<TSource, TValue> mapper, Func<RequiredStateValidator<TSource>, Data<TSource>> sourceValidations)
+		public DataSource<NullableDataContainerFactory<NullableDefaultedStateValidator<TValue>, TSource, TValue>, Option<TValue>, TValue> MappedFrom<TSource>(Func<TSource, Option<TValue>> mapper, Func<RequiredStateValidator<TSource>, Data<TSource>> sourceValidations)
 			=> MappedFrom(Mapping.Create(mapper, sourceValidations));
 
-		public DataSource<NullableDataContainerFactory<NullableDefaultedStateValidator<TValue>, TSource, TValue>, Option<TValue>, TValue> MappedFrom<TSource>(Func<TSource, Result<TValue, ValidationError[]>> mapper, Func<RequiredStateValidator<TSource>, Data<TSource>> sourceValidations)
+		public DataSource<NullableDataContainerFactory<NullableDefaultedStateValidator<TValue>, TSource, TValue>, Option<TValue>, TValue> MappedFrom<TSource>(Func<TSource, Result<Option<TValue>, ValidationError[]>> mapper, Func<RequiredStateValidator<TSource>, Data<TSource>> sourceValidations)
 			=> MappedFrom(Mapping.Create(mapper, sourceValidations));
 
 		private DataSource<NullableDataContainerFactory<NullableDefaultedStateValidator<TValue>, TSource, TValue>, Option<TValue>, TValue> MappedFrom<TSource>(Mapping<TSource, TValue> mapping)

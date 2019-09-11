@@ -15,7 +15,7 @@ namespace Valigator.Core.DataContainers
 			if (value.TryGetValue(out var some))
 			{
 				if (mapping.Map(some).TryGetValue(out var success, out var failure))
-					return data.WithValidatedValue(Option.Some(success), stateValidator);
+					return data.WithValidatedValue(success, stateValidator);
 
 				return data.WithErrors(failure);
 			}
@@ -35,7 +35,7 @@ namespace Valigator.Core.DataContainers
 					if (some[i].TryGetValue(out var item))
 					{
 						if (mapping.Map(item).TryGetValue(out var success, out var failure))
-							mappedValue[i] = Option.Some(success);
+							mappedValue[i] = success;
 						else
 						{
 							foreach (var error in failure)

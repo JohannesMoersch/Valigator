@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Valigator.Core;
+using Valigator.Core.ValueDescriptors;
 
 namespace Valigator
 {
@@ -34,6 +35,14 @@ namespace Valigator
 		}
 
 		public static ValidationError Create(string message)
-			=> new ValidationError(message, null);
-	}
-}
+			=> new ValidationError(message, new CustomDescriptor(""));
+
+		public static ValidationError Create(string message, IValueDescriptor valueDescriptor)
+			=> new ValidationError(message, valueDescriptor);
+
+		public static ValidationError CreateMappingError(string message, Type fromType, Type toType)
+			=> new ValidationError(message, new MappingDescriptor(fromType, toType));
+
+		public static ValidationError CreateMappingError(Type fromType, Type toType)
+			=> new ValidationError($"Failed to map from type '{fromType.FullName}' to '{toType.FullName}'.", new MappingDescriptor(fromType, toType));
+	}}
