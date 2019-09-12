@@ -59,7 +59,7 @@ namespace Valigator.Tests
 			[Fact]
 			public void InvalidBecauseFailureResult()
 				=> CreateData<float>()
-					.MappedFrom<int>(x => Result.Failure<float, ValidationError[]>(_testErrors))
+					.MappedFrom<int>(x => Result.Failure<Option<float>, ValidationError[]>(_testErrors))
 					.Data
 					.WithMappedValue(500)
 					.Verify(new object())
@@ -71,7 +71,7 @@ namespace Valigator.Tests
 			[Fact]
 			public void InvalidBecauseSourceValidations()
 				=> CreateData<float>()
-					.MappedFrom<int>(x => Result.Success<float, ValidationError[]>(x + 0.5f), o => o.InSet(100))
+					.MappedFrom<int>(x => Result.Success<Option<float>, ValidationError[]>(Option.Some(x + 0.5f)), o => o.InSet(100))
 					.Data
 					.WithMappedValue(500)
 					.Verify(new object())
@@ -81,9 +81,9 @@ namespace Valigator.Tests
 					.OnlyContain(e => e.ValueDescriptor.Equals(new InSetDescriptor(new object[] { 100 })));
 
 			[Fact]
-			public void ValidBecauseSuccessResult()
+			public void ValidSomeBecauseSuccessSomeResult()
 				=> CreateData<float>()
-					.MappedFrom<int>(x => Result.Success<float, ValidationError[]>(x + 0.5f))
+					.MappedFrom<int>(x => Result.Success<Option<float>, ValidationError[]>(Option.Some(x + 0.5f)))
 					.Data
 					.WithMappedValue(500)
 					.Verify(new object())
@@ -92,6 +92,17 @@ namespace Valigator.Tests
 					.AssertSome()
 					.Should()
 					.Be(500.5f);
+
+			[Fact]
+			public void ValidNoneBecauseSuccessNoneResult()
+				=> CreateData<float>()
+					.MappedFrom<int>(x => Result.Success<Option<float>, ValidationError[]>(Option.None<float>()))
+					.Data
+					.WithMappedValue(500)
+					.Verify(new object())
+					.TryGetValue()
+					.AssertSuccess()
+					.AssertNone();
 		}
 
 		public class Optional
@@ -143,7 +154,7 @@ namespace Valigator.Tests
 			[Fact]
 			public void InvalidBecauseFailureResult()
 				=> CreateData<float>()
-					.MappedFrom<int>(x => Result.Failure<float, ValidationError[]>(_testErrors))
+					.MappedFrom<int>(x => Result.Failure<Option<float>, ValidationError[]>(_testErrors))
 					.Data
 					.WithMappedValue(500)
 					.Verify(new object())
@@ -155,7 +166,7 @@ namespace Valigator.Tests
 			[Fact]
 			public void InvalidBecauseSourceValidations()
 				=> CreateData<float>()
-					.MappedFrom<int>(x => Result.Success<float, ValidationError[]>(x + 0.5f), o => o.InSet(100))
+					.MappedFrom<int>(x => Result.Success<Option<float>, ValidationError[]>(Option.Some(x + 0.5f)), o => o.InSet(100))
 					.Data
 					.WithMappedValue(500)
 					.Verify(new object())
@@ -165,9 +176,9 @@ namespace Valigator.Tests
 					.OnlyContain(e => e.ValueDescriptor.Equals(new InSetDescriptor(new object[] { 100 })));
 
 			[Fact]
-			public void ValidBecauseSuccessResult()
+			public void ValidSomeBecauseSuccessSomeResult()
 				=> CreateData<float>()
-					.MappedFrom<int>(x => Result.Success<float, ValidationError[]>(x + 0.5f))
+					.MappedFrom<int>(x => Result.Success<Option<float>, ValidationError[]>(Option.Some(x + 0.5f)))
 					.Data
 					.WithMappedValue(500)
 					.Verify(new object())
@@ -176,6 +187,17 @@ namespace Valigator.Tests
 					.AssertSome()
 					.Should()
 					.Be(500.5f);
+
+			[Fact]
+			public void ValidNoneBecauseSuccessNoneResult()
+				=> CreateData<float>()
+					.MappedFrom<int>(x => Result.Success<Option<float>, ValidationError[]>(Option.None<float>()))
+					.Data
+					.WithMappedValue(500)
+					.Verify(new object())
+					.TryGetValue()
+					.AssertSuccess()
+					.AssertNone();
 		}
 
 		public class Defaulted
@@ -226,7 +248,7 @@ namespace Valigator.Tests
 			[Fact]
 			public void InvalidBecauseFailureResult()
 				=> CreateData<float>()
-					.MappedFrom<int>(x => Result.Failure<float, ValidationError[]>(_testErrors))
+					.MappedFrom<int>(x => Result.Failure<Option<float>, ValidationError[]>(_testErrors))
 					.Data
 					.WithMappedValue(500)
 					.Verify(new object())
@@ -238,7 +260,7 @@ namespace Valigator.Tests
 			[Fact]
 			public void InvalidBecauseSourceValidations()
 				=> CreateData<float>()
-					.MappedFrom<int>(x => Result.Success<float, ValidationError[]>(x + 0.5f), o => o.InSet(100))
+					.MappedFrom<int>(x => Result.Success<Option<float>, ValidationError[]>(Option.Some(x + 0.5f)), o => o.InSet(100))
 					.Data
 					.WithMappedValue(500)
 					.Verify(new object())
@@ -248,9 +270,9 @@ namespace Valigator.Tests
 					.OnlyContain(e => e.ValueDescriptor.Equals(new InSetDescriptor(new object[] { 100 })));
 
 			[Fact]
-			public void ValidBecauseSuccessResult()
+			public void ValidSomeBecauseSuccessSomeResult()
 				=> CreateData<float>()
-					.MappedFrom<int>(x => Result.Success<float, ValidationError[]>(x + 0.5f))
+					.MappedFrom<int>(x => Result.Success<Option<float>, ValidationError[]>(Option.Some(x + 0.5f)))
 					.Data
 					.WithMappedValue(500)
 					.Verify(new object())
@@ -259,6 +281,17 @@ namespace Valigator.Tests
 					.AssertSome()
 					.Should()
 					.Be(500.5f);
+
+			[Fact]
+			public void ValidNoneBecauseSuccessNoneResult()
+				=> CreateData<float>()
+					.MappedFrom<int>(x => Result.Success<Option<float>, ValidationError[]>(Option.None<float>()))
+					.Data
+					.WithMappedValue(500)
+					.Verify(new object())
+					.TryGetValue()
+					.AssertSuccess()
+					.AssertNone();
 		}
 	}
 }

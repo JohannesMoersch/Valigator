@@ -12,6 +12,7 @@ namespace Valigator.Core.ValueDescriptors
 		}
 
 		public Type FromType { get; }
+
 		public Type ToType { get; }
 
 		public override bool Equals(object obj)

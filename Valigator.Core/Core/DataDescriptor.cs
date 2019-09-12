@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Functional;
 using Valigator.Core.StateDescriptors;
 using Valigator.Core.ValueDescriptors;
 using Valigator.Core.ValueValidators;
@@ -10,20 +11,20 @@ namespace Valigator.Core
 {
 	public struct DataDescriptor : IEquatable<DataDescriptor>
 	{
-		public Type SourceType { get; }
-
 		public Type PropertyType { get; }
 
 		public IStateDescriptor StateDescriptor { get; }
 
 		public IReadOnlyList<IValueDescriptor> ValueDescriptors { get; }
 
-		public DataDescriptor(Type sourceType, Type propertyType, IStateDescriptor stateDescriptor, IValueDescriptor[] valueDescriptors)
+		public Option<MappedFromDescriptor> MappingDescriptor { get; }
+
+		public DataDescriptor(Type propertyType, IStateDescriptor stateDescriptor, IValueDescriptor[] valueDescriptors, Option<MappedFromDescriptor> mappingDescriptor)
 		{
-			SourceType = sourceType ?? throw new ArgumentNullException(nameof(sourceType));
 			PropertyType = propertyType ?? throw new ArgumentNullException(nameof(propertyType));
 			StateDescriptor = stateDescriptor ?? throw new ArgumentNullException(nameof(stateDescriptor));
 			ValueDescriptors = valueDescriptors ?? throw new ArgumentNullException(nameof(valueDescriptors));
+			MappingDescriptor = mappingDescriptor;
 		}
 
 		public override bool Equals(object obj)
@@ -44,17 +45,11 @@ namespace Valigator.Core
 			return hashCode;
 		}
 
-		public static DataDescriptor Create<TDataValue, TValidateValue, TValue>(ICollectionStateValidator<TDataValue, TValue> stateValidator, params IValueValidator<TValidateValue>[] valueDescriptors)
-			=> new DataDescriptor(typeof(TValue[]), typeof(TValue[]), stateValidator.GetDescriptor(), CombineValueDescriptors(stateValidator, valueDescriptors));
+		public static DataDescriptor Create<TDataValue, TValidateValue, TSource, TValue>(Mapping<TSource, TValue> mapping, ICollectionStateValidator<TDataValue, TValue> stateValidator, params IValueValidator<TValidateValue>[] valueDescriptors)
+			=> new DataDescriptor(typeof(TValue[]), stateValidator.GetDescriptor(), CombineValueDescriptors(stateValidator, valueDescriptors), Option.Create(typeof(TSource) != typeof(TValue), mapping.MappingDescriptor));
 
-		public static DataDescriptor Create<TDataValue, TValidateValue, TValue>(IStateValidator<TDataValue, TValue> stateValidator, params IValueValidator<TValidateValue>[] valueDescriptors)
-			=> new DataDescriptor(typeof(TValue), typeof(TValue), stateValidator.GetDescriptor(), CombineValueDescriptors(stateValidator, valueDescriptors));
-
-		public static DataDescriptor Create<TDataValue, TValidateValue, TSource, TValue>(Mapping<TSource, TValue> _, ICollectionStateValidator<TDataValue, TValue> stateValidator, params IValueValidator<TValidateValue>[] valueDescriptors)
-			=> new DataDescriptor(typeof(TSource[]), typeof(TValue[]), stateValidator.GetDescriptor(), CombineValueDescriptors(stateValidator, valueDescriptors));
-
-		public static DataDescriptor Create<TDataValue, TValidateValue, TSource, TValue>(Mapping<TSource, TValue> _, IStateValidator<TDataValue, TValue> stateValidator, params IValueValidator<TValidateValue>[] valueDescriptors)
-			=> new DataDescriptor(typeof(TSource), typeof(TValue), stateValidator.GetDescriptor(), CombineValueDescriptors(stateValidator, valueDescriptors));
+		public static DataDescriptor Create<TDataValue, TValidateValue, TSource, TValue>(Mapping<TSource, TValue> mapping, IStateValidator<TDataValue, TValue> stateValidator, params IValueValidator<TValidateValue>[] valueDescriptors)
+			=> new DataDescriptor(typeof(TValue), stateValidator.GetDescriptor(), CombineValueDescriptors(stateValidator, valueDescriptors), Option.Create(typeof(TSource) != typeof(TValue), mapping.MappingDescriptor));
 
 		private static IValueDescriptor[] CombineValueDescriptors<TDataValue, TValidateValue, TValue>(IStateValidator<TDataValue, TValue> stateValidator, params IValueValidator<TValidateValue>[] valueDescriptors)
 			=> GetValueDescriptors(stateValidator, valueDescriptors).Distinct().ToArray();

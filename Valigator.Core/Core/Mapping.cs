@@ -1,7 +1,10 @@
 ﻿using Functional;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Valigator.Core.Helpers;
 using Valigator.Core.StateValidators;
+using Valigator.Core.ValueDescriptors;
 
 namespace Valigator.Core
 {
@@ -18,19 +21,37 @@ namespace Valigator.Core
 		public static Mapping<TInput, TResult> Create<TInput, TResult>(Func<TInput, Result<TResult, ValidationError[]>> mapper)
 			=> Create(mapper, Option.None<Data<TInput>>());
 
+		public static Mapping<TInput, TResult> Create<TInput, TResult>(Func<TInput, Result<Option<TResult>, ValidationError[]>> mapper)
+			=> Create(mapper, Option.None<Data<TInput>>());
+
 		public static Mapping<TInput, TResult> Create<TInput, TResult>(Func<TInput, TResult> mapper)
+			=> Create(mapper, Option.None<Data<TInput>>());
+
+		public static Mapping<TInput, TResult> Create<TInput, TResult>(Func<TInput, Option<TResult>> mapper)
 			=> Create(mapper, Option.None<Data<TInput>>());
 
 		public static Mapping<TInput, TResult> Create<TInput, TResult>(Func<TInput, Result<TResult, ValidationError[]>> mapper, Func<RequiredStateValidator<TInput>, Data<TInput>> sourceValidations)
 			=> Create(mapper, Option.Some(sourceValidations.Invoke(Data.Required<TInput>())));
 
+		public static Mapping<TInput, TResult> Create<TInput, TResult>(Func<TInput, Result<Option<TResult>, ValidationError[]>> mapper, Func<RequiredStateValidator<TInput>, Data<TInput>> sourceValidations)
+			=> Create(mapper, Option.Some(sourceValidations.Invoke(Data.Required<TInput>())));
+
 		public static Mapping<TInput, TResult> Create<TInput, TResult>(Func<TInput, TResult> mapper, Func<RequiredStateValidator<TInput>, Data<TInput>> sourceValidations)
+			=> Create(mapper, Option.Some(sourceValidations.Invoke(Data.Required<TInput>())));
+
+		public static Mapping<TInput, TResult> Create<TInput, TResult>(Func<TInput, Option<TResult>> mapper, Func<RequiredStateValidator<TInput>, Data<TInput>> sourceValidations)
 			=> Create(mapper, Option.Some(sourceValidations.Invoke(Data.Required<TInput>())));
 
 		private static Mapping<TInput, TResult> Create<TInput, TResult>(Func<TInput, TResult> mapper, Option<Data<TInput>> sourceValidations)
 			=> new Mapping<TInput, TResult>(mapper, sourceValidations);
 
+		private static Mapping<TInput, TResult> Create<TInput, TResult>(Func<TInput, Option<TResult>> mapper, Option<Data<TInput>> sourceValidations)
+			=> new Mapping<TInput, TResult>(mapper, sourceValidations);
+
 		private static Mapping<TInput, TResult> Create<TInput, TResult>(Func<TInput, Result<TResult, ValidationError[]>> mapper, Option<Data<TInput>> sourceValidations)
+			=> new Mapping<TInput, TResult>(mapper, sourceValidations);
+
+		private static Mapping<TInput, TResult> Create<TInput, TResult>(Func<TInput, Result<Option<TResult>, ValidationError[]>> mapper, Option<Data<TInput>> sourceValidations)
 			=> new Mapping<TInput, TResult>(mapper, sourceValidations);
 	}
 
@@ -39,6 +60,8 @@ namespace Valigator.Core
 		private readonly object _mapper;
 
 		private readonly Option<Data<TSource>> _sourceValidations;
+
+		public MappedFromDescriptor MappingDescriptor => new MappedFromDescriptor(typeof(TSource), _sourceValidations.TryGetValue(out var some) ? some.DataDescriptor.ValueDescriptors.Where(o => !(o is RequiredDescriptor) && !(o is NotNullDescriptor)).ToArray() : Array.Empty<IValueDescriptor>());
 
 		internal Mapping(Func<TSource, TValue> mapper, Option<Data<TSource>> sourceValidations)
 		{
@@ -52,7 +75,19 @@ namespace Valigator.Core
 			_sourceValidations = sourceValidations;
 		}
 
-		public Result<TValue, ValidationError[]> Map(TSource input)
+		internal Mapping(Func<TSource, Option<TValue>> mapper, Option<Data<TSource>> sourceValidations)
+		{
+			_mapper = mapper;
+			_sourceValidations = sourceValidations;
+		}
+
+		internal Mapping(Func<TSource, Result<Option<TValue>, ValidationError[]>> mapper, Option<Data<TSource>> sourceValidations)
+		{
+			_mapper = mapper;
+			_sourceValidations = sourceValidations;
+		}
+
+		public Result<Option<TValue>, ValidationError[]> Map(TSource input)
 		{
 			Result<TSource, ValidationError[]> verifiedInput;
 			if (_sourceValidations.TryGetValue(out var some))
@@ -68,20 +103,31 @@ namespace Valigator.Core
 			if (verifiedInput.TryGetValue(out var success, out var failure))
 			{
 				if (_mapper is Func<TSource, TValue> mapper)
-					return Result.Success<TValue, ValidationError[]>(mapper.Invoke(success));
+					return Result.Success<Option<TValue>, ValidationError[]>(Option.Some(mapper.Invoke(success)));
 
 				if (_mapper is Func<TSource, Result<TValue, ValidationError[]>> mapperWithErrors)
 				{
 					if (mapperWithErrors.Invoke(success).TryGetValue(out var s, out var f))
-						return Result.Success<TValue, ValidationError[]>(s);
+						return Result.Success<Option<TValue>, ValidationError[]>(Option.Some(s));
 
-					return Result.Failure<TValue, ValidationError[]>(f);
+					return Result.Failure<Option<TValue>, ValidationError[]>(f);
 				}
 
-				return Result.Failure<TValue, ValidationError[]>(Array.Empty<ValidationError>());
+				if (_mapper is Func<TSource, Option<TValue>> nullableMapper)
+					return Result.Success<Option<TValue>, ValidationError[]>(nullableMapper.Invoke(success));
+
+				if (_mapper is Func<TSource, Result<Option<TValue>, ValidationError[]>> nullableMapperWithErrors)
+				{
+					if (nullableMapperWithErrors.Invoke(success).TryGetValue(out var s, out var f))
+						return Result.Success<Option<TValue>, ValidationError[]>(s);
+
+					return Result.Failure<Option<TValue>, ValidationError[]>(f);
+				}
+
+				return Result.Failure<Option<TValue>, ValidationError[]>(Array.Empty<ValidationError>());
 			}
 
-			return Result.Failure<TValue, ValidationError[]>(failure);
+			return Result.Failure<Option<TValue>, ValidationError[]>(failure);
 		}
 	}
 }
