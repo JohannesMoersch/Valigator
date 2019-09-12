@@ -9,11 +9,6 @@ namespace Valigator.Newtonsoft.Json
 {
 	public class ValigatorConverter : JsonConverter
 	{
-		private static class IsClassOrOption<TValue>
-		{
-			public static bool Value { get; } = typeof(TValue).IsClass || (typeof(TValue).IsConstructedGenericType && typeof(TValue).GetGenericTypeDefinition() == typeof(Option<>));
-		}
-
 		private static class SupportsNull<TValue>
 		{
 			public static bool Value { get; } = typeof(TValue).IsClass || Nullable.GetUnderlyingType(typeof(TValue)) != null;
