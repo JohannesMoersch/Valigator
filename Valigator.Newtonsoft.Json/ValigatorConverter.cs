@@ -9,11 +9,6 @@ namespace Valigator.Newtonsoft.Json
 {
 	public class ValigatorConverter : JsonConverter
 	{
-		private static class SupportsNull<TValue>
-		{
-			public static bool Value { get; } = typeof(TValue).IsClass || Nullable.GetUnderlyingType(typeof(TValue)) != null;
-		}
-
 		private readonly static ConcurrentDictionary<Type, bool> _typeCache = new ConcurrentDictionary<Type, bool>();
 
 		public override bool CanConvert(Type objectType)
