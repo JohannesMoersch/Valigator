@@ -1,4 +1,5 @@
-﻿using FakeItEasy;
+﻿using System;
+using FakeItEasy;
 using FluentAssertions;
 using Functional;
 using Valigator.Core;
@@ -337,6 +338,61 @@ namespace Valigator.Tests
 				new RangeDescriptor(Option.None<object>(), false, Option.Some<object>(0), false)
 				});
 			}
+		}
+		public class MappedDescriptor
+		{
+			private DataDescriptor DataDescriptor
+				=> Data
+					.Required<int>()
+					.MappedFrom<string>(Int32.Parse, o => o.InSet(new[] { "5", "10", "15" }))
+					.Data
+					.DataDescriptor;
+
+			[Fact]
+			public void HasCorrectSourceType()
+				=> DataDescriptor
+					.MappingDescriptor
+					.AssertSome()
+					.SourceType
+					.Should()
+					.Be(typeof(string));
+
+			[Fact]
+			public void HasCorrectPropertyType()
+				=> DataDescriptor
+					.PropertyType
+					.Should()
+					.Be(typeof(int));
+
+			[Fact]
+			public void HasCorrectSourceValueDescriptors()
+				=> DataDescriptor
+					.MappingDescriptor
+					.AssertSome()
+					.SourceValueDescriptors
+					.Should()
+					.BeEquivalentTo(new[] { new InSetDescriptor(new object[] { "5", "10", "15" }) });
+		}
+		public class NonMappedDescriptor
+		{
+			private DataDescriptor DataDescriptor
+				=> Data
+					.Required<int>()
+					.Data
+					.DataDescriptor;
+
+			[Fact]
+			public void HasCorrectPropertyType()
+				=> DataDescriptor
+					.PropertyType
+					.Should()
+					.Be(typeof(int));
+
+			[Fact]
+			public void HasNoMappingDescriptor()
+				=> DataDescriptor
+					.MappingDescriptor
+					.AssertNone();
 		}
 	}
 }

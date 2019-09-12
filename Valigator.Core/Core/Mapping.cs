@@ -1,8 +1,10 @@
 ﻿using Functional;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Valigator.Core.Helpers;
 using Valigator.Core.StateValidators;
+using Valigator.Core.ValueDescriptors;
 
 namespace Valigator.Core
 {
@@ -59,7 +61,7 @@ namespace Valigator.Core
 
 		private readonly Option<Data<TSource>> _sourceValidations;
 
-		public MappedFromDescriptor MappingDescriptor => new MappedFromDescriptor(typeof(TSource), _sourceValidations.TryGetValue(out var some) ? some.DataDescriptor.ValueDescriptors : Array.Empty<IValueDescriptor>());
+		public MappedFromDescriptor MappingDescriptor => new MappedFromDescriptor(typeof(TSource), _sourceValidations.TryGetValue(out var some) ? some.DataDescriptor.ValueDescriptors.Where(o => !(o is RequiredDescriptor) && !(o is NotNullDescriptor)).ToArray() : Array.Empty<IValueDescriptor>());
 
 		internal Mapping(Func<TSource, TValue> mapper, Option<Data<TSource>> sourceValidations)
 		{
