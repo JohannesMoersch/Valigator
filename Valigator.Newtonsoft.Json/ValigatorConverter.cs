@@ -9,11 +9,6 @@ namespace Valigator.Newtonsoft.Json
 {
 	public class ValigatorConverter : JsonConverter
 	{
-		private class SupportsNull<TValue>
-		{
-			public static bool Value { get; } = typeof(TValue).IsClass || (typeof(TValue).IsConstructedGenericType && typeof(TValue).GetGenericTypeDefinition() == typeof(Option<>));
-		}
-
 		private readonly static ConcurrentDictionary<Type, bool> _typeCache = new ConcurrentDictionary<Type, bool>();
 
 		public override bool CanConvert(Type objectType)
@@ -43,13 +38,13 @@ namespace Valigator.Newtonsoft.Json
 		private static Data<TDataValue> WithValue<TDataValue, TValue>(Data<TDataValue> data, IAcceptValue<TDataValue, TValue> dataContainer, JsonReader reader, JsonSerializer serializer)
 		{
 			if (reader.TokenType == JsonToken.Null)
-				return data.WithNull();
+				return dataContainer.WithNull(data);
 
 			try
 			{
-				var value = serializer.Deserialize<TValue>(reader);
+				var value = serializer.Deserialize(reader, typeof(TValue));
 
-				return dataContainer.WithValue(data, Option.Create(value != null, value));
+				return value != null ? dataContainer.WithValue(data, Option.Some((TValue)value)) : dataContainer.WithNull(data);
 			}
 			catch (JsonSerializationException e)
 			{
