@@ -67,6 +67,16 @@ namespace Valigator
 
 		public Data<TValue> WithErrors(params ValidationError[] validationErrors)
 			=> new Data<TValue>(DataState.UnSet, default, GetErrorDataContainer(_dataContainer, validationErrors));
+		/*
+		 {
+			if (State == DataState.UnSet)
+				return new Data<TValue>(DataState.UnSet, _value, GetErrorDataContainer(_dataContainer, validationErrors));
+
+			if (State == DataState.Uninitialized)
+				throw new DataNotInitializedException();
+
+			throw new DataAlreadySetException();
+		}*/
 
 		public Result<TValue, ValidationError[]> TryGetValue()
 		{
