@@ -67,7 +67,7 @@ namespace Valigator
 
 		public Data<TValue> WithErrors(params ValidationError[] validationErrors)
 		{
-			if (State == DataState.UnSet)
+			if (State == DataState.UnSet && !(_dataContainer is ErrorDataContainer<TValue>))
 				return new Data<TValue>(DataState.UnSet, _value, GetErrorDataContainer(_dataContainer, validationErrors));
 
 			if (State == DataState.Uninitialized)
