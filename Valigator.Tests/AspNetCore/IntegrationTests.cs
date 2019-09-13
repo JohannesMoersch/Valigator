@@ -7,6 +7,7 @@ using FluentAssertions;
 using Interrogator.Http;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Valigator.TestApi;
+using Valigator.TestApi.Controllers;
 using Xunit;
 
 namespace Valigator.Tests.AspNetCore
@@ -44,5 +45,31 @@ namespace Valigator.Tests.AspNetCore
 				.Send()
 				.IsOk()
 				.AssertJsonBody(str => str.Should().Be(@"""Default"""));
+
+		[Fact]
+		public async Task PostWithIdentifiers()
+			=> await CreateClient()
+				.BuildTest()
+				.Post("test/post")
+				.WithJsonBody($"{{ \"{nameof(InnerBodyClass.IdentifierCollection)}\": [ {{\"{nameof(InnerClass.TheIdentifier)}\" : \" \"}} ] }}")
+				.Send()
+				.IsBadRequest()
+				.AssertBody(async str =>
+				{
+					var value = await str.ReadAsStringAsync();
+				});
+
+		[Fact]
+		public async Task PostWithIdentifiersGuidVersion()
+			=> await CreateClient()
+				.BuildTest()
+				.Post("test/post2")
+				.WithJsonBody($"{{ \"{nameof(InnerBodyClass.IdentifierCollection)}\": [ {{\"{nameof(InnerClass.TheIdentifier)}\" : \" \"}} ] }}")
+				.Send()
+				.IsBadRequest()
+				.AssertBody(async str =>
+				{
+					var value = await str.ReadAsStringAsync();
+				});
 	}
 }
