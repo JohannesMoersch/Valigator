@@ -47,29 +47,29 @@ namespace Valigator.Tests.AspNetCore
 				.AssertJsonBody(str => str.Should().Be(@"""Default"""));
 
 		[Fact]
-		public async Task PostWithIdentifiers()
-			=> await CreateClient()
+		public Task PostWithIdentifiers()
+			=> CreateClient()
 				.BuildTest()
 				.Post("test/post")
 				.WithJsonBody($"{{ \"{nameof(InnerBodyClass.IdentifierCollection)}\": [ {{\"{nameof(InnerClass.TheIdentifier)}\" : \" \"}} ] }}")
 				.Send()
 				.IsBadRequest()
-				.AssertBody(async str =>
+				.AssertJsonBody(str =>
 				{
-					var value = await str.ReadAsStringAsync();
+					str.Should().Be(@"[{""Name"":""bodyValue"",""Source"":0,""ValidationError"":{""Message"":""Error converting value \"" \"" to type 'System.Guid'. Path 'IdentifierCollection[0].TheIdentifier', line 1, position 50."",""Path"":{},""ValueDescriptor"":{""FromType"":""System.String, System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e"",""ToType"":""System.Guid, System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e""}}}]");
 				});
 
 		[Fact]
-		public async Task PostWithIdentifiersGuidVersion()
-			=> await CreateClient()
+		public Task PostWithIdentifiersGuidVersion()
+			=> CreateClient()
 				.BuildTest()
 				.Post("test/post2")
 				.WithJsonBody($"{{ \"{nameof(InnerBodyClass.IdentifierCollection)}\": [ {{\"{nameof(InnerClass.TheIdentifier)}\" : \" \"}} ] }}")
 				.Send()
 				.IsBadRequest()
-				.AssertBody(async str =>
+				.AssertJsonBody(str =>
 				{
-					var value = await str.ReadAsStringAsync();
+					str.Should().Be(@"[{""Name"":""bodyValue"",""Source"":0,""ValidationError"":{""Message"":""Error converting value \"" \"" to type 'System.Guid'. Path 'IdentifierCollection[0].TheIdentifier', line 1, position 50."",""Path"":{},""ValueDescriptor"":{""FromType"":""System.String, System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e"",""ToType"":""System.Guid, System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e""}}}]");
 				});
 	}
 }
