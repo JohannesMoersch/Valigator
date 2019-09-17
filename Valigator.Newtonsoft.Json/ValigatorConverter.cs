@@ -16,10 +16,8 @@ namespace Valigator.Newtonsoft.Json
 
 		public JsonSerializer Serializer => _serializer ?? (_serializer = JsonSerializer.Create(_jsonSerializerSettings));
 
-		public ValigatorConverter(JsonSerializerSettings jsonSerializerSettings)
-		{
-			_jsonSerializerSettings = jsonSerializerSettings;
-		}
+		public ValigatorConverter(JsonSerializerSettings jsonSerializerSettings) 
+			=> _jsonSerializerSettings = jsonSerializerSettings;
 
 		public override bool CanConvert(Type objectType)
 			=> objectType.IsConstructedGenericType && _typeCache.GetOrAdd(objectType, t => t.GetGenericTypeDefinition() == typeof(Data<>));

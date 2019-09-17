@@ -22,24 +22,6 @@ namespace Valigator
 				.AddJsonOptions(options =>
 				{
 					options.SerializerSettings.Converters.Add(new ValigatorConverter(options.SerializerSettings));
-					options.SerializerSettings.ContractResolver = new FancyContractResolver();
 				});
-
-		private class FancyContractResolver : DefaultContractResolver
-		{
-			public override JsonContract ResolveContract(Type type)
-			{
-				var result = base.ResolveContract(type);
-
-				result.OnErrorCallbacks.Add(Fancy);
-
-				return result;
-			}
-
-			private void Fancy(object o, StreamingContext context, ErrorContext errorContext)
-			{
-				errorContext.Handled = false;
-			}
-		}
 	}
 }

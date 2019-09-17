@@ -56,7 +56,7 @@ namespace Valigator.Tests.AspNetCore
 				.IsBadRequest()
 				.AssertJsonBody(str =>
 				{
-					str.Should().Be(@"[{""Name"":""bodyValue"",""Source"":0,""ValidationError"":{""Message"":""Error converting value \"" \"" to type 'System.Guid'. Path 'IdentifierCollection[0].TheIdentifier', line 1, position 50."",""Path"":{},""ValueDescriptor"":{""FromType"":""System.String, System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e"",""ToType"":""System.Guid, System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e""}}}]");
+					str.Should().Be(@"[{""name"":""bodyValue"",""source"":0,""validationError"":{""message"":""Error converting value \"" \"" to type 'System.Guid'. Path 'IdentifierCollection[0].TheIdentifier', line 1, position 50."",""path"":{},""valueDescriptor"":{""fromType"":""System.String, System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e"",""toType"":""System.Guid, System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e""}}}]");
 				});
 
 		[Fact]
@@ -69,7 +69,7 @@ namespace Valigator.Tests.AspNetCore
 				.IsBadRequest()
 				.AssertJsonBody(str =>
 				{
-					str.Should().Be(@"[{""Name"":""bodyValue"",""Source"":0,""ValidationError"":{""Message"":""Error converting value \"" \"" to type 'System.Guid'. Path 'IdentifierCollection[0].TheIdentifier', line 1, position 50."",""Path"":{},""ValueDescriptor"":{""FromType"":""System.String, System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e"",""ToType"":""System.Guid, System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e""}}}]");
+					str.Should().Be(@"[{""name"":""bodyValue"",""source"":0,""validationError"":{""message"":""Error converting value \"" \"" to type 'System.Guid'. Path 'IdentifierCollection[0].TheIdentifier', line 1, position 50."",""path"":{},""valueDescriptor"":{""fromType"":""System.String, System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e"",""toType"":""System.Guid, System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e""}}}]");
 				});
 	}
 }
