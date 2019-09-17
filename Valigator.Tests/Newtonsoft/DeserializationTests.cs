@@ -840,6 +840,6 @@ namespace Valigator.Tests.Newtonsoft
 		}
 
 		private static T Deserialize<T>(string json)
-			=> JsonConvert.DeserializeObject<T>(json, new ValigatorConverter());
+			=> JsonConvert.DeserializeObject<T>(json, new ValigatorConverter(new JsonSerializerSettings()));
 	}
 }

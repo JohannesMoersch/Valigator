@@ -580,7 +580,7 @@ namespace Valigator.Tests.Newtonsoft
 				=> Value = value.Verify();
 
 			public string Serialize()
-				=> JsonConvert.SerializeObject(this, new ValigatorConverter());
+				=> JsonConvert.SerializeObject(this, new ValigatorConverter(new JsonSerializerSettings()));
 		}
 	}
 }

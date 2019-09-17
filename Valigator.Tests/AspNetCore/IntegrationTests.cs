@@ -7,6 +7,7 @@ using FluentAssertions;
 using Interrogator.Http;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Valigator.TestApi;
+using Valigator.TestApi.Controllers;
 using Xunit;
 
 namespace Valigator.Tests.AspNetCore
@@ -44,5 +45,31 @@ namespace Valigator.Tests.AspNetCore
 				.Send()
 				.IsOk()
 				.AssertJsonBody(str => str.Should().Be(@"""Default"""));
+
+		[Fact]
+		public Task PostWithIdentifiers()
+			=> CreateClient()
+				.BuildTest()
+				.Post("test/post")
+				.WithJsonBody($"{{ \"{nameof(InnerBodyClass.IdentifierCollection)}\": [ {{\"{nameof(InnerClass.TheIdentifier)}\" : \" \"}} ] }}")
+				.Send()
+				.IsBadRequest()
+				.AssertJsonBody(str =>
+				{
+					str.Should().Be(@"[{""name"":""bodyValue"",""source"":0,""validationError"":{""message"":""Error converting value \"" \"" to type 'System.Guid'. Path 'IdentifierCollection[0].TheIdentifier', line 1, position 50."",""path"":{},""valueDescriptor"":{""fromType"":""System.String, System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e"",""toType"":""System.Guid, System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e""}}}]");
+				});
+
+		[Fact]
+		public Task PostWithIdentifiersGuidVersion()
+			=> CreateClient()
+				.BuildTest()
+				.Post("test/post2")
+				.WithJsonBody($"{{ \"{nameof(InnerBodyClass.IdentifierCollection)}\": [ {{\"{nameof(InnerClass.TheIdentifier)}\" : \" \"}} ] }}")
+				.Send()
+				.IsBadRequest()
+				.AssertJsonBody(str =>
+				{
+					str.Should().Be(@"[{""name"":""bodyValue"",""source"":0,""validationError"":{""message"":""Error converting value \"" \"" to type 'System.Guid'. Path 'IdentifierCollection[0].TheIdentifier', line 1, position 50."",""path"":{},""valueDescriptor"":{""fromType"":""System.String, System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e"",""toType"":""System.Guid, System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e""}}}]");
+				});
 	}
 }

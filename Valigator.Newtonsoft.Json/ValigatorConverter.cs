@@ -11,28 +11,36 @@ namespace Valigator.Newtonsoft.Json
 	{
 		private readonly static ConcurrentDictionary<Type, bool> _typeCache = new ConcurrentDictionary<Type, bool>();
 
+		private JsonSerializer _serializer;
+		private readonly JsonSerializerSettings _jsonSerializerSettings;
+
+		public JsonSerializer Serializer => _serializer ?? (_serializer = JsonSerializer.Create(_jsonSerializerSettings));
+
+		public ValigatorConverter(JsonSerializerSettings jsonSerializerSettings) 
+			=> _jsonSerializerSettings = jsonSerializerSettings;
+
 		public override bool CanConvert(Type objectType)
 			=> objectType.IsConstructedGenericType && _typeCache.GetOrAdd(objectType, t => t.GetGenericTypeDefinition() == typeof(Data<>));
 
-		public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
-			=> Read(reader, (dynamic)existingValue, serializer);
+		public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer _)
+			=> Read(reader, (dynamic)existingValue, Serializer);
 
-		private Data<TValue> Read<TValue>(JsonReader reader, Data<TValue> existingValue, JsonSerializer serializer)
+		private static Data<TValue> Read<TValue>(JsonReader reader, Data<TValue> existingValue, JsonSerializer serializer)
 			=> WithValue(existingValue, (dynamic)existingValue.DataContainer, reader, serializer);
 
-		private Data<Option<TValue>> Read<TValue>(JsonReader reader, Data<Option<TValue>> existingValue, JsonSerializer serializer)
+		private static Data<Option<TValue>> Read<TValue>(JsonReader reader, Data<Option<TValue>> existingValue, JsonSerializer serializer)
 			=> WithValue(existingValue, (dynamic)existingValue.DataContainer, reader, serializer);
 
-		private Data<TValue[]> Read<TValue>(JsonReader reader, Data<TValue[]> existingValue, JsonSerializer serializer)
+		private static Data<TValue[]> Read<TValue>(JsonReader reader, Data<TValue[]> existingValue, JsonSerializer serializer)
 			=> WithCollectionValue(existingValue, (dynamic)existingValue.DataContainer, reader, serializer);
 
-		private Data<Option<TValue>[]> Read<TValue>(JsonReader reader, Data<Option<TValue>[]> existingValue, JsonSerializer serializer)
+		private static Data<Option<TValue>[]> Read<TValue>(JsonReader reader, Data<Option<TValue>[]> existingValue, JsonSerializer serializer)
 			=> WithCollectionValue(existingValue, (dynamic)existingValue.DataContainer, reader, serializer);
 
-		private Data<Option<TValue[]>> Read<TValue>(JsonReader reader, Data<Option<TValue[]>> existingValue, JsonSerializer serializer)
+		private static Data<Option<TValue[]>> Read<TValue>(JsonReader reader, Data<Option<TValue[]>> existingValue, JsonSerializer serializer)
 			=> WithCollectionValue(existingValue, (dynamic)existingValue.DataContainer, reader, serializer);
 
-		private Data<Option<Option<TValue>[]>> Read<TValue>(JsonReader reader, Data<Option<Option<TValue>[]>> existingValue, JsonSerializer serializer)
+		private static Data<Option<Option<TValue>[]>> Read<TValue>(JsonReader reader, Data<Option<Option<TValue>[]>> existingValue, JsonSerializer serializer)
 			=> WithCollectionValue(existingValue, (dynamic)existingValue.DataContainer, reader, serializer);
 
 		private static Data<TDataValue> WithValue<TDataValue, TValue>(Data<TDataValue> data, IAcceptValue<TDataValue, TValue> dataContainer, JsonReader reader, JsonSerializer serializer)
@@ -77,13 +85,13 @@ namespace Valigator.Newtonsoft.Json
 			return Option.Some(values.ToArray());
 		}
 
-		public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-			=> Write(writer, (dynamic)value, serializer);
+		public override void WriteJson(JsonWriter writer, object value, JsonSerializer _)
+			=> Write(writer, (dynamic)value, Serializer);
 
-		private void Write<TValue>(JsonWriter writer, Data<TValue> value, JsonSerializer serializer)
+		private static void Write<TValue>(JsonWriter writer, Data<TValue> value, JsonSerializer serializer)
 			=> serializer.Serialize(writer, value.Value, typeof(TValue));
 
-		private void Write<TValue>(JsonWriter writer, Data<Option<TValue>> value, JsonSerializer serializer)
+		private static void Write<TValue>(JsonWriter writer, Data<Option<TValue>> value, JsonSerializer serializer)
 		{
 			if (value.Value.Match(_ => true, () => false))
 				serializer.Serialize(writer, value.Value.Match(_ => _, () => default), typeof(TValue));
@@ -91,7 +99,7 @@ namespace Valigator.Newtonsoft.Json
 				serializer.Serialize(writer, null);
 		}
 
-		private void Write<TValue>(JsonWriter writer, Data<Option<TValue>[]> value, JsonSerializer serializer)
+		private static void Write<TValue>(JsonWriter writer, Data<Option<TValue>[]> value, JsonSerializer serializer)
 		{
 			writer.WriteStartArray();
 
@@ -106,7 +114,7 @@ namespace Valigator.Newtonsoft.Json
 			writer.WriteEndArray();
 		}
 
-		private void Write<TValue>(JsonWriter writer, Data<Option<Option<TValue>[]>> value, JsonSerializer serializer)
+		private static void Write<TValue>(JsonWriter writer, Data<Option<Option<TValue>[]>> value, JsonSerializer serializer)
 		{
 			if (value.Value.Match(_ => true, () => false))
 			{
