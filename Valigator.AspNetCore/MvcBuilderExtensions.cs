@@ -19,7 +19,7 @@ namespace Valigator
 					options.Filters.Add(new ValigatorActionFilter(inputErrorCreater));
 					options.Filters.Add(new ValigatorResultFilter(resultErrorCreator));
 				})
-				.AddJsonOptions(options =>
+				.AddNewtonsoftJson(options =>
 				{
 					options.SerializerSettings.Converters.Add(new ValigatorConverter(options.SerializerSettings));
 				});

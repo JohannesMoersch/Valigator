@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <Version>1.11.2</Version>
     <Description>This package adds support for serializing and deserializing valigator types to Newtonsoft.Json.</Description>
     <Copyright>Copyright © 2019 Johannes Moersch</Copyright>
