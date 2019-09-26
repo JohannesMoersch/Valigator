@@ -53,7 +53,7 @@ namespace Valigator.TestApi.Controllers
 			=> _value = value;
 
 		public override bool Equals(object obj)
-			=> obj is Identifier ProductSku && Equals(ProductSku);
+			=> obj is Identifier identifier && Equals(identifier);
 
 		public override int GetHashCode()
 			=> -1937169414 + EqualityComparer<Guid?>.Default.GetHashCode(_value);
