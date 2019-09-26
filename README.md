@@ -4,12 +4,13 @@
 - [Concepts](#concepts)
     - [Value Validator](#value-validator)
     - [State Validator](#state-validator)
+    - [Validation Error Format](#validation-error-format)
 - [Valigator.Core](#valigatorcore)
 - [Valigator.AspNetCore](#valigatoraspnetcore)
 - [Random Things To Move to Better Places](#random-things-to-move-to-better-places)
-    - [Properties](#properties)
     - [Collections](#collections)
     - [Validating Non-`Data` Fields](#validating-non-data-fields)
+    - [Custom Validations](#custom-validations)
 - [Gotchas](#gotchas)
 
 <!-- /TOC -->
@@ -65,6 +66,7 @@ Valigator is .NET suite of libraries that enabled the declaration of complex val
 
 ### Value Validator
 ### State Validator
+### Validation Error Format
 
 ## Valigator.Core
 The core library of Valigator.
@@ -73,12 +75,6 @@ The core library of Valigator.
 Library specifically to make adding to an AspNetCore application easy.
 
 ## Random Things To Move to Better Places
-
-### Properties
-
-Examples:
-```C#
-```
 
 ### Collections
 Collections are defined slightly differently than regular `Data` fields.
@@ -102,6 +98,13 @@ Example:
 [ValidateContents]
 private readonly object _value;
 ```
+
+### Custom Validations
+Examples:
+```C#
+public Data<Option<int>> IntegerValue { get; set; } = Data.Required<int>().Nullable().Assert("A meaningful description", value => value > 1)
+```
+
 
 ## Gotchas
 1) All properties must have a setter. This setter may be `private`.
