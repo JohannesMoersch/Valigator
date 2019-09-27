@@ -31,6 +31,7 @@ namespace Valigator.TestApi
 			services
 				.AddMvc(opts => opts.EnableEndpointRouting = false)
 				.SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
+				.AddJsonOptions(opts => { })
 				.AddValigator(errors => new JsonResult(errors) { StatusCode = 400 }, errors => new JsonResult(errors.Select(e => new { Path = e.Path.ToString(), Message = e.Message }).ToArray()) { StatusCode = 400 });
 		}
 

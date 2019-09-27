@@ -6,7 +6,11 @@ using Valigator.Core.Helpers;
 
 namespace Valigator
 {
-	public struct Data<TValue>
+	public interface IData
+	{
+
+	}
+	public struct Data<TValue> : IData
 	{
 		private readonly TValue _value;
 

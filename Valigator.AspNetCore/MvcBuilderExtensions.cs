@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json.Serialization;
 using Valigator.AspNetCore;
 using Valigator.Newtonsoft.Json;
 
@@ -19,9 +20,6 @@ namespace Valigator
 					options.Filters.Add(new ValigatorActionFilter(inputErrorCreater));
 					options.Filters.Add(new ValigatorResultFilter(resultErrorCreator));
 				})
-				.AddNewtonsoftJson(options =>
-				{
-					options.SerializerSettings.Converters.Add(new ValigatorConverter(options.SerializerSettings));
-				});
+				.AddJsonOptions(opts => opts.JsonSerializerOptions.Converters.Add(new ValigatorConverter(opts.JsonSerializerOptions)));
 	}
 }
