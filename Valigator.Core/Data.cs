@@ -101,7 +101,7 @@ namespace Valigator
 				throw new DataNotInitializedException();
 
 			if (State == DataState.Valid || State == DataState.Invalid)
-				throw new DataAlreadyVerifiedException();
+				return new Data<TValue>(State, _value, _dataContainer); //throw new DataAlreadyVerifiedException(); //tODO: Keep?
 
 			if (_dataContainer is ErrorDataContainer<TValue>)
 				return new Data<TValue>(DataState.Invalid, _value, _dataContainer);

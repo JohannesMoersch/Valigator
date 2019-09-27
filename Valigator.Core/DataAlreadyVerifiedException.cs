@@ -4,6 +4,7 @@ using System.Text;
 
 namespace Valigator
 {
+	//tODO: Remove
 	public class DataAlreadyVerifiedException : Exception
 	{
 	}
