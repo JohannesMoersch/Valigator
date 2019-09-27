@@ -37,7 +37,7 @@ namespace Valigator.Newtonsoft.Json
 			var innerType = typeToConvert.GetGenericArguments()[0];
 			var defaultValue = GetDefault(typeToConvert);
 			if (reader.TokenType == JsonTokenType.StartArray)
-				return  CallRead((dynamic)defaultValue, reader, options);
+				return default;
 
 			using (var doc = JsonDocument.ParseValue(ref reader))
 			{
