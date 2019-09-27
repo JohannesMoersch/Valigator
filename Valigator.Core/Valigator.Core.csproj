@@ -15,7 +15,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Functional.Primitives" Version="1.10.0" />
+    <PackageReference Include="Functional.Primitives" Version="1.15.0" />
   </ItemGroup>
 
   <ItemGroup>
