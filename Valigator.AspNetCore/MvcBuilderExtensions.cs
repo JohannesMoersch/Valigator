@@ -16,6 +16,7 @@ namespace Valigator
 			=> builder
 				.AddMvcOptions(options =>
 				{
+					options.MaxValidationDepth = null;
 					options.Filters.Add(new ValigatorActionFilter(inputErrorCreater));
 					options.Filters.Add(new ValigatorResultFilter(resultErrorCreator));
 				})
