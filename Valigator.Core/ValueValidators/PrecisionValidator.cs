@@ -50,7 +50,7 @@ namespace Valigator.Core.ValueValidators
 		}
 
 		private int GetPrecision(decimal decimalValue)
-			=> Math.Max((decimalValue - Math.Truncate(decimalValue)).ToString().Length - 2, 0);
+			=> Math.Max(Math.Abs((decimalValue - Math.Truncate(decimalValue))).ToString().Length - 2, 0);
 
 		ValidationError IValueValidator<decimal>.GetError(decimal value, bool inverted)
 			=> new ValidationError(nameof(PrecisionValidator), (this as IValueValidator<decimal>).GetDescriptor());
