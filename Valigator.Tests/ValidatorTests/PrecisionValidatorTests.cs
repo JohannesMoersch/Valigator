@@ -26,6 +26,13 @@ namespace Valigator.Tests.ValidatorTests
 			=> Assert.Throws<ArgumentException>(() => new PrecisionValidator(10, 5));
 
 		[Fact]
+		public void NegativeNumberWithTwoDecimalPlaces()
+			=> new PrecisionValidator(2, 2)
+				.IsValid(-0.01m)
+				.Should()
+				.BeTrue();
+
+		[Fact]
 		public void MinimumOnlyBelowMinimum()
 			=> new PrecisionValidator(2, null)
 				.IsValid(0.0m)
