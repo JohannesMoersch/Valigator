@@ -170,16 +170,16 @@ namespace Valigator.Text.Json
 			if (reader.TokenType == JsonTokenType.Null)
 				return SetValue(data, Option.None<TValue>());
 
-			return SetValue(data, Option.Some(JsonSerializer.Deserialize<TValue>(ref reader, options)));
-		}
+			if (JsonSerializer.Deserialize<TValue>(ref reader, options) is TValue value)
+				return SetValue(data, Option.Some(value));
 
-		private static Data<TDataValue> SetValue<TDataValue, TValue>(Data<TDataValue> data, Option<TValue> value)
-			=> (data.DataContainer as IAcceptValue<TDataValue, TValue>).WithValue(data, value);
+			return SetNull(data);
+		}
 
 		private static Data<TDataValue> ReadCollectionValue<TDataValue, TValue>(ref Utf8JsonReader reader, JsonSerializerOptions options, Data<TDataValue> data)
 		{
 			if (reader.TokenType == JsonTokenType.Null)
-				return SetValue(data, Option.None<Option<TValue>[]>());
+				return SetNull(data);
 
 			var values = new List<Option<TValue>>();
 
@@ -198,8 +198,14 @@ namespace Valigator.Text.Json
 			return SetValue(data, Option.Some(values.ToArray()));
 		}
 
+		private static Data<TDataValue> SetValue<TDataValue, TValue>(Data<TDataValue> data, Option<TValue> value)
+			=> (data.DataContainer as IAcceptValue<TDataValue, TValue>).WithValue(data, value);
+
 		private static Data<TDataValue> SetValue<TDataValue, TValue>(Data<TDataValue> data, Option<Option<TValue>[]> value)
 			=> (data.DataContainer as IAcceptCollectionValue<TDataValue, TValue>).WithValue(data, value);
+
+		private static Data<TDataValue> SetNull<TDataValue>(Data<TDataValue> data)
+			=> (data.DataContainer as IAcceptValue<TDataValue>).WithNull(data);
 	}
 	/*
 	public class ValigatorConverter : JsonConverter

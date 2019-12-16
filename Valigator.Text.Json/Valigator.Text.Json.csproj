@@ -16,7 +16,6 @@
 
   <ItemGroup>
     <PackageReference Include="Functional.Primitives" Version="1.10.0" />
-    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="System.Text.Json" Version="4.7.0" />
   </ItemGroup>
 

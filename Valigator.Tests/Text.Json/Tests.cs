@@ -16,12 +16,14 @@ namespace Valigator.Tests.Text.Json
 		{
 			public Data<int> One { get; private set; } = Data.Required<int>();
 			public Data<Option<int>[]> Two { get; private set; } = Data.Collection<int>(o => o.Nullable()).Required();
+			public Data<Option<int>> Three { get; private set; } = Data.Required<int>().Nullable();
+			public Data<Option<int[]>> Four { get; private set; } = Data.Collection<int>().Required().Nullable();
 		}
 
 		[Fact]
 		public void Test()
 		{
-			var obj = JsonSerializer.Deserialize<TestClass>(@"{""Zero"":0,""One"":5,""Two"":[1,null,5]}");
+			var obj = JsonSerializer.Deserialize<TestClass>(@"{""Zero"":0,""One"":5,""Two"":[1,null,5],""Three"":null,""Four"":null}");
 		}
 	}
 }
