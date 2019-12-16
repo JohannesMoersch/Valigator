@@ -27,6 +27,7 @@
     <ProjectReference Include="..\Valigator.Core\Valigator.Core.csproj" />
     <ProjectReference Include="..\Valigator.Newtonsoft.Json\Valigator.Newtonsoft.Json.csproj" />
     <ProjectReference Include="..\Valigator.TestApi\Valigator.TestApi.csproj" />
+    <ProjectReference Include="..\Valigator.Text.Json\Valigator.Text.Json.csproj" />
   </ItemGroup>
 
 </Project>

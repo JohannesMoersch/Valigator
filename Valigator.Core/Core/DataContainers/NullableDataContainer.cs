@@ -24,6 +24,8 @@ namespace Valigator.Core.DataContainers
 
 		public DataDescriptor DataDescriptor => DataDescriptor.Create(_mapping, _stateValidator, _valueValidatorOne, _valueValidatorTwo, _valueValidatorThree);
 
+		public Type ValueType => typeof(TValue);
+
 		public NullableDataContainer(Mapping<TSource, TValue> mapping, TStateValidator stateValidator, TValueValidatorOne valueValidatorOne, TValueValidatorTwo valueValidatorTwo, TValueValidatorThree valueValidatorThree)
 		{
 			_mapping = mapping;

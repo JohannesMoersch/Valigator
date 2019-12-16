@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json.Serialization;
 using Valigator.AspNetCore;
-using Valigator.Newtonsoft.Json;
 
 namespace Valigator
 {
@@ -32,10 +31,6 @@ namespace Valigator
 				{
 					options.Filters.Add(new ValigatorActionFilter(inputErrorCreater));
 					options.Filters.Add(new ValigatorResultFilter(resultErrorCreator));
-				})
-				.AddJsonOptions(options =>
-				{
-					options.SerializerSettings.Converters.Add(new ValigatorConverter(options.SerializerSettings));
 				});
 #else
 #error unknown target framework
