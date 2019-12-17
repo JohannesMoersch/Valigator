@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Runtime.Serialization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Functional;
@@ -11,9 +12,17 @@ using Valigator.Core;
 
 namespace Valigator.Text.Json
 {
+	public enum ValigatorInstanceConstructionBehaviour
+	{
+		CloneCached,
+		NewInstance
+	}
+
 	[AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
 	public class ValigatorConverterAttribute : JsonConverterAttribute
 	{
+		public ValigatorInstanceConstructionBehaviour InstanceConstructionBehaviour { get; set; }
+
 		public ValigatorConverterAttribute()
 			: base(typeof(ValigatorConverterFactory))
 		{
@@ -32,7 +41,7 @@ namespace Valigator.Text.Json
 				.GetOrAdd
 				(
 					typeToConvert, 
-					type => Activator.CreateInstance(typeof(ValigatorConverter<>).MakeGenericType(type)) as JsonConverter // TODO - Validate type signature and properties
+					type => Activator.CreateInstance(typeof(ValigatorConverter<>).MakeGenericType(type), type.GetCustomAttribute<ValigatorConverterAttribute>()?.InstanceConstructionBehaviour ?? ValigatorInstanceConstructionBehaviour.CloneCached) as JsonConverter // TODO - Validate type signature and properties (no public instance fields, no private instance properties)
 				);
 	}
 
@@ -54,9 +63,48 @@ namespace Valigator.Text.Json
 		private static Dictionary<string, ValigatorJsonPropertyHandler<TObject>> _propertyHandlers;
 		private static Dictionary<string, ValigatorJsonPropertyHandler<TObject>> PropertyHandlers => _propertyHandlers ??= CreatePropertyHandlers();
 
+		private static Action<TObject, TObject> CreateCopyValuesMethod()
+		{
+			var sourceParameter = Expression.Parameter(typeof(TObject), "source");
+
+			var targetParameter = Expression.Parameter(typeof(TObject), "target");
+
+			var copyExpressions = new List<Expression>();
+
+			foreach (var field in typeof(TObject).GetFields(BindingFlags.NonPublic | BindingFlags.Instance))
+				copyExpressions.Add(Expression.Assign(Expression.Field(targetParameter, field), Expression.Field(sourceParameter, field)));
+
+			var block = Expression.Block(copyExpressions);
+
+			return Expression.Lambda<Action<TObject, TObject>>(block, sourceParameter, targetParameter).Compile();
+		}
+
+		private static Action<TObject, TObject> _copyValuesMethod;
+		private static Action<TObject, TObject> CopyValuesMethod => _copyValuesMethod ??= CreateCopyValuesMethod();
+
+
+		private static readonly TObject _sourceObj = new TObject();
+
+		private readonly bool _useNewInstances;
+
+		public ValigatorConverter(ValigatorInstanceConstructionBehaviour instanceConstructionBehaviour)
+		{
+			switch (instanceConstructionBehaviour)
+			{
+				case ValigatorInstanceConstructionBehaviour.NewInstance:
+					_useNewInstances = true;
+					break;
+				case ValigatorInstanceConstructionBehaviour.CloneCached:
+					_useNewInstances = false;
+					break;
+				default:
+					throw new Exception();
+			}
+		}
+
 		public override TObject Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 		{
-			var obj = new TObject();
+			var obj = GetObjectInstance();
 
 			while (true)
 			{
@@ -83,6 +131,20 @@ namespace Valigator.Text.Json
 			}
 
 			return obj;
+		}
+
+		private TObject GetObjectInstance()
+			=> _useNewInstances
+				? new TObject()
+				: GetClonedObjectInstance();
+
+		private TObject GetClonedObjectInstance()
+		{
+			var targetObj = (TObject)FormatterServices.GetSafeUninitializedObject(typeof(TObject));
+
+			CopyValuesMethod.Invoke(_sourceObj, targetObj);
+
+			return targetObj;
 		}
 
 		public override void Write(Utf8JsonWriter writer, TObject value, JsonSerializerOptions options) 
