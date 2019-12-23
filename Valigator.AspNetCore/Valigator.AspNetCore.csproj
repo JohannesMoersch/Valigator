@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;netcoreapp3.1</TargetFrameworks>
-    <Version>1.11.3</Version>
+    <Version>1.11.3-develop001</Version>
     <Authors>Johannes Moersch</Authors>
     <Company>Johannes Moersch</Company>
     <Product>Valigator</Product>
