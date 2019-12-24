@@ -72,6 +72,18 @@ namespace Valigator.TestApi.Core31.Controllers
 			return new string[] { "value1", "value2" };
 		}
 
+		[HttpGet("outdata")]
+		public ActionResult<OutData> GetOutData()
+		{
+			return new OutData();
+		}
+
+		[HttpGet("outdata2")]
+		public ActionResult<OutData> GetOutData2()
+		{
+			return new OutData(2);
+		}
+
 		// GET api/values/5
 		[HttpGet("test/{value}")]
 		public ActionResult<string> Get([Test]int value, [Test]int stuff)
@@ -102,6 +114,13 @@ namespace Valigator.TestApi.Core31.Controllers
 		[HttpDelete("{id}")]
 		public void Delete(int id)
 		{
+		}
+
+		public class OutData
+		{
+			public OutData() { }
+			public OutData(int i) => Int = Int.WithValue(i);
+			public Data<int> Int { get; set; } = Data.Required<int>();
 		}
 	}
 }
