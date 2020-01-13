@@ -16,12 +16,12 @@ namespace Valigator.TestApi.Controllers
 			=> new JsonResult(header.Match(_ => _, () => null));
 
 		[HttpPost("post")]
-		public JsonResult Post([FromBody] InnerBodyClass bodyValue)
-			=> new JsonResult("Success");
+		public JsonResult Post([FromBody] BodyClass bodyValue)
+			=> new JsonResult(bodyValue.IdentifierCollection.Value.Select(id => new InnerClass(id.TheIdentifier.Value.Value)).ToArray());
 
 		[HttpPost("post2")]
 		public JsonResult Post([FromBody] GuidBodyClass bodyValue)
-			=> new JsonResult("Success");
+			=> new JsonResult(bodyValue.IdentifierCollection.Value.Select(id => new GuidInnerClass(id.TheIdentifier.Value)).ToArray());
 	}
 
 	public class GuidBodyClass
@@ -31,16 +31,26 @@ namespace Valigator.TestApi.Controllers
 
 	public class GuidInnerClass
 	{
+		public GuidInnerClass() { }
+
+		public GuidInnerClass(Guid identifier)
+			=> TheIdentifier = TheIdentifier.WithValue(identifier);
+
 		public Data<Guid> TheIdentifier { get; set; } = Data.Required<Guid>().NotEmpty();
 	}
 
-	public class InnerBodyClass
+	public class BodyClass
 	{
 		public Data<InnerClass[]> IdentifierCollection { get; set; } = Data.Collection<InnerClass>().Required().ItemCount(1);
 	}
 
 	public class InnerClass
 	{
+		public InnerClass() { }
+
+		public InnerClass(Guid identifier)
+			=> TheIdentifier = TheIdentifier.WithMappedValue(identifier);
+
 		public Data<Identifier> TheIdentifier { get; set; } = Identifier.Valigator.Required;
 	}
 

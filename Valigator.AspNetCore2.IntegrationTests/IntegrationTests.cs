@@ -53,7 +53,7 @@ namespace Valigator.AspNetCore2.IntegrationTests
 			=> CreateClient()
 				.BuildTest()
 				.Post("test/post")
-				.WithJsonBody($"{{ \"{nameof(InnerBodyClass.IdentifierCollection)}\": [ {{\"{nameof(InnerClass.TheIdentifier)}\" : \"61f45cfd-6389-4380-a803-c23881e982af\"}} ] }}")
+				.WithJsonBody($"{{ \"{nameof(BodyClass.IdentifierCollection)}\": [ {{\"{nameof(InnerClass.TheIdentifier)}\" : \"61f45cfd-6389-4380-a803-c23881e982af\"}} ] }}")
 				.Send()
 				.IsSuccess()
 				.AssertJsonBody(str =>
@@ -66,7 +66,7 @@ namespace Valigator.AspNetCore2.IntegrationTests
 			=> CreateClient()
 				.BuildTest()
 				.Post("test/post2")
-				.WithJsonBody($"{{ \"{nameof(InnerBodyClass.IdentifierCollection)}\": [ {{\"{nameof(InnerClass.TheIdentifier)}\" : \"61f45cfd-6389-4380-a803-c23881e982af\"}} ] }}")
+				.WithJsonBody($"{{ \"{nameof(BodyClass.IdentifierCollection)}\": [ {{\"{nameof(InnerClass.TheIdentifier)}\" : \"61f45cfd-6389-4380-a803-c23881e982af\"}} ] }}")
 				.Send()
 				.IsSuccess()
 				.AssertJsonBody(str =>

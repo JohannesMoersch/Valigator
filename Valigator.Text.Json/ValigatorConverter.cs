@@ -13,7 +13,7 @@ using Valigator.Core;
 namespace Valigator.Text.Json
 {
 	public class ValigatorConverter<TObject> : JsonConverter<TObject>
-		where TObject : class, new()
+		where TObject : class
 	{
 		private static Dictionary<string, ValigatorJsonPropertyHandler<TObject>> CreatePropertyHandlers()
 		{
@@ -29,6 +29,14 @@ namespace Valigator.Text.Json
 
 		private static Dictionary<string, ValigatorJsonPropertyHandler<TObject>> _propertyHandlers;
 		private static Dictionary<string, ValigatorJsonPropertyHandler<TObject>> PropertyHandlers => _propertyHandlers ??= CreatePropertyHandlers();
+
+		
+
+		static ValigatorConverter()
+		{
+			typeof(TObject).GetConstructors(BindingFlags.Public | BindingFlags.NonPublic).FirstOrDefault(info => info.GetParameters().Length == 0);
+		}
+
 
 		private readonly bool _useNewInstances;
 
@@ -80,7 +88,7 @@ namespace Valigator.Text.Json
 
 		private TObject GetObjectInstance()
 			=> _useNewInstances
-				? new TObject()
+				? Model.CreateNew<TObject>()
 				: Model.CreateClone<TObject>();
 
 		public override void Write(Utf8JsonWriter writer, TObject value, JsonSerializerOptions options) 
