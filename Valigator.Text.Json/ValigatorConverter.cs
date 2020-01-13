@@ -12,39 +12,6 @@ using Valigator.Core;
 
 namespace Valigator.Text.Json
 {
-	public enum ValigatorInstanceConstructionBehaviour
-	{
-		CloneCached,
-		NewInstance
-	}
-
-	[AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
-	public class ValigatorConverterAttribute : JsonConverterAttribute
-	{
-		public ValigatorInstanceConstructionBehaviour InstanceConstructionBehaviour { get; set; }
-
-		public ValigatorConverterAttribute()
-			: base(typeof(ValigatorConverterFactory))
-		{
-		}
-	}
-
-	public class ValigatorConverterFactory : JsonConverterFactory
-	{
-		private ConcurrentDictionary<Type, JsonConverter> _converters = new ConcurrentDictionary<Type, JsonConverter>();
-
-		public override bool CanConvert(Type typeToConvert)
-			=> true;
-
-		public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options)
-			=> _converters
-				.GetOrAdd
-				(
-					typeToConvert, 
-					type => Activator.CreateInstance(typeof(ValigatorConverter<>).MakeGenericType(type), type.GetCustomAttribute<ValigatorConverterAttribute>()?.InstanceConstructionBehaviour ?? ValigatorInstanceConstructionBehaviour.CloneCached) as JsonConverter // TODO - Validate type signature and properties (no public instance fields, no private instance properties)
-				);
-	}
-
 	public class ValigatorConverter<TObject> : JsonConverter<TObject>
 		where TObject : class, new()
 	{
@@ -65,14 +32,14 @@ namespace Valigator.Text.Json
 
 		private readonly bool _useNewInstances;
 
-		public ValigatorConverter(ValigatorInstanceConstructionBehaviour instanceConstructionBehaviour)
+		public ValigatorConverter(ValigatorObjectConstructionBehaviour instanceConstructionBehaviour)
 		{
 			switch (instanceConstructionBehaviour)
 			{
-				case ValigatorInstanceConstructionBehaviour.NewInstance:
+				case ValigatorObjectConstructionBehaviour.NewInstance:
 					_useNewInstances = true;
 					break;
-				case ValigatorInstanceConstructionBehaviour.CloneCached:
+				case ValigatorObjectConstructionBehaviour.CloneCached:
 					_useNewInstances = false;
 					break;
 				default:

@@ -10,12 +10,14 @@ using Valigator.TestApi;
 using Valigator.TestApi.Controllers;
 using Xunit;
 
-namespace Valigator.Tests.AspNetCore
+namespace Valigator.AspNetCore3.IntegrationTests
 {
 	public class IntegrationTests
 	{
-		private HttpClient CreateClient()
-			=> new WebApplicationFactory<Startup>().CreateClient();
+		private static HttpClient _httpClient;
+
+		private static HttpClient CreateClient()
+			=> _httpClient ??= new WebApplicationFactory<Startup>().CreateClient();
 
 		[Fact]
 		public Task WithValue()

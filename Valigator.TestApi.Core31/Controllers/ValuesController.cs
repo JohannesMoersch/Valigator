@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Valigator.Core.ValueDescriptors;
 
-namespace Valigator.TestApi.Core31.Controllers
+namespace Valigator.TestApi.Controllers
 {
 	public class Model
 	{

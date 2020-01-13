@@ -15,9 +15,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Valigator.TestApi", "Valiga
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Valigator.AspNetCore", "Valigator.AspNetCore\Valigator.AspNetCore.csproj", "{DACB0B7F-884C-4293-9E26-427145C9F1DE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Valigator.Text.Json", "Valigator.Text.Json\Valigator.Text.Json.csproj", "{7F0C7622-E9F2-4580-AEED-956FD9901E6C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Valigator.Text.Json", "Valigator.Text.Json\Valigator.Text.Json.csproj", "{7F0C7622-E9F2-4580-AEED-956FD9901E6C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Valigator.TestApi.Core31", "Valigator.TestApi.Core31\Valigator.TestApi.Core31.csproj", "{78539554-B39D-4C7E-9C62-55DDF2EBF85D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Valigator.AspNetCore2.IntegrationTests", "Valigator.AspNetCore2.IntegrationTests\Valigator.AspNetCore2.IntegrationTests.csproj", "{8E74D20A-4BFE-4F62-86DF-C1A3462BBBCD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Valigator.AspNetCore3.IntegrationTests", "Valigator.AspNetCore3.IntegrationTests\Valigator.AspNetCore3.IntegrationTests.csproj", "{38C30D4F-C8C0-42C3-A2F3-AD6876B562B0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,14 +53,22 @@ Global
 		{DACB0B7F-884C-4293-9E26-427145C9F1DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DACB0B7F-884C-4293-9E26-427145C9F1DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DACB0B7F-884C-4293-9E26-427145C9F1DE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{78539554-B39D-4C7E-9C62-55DDF2EBF85D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{78539554-B39D-4C7E-9C62-55DDF2EBF85D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{78539554-B39D-4C7E-9C62-55DDF2EBF85D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{78539554-B39D-4C7E-9C62-55DDF2EBF85D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7F0C7622-E9F2-4580-AEED-956FD9901E6C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7F0C7622-E9F2-4580-AEED-956FD9901E6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7F0C7622-E9F2-4580-AEED-956FD9901E6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7F0C7622-E9F2-4580-AEED-956FD9901E6C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{78539554-B39D-4C7E-9C62-55DDF2EBF85D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{78539554-B39D-4C7E-9C62-55DDF2EBF85D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{78539554-B39D-4C7E-9C62-55DDF2EBF85D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{78539554-B39D-4C7E-9C62-55DDF2EBF85D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E74D20A-4BFE-4F62-86DF-C1A3462BBBCD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E74D20A-4BFE-4F62-86DF-C1A3462BBBCD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E74D20A-4BFE-4F62-86DF-C1A3462BBBCD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E74D20A-4BFE-4F62-86DF-C1A3462BBBCD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{38C30D4F-C8C0-42C3-A2F3-AD6876B562B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38C30D4F-C8C0-42C3-A2F3-AD6876B562B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38C30D4F-C8C0-42C3-A2F3-AD6876B562B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38C30D4F-C8C0-42C3-A2F3-AD6876B562B0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
-namespace Valigator.TestApi.Core31
+namespace Valigator.TestApi
 {
 	public class Program
 	{

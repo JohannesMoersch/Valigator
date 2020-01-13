@@ -6,7 +6,7 @@ using Functional;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace Valigator.TestApi.Core31.Controllers
+namespace Valigator.TestApi.Controllers
 {
 	[Route("test")]
 	public class TestController : ControllerBase

@@ -8,7 +8,7 @@ using Microsoft.Extensions.Hosting;
 using Valigator.AspNetCore;
 
 [assembly: ApiController]
-namespace Valigator.TestApi.Core31
+namespace Valigator.TestApi
 {
 	public class Startup
 	{
