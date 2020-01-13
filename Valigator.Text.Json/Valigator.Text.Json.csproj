@@ -2,16 +2,10 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<Title>Valigator.Text.Json</Title>
 		<Description>This package adds support for serializing and deserializing valigator types to System.Text.Json.</Description>
-		<PackageProjectUrl>https://github.com/JohannesMoersch/Valigator</PackageProjectUrl>
-		<Authors>Johannes Moersch</Authors>
 		<PackageTags>validation</PackageTags>
-		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-		<Copyright>Copyright © 2019 Johannes Moersch</Copyright>
-		<Version>1.11.3</Version>
-		<LangVersion>Latest</LangVersion>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>

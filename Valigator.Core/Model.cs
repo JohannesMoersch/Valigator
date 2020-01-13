@@ -68,5 +68,9 @@ namespace Valigator
 
 			return Expression.Lambda<Func<object, Result<Unit, ValidationError[]>>>(expression, modelParameter).Compile();
 		}
+
+		public static TObject CreateClone<TObject>()
+			where TObject : class, new()
+			=> ModelFactory<TObject>.GetClonedObjectInstance();
 	}
 }

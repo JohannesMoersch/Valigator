@@ -2,16 +2,10 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<Title>Valigator.Core</Title>
 		<Description>This package contains fluent validators for data.</Description>
-		<PackageProjectUrl>https://github.com/JohannesMoersch/Valigator</PackageProjectUrl>
-		<Authors>Johannes Moersch</Authors>
 		<PackageTags>validation</PackageTags>
-		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-		<Copyright>Copyright © 2019 Johannes Moersch</Copyright>
-		<Version>1.12.0</Version>
-		<Product>Valigator</Product>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>

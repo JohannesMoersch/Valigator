@@ -1,0 +1,13 @@
+<Project>
+
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+    <PackageProjectUrl>https://github.com/JohannesMoersch/Valigator</PackageProjectUrl>
+    <Authors>Johannes Moersch</Authors>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Copyright>Copyright © 2020 Johannes Moersch</Copyright>
+    <Version>1.11.3</Version>
+		<Product>Valigator</Product>
+  </PropertyGroup>
+
+</Project>
