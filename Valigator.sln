@@ -15,6 +15,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Valigator.TestApi", "Valiga
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Valigator.AspNetCore", "Valigator.AspNetCore\Valigator.AspNetCore.csproj", "{DACB0B7F-884C-4293-9E26-427145C9F1DE}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Valigator.TestApi.Core31", "Valigator.TestApi.Core31\Valigator.TestApi.Core31.csproj", "{78539554-B39D-4C7E-9C62-55DDF2EBF85D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{DACB0B7F-884C-4293-9E26-427145C9F1DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DACB0B7F-884C-4293-9E26-427145C9F1DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DACB0B7F-884C-4293-9E26-427145C9F1DE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{78539554-B39D-4C7E-9C62-55DDF2EBF85D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{78539554-B39D-4C7E-9C62-55DDF2EBF85D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{78539554-B39D-4C7E-9C62-55DDF2EBF85D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{78539554-B39D-4C7E-9C62-55DDF2EBF85D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

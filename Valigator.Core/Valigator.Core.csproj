@@ -10,12 +10,12 @@
 		<PackageTags>validation</PackageTags>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<Copyright>Copyright © 2019 Johannes Moersch</Copyright>
-		<Version>1.11.3</Version>
+		<Version>1.11.4-develop004</Version>
 		<Product>Valigator</Product>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Functional.Primitives" Version="1.10.0" />
+    <PackageReference Include="Functional.Primitives" Version="1.18.0" />
   </ItemGroup>
 
   <ItemGroup>

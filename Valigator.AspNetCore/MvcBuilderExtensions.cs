@@ -13,7 +13,21 @@ namespace Valigator
 	public static class MvcBuilderExtensions
 	{
 		public static IMvcBuilder AddValigator(this IMvcBuilder builder, Func<ModelError[], IActionResult> inputErrorCreater, Func<ValidationError[], IActionResult> resultErrorCreator)
-			=> builder
+		{
+#if NETCOREAPP3_0
+			return builder
+				.Services
+				.AddControllers(options =>
+				{
+					options.Filters.Add(new ValigatorActionFilter(inputErrorCreater));
+					options.Filters.Add(new ValigatorResultFilter(resultErrorCreator));
+				})
+				.AddNewtonsoftJson(options =>
+				{
+					options.SerializerSettings.Converters.Add(new ValigatorConverter(options.SerializerSettings));
+				});
+#elif NETSTANDARD2_0
+			return builder
 				.AddMvcOptions(options =>
 				{
 					options.Filters.Add(new ValigatorActionFilter(inputErrorCreater));
@@ -23,5 +37,9 @@ namespace Valigator
 				{
 					options.SerializerSettings.Converters.Add(new ValigatorConverter(options.SerializerSettings));
 				});
+#else
+#error unknown target framework
+#endif
+		}
 	}
 }
