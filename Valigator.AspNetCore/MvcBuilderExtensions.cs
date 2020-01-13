@@ -14,7 +14,7 @@ namespace Valigator
 	{
 		public static IMvcBuilder AddValigator(this IMvcBuilder builder, Func<ModelError[], IActionResult> inputErrorCreater, Func<ValidationError[], IActionResult> resultErrorCreator)
 		{
-#if NETCOREAPP3_1
+#if NETCOREAPP3_0
 			return builder
 				.Services
 				.AddControllers(options =>
