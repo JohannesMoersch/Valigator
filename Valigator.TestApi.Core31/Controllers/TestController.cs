@@ -24,21 +24,25 @@ namespace Valigator.TestApi.Controllers
 			=> new JsonResult("Success");
 	}
 
+	[ValigatorConverter]
 	public class GuidBodyClass
 	{
 		public Data<GuidInnerClass[]> IdentifierCollection { get; set; } = Data.Collection<GuidInnerClass>().Required().ItemCount(1);
 	}
 
+	[ValigatorConverter]
 	public class GuidInnerClass
 	{
 		public Data<Guid> TheIdentifier { get; set; } = Data.Required<Guid>().NotEmpty();
 	}
 
+	[ValigatorConverter]
 	public class InnerBodyClass
 	{
 		public Data<InnerClass[]> IdentifierCollection { get; set; } = Data.Collection<InnerClass>().Required().ItemCount(1);
 	}
 
+	[ValigatorConverter]
 	public class InnerClass
 	{
 		public Data<Identifier> TheIdentifier { get; set; } = Identifier.Valigator.Required;

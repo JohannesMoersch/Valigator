@@ -53,12 +53,12 @@ namespace Valigator.AspNetCore3.IntegrationTests
 			=> CreateClient()
 				.BuildTest()
 				.Post("test/post")
-				.WithJsonBody($"{{ \"{nameof(InnerBodyClass.IdentifierCollection)}\": [ {{\"{nameof(InnerClass.TheIdentifier)}\" : \" \"}} ] }}")
+				.WithJsonBody($"{{ \"{nameof(InnerBodyClass.IdentifierCollection)}\": [ {{\"{nameof(InnerClass.TheIdentifier)}\" : \"61f45cfd-6389-4380-a803-c23881e982af\"}} ] }}")
 				.Send()
-				.IsBadRequest()
+				.IsSuccess()
 				.AssertJsonBody(str =>
 				{
-					str.Should().Be(@"[{""name"":""bodyValue"",""source"":0,""validationError"":{""message"":""Error converting value \"" \"" to type 'System.Guid'. Path 'IdentifierCollection[0].TheIdentifier', line 1, position 50."",""path"":{},""valueDescriptor"":{""fromType"":""System.String, System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e"",""toType"":""System.Guid, System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e""}}}]");
+					str.Should().Be("\"Success\"");
 				});
 
 		[Fact]
@@ -66,12 +66,12 @@ namespace Valigator.AspNetCore3.IntegrationTests
 			=> CreateClient()
 				.BuildTest()
 				.Post("test/post2")
-				.WithJsonBody($"{{ \"{nameof(InnerBodyClass.IdentifierCollection)}\": [ {{\"{nameof(InnerClass.TheIdentifier)}\" : \" \"}} ] }}")
+				.WithJsonBody($"{{ \"{nameof(InnerBodyClass.IdentifierCollection)}\": [ {{\"{nameof(InnerClass.TheIdentifier)}\" : \"61f45cfd-6389-4380-a803-c23881e982af\"}} ] }}")
 				.Send()
-				.IsBadRequest()
+				.IsSuccess()
 				.AssertJsonBody(str =>
 				{
-					str.Should().Be(@"[{""name"":""bodyValue"",""source"":0,""validationError"":{""message"":""Error converting value \"" \"" to type 'System.Guid'. Path 'IdentifierCollection[0].TheIdentifier', line 1, position 50."",""path"":{},""valueDescriptor"":{""fromType"":""System.String, System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e"",""toType"":""System.Guid, System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e""}}}]");
+					str.Should().Be("\"Success\"");
 				});
 	}
 }
