@@ -20,9 +20,7 @@ namespace Valigator.Text.Json
 			var result = new Dictionary<string, ValigatorJsonPropertyHandler<TObject>>();
 
 			foreach (var property in typeof(TObject).GetProperties(BindingFlags.Public | BindingFlags.Instance))
-			{
 				result.Add(property.Name, ValigatorJsonPropertyHandler<TObject>.Create(property));
-			}
 
 			return result;
 		}
@@ -30,13 +28,8 @@ namespace Valigator.Text.Json
 		private static Dictionary<string, ValigatorJsonPropertyHandler<TObject>> _propertyHandlers;
 		private static Dictionary<string, ValigatorJsonPropertyHandler<TObject>> PropertyHandlers => _propertyHandlers ??= CreatePropertyHandlers();
 
-		
-
 		static ValigatorConverter()
-		{
-			typeof(TObject).GetConstructors(BindingFlags.Public | BindingFlags.NonPublic).FirstOrDefault(info => info.GetParameters().Length == 0);
-		}
-
+			=> typeof(TObject).GetConstructors(BindingFlags.Public | BindingFlags.NonPublic).FirstOrDefault(info => info.GetParameters().Length == 0);
 
 		private readonly bool _useNewInstances;
 
@@ -91,13 +84,26 @@ namespace Valigator.Text.Json
 				? Model.CreateNew<TObject>()
 				: Model.CreateClone<TObject>();
 
-		public override void Write(Utf8JsonWriter writer, TObject value, JsonSerializerOptions options) 
-			=> throw new NotImplementedException();
+		public override void Write(Utf8JsonWriter writer, TObject value, JsonSerializerOptions options)
+		{
+			writer.WriteStartObject();
+
+			foreach (var handler in PropertyHandlers)
+			{
+				writer.WritePropertyName(handler.Key);
+
+				handler.Value.WriteProperty(writer, options, value);
+			}
+
+			writer.WriteEndObject();
+		}
 	}
 
 	internal abstract class ValigatorJsonPropertyHandler<TObject>
 	{
 		public abstract void ReadProperty(ref Utf8JsonReader reader, JsonSerializerOptions options, TObject obj);
+
+		public abstract void WriteProperty(Utf8JsonWriter writer, JsonSerializerOptions options, TObject obj);
 
 		public static ValigatorJsonPropertyHandler<TObject> Create(PropertyInfo property)
 		{
@@ -122,6 +128,9 @@ namespace Valigator.Text.Json
 
 		public override void ReadProperty(ref Utf8JsonReader reader, JsonSerializerOptions options, TObject obj)
 			=> _setValue.Invoke(obj, ValigatorJsonReader.ReadValue(ref reader, options, _getValue.Invoke(obj)));
+
+		public override void WriteProperty(Utf8JsonWriter writer, JsonSerializerOptions options, TObject obj)
+			=> ValigatorJsonWriter.WriteValue(writer, options, _getValue.Invoke(obj));
 
 		public new static ValigatorJsonPropertyHandler<TObject, TDataValue> Create(PropertyInfo property)
 		{
@@ -213,133 +222,121 @@ namespace Valigator.Text.Json
 		private static Data<TDataValue> SetNull<TDataValue>(Data<TDataValue> data)
 			=> (data.DataContainer as IAcceptValue<TDataValue>).WithNull(data);
 	}
-	/*
-	public class ValigatorConverter : JsonConverter
+
+	internal static class ValigatorJsonWriter
 	{
-		private readonly static ConcurrentDictionary<Type, bool> _typeCache = new ConcurrentDictionary<Type, bool>();
+		private delegate void IWriteValue<TDataValue>(Utf8JsonWriter writer, JsonSerializerOptions options, Data<TDataValue> data);
 
-		private JsonSerializer _serializer;
-		private readonly JsonSerializerSettings _jsonSerializerSettings;
+		private static readonly MethodInfo _writeNullableValueMethod = typeof(ValigatorJsonReader).GetMethod(nameof(WriteNullableSingleValue), BindingFlags.NonPublic | BindingFlags.Static);
+		private static readonly ConcurrentDictionary<Type, Delegate> _writeSingleValueDelegates = new ConcurrentDictionary<Type, Delegate>();
 
-		public JsonSerializer Serializer => _serializer ?? (_serializer = JsonSerializer.Create(_jsonSerializerSettings));
+		private static readonly MethodInfo _writeCollectionValueMethod = typeof(ValigatorJsonReader).GetMethod(nameof(WriteCollectionValue), BindingFlags.NonPublic | BindingFlags.Static);
+		private static readonly MethodInfo _writeCollectionNullableValueMethod = typeof(ValigatorJsonReader).GetMethod(nameof(WriteCollectionNullableValue), BindingFlags.NonPublic | BindingFlags.Static);
+		private static readonly MethodInfo _writeNullableCollectionValueMethod = typeof(ValigatorJsonReader).GetMethod(nameof(WriteNullableCollectionValue), BindingFlags.NonPublic | BindingFlags.Static);
+		private static readonly MethodInfo _writeNullableCollectionNullableValueMethod = typeof(ValigatorJsonReader).GetMethod(nameof(WriteNullableCollectionNullableValue), BindingFlags.NonPublic | BindingFlags.Static);
+		private static readonly ConcurrentDictionary<Type, Delegate> _writeCollectionValueDelegates = new ConcurrentDictionary<Type, Delegate>();
 
-		public ValigatorConverter(JsonSerializerSettings jsonSerializerSettings) 
-			=> _jsonSerializerSettings = jsonSerializerSettings;
+		private static IWriteValue<TDataValue> GetWriteValueDelegate<TDataValue>(Data<TDataValue> data)
+			=> typeof(TDataValue).IsArray
+				? GetWriteCollectionValueDelegate(data)
+				: GetWriteSingleValueDelegate(data);
 
-		public override bool CanConvert(Type objectType)
-			=> objectType.IsConstructedGenericType && _typeCache.GetOrAdd(objectType, t => t.GetGenericTypeDefinition() == typeof(Data<>));
+		private static IWriteValue<TDataValue> GetWriteSingleValueDelegate<TDataValue>(Data<TDataValue> data)
+			=> (IWriteValue<TDataValue>)_writeSingleValueDelegates
+				.GetOrAdd
+				(
+					typeof(TDataValue),
+					key => key.IsGenericType && key.GetGenericTypeDefinition() == typeof(Option<>)
+						? Delegate.CreateDelegate(typeof(IWriteValue<TDataValue>), _writeNullableValueMethod.MakeGenericMethod(key, key.GetGenericArguments()[0]))
+						: new IWriteValue<TDataValue>(WriteSingleValue)
+				);
 
-		public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer _)
-			=> Read(reader, (dynamic)existingValue, Serializer);
+		private static IWriteValue<TDataValue> GetWriteCollectionValueDelegate<TDataValue>(Data<TDataValue> data)
+			=> (IWriteValue<TDataValue>)_writeCollectionValueDelegates
+				.GetOrAdd
+				(
+					typeof(TDataValue),
+					key => key.IsGenericType && key.GetGenericTypeDefinition() == typeof(Option<>)
+						? key.GetGenericArguments()[0].GetElementType().IsGenericType && key.GetGenericArguments()[0].GetElementType().GetGenericTypeDefinition() == typeof(Option<>)
+							? Delegate.CreateDelegate(typeof(IWriteValue<TDataValue>), _writeNullableCollectionNullableValueMethod.MakeGenericMethod(key, key.GetGenericArguments()[0].GetElementType().GetGenericArguments()[0]))
+							: Delegate.CreateDelegate(typeof(IWriteValue<TDataValue>), _writeNullableCollectionValueMethod.MakeGenericMethod(key, key.GetGenericArguments()[0].GetElementType()))
+						: key.GetElementType().IsGenericType && key.GetElementType().GetGenericTypeDefinition() == typeof(Option<>)
+							? Delegate.CreateDelegate(typeof(IWriteValue<TDataValue>), _writeCollectionNullableValueMethod.MakeGenericMethod(key, key.GetElementType().GetGenericArguments()[0]))
+							: Delegate.CreateDelegate(typeof(IWriteValue<TDataValue>), _writeCollectionValueMethod.MakeGenericMethod(key, key.GetElementType()))
+				);
 
-		private static Data<TValue> Read<TValue>(JsonReader reader, Data<TValue> existingValue, JsonSerializer serializer)
-			=> WithValue(existingValue, (dynamic)existingValue.DataContainer, reader, serializer);
+		public static void WriteValue<TDataValue>(Utf8JsonWriter writer, JsonSerializerOptions options, Data<TDataValue> data)
+			=> GetWriteValueDelegate(data).Invoke(writer, options, data);
 
-		private static Data<Option<TValue>> Read<TValue>(JsonReader reader, Data<Option<TValue>> existingValue, JsonSerializer serializer)
-			=> WithValue(existingValue, (dynamic)existingValue.DataContainer, reader, serializer);
+		private static void WriteSingleValue<TDataValue>(Utf8JsonWriter writer, JsonSerializerOptions options, Data<TDataValue> data)
+			=> JsonSerializer.Serialize(writer, data.Value, options);
 
-		private static Data<TValue[]> Read<TValue>(JsonReader reader, Data<TValue[]> existingValue, JsonSerializer serializer)
-			=> WithCollectionValue(existingValue, (dynamic)existingValue.DataContainer, reader, serializer);
-
-		private static Data<Option<TValue>[]> Read<TValue>(JsonReader reader, Data<Option<TValue>[]> existingValue, JsonSerializer serializer)
-			=> WithCollectionValue(existingValue, (dynamic)existingValue.DataContainer, reader, serializer);
-
-		private static Data<Option<TValue[]>> Read<TValue>(JsonReader reader, Data<Option<TValue[]>> existingValue, JsonSerializer serializer)
-			=> WithCollectionValue(existingValue, (dynamic)existingValue.DataContainer, reader, serializer);
-
-		private static Data<Option<Option<TValue>[]>> Read<TValue>(JsonReader reader, Data<Option<Option<TValue>[]>> existingValue, JsonSerializer serializer)
-			=> WithCollectionValue(existingValue, (dynamic)existingValue.DataContainer, reader, serializer);
-
-		private static Data<TDataValue> WithValue<TDataValue, TValue>(Data<TDataValue> data, IAcceptValue<TDataValue, TValue> dataContainer, JsonReader reader, JsonSerializer serializer)
+		private static void WriteNullableSingleValue<TDataValue, TItemValue>(Utf8JsonWriter writer, JsonSerializerOptions options, Data<TDataValue> data)
 		{
-			if (reader.TokenType == JsonToken.Null)
-				return dataContainer.WithNull(data);
-
-			try
-			{
-				var value = serializer.Deserialize(reader, typeof(TValue));
-
-				return value != null ? dataContainer.WithValue(data, Option.Some((TValue)value)) : dataContainer.WithNull(data);
-			}
-			catch (JsonSerializationException e)
-			{
-				return data.WithErrors(MappingError.Create(e.Message, typeof(string), typeof(TValue)));
-			}
-		}
-
-		private static Data<TDataValue> WithCollectionValue<TDataValue, TValue>(Data<TDataValue> data, IAcceptCollectionValue<TDataValue, TValue> dataContainer, JsonReader reader, JsonSerializer serializer)
-			=> dataContainer.WithValue(data, DeserializeCollection<TValue>(reader, serializer));
-
-		private static Option<Option<TValue>[]> DeserializeCollection<TValue>(JsonReader reader, JsonSerializer serializer)
-		{
-			if (reader.TokenType == JsonToken.Null)
-				return Option.None<Option<TValue>[]>();
-
-			var values = new List<Option<TValue>>();
-
-			while (reader.Read() && reader.TokenType != JsonToken.EndArray)
-			{
-				if (reader.TokenType != JsonToken.Null)
-				{
-					var value = serializer.Deserialize<TValue>(reader);
-
-					values.Add(Option.Create(value != null, value));
-				}
-				else
-					values.Add(Option.None<TValue>());
-			}
-
-			return Option.Some(values.ToArray());
-		}
-
-		public override void WriteJson(JsonWriter writer, object value, JsonSerializer _)
-			=> Write(writer, (dynamic)value, Serializer);
-
-		private static void Write<TValue>(JsonWriter writer, Data<TValue> value, JsonSerializer serializer)
-			=> serializer.Serialize(writer, value.Value, typeof(TValue));
-
-		private static void Write<TValue>(JsonWriter writer, Data<Option<TValue>> value, JsonSerializer serializer)
-		{
-			if (value.Value.Match(_ => true, () => false))
-				serializer.Serialize(writer, value.Value.Match(_ => _, () => default), typeof(TValue));
+			if (((Option<TItemValue>)(object)data.Value).TryGetValue(out var value))
+				JsonSerializer.Serialize(writer, value, options);
 			else
-				serializer.Serialize(writer, null);
+				writer.WriteNullValue();
 		}
 
-		private static void Write<TValue>(JsonWriter writer, Data<Option<TValue>[]> value, JsonSerializer serializer)
+		private static void WriteCollectionValue<TDataValue, TItemValue>(Utf8JsonWriter writer, JsonSerializerOptions options, Data<TDataValue> data)
 		{
 			writer.WriteStartArray();
 
-			foreach (var item in value.Value)
+			foreach (var item in (TItemValue[])(object)data.Value)
+				JsonSerializer.Serialize(writer, item, options);
+
+			writer.WriteEndArray();
+		}
+
+		private static void WriteCollectionNullableValue<TDataValue, TItemValue>(Utf8JsonWriter writer, JsonSerializerOptions options, Data<TDataValue> data)
+		{
+			writer.WriteStartArray();
+
+			foreach (var item in (Option<TItemValue>[])(object)data.Value)
 			{
-				if (item.Match(_ => true, () => false))
-					serializer.Serialize(writer, item.Match(_ => _, () => default), typeof(TValue));
+				if (item.TryGetValue(out var value))
+					JsonSerializer.Serialize(writer, value, options);
 				else
-					serializer.Serialize(writer, null);
+					writer.WriteNullValue();
 			}
 
 			writer.WriteEndArray();
 		}
 
-		private static void Write<TValue>(JsonWriter writer, Data<Option<Option<TValue>[]>> value, JsonSerializer serializer)
+		private static void WriteNullableCollectionValue<TDataValue, TItemValue>(Utf8JsonWriter writer, JsonSerializerOptions options, Data<TDataValue> data)
 		{
-			if (value.Value.Match(_ => true, () => false))
+			if (((Option<TItemValue[]>)(object)data.Value).TryGetValue(out var value))
 			{
 				writer.WriteStartArray();
 
-				foreach (var item in value.Value.Match(_ => _, () => default))
+				foreach (var item in value)
+					JsonSerializer.Serialize(writer, item, options);
+
+				writer.WriteEndArray();
+			}
+			else
+				writer.WriteNullValue();
+		}
+
+		private static void WriteNullableCollectionNullableValue<TDataValue, TItemValue>(Utf8JsonWriter writer, JsonSerializerOptions options, Data<TDataValue> data)
+		{
+			if (((Option<Option<TItemValue>[]>)(object)data.Value).TryGetValue(out var value))
+			{
+				writer.WriteStartArray();
+
+				foreach (var item in value)
 				{
-					if (item.Match(_ => true, () => false))
-						serializer.Serialize(writer, item.Match(_ => _, () => default), typeof(TValue));
+					if (item.TryGetValue(out var o))
+						JsonSerializer.Serialize(writer, o, options);
 					else
-						serializer.Serialize(writer, null);
+						writer.WriteNullValue();
 				}
 
 				writer.WriteEndArray();
 			}
 			else
-				serializer.Serialize(writer, null);
+				writer.WriteNullValue();
 		}
 	}
-	*/
 }
