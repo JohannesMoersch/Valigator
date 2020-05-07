@@ -1,20 +1,17 @@
 ﻿using FluentAssertions;
 using Functional;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using Valigator.Text.Json;
+using Valigator.Newtonsoft.Json;
 using Xunit;
 
-namespace Valigator.Tests.Text.Json
+namespace Valigator.Tests.Newtonsoft
 {
-	public class Tests
+	public class ModelTests
 	{
-		[ValigatorConverter]
+		[JsonConverter(typeof(ValigatorConverter))]
 		public class TestClass : IEquatable<TestClass>
 		{
 			public TestClass() { }
@@ -41,7 +38,7 @@ namespace Valigator.Tests.Text.Json
 
 			public Data<Option<Option<int>[]>> NullableCollectionOfNullableValues { get; set; } = Data.Collection<int>(i => i.Nullable()).Required().Nullable();
 
-			public override bool Equals(object obj) 
+			public override bool Equals(object obj)
 				=> Equals(obj as TestClass);
 
 			public bool Equals(TestClass other)
@@ -52,16 +49,16 @@ namespace Valigator.Tests.Text.Json
 					CollectionOfNullableValues.Value.SequenceEqual(other.CollectionOfNullableValues.Value) &&
 					NullableCollectionOfValues.Value.Match(left => other.NullableCollectionOfValues.Value.Match(right => left.SequenceEqual(right), () => false), () => !other.NullableCollectionOfValues.Value.HasValue()) &&
 					NullableCollectionOfNullableValues.Value.Match(left => other.NullableCollectionOfNullableValues.Value.Match(right => left.SequenceEqual(right), () => false), () => !other.NullableCollectionOfNullableValues.Value.HasValue());
-			
-			public override int GetHashCode() 
+
+			public override int GetHashCode()
 				=> HashCode
 					.Combine
 					(
-						Value, 
-						NullableValue, 
-						CollectionOfValues, 
-						CollectionOfNullableValues, 
-						NullableCollectionOfValues, 
+						Value,
+						NullableValue,
+						CollectionOfValues,
+						CollectionOfNullableValues,
+						NullableCollectionOfValues,
 						NullableCollectionOfNullableValues
 					);
 
@@ -101,8 +98,8 @@ namespace Valigator.Tests.Text.Json
 
 		[Fact]
 		public void DeserializingWithAllValues()
-			=> JsonSerializer
-				.Deserialize<TestClass>(@"
+			=> JsonConvert
+				.DeserializeObject<TestClass>(@"
 					{
 						""Value"": 1,
 						""NullableValue"": 1,
@@ -118,8 +115,8 @@ namespace Valigator.Tests.Text.Json
 
 		[Fact]
 		public void DeserializingWithSomeValues()
-			=> JsonSerializer
-				.Deserialize<TestClass>(@"
+			=> JsonConvert
+				.DeserializeObject<TestClass>(@"
 					{
 						""Value"": 1,
 						""NullableValue"": null,
@@ -135,8 +132,8 @@ namespace Valigator.Tests.Text.Json
 
 		[Fact]
 		public void DeserializingWithNoValues()
-			=> JsonSerializer
-				.Deserialize<TestClass>(@"
+			=> JsonConvert
+				.DeserializeObject<TestClass>(@"
 					{
 						""Value"": 1,
 						""NullableValue"": null,
@@ -152,8 +149,8 @@ namespace Valigator.Tests.Text.Json
 
 		[Fact]
 		public void SerializingWithAllValues()
-			=> JsonSerializer
-				.Serialize(TestClass.CreateWithAllValues().Verify())
+			=> JsonConvert
+				.SerializeObject(TestClass.CreateWithAllValues().Verify())
 				.Should()
 				.Be(@"
 					{
@@ -169,8 +166,8 @@ namespace Valigator.Tests.Text.Json
 
 		[Fact]
 		public void SerializingWithSomeValues()
-			=> JsonSerializer
-				.Serialize(TestClass.CreateWithSomeValues().Verify())
+			=> JsonConvert
+				.SerializeObject(TestClass.CreateWithSomeValues().Verify())
 				.Should()
 				.Be(@"
 					{
@@ -186,8 +183,8 @@ namespace Valigator.Tests.Text.Json
 
 		[Fact]
 		public void SerializingWithNoValues()
-			=> JsonSerializer
-				.Serialize(TestClass.CreateWithNoValues().Verify())
+			=> JsonConvert
+				.SerializeObject(TestClass.CreateWithNoValues().Verify())
 				.Should()
 				.Be(@"
 					{

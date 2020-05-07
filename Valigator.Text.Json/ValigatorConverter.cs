@@ -127,10 +127,20 @@ namespace Valigator.Text.Json
 		}
 
 		public override void ReadProperty(ref Utf8JsonReader reader, JsonSerializerOptions options, TObject obj)
-			=> _setValue.Invoke(obj, ValigatorJsonReader.ReadValue(ref reader, options, _getValue.Invoke(obj)));
+		{
+			if (_getValue != null && _setValue != null)
+				_setValue.Invoke(obj, ValigatorJsonReader.ReadValue(ref reader, options, _getValue.Invoke(obj)));
+			else
+				throw new NotSupportedException();
+		}
 
 		public override void WriteProperty(Utf8JsonWriter writer, JsonSerializerOptions options, TObject obj)
-			=> ValigatorJsonWriter.WriteValue(writer, options, _getValue.Invoke(obj));
+		{
+			if (_getValue != null)
+				ValigatorJsonWriter.WriteValue(writer, options, _getValue.Invoke(obj));
+			else
+				throw new NotSupportedException();
+		}
 
 		public new static ValigatorJsonPropertyHandler<TObject, TDataValue> Create(PropertyInfo property)
 		{
@@ -139,8 +149,8 @@ namespace Valigator.Text.Json
 
 			var valueParameter = Expression.Parameter(typeof(Data<TDataValue>), "value");
 
-			var getter = Expression.Lambda<Func<TObject, Data<TDataValue>>>(propertyExpression, objParameter).Compile();
-			var setter = Expression.Lambda<Action<TObject, Data<TDataValue>>>(Expression.Assign(propertyExpression, valueParameter), objParameter, valueParameter).Compile();
+			var getter = property.CanRead ? Expression.Lambda<Func<TObject, Data<TDataValue>>>(propertyExpression, objParameter).Compile() : null;
+			var setter = property.CanWrite ? Expression.Lambda<Action<TObject, Data<TDataValue>>>(Expression.Assign(propertyExpression, valueParameter), objParameter, valueParameter).Compile() : null;
 
 			return new ValigatorJsonPropertyHandler<TObject, TDataValue>(getter, setter);
 		}
