@@ -227,17 +227,17 @@ namespace Valigator.Text.Json
 	{
 		private delegate void IWriteValue<TDataValue>(Utf8JsonWriter writer, JsonSerializerOptions options, Data<TDataValue> data);
 
-		private static readonly MethodInfo _writeNullableValueMethod = typeof(ValigatorJsonReader).GetMethod(nameof(WriteNullableSingleValue), BindingFlags.NonPublic | BindingFlags.Static);
+		private static readonly MethodInfo _writeNullableValueMethod = typeof(ValigatorJsonWriter).GetMethod(nameof(WriteNullableSingleValue), BindingFlags.NonPublic | BindingFlags.Static);
 		private static readonly ConcurrentDictionary<Type, Delegate> _writeSingleValueDelegates = new ConcurrentDictionary<Type, Delegate>();
 
-		private static readonly MethodInfo _writeCollectionValueMethod = typeof(ValigatorJsonReader).GetMethod(nameof(WriteCollectionValue), BindingFlags.NonPublic | BindingFlags.Static);
-		private static readonly MethodInfo _writeCollectionNullableValueMethod = typeof(ValigatorJsonReader).GetMethod(nameof(WriteCollectionNullableValue), BindingFlags.NonPublic | BindingFlags.Static);
-		private static readonly MethodInfo _writeNullableCollectionValueMethod = typeof(ValigatorJsonReader).GetMethod(nameof(WriteNullableCollectionValue), BindingFlags.NonPublic | BindingFlags.Static);
-		private static readonly MethodInfo _writeNullableCollectionNullableValueMethod = typeof(ValigatorJsonReader).GetMethod(nameof(WriteNullableCollectionNullableValue), BindingFlags.NonPublic | BindingFlags.Static);
+		private static readonly MethodInfo _writeCollectionValueMethod = typeof(ValigatorJsonWriter).GetMethod(nameof(WriteCollectionValue), BindingFlags.NonPublic | BindingFlags.Static);
+		private static readonly MethodInfo _writeCollectionNullableValueMethod = typeof(ValigatorJsonWriter).GetMethod(nameof(WriteCollectionNullableValue), BindingFlags.NonPublic | BindingFlags.Static);
+		private static readonly MethodInfo _writeNullableCollectionValueMethod = typeof(ValigatorJsonWriter).GetMethod(nameof(WriteNullableCollectionValue), BindingFlags.NonPublic | BindingFlags.Static);
+		private static readonly MethodInfo _writeNullableCollectionNullableValueMethod = typeof(ValigatorJsonWriter).GetMethod(nameof(WriteNullableCollectionNullableValue), BindingFlags.NonPublic | BindingFlags.Static);
 		private static readonly ConcurrentDictionary<Type, Delegate> _writeCollectionValueDelegates = new ConcurrentDictionary<Type, Delegate>();
 
 		private static IWriteValue<TDataValue> GetWriteValueDelegate<TDataValue>(Data<TDataValue> data)
-			=> typeof(TDataValue).IsArray
+			=> data.DataContainer is IAcceptCollectionValue<TDataValue>
 				? GetWriteCollectionValueDelegate(data)
 				: GetWriteSingleValueDelegate(data);
 
