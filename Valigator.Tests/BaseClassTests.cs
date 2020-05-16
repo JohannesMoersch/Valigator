@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Valigator.Core;
+using Valigator.Tests.Common;
 using Xunit;
 
 namespace Valigator.Tests

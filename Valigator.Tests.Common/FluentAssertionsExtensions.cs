@@ -5,7 +5,7 @@ using System.Text;
 using FluentAssertions.Collections;
 using Functional;
 
-namespace Valigator.Tests
+namespace Valigator.Tests.Common
 {
 	public static class FluentAssertionsExtensions
 	{

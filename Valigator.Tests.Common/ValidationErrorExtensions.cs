@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Valigator
+namespace Valigator.Tests.Common
 {
 	public static class ValidationErrorExtensions
 	{

@@ -10,9 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Valigator.AspNetCore\Valigator.AspNetCore.csproj" />
-    <ProjectReference Include="..\Valigator.Core\Valigator.Core.csproj" />
-    <ProjectReference Include="..\Valigator.Text.Json\Valigator.Text.Json.csproj" />
+    <ProjectReference Include="..\Valigator.AspNetCore.Text.Json\Valigator.AspNetCore.Text.Json.csproj" />
   </ItemGroup>
 
 </Project>

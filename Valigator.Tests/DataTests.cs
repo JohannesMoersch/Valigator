@@ -4,6 +4,7 @@ using System.Text;
 using FluentAssertions;
 using Functional;
 using Valigator;
+using Valigator.Tests.Common;
 using Xunit;
 
 namespace Valigator.Tests

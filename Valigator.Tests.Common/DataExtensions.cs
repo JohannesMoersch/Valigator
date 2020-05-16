@@ -4,7 +4,7 @@ using System.Text;
 using Functional;
 using Valigator.Core;
 
-namespace Valigator.Tests
+namespace Valigator.Tests.Common
 {
 	public static class DataExtensions
 	{

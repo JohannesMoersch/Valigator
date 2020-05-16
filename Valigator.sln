@@ -19,9 +19,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Valigator.Text.Json", "Vali
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Valigator.TestApi.Core31", "Valigator.TestApi.Core31\Valigator.TestApi.Core31.csproj", "{78539554-B39D-4C7E-9C62-55DDF2EBF85D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Valigator.AspNetCore2.IntegrationTests", "Valigator.AspNetCore2.IntegrationTests\Valigator.AspNetCore2.IntegrationTests.csproj", "{8E74D20A-4BFE-4F62-86DF-C1A3462BBBCD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Valigator.AspNetCore2.IntegrationTests", "Valigator.AspNetCore2.IntegrationTests\Valigator.AspNetCore2.IntegrationTests.csproj", "{8E74D20A-4BFE-4F62-86DF-C1A3462BBBCD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Valigator.AspNetCore3.IntegrationTests", "Valigator.AspNetCore3.IntegrationTests\Valigator.AspNetCore3.IntegrationTests.csproj", "{38C30D4F-C8C0-42C3-A2F3-AD6876B562B0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Valigator.AspNetCore3.IntegrationTests", "Valigator.AspNetCore3.IntegrationTests\Valigator.AspNetCore3.IntegrationTests.csproj", "{38C30D4F-C8C0-42C3-A2F3-AD6876B562B0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Valigator.AspNetCore.Newtonsoft.Json", "Valigator.AspNetCore.Newtonsoft.Json\Valigator.AspNetCore.Newtonsoft.Json.csproj", "{4A67F310-EEBA-452E-A34C-8711CD5B8E33}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Valigator.AspNetCore.Text.Json", "Valigator.AspNetCore.Text.Json\Valigator.AspNetCore.Text.Json.csproj", "{459B8026-F45C-4FA1-8274-847930C9E14E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Valigator.Newtonsoft.Json.Tests", "Valigator.Newtonsoft.Json.Tests\Valigator.Newtonsoft.Json.Tests.csproj", "{A9BEC6B1-2678-486B-9364-6CE0102E5E9D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Valigator.Text.Json.Tests", "Valigator.Text.Json.Tests\Valigator.Text.Json.Tests.csproj", "{99FAAA51-CA5F-4852-9BC0-F8C33EB15825}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Valigator.Tests.Common", "Valigator.Tests.Common\Valigator.Tests.Common.csproj", "{109AC861-19CD-467A-BC70-81D5FB2E9E82}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -69,6 +79,26 @@ Global
 		{38C30D4F-C8C0-42C3-A2F3-AD6876B562B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{38C30D4F-C8C0-42C3-A2F3-AD6876B562B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{38C30D4F-C8C0-42C3-A2F3-AD6876B562B0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4A67F310-EEBA-452E-A34C-8711CD5B8E33}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A67F310-EEBA-452E-A34C-8711CD5B8E33}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A67F310-EEBA-452E-A34C-8711CD5B8E33}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A67F310-EEBA-452E-A34C-8711CD5B8E33}.Release|Any CPU.Build.0 = Release|Any CPU
+		{459B8026-F45C-4FA1-8274-847930C9E14E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{459B8026-F45C-4FA1-8274-847930C9E14E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{459B8026-F45C-4FA1-8274-847930C9E14E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{459B8026-F45C-4FA1-8274-847930C9E14E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A9BEC6B1-2678-486B-9364-6CE0102E5E9D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9BEC6B1-2678-486B-9364-6CE0102E5E9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9BEC6B1-2678-486B-9364-6CE0102E5E9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9BEC6B1-2678-486B-9364-6CE0102E5E9D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{99FAAA51-CA5F-4852-9BC0-F8C33EB15825}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{99FAAA51-CA5F-4852-9BC0-F8C33EB15825}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{99FAAA51-CA5F-4852-9BC0-F8C33EB15825}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{99FAAA51-CA5F-4852-9BC0-F8C33EB15825}.Release|Any CPU.Build.0 = Release|Any CPU
+		{109AC861-19CD-467A-BC70-81D5FB2E9E82}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{109AC861-19CD-467A-BC70-81D5FB2E9E82}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{109AC861-19CD-467A-BC70-81D5FB2E9E82}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{109AC861-19CD-467A-BC70-81D5FB2E9E82}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Valigator.Tests
+namespace Valigator.Tests.Common
 {
 	public static class ObjectExtensions
 	{

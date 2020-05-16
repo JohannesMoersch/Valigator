@@ -17,11 +17,11 @@ namespace Valigator.TestApi.Controllers
 
 		[HttpPost("post")]
 		public JsonResult Post([FromBody] BodyClass bodyValue)
-			=> new JsonResult(bodyValue.IdentifierCollection.Value.Select(id => new InnerClass(id.TheIdentifier.Value.Value)).ToArray());
+			=> new JsonResult(bodyValue.IdentifierCollection.Value.Select(id => id.TheIdentifier.Value.Value).ToArray());
 
 		[HttpPost("post2")]
 		public JsonResult Post([FromBody] GuidBodyClass bodyValue)
-			=> new JsonResult(bodyValue.IdentifierCollection.Value.Select(id => new GuidInnerClass(id.TheIdentifier.Value)).ToArray());
+			=> new JsonResult(bodyValue.IdentifierCollection.Value.Select(id => id.TheIdentifier.Value).ToArray());
 	}
 
 	public class GuidBodyClass

@@ -4,14 +4,15 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Valigator.Newtonsoft.Json;
+using Valigator.Newtonsoft.Json.Tests;
+using Valigator.Tests.Common;
 using Xunit;
 
 namespace Valigator.Tests.Newtonsoft
 {
 	public class ModelTests
 	{
-		[JsonConverter(typeof(ValigatorConverter))]
+		[ValigatorModel]
 		public class TestClass : IEquatable<TestClass>
 		{
 			public TestClass() { }
@@ -107,7 +108,8 @@ namespace Valigator.Tests.Newtonsoft
 						""CollectionOfNullableValues"": [1, 2],
 						""NullableCollectionOfValues"": [1, 2],
 						""NullableCollectionOfNullableValues"": [1, 2]
-					}"
+					}", 
+					JsonTestSettings.NewtonsoftSettings
 				)
 				.Verify()
 				.Should()
@@ -124,7 +126,8 @@ namespace Valigator.Tests.Newtonsoft
 						""CollectionOfNullableValues"": [null, null],
 						""NullableCollectionOfValues"": [1, 2],
 						""NullableCollectionOfNullableValues"": [null, null]
-					}"
+					}",
+					JsonTestSettings.NewtonsoftSettings
 				)
 				.Verify()
 				.Should()
@@ -141,7 +144,8 @@ namespace Valigator.Tests.Newtonsoft
 						""CollectionOfNullableValues"": [null, null],
 						""NullableCollectionOfValues"": null,
 						""NullableCollectionOfNullableValues"": null
-					}"
+					}",
+					JsonTestSettings.NewtonsoftSettings
 				)
 				.Verify()
 				.Should()
@@ -150,7 +154,7 @@ namespace Valigator.Tests.Newtonsoft
 		[Fact]
 		public void SerializingWithAllValues()
 			=> JsonConvert
-				.SerializeObject(TestClass.CreateWithAllValues().Verify())
+				.SerializeObject(TestClass.CreateWithAllValues().Verify(), JsonTestSettings.NewtonsoftSettings)
 				.Should()
 				.Be(@"
 					{
@@ -167,7 +171,7 @@ namespace Valigator.Tests.Newtonsoft
 		[Fact]
 		public void SerializingWithSomeValues()
 			=> JsonConvert
-				.SerializeObject(TestClass.CreateWithSomeValues().Verify())
+				.SerializeObject(TestClass.CreateWithSomeValues().Verify(), JsonTestSettings.NewtonsoftSettings)
 				.Should()
 				.Be(@"
 					{
@@ -184,7 +188,7 @@ namespace Valigator.Tests.Newtonsoft
 		[Fact]
 		public void SerializingWithNoValues()
 			=> JsonConvert
-				.SerializeObject(TestClass.CreateWithNoValues().Verify())
+				.SerializeObject(TestClass.CreateWithNoValues().Verify(), JsonTestSettings.NewtonsoftSettings)
 				.Should()
 				.Be(@"
 					{

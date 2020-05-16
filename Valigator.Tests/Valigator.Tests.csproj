@@ -8,9 +8,9 @@
 
   <ItemGroup>
     <PackageReference Include="FakeItEasy" Version="5.5.0" />
-    <PackageReference Include="FluentAssertions" Version="5.10.0" />
+    <PackageReference Include="FluentAssertions" Version="5.10.3" />
     <PackageReference Include="Functional.All" Version="1.18.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.4.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1">
@@ -22,9 +22,8 @@
   <ItemGroup>
     <ProjectReference Include="..\Valigator.AspNetCore\Valigator.AspNetCore.csproj" />
     <ProjectReference Include="..\Valigator.Core\Valigator.Core.csproj" />
-    <ProjectReference Include="..\Valigator.Newtonsoft.Json\Valigator.Newtonsoft.Json.csproj" />
     <ProjectReference Include="..\Valigator.TestApi\Valigator.TestApi.csproj" />
-    <ProjectReference Include="..\Valigator.Text.Json\Valigator.Text.Json.csproj" />
+    <ProjectReference Include="..\Valigator.Tests.Common\Valigator.Tests.Common.csproj" />
   </ItemGroup>
 
 </Project>

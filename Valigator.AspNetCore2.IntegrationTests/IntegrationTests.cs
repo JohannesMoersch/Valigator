@@ -58,7 +58,7 @@ namespace Valigator.AspNetCore2.IntegrationTests
 				.IsSuccess()
 				.AssertJsonBody(str =>
 				{
-					str.Should().Be("\"Success\"");
+					str.Should().Be("[\"61f45cfd-6389-4380-a803-c23881e982af\"]");
 				});
 
 		[Fact]
@@ -71,7 +71,7 @@ namespace Valigator.AspNetCore2.IntegrationTests
 				.IsSuccess()
 				.AssertJsonBody(str =>
 				{
-					str.Should().Be("\"Success\"");
+					str.Should().Be("[\"61f45cfd-6389-4380-a803-c23881e982af\"]");
 				});
 	}
 }

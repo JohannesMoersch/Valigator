@@ -45,21 +45,6 @@ namespace Valigator
 
 		public static Result<Unit, ValidationError[]> Verify<TModel>(TModel model)
 		{
-			if (model is ICollection collection)
-			{
-				List<ValidationError> errors = null;
-				foreach (var item in collection)
-				{
-					if (!Verify(item).TryGetValue(out var _, out var failure))
-						(errors ??= new List<ValidationError>()).AddRange(failure);
-				}
-
-				if (errors != null)
-					return Result.Failure<Unit, ValidationError[]>(errors.ToArray());
-
-				return Result.Unit<ValidationError[]>();
-			}
-
 			var modelType = model?.GetType() ?? throw new ArgumentNullException(nameof(model));
 
 			if (modelType == typeof(TModel))

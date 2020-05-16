@@ -1,6 +1,7 @@
 ﻿using Xunit;
 using FluentAssertions;
 using System.Linq;
+using Valigator.Tests.Common;
 
 namespace Valigator.Tests
 {

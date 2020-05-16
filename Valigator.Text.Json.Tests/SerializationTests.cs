@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json;
 using FluentAssertions;
 using Functional;
-using Newtonsoft.Json;
-using Valigator.Newtonsoft.Json;
+using Valigator.Text.Json.Tests;
 using Xunit;
 
-namespace Valigator.Tests.Newtonsoft
+namespace Valigator.Tests.Text.Json
 {
 	public class SerializationTests
 	{
@@ -572,6 +572,7 @@ namespace Valigator.Tests.Newtonsoft
 					.Be(@"{""Value"":[null,5]}");
 		}
 
+		[ValigatorModel]
 		public class TestClass<TValue>
 		{
 			public Data<TValue> Value { get; }
@@ -580,7 +581,7 @@ namespace Valigator.Tests.Newtonsoft
 				=> Value = value.Verify();
 
 			public string Serialize()
-				=> JsonConvert.SerializeObject(this, new ValigatorConverter(new JsonSerializerSettings()));
+				=> JsonSerializer.Serialize(this, JsonTestSettings.SystemTextJsonSettings);
 		}
 	}
 }

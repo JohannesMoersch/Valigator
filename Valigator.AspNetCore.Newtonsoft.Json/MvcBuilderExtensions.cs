@@ -1,17 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.Serialization;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Valigator.AspNetCore;
+using Valigator.Newtonsoft.Json;
 
 namespace Valigator
 {
@@ -57,7 +51,12 @@ namespace Valigator
 				{
 					options.Filters.Add(new ValigatorActionFilter(inputErrorCreater));
 					options.Filters.Add(new ValigatorResultFilter(resultErrorCreator));
-				});
+				})
+#if NETCOREAPP3_0
+				.AddNewtonsoftJson(o => o.SerializerSettings.Converters.Add(new ValigatorConverter(o.SerializerSettings)));
+#else
+				.AddJsonOptions(o => o.SerializerSettings.Converters.Add(new ValigatorConverter(o.SerializerSettings)));
+#endif
 		}
 	}
 }

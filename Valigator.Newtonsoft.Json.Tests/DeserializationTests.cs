@@ -7,7 +7,8 @@ using Functional;
 using Newtonsoft.Json;
 using Valigator.Core;
 using Valigator.Core.ValueDescriptors;
-using Valigator.Newtonsoft.Json;
+using Valigator.Newtonsoft.Json.Tests;
+using Valigator.Tests.Common;
 using Xunit;
 
 namespace Valigator.Tests.Newtonsoft
@@ -840,6 +841,6 @@ namespace Valigator.Tests.Newtonsoft
 		}
 
 		private static T Deserialize<T>(string json)
-			=> JsonConvert.DeserializeObject<T>(json, new ValigatorConverter(new JsonSerializerSettings()));
+			=> JsonConvert.DeserializeObject<T>(json, JsonTestSettings.NewtonsoftSettings);
 	}
 }

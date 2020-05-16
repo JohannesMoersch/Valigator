@@ -49,14 +49,9 @@ namespace Valigator.Core
 
 		public static TObject GetClonedObjectInstance()
 		{
-			var sourceObj = _sourceObj ??= GetNewObjectInstance();
-
-			if (sourceObj == null)
-				throw new MissingConstructorException(typeof(TObject));
-
 			var targetObj = (TObject)FormatterServices.GetSafeUninitializedObject(typeof(TObject));
 
-			CopyValuesMethod.Invoke(sourceObj, targetObj);
+			CopyValuesMethod.Invoke(_sourceObj ??= GetNewObjectInstance(), targetObj);
 
 			return targetObj;
 		}

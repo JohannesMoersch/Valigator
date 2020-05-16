@@ -7,6 +7,8 @@ using FluentAssertions;
 using Functional;
 using Valigator.Core;
 using Valigator.Core.ValueDescriptors;
+using Valigator.Tests.Common;
+using Valigator.Text.Json.Tests;
 using Xunit;
 
 namespace Valigator.Tests.Text.Json
@@ -15,29 +17,17 @@ namespace Valigator.Tests.Text.Json
 	{
 		public class Required
 		{
-			[ValigatorConverter]
+			[ValigatorModel]
 			public class TestClass
 			{
 				public Data<int> Value { get; set; } = Data.Required<int>();
 			}
 
-			[ValigatorConverter]
+			[ValigatorModel]
 			public class TestGuidClass
 			{
 				public Data<Guid> Value { get; set; } = Data.Required<Guid>();
 			}
-
-			[Fact]
-			public void WithImproperlyFormedGuid()
-				=> Deserialize<TestGuidClass>(@"{""Value"":""118ae9cc-3b7e-42""}")
-						.Value
-						.Verify()
-						.TryGetValue()
-						.AssertFailure()
-						.First()
-						.ValueDescriptor
-						.Should()
-						.BeOfType<MappingDescriptor>();
 
 			[Fact]
 			public void WithValue()
@@ -72,7 +62,7 @@ namespace Valigator.Tests.Text.Json
 
 		public class NullableRequired
 		{
-			[ValigatorConverter]
+			[ValigatorModel]
 			public class TestClass
 			{
 				public Data<Option<int>> Value { get; set; } = Data.Required<int>().Nullable();
@@ -111,7 +101,7 @@ namespace Valigator.Tests.Text.Json
 
 		public class Optional
 		{
-			[ValigatorConverter]
+			[ValigatorModel]
 			public class TestClass
 			{
 				public Data<Option<int>> Value { get; set; } = Data.Optional<int>();
@@ -150,7 +140,7 @@ namespace Valigator.Tests.Text.Json
 
 		public class NullableOptional
 		{
-			[ValigatorConverter]
+			[ValigatorModel]
 			public class TestClass
 			{
 				public Data<Option<int>> Value { get; set; } = Data.Optional<int>().Nullable();
@@ -188,7 +178,7 @@ namespace Valigator.Tests.Text.Json
 
 		public class Defaulted
 		{
-			[ValigatorConverter]
+			[ValigatorModel]
 			public class TestClass
 			{
 				public Data<int> Value { get; set; } = Data.Defaulted<int>(5);
@@ -227,7 +217,7 @@ namespace Valigator.Tests.Text.Json
 
 		public class NullableDefaulted
 		{
-			[ValigatorConverter]
+			[ValigatorModel]
 			public class TestClass
 			{
 				public Data<Option<int>> Value { get; set; } = Data.Defaulted<int>(5).Nullable();
@@ -267,7 +257,7 @@ namespace Valigator.Tests.Text.Json
 
 		public class RequiredCollection
 		{
-			[ValigatorConverter]
+			[ValigatorModel]
 			public class TestClass
 			{
 				public Data<int[]> Value { get; set; } = Data.Collection<int>().Required();
@@ -316,7 +306,7 @@ namespace Valigator.Tests.Text.Json
 
 		public class NullableRequiredCollection
 		{
-			[ValigatorConverter]
+			[ValigatorModel]
 			public class TestClass
 			{
 				public Data<Option<int[]>> Value { get; set; } = Data.Collection<int>().Required().Nullable();
@@ -365,7 +355,7 @@ namespace Valigator.Tests.Text.Json
 
 		public class OptionalCollection
 		{
-			[ValigatorConverter]
+			[ValigatorModel]
 			public class TestClass
 			{
 				public Data<Option<int[]>> Value { get; set; } = Data.Collection<int>().Optional();
@@ -414,7 +404,7 @@ namespace Valigator.Tests.Text.Json
 
 		public class NullableOptionalCollection
 		{
-			[ValigatorConverter]
+			[ValigatorModel]
 			public class TestClass
 			{
 				public Data<Option<int[]>> Value { get; set; } = Data.Collection<int>().Optional().Nullable();
@@ -462,7 +452,7 @@ namespace Valigator.Tests.Text.Json
 
 		public class DefaultedCollection
 		{
-			[ValigatorConverter]
+			[ValigatorModel]
 			public class TestClass
 			{
 				public Data<int[]> Value { get; set; } = Data.Collection<int>().Defaulted(new[] { 4, 5 });
@@ -511,7 +501,7 @@ namespace Valigator.Tests.Text.Json
 
 		public class NullableDefaultedCollection
 		{
-			[ValigatorConverter]
+			[ValigatorModel]
 			public class TestClass
 			{
 				public Data<Option<int[]>> Value { get; set; } = Data.Collection<int>().Defaulted(new[] { 4, 5 }).Nullable();
@@ -561,7 +551,7 @@ namespace Valigator.Tests.Text.Json
 
 		public class RequiredNullableCollection
 		{
-			[ValigatorConverter]
+			[ValigatorModel]
 			public class TestClass
 			{
 				public Data<Option<int>[]> Value { get; set; } = Data.Collection<int>(o => o.Nullable()).Required();
@@ -610,7 +600,7 @@ namespace Valigator.Tests.Text.Json
 
 		public class NullableRequiredNullableCollection
 		{
-			[ValigatorConverter]
+			[ValigatorModel]
 			public class TestClass
 			{
 				public Data<Option<Option<int>[]>> Value { get; set; } = Data.Collection<int>(o => o.Nullable()).Required().Nullable();
@@ -660,7 +650,7 @@ namespace Valigator.Tests.Text.Json
 
 		public class OptionalNullableCollection
 		{
-			[ValigatorConverter]
+			[ValigatorModel]
 			public class TestClass
 			{
 				public Data<Option<Option<int>[]>> Value { get; set; } = Data.Collection<int>(o => o.Nullable()).Optional();
@@ -710,7 +700,7 @@ namespace Valigator.Tests.Text.Json
 
 		public class NullableOptionalNullableCollection
 		{
-			[ValigatorConverter]
+			[ValigatorModel]
 			public class TestClass
 			{
 				public Data<Option<Option<int>[]>> Value { get; set; } = Data.Collection<int>(o => o.Nullable()).Optional().Nullable();
@@ -759,7 +749,7 @@ namespace Valigator.Tests.Text.Json
 
 		public class DefaultedNullableCollection
 		{
-			[ValigatorConverter]
+			[ValigatorModel]
 			public class TestClass
 			{
 				public Data<Option<int>[]> Value { get; set; } = Data.Collection<int>(o => o.Nullable()).Defaulted(new int?[] { null, 5 });
@@ -809,7 +799,7 @@ namespace Valigator.Tests.Text.Json
 		public class NullableDefaultedNullableCollection
 		{
 
-			[ValigatorConverter]
+			[ValigatorModel]
 			public class TestClass
 			{
 				public Data<Option<Option<int>[]>> Value { get; set; } = Data.Collection<int>(o => o.Nullable()).Defaulted(new int?[] { null, 5 }).Nullable();
@@ -859,6 +849,6 @@ namespace Valigator.Tests.Text.Json
 		}
 
 		private static T Deserialize<T>(string json)
-			=> JsonSerializer.Deserialize<T>(json);
+			=> JsonSerializer.Deserialize<T>(json, JsonTestSettings.SystemTextJsonSettings);
 	}
 }

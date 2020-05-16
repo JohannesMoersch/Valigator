@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Functional;
 
-namespace Valigator.Tests
+namespace Valigator.Tests.Common
 {
 	public static class OptionExtensions
 	{

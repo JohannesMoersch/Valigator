@@ -7,14 +7,16 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Valigator.Tests.Common;
 using Valigator.Text.Json;
+using Valigator.Text.Json.Tests;
 using Xunit;
 
 namespace Valigator.Tests.Text.Json
 {
 	public class ModelTests
 	{
-		[ValigatorConverter]
+		[ValigatorModel]
 		public class TestClass : IEquatable<TestClass>
 		{
 			public TestClass() { }
@@ -110,7 +112,8 @@ namespace Valigator.Tests.Text.Json
 						""CollectionOfNullableValues"": [1, 2],
 						""NullableCollectionOfValues"": [1, 2],
 						""NullableCollectionOfNullableValues"": [1, 2]
-					}"
+					}",
+					JsonTestSettings.SystemTextJsonSettings
 				)
 				.Verify()
 				.Should()
@@ -127,7 +130,8 @@ namespace Valigator.Tests.Text.Json
 						""CollectionOfNullableValues"": [null, null],
 						""NullableCollectionOfValues"": [1, 2],
 						""NullableCollectionOfNullableValues"": [null, null]
-					}"
+					}",
+					JsonTestSettings.SystemTextJsonSettings
 				)
 				.Verify()
 				.Should()
@@ -144,7 +148,8 @@ namespace Valigator.Tests.Text.Json
 						""CollectionOfNullableValues"": [null, null],
 						""NullableCollectionOfValues"": null,
 						""NullableCollectionOfNullableValues"": null
-					}"
+					}",
+					JsonTestSettings.SystemTextJsonSettings
 				)
 				.Verify()
 				.Should()
@@ -153,7 +158,7 @@ namespace Valigator.Tests.Text.Json
 		[Fact]
 		public void SerializingWithAllValues()
 			=> JsonSerializer
-				.Serialize(TestClass.CreateWithAllValues().Verify())
+				.Serialize(TestClass.CreateWithAllValues().Verify(), JsonTestSettings.SystemTextJsonSettings)
 				.Should()
 				.Be(@"
 					{
@@ -170,7 +175,7 @@ namespace Valigator.Tests.Text.Json
 		[Fact]
 		public void SerializingWithSomeValues()
 			=> JsonSerializer
-				.Serialize(TestClass.CreateWithSomeValues().Verify())
+				.Serialize(TestClass.CreateWithSomeValues().Verify(), JsonTestSettings.SystemTextJsonSettings)
 				.Should()
 				.Be(@"
 					{
@@ -187,7 +192,7 @@ namespace Valigator.Tests.Text.Json
 		[Fact]
 		public void SerializingWithNoValues()
 			=> JsonSerializer
-				.Serialize(TestClass.CreateWithNoValues().Verify())
+				.Serialize(TestClass.CreateWithNoValues().Verify(), JsonTestSettings.SystemTextJsonSettings)
 				.Should()
 				.Be(@"
 					{
