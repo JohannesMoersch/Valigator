@@ -17,27 +17,17 @@ namespace Valigator.Tests.Newtonsoft
 	{
 		public class Required
 		{
+			[ValigatorModel]
 			public class TestClass
 			{
 				public Data<int> Value { get; set; } = Data.Required<int>();
 			}
 
+			[ValigatorModel]
 			public class TestGuidClass
 			{
 				public Data<Guid> Value { get; set; } = Data.Required<Guid>();
 			}
-
-			[Fact]
-			public void WithImproperlyFormedGuid()
-				=> Deserialize<TestGuidClass>(@"{""Value"":""118ae9cc-3b7e-42""}")
-						.Value
-						.Verify()
-						.TryGetValue()
-						.AssertFailure()
-						.First()
-						.ValueDescriptor
-						.Should()
-						.BeOfType<MappingDescriptor>();
 
 			[Fact]
 			public void WithValue()
@@ -72,6 +62,7 @@ namespace Valigator.Tests.Newtonsoft
 
 		public class NullableRequired
 		{
+			[ValigatorModel]
 			public class TestClass
 			{
 				public Data<Option<int>> Value { get; set; } = Data.Required<int>().Nullable();
@@ -110,6 +101,7 @@ namespace Valigator.Tests.Newtonsoft
 
 		public class Optional
 		{
+			[ValigatorModel]
 			public class TestClass
 			{
 				public Data<Option<int>> Value { get; set; } = Data.Optional<int>();
@@ -148,6 +140,7 @@ namespace Valigator.Tests.Newtonsoft
 
 		public class NullableOptional
 		{
+			[ValigatorModel]
 			public class TestClass
 			{
 				public Data<Option<int>> Value { get; set; } = Data.Optional<int>().Nullable();
@@ -185,6 +178,7 @@ namespace Valigator.Tests.Newtonsoft
 
 		public class Defaulted
 		{
+			[ValigatorModel]
 			public class TestClass
 			{
 				public Data<int> Value { get; set; } = Data.Defaulted<int>(5);
@@ -223,6 +217,7 @@ namespace Valigator.Tests.Newtonsoft
 
 		public class NullableDefaulted
 		{
+			[ValigatorModel]
 			public class TestClass
 			{
 				public Data<Option<int>> Value { get; set; } = Data.Defaulted<int>(5).Nullable();
@@ -262,6 +257,7 @@ namespace Valigator.Tests.Newtonsoft
 
 		public class RequiredCollection
 		{
+			[ValigatorModel]
 			public class TestClass
 			{
 				public Data<int[]> Value { get; set; } = Data.Collection<int>().Required();
@@ -310,6 +306,7 @@ namespace Valigator.Tests.Newtonsoft
 
 		public class NullableRequiredCollection
 		{
+			[ValigatorModel]
 			public class TestClass
 			{
 				public Data<Option<int[]>> Value { get; set; } = Data.Collection<int>().Required().Nullable();
@@ -358,6 +355,7 @@ namespace Valigator.Tests.Newtonsoft
 
 		public class OptionalCollection
 		{
+			[ValigatorModel]
 			public class TestClass
 			{
 				public Data<Option<int[]>> Value { get; set; } = Data.Collection<int>().Optional();
@@ -406,6 +404,7 @@ namespace Valigator.Tests.Newtonsoft
 
 		public class NullableOptionalCollection
 		{
+			[ValigatorModel]
 			public class TestClass
 			{
 				public Data<Option<int[]>> Value { get; set; } = Data.Collection<int>().Optional().Nullable();
@@ -453,6 +452,7 @@ namespace Valigator.Tests.Newtonsoft
 
 		public class DefaultedCollection
 		{
+			[ValigatorModel]
 			public class TestClass
 			{
 				public Data<int[]> Value { get; set; } = Data.Collection<int>().Defaulted(new[] { 4, 5 });
@@ -501,6 +501,7 @@ namespace Valigator.Tests.Newtonsoft
 
 		public class NullableDefaultedCollection
 		{
+			[ValigatorModel]
 			public class TestClass
 			{
 				public Data<Option<int[]>> Value { get; set; } = Data.Collection<int>().Defaulted(new[] { 4, 5 }).Nullable();
@@ -550,6 +551,7 @@ namespace Valigator.Tests.Newtonsoft
 
 		public class RequiredNullableCollection
 		{
+			[ValigatorModel]
 			public class TestClass
 			{
 				public Data<Option<int>[]> Value { get; set; } = Data.Collection<int>(o => o.Nullable()).Required();
@@ -598,6 +600,7 @@ namespace Valigator.Tests.Newtonsoft
 
 		public class NullableRequiredNullableCollection
 		{
+			[ValigatorModel]
 			public class TestClass
 			{
 				public Data<Option<Option<int>[]>> Value { get; set; } = Data.Collection<int>(o => o.Nullable()).Required().Nullable();
@@ -647,6 +650,7 @@ namespace Valigator.Tests.Newtonsoft
 
 		public class OptionalNullableCollection
 		{
+			[ValigatorModel]
 			public class TestClass
 			{
 				public Data<Option<Option<int>[]>> Value { get; set; } = Data.Collection<int>(o => o.Nullable()).Optional();
@@ -696,6 +700,7 @@ namespace Valigator.Tests.Newtonsoft
 
 		public class NullableOptionalNullableCollection
 		{
+			[ValigatorModel]
 			public class TestClass
 			{
 				public Data<Option<Option<int>[]>> Value { get; set; } = Data.Collection<int>(o => o.Nullable()).Optional().Nullable();
@@ -744,6 +749,7 @@ namespace Valigator.Tests.Newtonsoft
 
 		public class DefaultedNullableCollection
 		{
+			[ValigatorModel]
 			public class TestClass
 			{
 				public Data<Option<int>[]> Value { get; set; } = Data.Collection<int>(o => o.Nullable()).Defaulted(new int?[] { null, 5 });
@@ -792,6 +798,7 @@ namespace Valigator.Tests.Newtonsoft
 
 		public class NullableDefaultedNullableCollection
 		{
+			[ValigatorModel]
 			public class TestClass
 			{
 				public Data<Option<Option<int>[]>> Value { get; set; } = Data.Collection<int>(o => o.Nullable()).Defaulted(new int?[] { null, 5 }).Nullable();

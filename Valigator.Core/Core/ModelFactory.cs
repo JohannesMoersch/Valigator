@@ -21,8 +21,6 @@ namespace Valigator.Core
 				_getNewFunction = Expression.Lambda<Func<TObject>>(Expression.New(constructor)).Compile();
 		}
 
-		public static bool SupportsNew { get; }
-
 		private static Action<TObject, TObject> CreateCopyValuesMethod()
 		{
 			var sourceParameter = Expression.Parameter(typeof(TObject), "source");

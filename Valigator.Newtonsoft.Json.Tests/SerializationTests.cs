@@ -572,6 +572,7 @@ namespace Valigator.Tests.Newtonsoft
 					.Be(@"{""Value"":[null,5]}");
 		}
 
+		[ValigatorModel]
 		public class TestClass<TValue>
 		{
 			public Data<TValue> Value { get; }

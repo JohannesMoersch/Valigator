@@ -24,11 +24,13 @@ namespace Valigator.TestApi.Controllers
 			=> new JsonResult(bodyValue.IdentifierCollection.Value.Select(id => id.TheIdentifier.Value).ToArray());
 	}
 
+	[ValigatorModel]
 	public class GuidBodyClass
 	{
 		public Data<GuidInnerClass[]> IdentifierCollection { get; set; } = Data.Collection<GuidInnerClass>().Required().ItemCount(1);
 	}
 
+	[ValigatorModel]
 	public class GuidInnerClass
 	{
 		public GuidInnerClass() { }
@@ -39,11 +41,13 @@ namespace Valigator.TestApi.Controllers
 		public Data<Guid> TheIdentifier { get; set; } = Data.Required<Guid>().NotEmpty();
 	}
 
+	[ValigatorModel]
 	public class BodyClass
 	{
 		public Data<InnerClass[]> IdentifierCollection { get; set; } = Data.Collection<InnerClass>().Required().ItemCount(1);
 	}
 
+	[ValigatorModel]
 	public class InnerClass
 	{
 		public InnerClass() { }

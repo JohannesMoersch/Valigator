@@ -15,7 +15,7 @@ namespace Valigator.Newtonsoft.Json.Tests
 		{
 			var settings = new JsonSerializerSettings();
 
-			settings.Converters.Add(new ValigatorConverter(settings));
+			settings.Converters.Add(new ValigatorConverter());
 
 			return settings;
 		}
