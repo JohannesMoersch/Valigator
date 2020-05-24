@@ -7,6 +7,10 @@ namespace Valigator.Newtonsoft.Json
 {
 	internal abstract class ValigatorJsonPropertyHandler<TObject>
 	{
+		public abstract bool CanRead { get; }
+
+		public abstract bool CanWrite { get; }
+
 		public abstract void ReadProperty(JsonReader reader, JsonSerializer serializer, TObject obj);
 
 		public abstract void WriteProperty(JsonWriter writer, JsonSerializer serializer, TObject obj);
@@ -25,6 +29,9 @@ namespace Valigator.Newtonsoft.Json
 	{
 		private readonly Func<TObject, Data<TDataValue>> _getValue;
 		private readonly Action<TObject, Data<TDataValue>> _setValue;
+
+		public override bool CanRead => _getValue != null;
+		public override bool CanWrite => _setValue != null;
 
 		public ValigatorJsonPropertyHandler(Func<TObject, Data<TDataValue>> getValue, Action<TObject, Data<TDataValue>> setValue)
 		{
@@ -50,6 +57,9 @@ namespace Valigator.Newtonsoft.Json
 
 		public new static ValigatorJsonPropertyHandler<TObject, TDataValue> Create(PropertyInfo property)
 		{
+			if (property.GetCustomAttribute<JsonIgnoreAttribute>() != null)
+				return new ValigatorJsonPropertyHandler<TObject, TDataValue>(null, null);
+
 			var objParameter = Expression.Parameter(typeof(TObject), "obj");
 			var propertyExpression = Expression.Property(objParameter, property);
 

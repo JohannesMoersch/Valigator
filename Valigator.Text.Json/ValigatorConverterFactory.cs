@@ -21,8 +21,26 @@ namespace Valigator.Text.Json
 				(
 					typeToConvert,
 					type => type.GetCustomAttribute<ValigatorModelAttribute>() is ValigatorModelAttribute attribute
-						? Activator.CreateInstance(typeof(ValigatorConverter<>).MakeGenericType(type), type.GetCustomAttribute<ValigatorModelAttribute>()?.ModelConstructionBehaviour ?? ValigatorModelConstructionBehaviour.CloneCached) as JsonConverter // TODO - Validate type signature and properties (no public instance fields, no private instance properties)
+						? CreateConverterInstance(type)
 						: null
 				);
+
+		private JsonConverter CreateConverterInstance(Type type)
+		{
+			ValidateModelSchema(type);
+
+			return (JsonConverter)Activator
+				.CreateInstance
+				(
+					typeof(ValigatorConverter<>).MakeGenericType(type), 
+					type.GetCustomAttribute<ValigatorModelAttribute>()?.ModelConstructionBehaviour ?? ValigatorModelConstructionBehaviour.CloneCached
+				);
+		}
+
+		private static void ValidateModelSchema(Type type)
+		{
+			foreach (var field in type.GetFields(BindingFlags.Public | BindingFlags.Instance))
+				throw new ValigatorModelSchemaException($"\"{type.FullName}\" has public non-static fields. Valigator models cannot have public non-static fields.");
+		}
 	}
 }

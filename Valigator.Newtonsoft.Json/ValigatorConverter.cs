@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 
@@ -20,7 +21,7 @@ namespace Valigator.Newtonsoft.Json
 				(
 					typeToConvert,
 					type => type.GetCustomAttribute<ValigatorModelAttribute>() is ValigatorModelAttribute attribute
-						? Activator.CreateInstance(typeof(Converter<>).MakeGenericType(type), type.GetCustomAttribute<ValigatorModelAttribute>()?.ModelConstructionBehaviour ?? ValigatorModelConstructionBehaviour.CloneCached) as IConverter // TODO - Validate type signature and properties (no public instance fields, no private instance properties)
+						? CreateConverterInstance(type)
 						: null
 				);
 
@@ -33,6 +34,24 @@ namespace Valigator.Newtonsoft.Json
 				writer.WriteNull();
 			else
 				GetConverter(value.GetType()).Write(writer, value, serializer);
+		}
+
+		private IConverter CreateConverterInstance(Type type)
+		{
+			ValidateModelSchema(type);
+
+			return (IConverter)Activator
+				.CreateInstance
+				(
+					typeof(Converter<>).MakeGenericType(type),
+					type.GetCustomAttribute<ValigatorModelAttribute>()?.ModelConstructionBehaviour ?? ValigatorModelConstructionBehaviour.CloneCached
+				);
+		}
+
+		private static void ValidateModelSchema(Type type)
+		{
+			foreach (var field in type.GetFields(BindingFlags.Public | BindingFlags.Instance))
+				throw new ValigatorModelSchemaException($"\"{type.FullName}\" has public non-static fields. Valigator models cannot have public non-static fields.");
 		}
 	}
 }

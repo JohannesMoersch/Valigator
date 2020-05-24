@@ -58,7 +58,7 @@ namespace Valigator.Newtonsoft.Json
 
 				var propertyName = (string)reader.Value;
 
-				if (PropertyHandlers.TryGetValue(propertyName, out var propertyHandler))
+				if (PropertyHandlers.TryGetValue(propertyName, out var propertyHandler) && propertyHandler.CanWrite)
 				{
 					if (!reader.Read())
 						throw new Exception();
@@ -81,7 +81,7 @@ namespace Valigator.Newtonsoft.Json
 		{
 			writer.WriteStartObject();
 
-			foreach (var handler in PropertyHandlers)
+			foreach (var handler in PropertyHandlers.Where(kvp => kvp.Value.CanRead))
 			{
 				writer.WritePropertyName(handler.Key);
 
