@@ -5,7 +5,11 @@ using Functional;
 
 namespace Valigator.Core
 {
-	public interface IAcceptCollectionValue<TDataValue, TValue> : IAcceptValue<TDataValue, Option<TValue>[]>
+	public interface IAcceptCollectionValue<TDataValue> : IAcceptValue<TDataValue>
+	{
+	}
+
+	public interface IAcceptCollectionValue<TDataValue, TValue> : IAcceptCollectionValue<TDataValue>, IAcceptValue<TDataValue, Option<TValue>[]>
 	{
 	}
 }

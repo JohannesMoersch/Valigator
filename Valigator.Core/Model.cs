@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +8,7 @@ using System.Reflection;
 using System.Text;
 using Functional;
 using Valigator.Core;
+using Valigator.Core.Helpers;
 
 namespace Valigator
 {
@@ -68,5 +70,13 @@ namespace Valigator
 
 			return Expression.Lambda<Func<object, Result<Unit, ValidationError[]>>>(expression, modelParameter).Compile();
 		}
+
+		public static TObject CreateNew<TObject>()
+			where TObject : class
+			=> ModelFactory<TObject>.GetNewObjectInstance();
+
+		public static TObject CreateClone<TObject>()
+			where TObject : class
+			=> ModelFactory<TObject>.GetClonedObjectInstance();
 	}
 }

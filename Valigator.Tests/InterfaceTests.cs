@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Valigator.Tests.Common;
 using Xunit;
 
 namespace Valigator.Tests

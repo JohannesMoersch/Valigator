@@ -3,6 +3,7 @@ using Functional;
 using Valigator.Core;
 using Valigator.Core.StateValidators;
 using Valigator.Core.ValueDescriptors;
+using Valigator.Tests.Common;
 using Xunit;
 
 namespace Valigator.Tests
