@@ -27,11 +27,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Valigator.AspNetCore.Newton
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Valigator.AspNetCore.Text.Json", "Valigator.AspNetCore.Text.Json\Valigator.AspNetCore.Text.Json.csproj", "{459B8026-F45C-4FA1-8274-847930C9E14E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Valigator.Newtonsoft.Json.Tests", "Valigator.Newtonsoft.Json.Tests\Valigator.Newtonsoft.Json.Tests.csproj", "{A9BEC6B1-2678-486B-9364-6CE0102E5E9D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Valigator.Newtonsoft.Json.Tests", "Valigator.Newtonsoft.Json.Tests\Valigator.Newtonsoft.Json.Tests.csproj", "{A9BEC6B1-2678-486B-9364-6CE0102E5E9D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Valigator.Text.Json.Tests", "Valigator.Text.Json.Tests\Valigator.Text.Json.Tests.csproj", "{99FAAA51-CA5F-4852-9BC0-F8C33EB15825}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Valigator.Text.Json.Tests", "Valigator.Text.Json.Tests\Valigator.Text.Json.Tests.csproj", "{99FAAA51-CA5F-4852-9BC0-F8C33EB15825}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Valigator.Tests.Common", "Valigator.Tests.Common\Valigator.Tests.Common.csproj", "{109AC861-19CD-467A-BC70-81D5FB2E9E82}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Valigator.Tests.Common", "Valigator.Tests.Common\Valigator.Tests.Common.csproj", "{109AC861-19CD-467A-BC70-81D5FB2E9E82}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{FA1E881C-D1A5-4595-B52A-2113A91B2EF1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -102,6 +104,16 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{4955C6DA-6393-4121-8749-17BF2C1B2303} = {FA1E881C-D1A5-4595-B52A-2113A91B2EF1}
+		{1B464422-CE9E-4BFF-8841-8D95C82622D2} = {FA1E881C-D1A5-4595-B52A-2113A91B2EF1}
+		{78539554-B39D-4C7E-9C62-55DDF2EBF85D} = {FA1E881C-D1A5-4595-B52A-2113A91B2EF1}
+		{8E74D20A-4BFE-4F62-86DF-C1A3462BBBCD} = {FA1E881C-D1A5-4595-B52A-2113A91B2EF1}
+		{38C30D4F-C8C0-42C3-A2F3-AD6876B562B0} = {FA1E881C-D1A5-4595-B52A-2113A91B2EF1}
+		{A9BEC6B1-2678-486B-9364-6CE0102E5E9D} = {FA1E881C-D1A5-4595-B52A-2113A91B2EF1}
+		{99FAAA51-CA5F-4852-9BC0-F8C33EB15825} = {FA1E881C-D1A5-4595-B52A-2113A91B2EF1}
+		{109AC861-19CD-467A-BC70-81D5FB2E9E82} = {FA1E881C-D1A5-4595-B52A-2113A91B2EF1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A6C90724-4F3B-4764-8DD5-1C4CAD083884}

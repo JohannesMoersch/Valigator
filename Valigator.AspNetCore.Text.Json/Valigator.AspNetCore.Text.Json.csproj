@@ -2,6 +2,9 @@
 
   <PropertyGroup>
 		<TargetFrameworks>netcoreapp3.0</TargetFrameworks>
+		<Description>This package adds support for valigator to ASP.NET Core with System.Text.Json.</Description>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<PackageTags>validation</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
