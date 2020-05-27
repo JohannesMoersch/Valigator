@@ -54,12 +54,12 @@ namespace Valigator.Core.StateValidators
 			if (value.TryGetValue(out var isSet))
 			{
 				if (isSet.TryGetValue(out var notNull))
-					return Result.Success<Optional<TValue>, ValidationError[]>(Optional.Some(notNull));
+					return Result.Success<Optional<TValue>, ValidationError[]>(Optional.Set(notNull));
 
 				return Result.Failure<Optional<TValue>, ValidationError[]>(new[] { ValidationErrors.NotNull() });
 			}
 
-			return Result.Success<Optional<TValue>, ValidationError[]>(Optional.None<TValue>());
+			return Result.Success<Optional<TValue>, ValidationError[]>(Optional.Unset<TValue>());
 		}
 
 		public static implicit operator Data<Optional<TValue>>(OptionalStateValidator<TValue> stateValidator)

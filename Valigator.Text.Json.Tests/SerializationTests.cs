@@ -86,7 +86,7 @@ namespace Valigator.Tests.Text.Json
 		{
 			[Fact]
 			public void WithValue()
-				=> new TestClass<Option<int>>(
+				=> new TestClass<Optional<Option<int>>>(
 						Data
 						.Optional<int>()
 						.Nullable()
@@ -99,7 +99,7 @@ namespace Valigator.Tests.Text.Json
 
 			[Fact]
 			public void WithNull()
-				=> new TestClass<Option<int>>(
+				=> new TestClass<Optional<Option<int>>>(
 						Data
 						.Optional<int>()
 						.Nullable()
@@ -112,7 +112,7 @@ namespace Valigator.Tests.Text.Json
 
 			[Fact]
 			public void WithUnSet()
-				=> new TestClass<Option<int>>(
+				=> new TestClass<Optional<Option<int>>>(
 						Data
 						.Optional<int>()
 						.Nullable()

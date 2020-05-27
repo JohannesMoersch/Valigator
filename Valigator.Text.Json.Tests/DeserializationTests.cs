@@ -143,7 +143,7 @@ namespace Valigator.Tests.Text.Json
 			[ValigatorModel]
 			public class TestClass
 			{
-				public Data<Option<int>> Value { get; set; } = Data.Optional<int>().Nullable();
+				public Data<Optional<Option<int>>> Value { get; set; } = Data.Optional<int>().Nullable();
 			}
 
 			[Fact]
@@ -153,6 +153,7 @@ namespace Valigator.Tests.Text.Json
 					.Verify()
 					.TryGetValue()
 					.AssertSuccess()
+					.AssertSet()
 					.AssertSome()
 					.Should()
 					.Be(10);
@@ -164,6 +165,7 @@ namespace Valigator.Tests.Text.Json
 					.Verify()
 					.TryGetValue()
 					.AssertSuccess()
+					.AssertSet()
 					.AssertNone();
 
 			[Fact]
@@ -173,7 +175,7 @@ namespace Valigator.Tests.Text.Json
 					.Verify()
 					.TryGetValue()
 					.AssertSuccess()
-					.AssertNone();
+					.AssertUnset();
 		}
 
 		public class Defaulted

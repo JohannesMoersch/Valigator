@@ -61,7 +61,7 @@ namespace Valigator.Core.DataContainers
 		public static Data<TDataValue> WithValidatedValue<TDataValue, TValue, TStateValidator>(this Data<TDataValue> data, Option<TValue> value, TStateValidator stateValidator)
 			where TStateValidator : struct, IStateValidator<TDataValue, TValue>
 		{
-			if (stateValidator.Validate(Optional.Some(value)).TryGetValue(out var success, out var failure))
+			if (stateValidator.Validate(Optional.Set(value)).TryGetValue(out var success, out var failure))
 				return data.WithValidatedValue(success);
 
 			return data.WithErrors(failure);
@@ -83,7 +83,18 @@ namespace Valigator.Core.DataContainers
 			where TValidatorTwo : struct, IValueValidator<TValue>
 			where TValidatorThree : struct, IValueValidator<TValue>
 		{
-			if (value.TryGetValue(out var some))
+			if (value.TryGetValue(out var set))
+				return IsValid(model, set, validatorOne, validatorTwo, validatorThree);
+
+			return Result.Unit<ValidationError[]>();
+		}
+
+		public static Result<Unit, ValidationError[]> IsValid<TValue, TValidatorOne, TValidatorTwo, TValidatorThree>(this IDataContainer<Optional<Option<TValue>>> _, Option<object> model, Optional<Option<TValue>> value, TValidatorOne validatorOne, TValidatorTwo validatorTwo, TValidatorThree validatorThree)
+			where TValidatorOne : struct, IValueValidator<TValue>
+			where TValidatorTwo : struct, IValueValidator<TValue>
+			where TValidatorThree : struct, IValueValidator<TValue>
+		{
+			if (value.TryGetValue(out var set) && set.TryGetValue(out var some))
 				return IsValid(model, some, validatorOne, validatorTwo, validatorThree);
 
 			return Result.Unit<ValidationError[]>();

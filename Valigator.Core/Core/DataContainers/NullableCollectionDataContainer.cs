@@ -47,7 +47,7 @@ namespace Valigator.Core.DataContainers
 
 		public Result<Option<TValue[]>, ValidationError[]> IsValid(Option<object> model, Optional<Option<TValue[]>> value)
 		{
-			if (value.TryGetValue(out var some) || _stateValidator.Validate(Optional.None<Option<Option<TValue>[]>>()).TryGetValue(out some, out var failure))
+			if (value.TryGetValue(out var some) || _stateValidator.Validate(Optional.Unset<Option<Option<TValue>[]>>()).TryGetValue(out some, out var failure))
 			{
 				if (_stateValidator.IsValid(model, some).TryGetValue(out var _, out var itemErrors) & this.IsValid(model, some, _valueValidatorOne, _valueValidatorTwo, _valueValidatorThree).TryGetValue(out var __, out var collectionErrors))
 					return Result.Success<Option<TValue[]>, ValidationError[]>(some);

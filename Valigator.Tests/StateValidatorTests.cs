@@ -124,6 +124,7 @@ namespace Valigator.Tests
 				.Verify(new object())
 				.TryGetValue()
 				.AssertSuccess()
+				.AssertSet()
 				.AssertSome()
 				.Should()
 				.Be(5);
@@ -138,6 +139,7 @@ namespace Valigator.Tests
 				.Verify(new object())
 				.TryGetValue()
 				.AssertSuccess()
+				.AssertSet()
 				.AssertNone();
 
 		[Fact]
@@ -149,7 +151,7 @@ namespace Valigator.Tests
 				.Verify(new object())
 				.TryGetValue()
 				.AssertSuccess()
-				.AssertNone();
+				.AssertUnset();
 
 		[Fact]
 		public void DefaultedWithValue()

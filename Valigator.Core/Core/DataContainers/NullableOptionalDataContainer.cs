@@ -6,8 +6,8 @@ using Valigator.Core.Helpers;
 
 namespace Valigator.Core.DataContainers
 {
-	internal class OptionalDataContainer<TStateValidator, TValueValidatorOne, TValueValidatorTwo, TValueValidatorThree, TSource, TValue> : IDataContainer<Optional<TValue>>, IAcceptValue<Optional<TValue>, TSource>
-		where TStateValidator : struct, IStateValidator<Optional<TValue>, TValue>
+	internal class NullableOptionalDataContainer<TStateValidator, TValueValidatorOne, TValueValidatorTwo, TValueValidatorThree, TSource, TValue> : IDataContainer<Optional<Option<TValue>>>, IAcceptValue<Optional<Option<TValue>>, TSource>
+		where TStateValidator : struct, IStateValidator<Optional<Option<TValue>>, TValue>
 		where TValueValidatorOne : struct, IValueValidator<TValue>
 		where TValueValidatorTwo : struct, IValueValidator<TValue>
 		where TValueValidatorThree : struct, IValueValidator<TValue>
@@ -26,7 +26,7 @@ namespace Valigator.Core.DataContainers
 
 		public Type ValueType => typeof(TSource);
 
-		public OptionalDataContainer(Mapping<TSource, TValue> mapping, TStateValidator stateValidator, TValueValidatorOne valueValidatorOne, TValueValidatorTwo valueValidatorTwo, TValueValidatorThree valueValidatorThree)
+		public NullableOptionalDataContainer(Mapping<TSource, TValue> mapping, TStateValidator stateValidator, TValueValidatorOne valueValidatorOne, TValueValidatorTwo valueValidatorTwo, TValueValidatorThree valueValidatorThree)
 		{
 			_mapping = mapping;
 			_stateValidator = stateValidator;
@@ -35,27 +35,27 @@ namespace Valigator.Core.DataContainers
 			_valueValidatorThree = valueValidatorThree;
 		}
 
-		public Data<Optional<TValue>> WithValue(Data<Optional<TValue>> data, Option<TSource> value)
+		public Data<Optional<Option<TValue>>> WithValue(Data<Optional<Option<TValue>>> data, Option<TSource> value)
 			=> data.WithMappedValidatedValue(value, _mapping, _stateValidator);
 
-		public Data<Optional<TValue>> WithUncheckedValue(Data<Optional<TValue>> data, Optional<TValue> value)
+		public Data<Optional<Option<TValue>>> WithUncheckedValue(Data<Optional<Option<TValue>>> data, Optional<Option<TValue>> value)
 			=> data.WithValidatedValue(value);
 
-		public Data<Optional<TValue>> WithNull(Data<Optional<TValue>> data)
+		public Data<Optional<Option<TValue>>> WithNull(Data<Optional<Option<TValue>>> data)
 			=> WithValue(data, Option.None<TSource>());
 
-		public Result<Optional<TValue>, ValidationError[]> IsValid(Option<object> model, Optional<Optional<TValue>> value)
+		public Result<Optional<Option<TValue>>, ValidationError[]> IsValid(Option<object> model, Optional<Optional<Option<TValue>>> value)
 		{
 			if (value.TryGetValue(out var some) || _stateValidator.Validate(Optional.Unset<Option<TValue>>()).TryGetValue(out some, out var failure))
 			{
 				if (this.IsValid(model, some, _valueValidatorOne, _valueValidatorTwo, _valueValidatorThree).TryGetValue(out var _, out failure))
-					return Result.Success<Optional<TValue>, ValidationError[]>(some);
+					return Result.Success<Optional<Option<TValue>>, ValidationError[]>(some);
 			}
 
-			return Result.Failure<Optional<TValue>, ValidationError[]>(failure);
+			return Result.Failure<Optional<Option<TValue>>, ValidationError[]>(failure);
 		}
 
-		Option<ValidationError[]> IDataContainer<Optional<TValue>>.GetErrors()
+		Option<ValidationError[]> IDataContainer<Optional<Option<TValue>>>.GetErrors()
 			=> Option.None<ValidationError[]>();
 	}
 }

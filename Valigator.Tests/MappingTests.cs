@@ -185,6 +185,7 @@ namespace Valigator.Tests
 					.Verify(new object())
 					.TryGetValue()
 					.AssertSuccess()
+					.AssertSet()
 					.AssertSome()
 					.Should()
 					.Be(500.5f);
@@ -198,6 +199,7 @@ namespace Valigator.Tests
 					.Verify(new object())
 					.TryGetValue()
 					.AssertSuccess()
+					.AssertSet()
 					.AssertNone();
 		}
 
