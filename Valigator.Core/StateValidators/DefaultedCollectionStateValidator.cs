@@ -79,7 +79,7 @@ namespace Valigator.Core.StateValidators
 		IValueDescriptor[] IStateValidator<TValue[], Option<TValue>[]>.GetImplicitValueDescriptors()
 			=> new[] { new NotNullDescriptor() };
 
-		Result<TValue[], ValidationError[]> IStateValidator<TValue[], Option<TValue>[]>.Validate(Option<Option<Option<TValue>[]>> value)
+		Result<TValue[], ValidationError[]> IStateValidator<TValue[], Option<TValue>[]>.Validate(Optional<Option<Option<TValue>[]>> value)
 		{
 			if (value.TryGetValue(out var isSet))
 			{

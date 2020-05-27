@@ -15,6 +15,6 @@ namespace Valigator.Core
 
 		IValueDescriptor[] GetImplicitValueDescriptors();
 
-		Result<TDataValue, ValidationError[]> Validate(Option<Option<TValue>> value);
+		Result<TDataValue, ValidationError[]> Validate(Optional<Option<TValue>> value);
 	}
 }

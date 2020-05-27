@@ -106,7 +106,7 @@ namespace Valigator
 			if (_dataContainer is ErrorDataContainer<TValue>)
 				return new Data<TValue>(DataState.Invalid, _value, _dataContainer);
 
-			if (_dataContainer.IsValid(model, Option.Create(State == DataState.Set, _value)).TryGetValue(out var value, out var failure))
+			if (_dataContainer.IsValid(model, Optional.Create(State == DataState.Set, _value)).TryGetValue(out var value, out var failure))
 				return new Data<TValue>(DataState.Valid, value, _dataContainer);
 
 			return new Data<TValue>(DataState.Invalid, _value, GetErrorDataContainer(_dataContainer, failure));
