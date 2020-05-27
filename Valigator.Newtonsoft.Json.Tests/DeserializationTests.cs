@@ -104,7 +104,7 @@ namespace Valigator.Tests.Newtonsoft
 			[ValigatorModel]
 			public class TestClass
 			{
-				public Data<Option<int>> Value { get; set; } = Data.Optional<int>();
+				public Data<Optional<int>> Value { get; set; } = Data.Optional<int>();
 			}
 
 			[Fact]
@@ -114,7 +114,7 @@ namespace Valigator.Tests.Newtonsoft
 					.Verify()
 					.TryGetValue()
 					.AssertSuccess()
-					.AssertSome()
+					.AssertSet()
 					.Should()
 					.Be(10);
 
@@ -135,7 +135,7 @@ namespace Valigator.Tests.Newtonsoft
 					.Verify()
 					.TryGetValue()
 					.AssertSuccess()
-					.AssertNone();
+					.AssertUnset();
 		}
 
 		public class NullableOptional

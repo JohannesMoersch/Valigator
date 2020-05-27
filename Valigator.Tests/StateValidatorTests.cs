@@ -89,7 +89,7 @@ namespace Valigator.Tests
 				.Verify(new object())
 				.TryGetValue()
 				.AssertSuccess()
-				.AssertSome()
+				.AssertSet()
 				.Should()
 				.Be(5);
 
@@ -111,7 +111,7 @@ namespace Valigator.Tests
 				.Verify(new object())
 				.TryGetValue()
 				.AssertSuccess()
-				.AssertNone();
+				.AssertUnset();
 
 
 		[Fact]

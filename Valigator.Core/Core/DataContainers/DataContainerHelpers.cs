@@ -78,6 +78,17 @@ namespace Valigator.Core.DataContainers
 			return Result.Unit<ValidationError[]>();
 		}
 
+		public static Result<Unit, ValidationError[]> IsValid<TValue, TValidatorOne, TValidatorTwo, TValidatorThree>(this IDataContainer<Optional<TValue>> _, Option<object> model, Optional<TValue> value, TValidatorOne validatorOne, TValidatorTwo validatorTwo, TValidatorThree validatorThree)
+			where TValidatorOne : struct, IValueValidator<TValue>
+			where TValidatorTwo : struct, IValueValidator<TValue>
+			where TValidatorThree : struct, IValueValidator<TValue>
+		{
+			if (value.TryGetValue(out var some))
+				return IsValid(model, some, validatorOne, validatorTwo, validatorThree);
+
+			return Result.Unit<ValidationError[]>();
+		}
+
 		public static Result<Unit, ValidationError[]> IsValid<TValue, TValidatorOne, TValidatorTwo, TValidatorThree>(this IDataContainer<TValue> _, Option<object> model, TValue value, TValidatorOne validatorOne, TValidatorTwo validatorTwo, TValidatorThree validatorThree)
 			where TValidatorOne : struct, IValueValidator<TValue>
 			where TValidatorTwo : struct, IValueValidator<TValue>

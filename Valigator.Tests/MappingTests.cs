@@ -143,7 +143,7 @@ namespace Valigator.Tests
 					.Verify(new object())
 					.TryGetValue()
 					.AssertSuccess()
-					.AssertSome()
+					.AssertSet()
 					.Should()
 					.Be(500.5f);
 		}

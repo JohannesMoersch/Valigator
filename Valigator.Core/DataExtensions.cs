@@ -39,6 +39,18 @@ namespace Valigator
 				? dataContainer.WithValue(data, value)
 				: throw new NotSupportedException($"This variant of {nameof(WithValue)} only supports Data<Option<T>> data types.");
 
+		public static Data<Optional<TValue>> WithValue<TValue>(this Data<Optional<TValue>> data, TValue value)
+			=> data.WithValue(Option.Create(value != null, value));
+
+		public static Data<Optional<TValue>> WithValue<TValue>(this Data<Optional<TValue>> data, TValue? value)
+			where TValue : struct
+			=> data.WithValue(Option.FromNullable(value));
+
+		public static Data<Optional<TValue>> WithValue<TValue>(this Data<Optional<TValue>> data, Option<TValue> value)
+			=> data.DataContainer is IAcceptValue<Optional<TValue>, TValue> dataContainer
+				? dataContainer.WithValue(data, value)
+				: throw new NotSupportedException($"This variant of {nameof(WithValue)} only supports Data<Optional<T>> data types.");
+
 		public static Data<TValue[]> WithValue<TValue>(this Data<TValue[]> data, TValue[] value)
 			=> data.WithValue(ToOptionArray(value));
 

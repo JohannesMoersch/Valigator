@@ -60,7 +60,7 @@ namespace Valigator.Tests.Text.Json
 		{
 			[Fact]
 			public void WithValue()
-				=> new TestClass<Option<int>>(
+				=> new TestClass<Optional<int>>(
 						Data
 						.Optional<int>()
 						.Data
@@ -72,7 +72,7 @@ namespace Valigator.Tests.Text.Json
 
 			[Fact]
 			public void WithUnSet()
-				=> new TestClass<Option<int>>(
+				=> new TestClass<Optional<int>>(
 						Data
 						.Optional<int>()
 						.Data
