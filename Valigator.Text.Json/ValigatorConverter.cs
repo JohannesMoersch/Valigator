@@ -83,11 +83,7 @@ namespace Valigator.Text.Json
 			writer.WriteStartObject();
 
 			foreach (var handler in PropertyHandlers)
-			{
-				writer.WritePropertyName(handler.Key);
-
 				handler.Value.WriteProperty(writer, options, value);
-			}
 
 			writer.WriteEndObject();
 		}

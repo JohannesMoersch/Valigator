@@ -23,5 +23,12 @@ namespace Valigator.Text.Json
 
 			return option.Match(DelegateCache<TValue>.True, False);
 		}
+
+		public static bool TryGetValue<TValue>(this Optional<TValue> optional, out TValue value)
+		{
+			value = optional.Match(DelegateCache<TValue>.Passthrough, DelegateCache<TValue>.Default);
+
+			return optional.Match(DelegateCache<TValue>.True, False);
+		}
 	}
 }

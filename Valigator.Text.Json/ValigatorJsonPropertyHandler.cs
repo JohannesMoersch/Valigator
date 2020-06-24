@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Functional;
+using System;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Valigator.Text.Json.PropertyHandlers;
 
 namespace Valigator.Text.Json
 {
@@ -18,12 +20,53 @@ namespace Valigator.Text.Json
 
 		public static ValigatorJsonPropertyHandler<TObject> Create(PropertyInfo property)
 		{
-			var handlerType = typeof(ValigatorJsonPropertyHandler<,>).MakeGenericType(typeof(TObject), property.PropertyType.GetGenericArguments()[0]);
+			if (!property.PropertyType.IsConstructedGenericType || property.PropertyType.GetGenericTypeDefinition() != typeof(Data<>))
+				throw new ArgumentException("Property must be a Data type.", nameof(property));
 
-			var createMethod = handlerType.GetMethod(nameof(ValigatorJsonPropertyHandler<TObject, bool>.Create), BindingFlags.Public | BindingFlags.Static, Type.DefaultBinder, new[] { typeof(PropertyInfo) }, null);
+			var type = property.PropertyType.GenericTypeArguments[0];
 
-			return (ValigatorJsonPropertyHandler<TObject>)createMethod.Invoke(null, new[] { property });
+			bool isOptional = false;
+			if (isOptional = IsOptional(type))
+				type = type.GenericTypeArguments[0];
+
+			bool isNullable = false;
+			if (isNullable = IsNullable(type))
+				type = type.GenericTypeArguments[0];
+
+			if (IsCollection(type))
+			{
+				type = type.GetElementType();
+
+				if (IsNullable(type))
+					type = type.GenericTypeArguments[0];
+
+				throw new NotSupportedException();
+			}
+
+			if (isOptional)
+			{
+				if (isNullable)
+					return CreatePropertyHandler(property, type, typeof(OptionalNullablePropertyHandler<,>));
+				else
+					return CreatePropertyHandler(property, type, typeof(OptionalPropertyHandler<,>));
+			}
+			else if (isNullable)
+				return CreatePropertyHandler(property, type, typeof(NullablePropertyHandler<,>));
+			else
+				return CreatePropertyHandler(property, type, typeof(PropertyHandler<,>));
 		}
+
+		private static bool IsOptional(Type type)
+			=> type.IsConstructedGenericType && type.GetGenericTypeDefinition() == typeof(Optional<>);
+
+		private static bool IsNullable(Type type)
+			=> type.IsConstructedGenericType && type.GetGenericTypeDefinition() == typeof(Option<>);
+
+		private static bool IsCollection(Type type)
+			=> type.IsArray && type.HasElementType;
+
+		private static ValigatorJsonPropertyHandler<TObject> CreatePropertyHandler(PropertyInfo property, Type valueType, Type propertyHandlerType)
+			=> (ValigatorJsonPropertyHandler<TObject>)Activator.CreateInstance(propertyHandlerType.MakeGenericType(typeof(TObject), valueType), property); 
 	}
 
 	internal class ValigatorJsonPropertyHandler<TObject, TDataValue> : ValigatorJsonPropertyHandler<TObject>

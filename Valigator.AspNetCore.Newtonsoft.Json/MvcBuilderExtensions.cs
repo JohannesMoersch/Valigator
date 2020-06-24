@@ -9,7 +9,7 @@ using Valigator.Newtonsoft.Json;
 
 namespace Valigator
 {
-	public struct Wrapper : IModelBinder
+	internal struct Wrapper : IModelBinder
 	{
 		private readonly IModelBinder _binder;
 
@@ -27,7 +27,7 @@ namespace Valigator
 		}
 	}
 
-	public class Factory : IModelBinderFactory
+	internal class Factory : IModelBinderFactory
 	{
 		private readonly IModelBinderFactory _modelBinderFactory;
 
