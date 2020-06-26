@@ -5,14 +5,14 @@ using Functional;
 
 namespace Valigator.Core.DataContainers.Factories
 {
-	public struct NullableOptionalDataContainerFactory<TStateValidator, TSource, TValue> : IDataContainerFactory<Optional<Option<TValue>>, TValue>
+	public struct OptionalNullableDataContainerFactory<TStateValidator, TSource, TValue> : IDataContainerFactory<Optional<Option<TValue>>, TValue>
 		where TStateValidator : struct, IStateValidator<Optional<Option<TValue>>, TValue>
 	{
 		private readonly TStateValidator _stateValidator;
 
 		private readonly Mapping<TSource, TValue> _mapping;
 
-		public NullableOptionalDataContainerFactory(TStateValidator stateValidator, Mapping<TSource, TValue> mapping)
+		public OptionalNullableDataContainerFactory(TStateValidator stateValidator, Mapping<TSource, TValue> mapping)
 		{
 			_stateValidator = stateValidator;
 			_mapping = mapping;
@@ -22,6 +22,6 @@ namespace Valigator.Core.DataContainers.Factories
 			where TValueValidatorOne : struct, IValueValidator<TValue>
 			where TValueValidatorTwo : struct, IValueValidator<TValue>
 			where TValueValidatorThree : struct, IValueValidator<TValue>
-			=> new NullableOptionalDataContainer<TStateValidator, TValueValidatorOne, TValueValidatorTwo, TValueValidatorThree, TSource, TValue>(_mapping, _stateValidator, valueValidatorOne, valueValidatorTwo, valueValidatorThree);
+			=> new OptionalNullableDataContainer<TStateValidator, TValueValidatorOne, TValueValidatorTwo, TValueValidatorThree, TSource, TValue>(_mapping, _stateValidator, valueValidatorOne, valueValidatorTwo, valueValidatorThree);
 	}
 }

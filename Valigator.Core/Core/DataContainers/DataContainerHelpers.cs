@@ -9,59 +9,69 @@ namespace Valigator.Core.DataContainers
 {
 	internal static class DataContainerHelpers
 	{
-		public static Data<TDataValue> WithMappedValidatedValue<TDataValue, TSource, TValue, TStateValidator>(this Data<TDataValue> data, Option<TSource> value, Mapping<TSource, TValue> mapping, TStateValidator stateValidator)
+		public static Data<TDataValue> WithMappedValidatedValue<TDataValue, TSource, TValue, TStateValidator>(this Data<TDataValue> data, Optional<Option<TSource>> value, Mapping<TSource, TValue> mapping, TStateValidator stateValidator)
 			where TStateValidator : struct, IStateValidator<TDataValue, TValue>
 		{
-			if (value.TryGetValue(out var some))
+			if (value.TryGetValue(out var set))
 			{
-				if (mapping.Map(some).TryGetValue(out var success, out var failure))
-					return data.WithValidatedValue(success, stateValidator);
-
-				return data.WithErrors(failure);
-			}
-
-			return data.WithValidatedValue(Option.None<TValue>(), stateValidator);
-		}
-
-		public static Data<TDataValue> WithMappedValidatedValue<TDataValue, TSource, TValue, TCollectionStateValidator>(this Data<TDataValue> data, Option<Option<TSource>[]> value, Mapping<TSource, TValue> mapping, TCollectionStateValidator stateValidator)
-			where TCollectionStateValidator : struct, ICollectionStateValidator<TDataValue, TValue>
-		{
-			if (value.TryGetValue(out var some))
-			{
-				List<ValidationError> errors = null;
-				var mappedValue = new Option<TValue>[some.Length];
-				for (int i = 0; i < some.Length; ++i)
+				if (set.TryGetValue(out var some))
 				{
-					if (some[i].TryGetValue(out var item))
-					{
-						if (mapping.Map(item).TryGetValue(out var success, out var failure))
-							mappedValue[i] = success;
-						else
-						{
-							foreach (var error in failure)
-								error.Path.AddIndex(i);
+					if (mapping.Map(some).TryGetValue(out var success, out var failure))
+						return data.WithValidatedValue(Optional.Set(success), stateValidator);
 
-							if (errors == null)
-								errors = new List<ValidationError>();
-
-							errors.AddRange(failure);
-						}
-					}
+					return data.WithErrors(failure);
 				}
 
-				if (errors != null)
-					return data.WithErrors(errors.ToArray());
-
-				return data.WithValidatedValue(Option.Some(mappedValue), stateValidator);
+				return data.WithValidatedValue(Optional.Set(Option.None<TValue>()), stateValidator);
 			}
 
-			return data.WithValidatedValue(Option.None<Option<TValue>[]>(), stateValidator);
+			return data.WithValidatedValue(Optional.Unset<Option<TValue>>(), stateValidator);
 		}
 
-		public static Data<TDataValue> WithValidatedValue<TDataValue, TValue, TStateValidator>(this Data<TDataValue> data, Option<TValue> value, TStateValidator stateValidator)
+		public static Data<TDataValue> WithMappedValidatedValue<TDataValue, TSource, TValue, TCollectionStateValidator>(this Data<TDataValue> data, Optional<Option<Option<TSource>[]>> value, Mapping<TSource, TValue> mapping, TCollectionStateValidator stateValidator)
+			where TCollectionStateValidator : struct, ICollectionStateValidator<TDataValue, TValue>
+		{
+			if (value.TryGetValue(out var set))
+			{
+				if (set.TryGetValue(out var some))
+				{
+					List<ValidationError> errors = null;
+					var mappedValue = new Option<TValue>[some.Length];
+					for (int i = 0; i < some.Length; ++i)
+					{
+						if (some[i].TryGetValue(out var item))
+						{
+							if (mapping.Map(item).TryGetValue(out var success, out var failure))
+								mappedValue[i] = success;
+							else
+							{
+								foreach (var error in failure)
+									error.Path.AddIndex(i);
+
+								if (errors == null)
+									errors = new List<ValidationError>();
+
+								errors.AddRange(failure);
+							}
+						}
+					}
+
+					if (errors != null)
+						return data.WithErrors(errors.ToArray());
+
+					return data.WithValidatedValue(Optional.Set(Option.Some(mappedValue)), stateValidator);
+				}
+				
+				return data.WithValidatedValue(Optional.Set(Option.None<Option<TValue>[]>()), stateValidator);
+			}
+
+			return data.WithValidatedValue(Optional.Unset<Option<Option<TValue>[]>>(), stateValidator);
+		}
+
+		public static Data<TDataValue> WithValidatedValue<TDataValue, TValue, TStateValidator>(this Data<TDataValue> data, Optional<Option<TValue>> value, TStateValidator stateValidator)
 			where TStateValidator : struct, IStateValidator<TDataValue, TValue>
 		{
-			if (stateValidator.Validate(Optional.Set(value)).TryGetValue(out var success, out var failure))
+			if (stateValidator.Validate(value).TryGetValue(out var success, out var failure))
 				return data.WithValidatedValue(success);
 
 			return data.WithErrors(failure);

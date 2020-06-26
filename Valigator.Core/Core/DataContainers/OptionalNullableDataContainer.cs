@@ -6,7 +6,7 @@ using Valigator.Core.Helpers;
 
 namespace Valigator.Core.DataContainers
 {
-	internal class NullableOptionalDataContainer<TStateValidator, TValueValidatorOne, TValueValidatorTwo, TValueValidatorThree, TSource, TValue> : IDataContainer<Optional<Option<TValue>>>, IAcceptValue<Optional<Option<TValue>>, TSource>
+	internal class OptionalNullableDataContainer<TStateValidator, TValueValidatorOne, TValueValidatorTwo, TValueValidatorThree, TSource, TValue> : IDataContainer<Optional<Option<TValue>>>, IAcceptValue<Optional<Option<TValue>>, TSource>
 		where TStateValidator : struct, IStateValidator<Optional<Option<TValue>>, TValue>
 		where TValueValidatorOne : struct, IValueValidator<TValue>
 		where TValueValidatorTwo : struct, IValueValidator<TValue>
@@ -26,7 +26,7 @@ namespace Valigator.Core.DataContainers
 
 		public Type ValueType => typeof(TSource);
 
-		public NullableOptionalDataContainer(Mapping<TSource, TValue> mapping, TStateValidator stateValidator, TValueValidatorOne valueValidatorOne, TValueValidatorTwo valueValidatorTwo, TValueValidatorThree valueValidatorThree)
+		public OptionalNullableDataContainer(Mapping<TSource, TValue> mapping, TStateValidator stateValidator, TValueValidatorOne valueValidatorOne, TValueValidatorTwo valueValidatorTwo, TValueValidatorThree valueValidatorThree)
 		{
 			_mapping = mapping;
 			_stateValidator = stateValidator;
@@ -36,7 +36,7 @@ namespace Valigator.Core.DataContainers
 		}
 
 		public Data<Optional<Option<TValue>>> WithValue(Data<Optional<Option<TValue>>> data, Option<TSource> value)
-			=> data.WithMappedValidatedValue(value, _mapping, _stateValidator);
+			=> data.WithMappedValidatedValue(Optional.Set(value), _mapping, _stateValidator);
 
 		public Data<Optional<Option<TValue>>> WithUncheckedValue(Data<Optional<Option<TValue>>> data, Optional<Option<TValue>> value)
 			=> data.WithValidatedValue(value);

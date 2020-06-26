@@ -7,8 +7,8 @@ using Valigator.Core.Helpers;
 
 namespace Valigator.Core.DataContainers
 {
-	internal class NullableCollectionDataContainer<TCollectionStateValidator, TValueValidatorOne, TValueValidatorTwo, TValueValidatorThree, TSource, TValue> : IDataContainer<Option<TValue[]>>, IAcceptCollectionValue<Option<TValue[]>, TSource>
-		where TCollectionStateValidator : struct, ICollectionStateValidator<Option<TValue[]>, TValue>
+	internal class OptionalNullableCollectionDataContainer<TCollectionStateValidator, TValueValidatorOne, TValueValidatorTwo, TValueValidatorThree, TSource, TValue> : IDataContainer<Optional<Option<TValue[]>>>, IAcceptCollectionValue<Optional<Option<TValue[]>>, TSource>
+		where TCollectionStateValidator : struct, ICollectionStateValidator<Optional<Option<TValue[]>>, TValue>
 		where TValueValidatorOne : struct, IValueValidator<TValue[]>
 		where TValueValidatorTwo : struct, IValueValidator<TValue[]>
 		where TValueValidatorThree : struct, IValueValidator<TValue[]>
@@ -27,7 +27,7 @@ namespace Valigator.Core.DataContainers
 
 		public Type ValueType => typeof(TSource);
 
-		public NullableCollectionDataContainer(Mapping<TSource, TValue> mapping, TCollectionStateValidator stateValidator, TValueValidatorOne valueValidatorOne, TValueValidatorTwo valueValidatorTwo, TValueValidatorThree valueValidatorThree)
+		public OptionalNullableCollectionDataContainer(Mapping<TSource, TValue> mapping, TCollectionStateValidator stateValidator, TValueValidatorOne valueValidatorOne, TValueValidatorTwo valueValidatorTwo, TValueValidatorThree valueValidatorThree)
 		{
 			_mapping = mapping;
 			_stateValidator = stateValidator;
@@ -36,29 +36,29 @@ namespace Valigator.Core.DataContainers
 			_valueValidatorThree = valueValidatorThree;
 		}
 
-		public Data<Option<TValue[]>> WithValue(Data<Option<TValue[]>> data, Option<Option<TSource>[]> value)
+		public Data<Optional<Option<TValue[]>>> WithValue(Data<Optional<Option<TValue[]>>> data, Option<Option<TSource>[]> value)
 			=> data.WithMappedValidatedValue(Optional.Set(value), _mapping, _stateValidator);
 
-		public Data<Option<TValue[]>> WithUncheckedValue(Data<Option<TValue[]>> data, Option<TValue[]> value)
+		public Data<Optional<Option<TValue[]>>> WithUncheckedValue(Data<Optional<Option<TValue[]>>> data, Optional<Option<TValue[]>> value)
 			=> data.WithValidatedValue(value);
 
-		public Data<Option<TValue[]>> WithNull(Data<Option<TValue[]>> data)
+		public Data<Optional<Option<TValue[]>>> WithNull(Data<Optional<Option<TValue[]>>> data)
 			=> WithValue(data, Option.None<Option<TSource>[]>());
 
-		public Result<Option<TValue[]>, ValidationError[]> IsValid(Option<object> model, Optional<Option<TValue[]>> value)
+		public Result<Optional<Option<TValue[]>>, ValidationError[]> IsValid(Option<object> model, Optional<Optional<Option<TValue[]>>> value)
 		{
 			if (value.TryGetValue(out var some) || _stateValidator.Validate(Optional.Unset<Option<Option<TValue>[]>>()).TryGetValue(out some, out var failure))
 			{
 				if (_stateValidator.IsValid(model, some).TryGetValue(out var _, out var itemErrors) & this.IsValid(model, some, _valueValidatorOne, _valueValidatorTwo, _valueValidatorThree).TryGetValue(out var __, out var collectionErrors))
-					return Result.Success<Option<TValue[]>, ValidationError[]>(some);
+					return Result.Success<Optional<Option<TValue[]>>, ValidationError[]>(some);
 
-				return Result.Failure<Option<TValue[]>, ValidationError[]>(collectionErrors.Concat(itemErrors ?? Enumerable.Empty<ValidationError>()).ToArray());
+				return Result.Failure<Optional<Option<TValue[]>>, ValidationError[]>(collectionErrors.Concat(itemErrors ?? Enumerable.Empty<ValidationError>()).ToArray());
 			}
 
-			return Result.Failure<Option<TValue[]>, ValidationError[]>(failure);
+			return Result.Failure<Optional<Option<TValue[]>>, ValidationError[]>(failure);
 		}
 
-		Option<ValidationError[]> IDataContainer<Option<TValue[]>>.GetErrors()
+		Option<ValidationError[]> IDataContainer<Optional<Option<TValue[]>>>.GetErrors()
 			=> Option.None<ValidationError[]>();
 	}
 }

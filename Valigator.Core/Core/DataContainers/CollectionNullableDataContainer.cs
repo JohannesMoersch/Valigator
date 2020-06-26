@@ -37,7 +37,7 @@ namespace Valigator.Core.DataContainers
 		}
 
 		public Data<Option<TValue>[]> WithValue(Data<Option<TValue>[]> data, Option<Option<TSource>[]> value)
-			=> data.WithMappedValidatedValue(value, _mapping, _stateValidator);
+			=> data.WithMappedValidatedValue(Optional.Set(value), _mapping, _stateValidator);
 
 		public Data<Option<TValue>[]> WithUncheckedValue(Data<Option<TValue>[]> data, Option<TValue>[] value)
 			=> data.WithValidatedValue(value);
