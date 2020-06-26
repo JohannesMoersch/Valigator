@@ -25,11 +25,11 @@ namespace Valigator.Text.Json
 
 			var type = property.PropertyType.GenericTypeArguments[0];
 
-			bool isOptional = false;
+			bool isOptional;
 			if (isOptional = IsOptional(type))
 				type = type.GenericTypeArguments[0];
 
-			bool isNullable = false;
+			bool isNullable;
 			if (isNullable = IsNullable(type))
 				type = type.GenericTypeArguments[0];
 
@@ -37,10 +37,21 @@ namespace Valigator.Text.Json
 			{
 				type = type.GetElementType();
 
-				if (IsNullable(type))
+				bool isItemNullable;
+				if (isItemNullable = IsNullable(type))
 					type = type.GenericTypeArguments[0];
 
-				throw new NotSupportedException();
+				return (isOptional, isNullable, isItemNullable) switch
+				{
+					(false, false, false) => throw new NotSupportedException(),
+					(false, false, true) => throw new NotSupportedException(),
+					(false, true, false) => throw new NotSupportedException(),
+					(false, true, true) => throw new NotSupportedException(),
+					(true, false, false) => throw new NotSupportedException(),
+					(true, false, true) => throw new NotSupportedException(),
+					(true, true, false) => throw new NotSupportedException(),
+					(true, true, true) => CreatePropertyHandler(property, type, typeof(OptionalNullableNullableCollectionPropertyHandler<,>))
+				};
 			}
 
 			if (isOptional)
