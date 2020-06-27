@@ -44,7 +44,17 @@ namespace Valigator.Core.StateValidators
 			return Option.Some(ret);
 		}
 
+		public static Result<Unit, ValidationError[]> IsCollectionValid<TValue>(Data<TValue> data, Option<object> model, Optional<Option<Option<TValue>[]>> value)
+			=> value.TryGetValue(out var some)
+				? IsCollectionValid(data, model, some)
+				: Result.Unit<ValidationError[]>();
+
 		public static Result<Unit, ValidationError[]> IsCollectionValid<TValue>(Data<TValue> data, Option<object> model, Option<Option<TValue>[]> value)
+			=> value.TryGetValue(out var some)
+				? IsCollectionValid(data, model, some)
+				: Result.Unit<ValidationError[]>();
+
+		public static Result<Unit, ValidationError[]> IsCollectionValid<TValue>(Data<TValue> data, Option<object> model, Optional<Option<TValue[]>> value)
 			=> value.TryGetValue(out var some)
 				? IsCollectionValid(data, model, some)
 				: Result.Unit<ValidationError[]>();

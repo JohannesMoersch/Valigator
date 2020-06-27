@@ -12,12 +12,12 @@ using Valigator.Core.ValueValidators;
 
 namespace Valigator.Core.StateValidators
 {
-	public struct OptionalNullableCollectionStateValidator<TValue> : ICollectionStateValidator<Option<Option<TValue>[]>, TValue>
+	public struct OptionalNullableCollectionStateValidator<TValue> : ICollectionStateValidator<Optional<Option<Option<TValue>[]>>, TValue>
 	{
-		private static IDataContainer<Option<Option<TValue>[]>> CreateContainer(OptionalNullableCollectionStateValidator<TValue> stateValidator)
-			=> new NullableCollectionNullableDataContainer<OptionalNullableCollectionStateValidator<TValue>, DummyValidator<Option<TValue>[]>, DummyValidator<Option<TValue>[]>, DummyValidator<Option<TValue>[]>, TValue, TValue>(Mapping.CreatePassthrough<TValue>(), stateValidator, DummyValidator<Option<TValue>[]>.Instance, DummyValidator<Option<TValue>[]>.Instance, DummyValidator<Option<TValue>[]>.Instance);
+		private static IDataContainer<Optional<Option<Option<TValue>[]>>> CreateContainer(OptionalNullableCollectionStateValidator<TValue> stateValidator)
+			=> new OptionalNullableCollectionNullableDataContainer<OptionalNullableCollectionStateValidator<TValue>, DummyValidator<Option<TValue>[]>, DummyValidator<Option<TValue>[]>, DummyValidator<Option<TValue>[]>, TValue, TValue>(Mapping.CreatePassthrough<TValue>(), stateValidator, DummyValidator<Option<TValue>[]>.Instance, DummyValidator<Option<TValue>[]>.Instance, DummyValidator<Option<TValue>[]>.Instance);
 
-		public Data<Option<Option<TValue>[]>> Data => new Data<Option<Option<TValue>[]>>(CreateContainer(this));
+		public Data<Optional<Option<Option<TValue>[]>>> Data => new Data<Optional<Option<Option<TValue>[]>>>(CreateContainer(this));
 
 		private readonly Data<Option<TValue>> _item;
 
@@ -27,50 +27,50 @@ namespace Valigator.Core.StateValidators
 		public NullableOptionalNullableCollectionStateValidator<TValue> Nullable()
 			=> new NullableOptionalNullableCollectionStateValidator<TValue>(_item);
 
-		public DataSourceStandard<NullableCollectionNullableDataContainerFactory<OptionalNullableCollectionStateValidator<TValue>, TValue, TValue>, Option<Option<TValue>[]>, Option<TValue>[], TValueValidator> Add<TValueValidator>(TValueValidator valueValidator)
+		public DataSourceStandard<OptionalNullableCollectionNullableDataContainerFactory<OptionalNullableCollectionStateValidator<TValue>, TValue, TValue>, Optional<Option<Option<TValue>[]>>, Option<TValue>[], TValueValidator> Add<TValueValidator>(TValueValidator valueValidator)
 			where TValueValidator : struct, IValueValidator<Option<TValue>[]>
-			=> new DataSourceStandard<NullableCollectionNullableDataContainerFactory<OptionalNullableCollectionStateValidator<TValue>, TValue, TValue>, Option<Option<TValue>[]>, Option<TValue>[], TValueValidator>(new NullableCollectionNullableDataContainerFactory<OptionalNullableCollectionStateValidator<TValue>, TValue, TValue>(this, Mapping.CreatePassthrough<TValue>()), valueValidator);
+			=> new DataSourceStandard<OptionalNullableCollectionNullableDataContainerFactory<OptionalNullableCollectionStateValidator<TValue>, TValue, TValue>, Optional<Option<Option<TValue>[]>>, Option<TValue>[], TValueValidator>(new OptionalNullableCollectionNullableDataContainerFactory<OptionalNullableCollectionStateValidator<TValue>, TValue, TValue>(this, Mapping.CreatePassthrough<TValue>()), valueValidator);
 
-		public DataSource<NullableCollectionNullableDataContainerFactory<OptionalNullableCollectionStateValidator<TValue>, TSource, TValue>, Option<Option<TValue>[]>, Option<TValue>[]> MappedFrom<TSource>(Func<TSource, Option<TValue>> mapper)
+		public DataSource<OptionalNullableCollectionNullableDataContainerFactory<OptionalNullableCollectionStateValidator<TValue>, TSource, TValue>, Optional<Option<Option<TValue>[]>>, Option<TValue>[]> MappedFrom<TSource>(Func<TSource, Option<TValue>> mapper)
 			=> MappedFrom(Mapping.Create(mapper));
 
-		public DataSource<NullableCollectionNullableDataContainerFactory<OptionalNullableCollectionStateValidator<TValue>, TSource, TValue>, Option<Option<TValue>[]>, Option<TValue>[]> MappedFrom<TSource>(Func<TSource, Result<Option<TValue>, ValidationError[]>> mapper)
+		public DataSource<OptionalNullableCollectionNullableDataContainerFactory<OptionalNullableCollectionStateValidator<TValue>, TSource, TValue>, Optional<Option<Option<TValue>[]>>, Option<TValue>[]> MappedFrom<TSource>(Func<TSource, Result<Option<TValue>, ValidationError[]>> mapper)
 			=> MappedFrom(Mapping.Create(mapper));
 
-		public DataSource<NullableCollectionNullableDataContainerFactory<OptionalNullableCollectionStateValidator<TValue>, TSource, TValue>, Option<Option<TValue>[]>, Option<TValue>[]> MappedFrom<TSource>(Func<TSource, Option<TValue>> mapper, Func<RequiredStateValidator<TSource>, Data<TSource>> sourceValidations)
+		public DataSource<OptionalNullableCollectionNullableDataContainerFactory<OptionalNullableCollectionStateValidator<TValue>, TSource, TValue>, Optional<Option<Option<TValue>[]>>, Option<TValue>[]> MappedFrom<TSource>(Func<TSource, Option<TValue>> mapper, Func<RequiredStateValidator<TSource>, Data<TSource>> sourceValidations)
 			=> MappedFrom(Mapping.Create(mapper, sourceValidations));
 
-		public DataSource<NullableCollectionNullableDataContainerFactory<OptionalNullableCollectionStateValidator<TValue>, TSource, TValue>, Option<Option<TValue>[]>, Option<TValue>[]> MappedFrom<TSource>(Func<TSource, Result<Option<TValue>, ValidationError[]>> mapper, Func<RequiredStateValidator<TSource>, Data<TSource>> sourceValidations)
+		public DataSource<OptionalNullableCollectionNullableDataContainerFactory<OptionalNullableCollectionStateValidator<TValue>, TSource, TValue>, Optional<Option<Option<TValue>[]>>, Option<TValue>[]> MappedFrom<TSource>(Func<TSource, Result<Option<TValue>, ValidationError[]>> mapper, Func<RequiredStateValidator<TSource>, Data<TSource>> sourceValidations)
 			=> MappedFrom(Mapping.Create(mapper, sourceValidations));
 
-		private DataSource<NullableCollectionNullableDataContainerFactory<OptionalNullableCollectionStateValidator<TValue>, TSource, TValue>, Option<Option<TValue>[]>, Option<TValue>[]> MappedFrom<TSource>(Mapping<TSource, TValue> mapping)
-			=> new DataSource<NullableCollectionNullableDataContainerFactory<OptionalNullableCollectionStateValidator<TValue>, TSource, TValue>, Option<Option<TValue>[]>, Option<TValue>[]>(new NullableCollectionNullableDataContainerFactory<OptionalNullableCollectionStateValidator<TValue>, TSource, TValue>(this, mapping));
+		private DataSource<OptionalNullableCollectionNullableDataContainerFactory<OptionalNullableCollectionStateValidator<TValue>, TSource, TValue>, Optional<Option<Option<TValue>[]>>, Option<TValue>[]> MappedFrom<TSource>(Mapping<TSource, TValue> mapping)
+			=> new DataSource<OptionalNullableCollectionNullableDataContainerFactory<OptionalNullableCollectionStateValidator<TValue>, TSource, TValue>, Optional<Option<Option<TValue>[]>>, Option<TValue>[]>(new OptionalNullableCollectionNullableDataContainerFactory<OptionalNullableCollectionStateValidator<TValue>, TSource, TValue>(this, mapping));
 
-		IStateDescriptor IStateValidator<Option<Option<TValue>[]>, Option<TValue>[]>.GetDescriptor()
+		IStateDescriptor IStateValidator<Optional<Option<Option<TValue>[]>>, Option<TValue>[]>.GetDescriptor()
 			=> new CollectionStateDescriptor(Option.None<object[]>(), _item.DataDescriptor);
 
-		IValueDescriptor[] IStateValidator<Option<Option<TValue>[]>, Option<TValue>[]>.GetImplicitValueDescriptors()
+		IValueDescriptor[] IStateValidator<Optional<Option<Option<TValue>[]>>, Option<TValue>[]>.GetImplicitValueDescriptors()
 			=> new[] { new NotNullDescriptor() };
 
-		Result<Option<Option<TValue>[]>, ValidationError[]> IStateValidator<Option<Option<TValue>[]>, Option<TValue>[]>.Validate(Optional<Option<Option<TValue>[]>> value)
+		Result<Optional<Option<Option<TValue>[]>>, ValidationError[]> IStateValidator<Optional<Option<Option<TValue>[]>>, Option<TValue>[]>.Validate(Optional<Option<Option<TValue>[]>> value)
 		{
 			if (value.TryGetValue(out var isSet))
 			{
 				if (isSet.TryGetValue(out var notNull))
-					return Result.Success<Option<Option<TValue>[]>, ValidationError[]>(Option.Some(notNull));
+					return Result.Success<Optional<Option<Option<TValue>[]>>, ValidationError[]>(Optional.Set(Option.Some(notNull)));
 
-				return Result.Failure<Option<Option<TValue>[]>, ValidationError[]>(new[] { ValidationErrors.NotNull() });
+				return Result.Failure<Optional<Option<Option<TValue>[]>>, ValidationError[]>(new[] { ValidationErrors.NotNull() });
 			}
 
-			return Result.Success<Option<Option<TValue>[]>, ValidationError[]>(Option.None<Option<TValue>[]>());
+			return Result.Success<Optional<Option<Option<TValue>[]>>, ValidationError[]>(Optional.Unset<Option<Option<TValue>[]>>());
 		}
 
-		public Result<Unit, ValidationError[]> IsValid(Option<object> model, Option<Option<TValue>[]> value)
+		public Result<Unit, ValidationError[]> IsValid(Option<object> model, Optional<Option<Option<TValue>[]>> value)
 			=> StateValidatorHelpers.IsCollectionValid(_item, model, value);
 
-		public Result<Option<Option<TValue>[]>, ValidationError[]> Validate() => throw new NotImplementedException();
+		public Result<Optional<Option<Option<TValue>[]>>, ValidationError[]> Validate() => throw new NotImplementedException();
 
-		public static implicit operator Data<Option<Option<TValue>[]>>(OptionalNullableCollectionStateValidator<TValue> stateValidator)
+		public static implicit operator Data<Optional<Option<Option<TValue>[]>>>(OptionalNullableCollectionStateValidator<TValue> stateValidator)
 			=> stateValidator.Data;
 	}
 }

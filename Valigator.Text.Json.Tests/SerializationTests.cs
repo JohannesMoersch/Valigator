@@ -241,7 +241,7 @@ namespace Valigator.Tests.Text.Json
 		{
 			[Fact]
 			public void WithValue()
-				=> new TestClass<Option<int[]>>(
+				=> new TestClass<Optional<Option<int[]>>>(
 						Data
 						.Collection<int>()
 						.Optional()
@@ -254,7 +254,7 @@ namespace Valigator.Tests.Text.Json
 
 			[Fact]
 			public void WithUnSet()
-				=> new TestClass<Option<int[]>>(
+				=> new TestClass<Optional<Option<int[]>>>(
 						Data
 						.Collection<int>()
 						.Optional()
@@ -269,7 +269,7 @@ namespace Valigator.Tests.Text.Json
 		{
 			[Fact]
 			public void WithValue()
-				=> new TestClass<Option<int[]>>(
+				=> new TestClass<Optional<Option<int[]>>>(
 						Data
 						.Collection<int>()
 						.Optional()
@@ -283,7 +283,7 @@ namespace Valigator.Tests.Text.Json
 
 			[Fact]
 			public void WithNull()
-				=> new TestClass<Option<int[]>>(
+				=> new TestClass<Optional<Option<int[]>>>(
 						Data
 						.Collection<int>()
 						.Optional()
@@ -297,7 +297,7 @@ namespace Valigator.Tests.Text.Json
 
 			[Fact]
 			public void WithUnSet()
-				=> new TestClass<Option<int[]>>(
+				=> new TestClass<Optional<Option<int[]>>>(
 						Data
 						.Collection<int>()
 						.Optional()
@@ -432,7 +432,7 @@ namespace Valigator.Tests.Text.Json
 		{
 			[Fact]
 			public void WithValue()
-				=> new TestClass<Option<Option<int>[]>>(
+				=> new TestClass<Optional<Option<Option<int>[]>>>(
 						Data
 						.Collection<int>(o => o.Nullable())
 						.Optional()
@@ -445,7 +445,7 @@ namespace Valigator.Tests.Text.Json
 
 			[Fact]
 			public void WithUnSet()
-				=> new TestClass<Option<Option<int>[]>>(
+				=> new TestClass<Optional<Option<Option<int>[]>>>(
 						Data
 						.Collection<int>(o => o.Nullable())
 						.Optional()
@@ -460,7 +460,7 @@ namespace Valigator.Tests.Text.Json
 		{
 			[Fact]
 			public void WithValue()
-				=> new TestClass<Option<Option<int>[]>>(
+				=> new TestClass<Optional<Option<Option<int>[]>>>(
 						Data
 						.Collection<int>(o => o.Nullable())
 						.Optional()
@@ -474,7 +474,7 @@ namespace Valigator.Tests.Text.Json
 
 			[Fact]
 			public void WithNull()
-				=> new TestClass<Option<Option<int>[]>>(
+				=> new TestClass<Optional<Option<Option<int>[]>>>(
 						Data
 						.Collection<int>(o => o.Nullable())
 						.Optional()
@@ -488,7 +488,7 @@ namespace Valigator.Tests.Text.Json
 
 			[Fact]
 			public void WithUnSet()
-				=> new TestClass<Option<Option<int>[]>>(
+				=> new TestClass<Optional<Option<Option<int>[]>>>(
 						Data
 						.Collection<int>(o => o.Nullable())
 						.Optional()
