@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Functional;
+using System;
 using System.Linq;
-using System.Text;
-using Functional;
 using Valigator.Core.Helpers;
 
 namespace Valigator.Core.DataContainers

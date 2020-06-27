@@ -65,7 +65,7 @@ namespace Valigator.Core.StateValidators
 				return Result.Success<Optional<Option<TValue[]>>, ValidationError[]>(Optional.Set(Option.None<TValue[]>()));
 			}
 
-			return Result.Success<Optional<Option<TValue[]>>, ValidationError[]>(Optional.Set(Option.None<TValue[]>()));
+			return Result.Success<Optional<Option<TValue[]>>, ValidationError[]>(Optional.Unset<Option<TValue[]>>());
 		}
 
 		public Result<Unit, ValidationError[]> IsValid(Option<object> model, Optional<Option<TValue[]>> value)
