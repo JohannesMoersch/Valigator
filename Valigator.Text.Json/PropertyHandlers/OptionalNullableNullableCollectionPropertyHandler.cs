@@ -47,10 +47,10 @@ namespace Valigator.Text.Json.PropertyHandlers
 						values.Add(Option.None<TValue>());
 				}
 
-				data.WithValue(values.ToArray());
+				data = data.WithValue(values.ToArray());
 			}
 			else
-				data.WithNull();
+				data = data.WithNull();
 
 			_setValue.Invoke(obj, data);
 		}
