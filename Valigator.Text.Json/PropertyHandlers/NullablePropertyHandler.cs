@@ -7,7 +7,7 @@ using System.Text.Json;
 
 namespace Valigator.Text.Json.PropertyHandlers
 {
-	internal class NullablePropertyHandler<TObject, TValue> : ValigatorJsonPropertyHandler<TObject>
+	internal class NullablePropertyHandler<TObject, TValue, TSource> : ValigatorJsonPropertyHandler<TObject>
 	{
 		private readonly Func<TObject, Data<Option<TValue>>> _getValue;
 		private readonly Action<TObject, Data<Option<TValue>>> _setValue;
@@ -31,8 +31,8 @@ namespace Valigator.Text.Json.PropertyHandlers
 
 			var data = _getValue.Invoke(obj);
 
-			if (reader.TokenType != JsonTokenType.Null && JsonSerializer.Deserialize<TValue>(ref reader, options) is TValue value)
-				data = data.WithValue(value);
+			if (reader.TokenType != JsonTokenType.Null && JsonSerializer.Deserialize<TSource>(ref reader, options) is TSource value)
+				data = data.WithMappedValue(value);
 			else
 				data = data.WithNull();
 

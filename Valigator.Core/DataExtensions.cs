@@ -214,6 +214,9 @@ namespace Valigator
 			where TValue : struct
 			=> data.WithMappedValue(ToOptionArray(value));
 
+		public static Data<TDataValue[]> WithMappedValue<TDataValue, TValue>(this Data<TDataValue[]> data, Option<TValue>[] value)
+			=> data.WithMappedValue(Option.Some(value));
+
 		public static Data<TDataValue[]> WithMappedValue<TDataValue, TValue>(this Data<TDataValue[]> data, Option<Option<TValue>[]> value)
 			=> data.DataContainer is IAcceptCollectionValue<TDataValue[], TValue> dataContainer
 				? dataContainer.WithValue(data, value)
@@ -225,6 +228,9 @@ namespace Valigator
 		public static Data<Option<TDataValue[]>> WithMappedValue<TDataValue, TValue>(this Data<Option<TDataValue[]>> data, TValue?[] value)
 			where TValue : struct
 			=> data.WithMappedValue(ToOptionArray(value));
+
+		public static Data<Option<TDataValue[]>> WithMappedValue<TDataValue, TValue>(this Data<Option<TDataValue[]>> data, Option<TValue>[] value)
+			=> data.WithMappedValue(Option.Some(value));
 
 		public static Data<Option<TDataValue[]>> WithMappedValue<TDataValue, TValue>(this Data<Option<TDataValue[]>> data, Option<Option<TValue>[]> value)
 			=> data.DataContainer is IAcceptCollectionValue<Option<TDataValue[]>, TValue> dataContainer
@@ -238,6 +244,9 @@ namespace Valigator
 			where TValue : struct
 			=> data.WithMappedValue(ToOptionArray(value));
 
+		public static Data<Option<TDataValue>[]> WithMappedValue<TDataValue, TValue>(this Data<Option<TDataValue>[]> data, Option<TValue>[] value)
+			=> data.WithMappedValue(Option.Some(value));
+
 		public static Data<Option<TDataValue>[]> WithMappedValue<TDataValue, TValue>(this Data<Option<TDataValue>[]> data, Option<Option<TValue>[]> value)
 			=> data.DataContainer is IAcceptCollectionValue<Option<TDataValue>[], TValue> dataContainer
 				? dataContainer.WithValue(data, value)
@@ -249,6 +258,9 @@ namespace Valigator
 		public static Data<Option<Option<TDataValue>[]>> WithMappedValue<TDataValue, TValue>(this Data<Option<Option<TDataValue>[]>> data, TValue?[] value)
 			where TValue : struct
 			=> data.WithMappedValue(ToOptionArray(value));
+
+		public static Data<Option<Option<TDataValue>[]>> WithMappedValue<TDataValue, TValue>(this Data<Option<Option<TDataValue>[]>> data, Option<TValue>[] value)
+			=> data.WithMappedValue(Option.Some(value));
 
 		public static Data<Option<Option<TDataValue>[]>> WithMappedValue<TDataValue, TValue>(this Data<Option<Option<TDataValue>[]>> data, Option<Option<TValue>[]> value)
 			=> data.DataContainer is IAcceptCollectionValue<Option<Option<TDataValue>[]>, TValue> dataContainer
@@ -262,6 +274,9 @@ namespace Valigator
 			where TValue : struct
 			=> data.WithMappedValue(ToOptionArray(value));
 
+		public static Data<Optional<TDataValue[]>> WithMappedValue<TDataValue, TValue>(this Data<Optional<TDataValue[]>> data, Option<TValue>[] value)
+			=> data.WithMappedValue(Option.Some(value));
+
 		public static Data<Optional<TDataValue[]>> WithMappedValue<TDataValue, TValue>(this Data<Optional<TDataValue[]>> data, Option<Option<TValue>[]> value)
 			=> data.DataContainer is IAcceptCollectionValue<Optional<TDataValue[]>, TValue> dataContainer
 				? dataContainer.WithValue(data, value)
@@ -273,6 +288,9 @@ namespace Valigator
 		public static Data<Optional<Option<TDataValue[]>>> WithMappedValue<TDataValue, TValue>(this Data<Optional<Option<TDataValue[]>>> data, TValue?[] value)
 			where TValue : struct
 			=> data.WithMappedValue(ToOptionArray(value));
+
+		public static Data<Optional<Option<TDataValue[]>>> WithMappedValue<TDataValue, TValue>(this Data<Optional<Option<TDataValue[]>>> data, Option<TValue>[] value)
+			=> data.WithMappedValue(Option.Some(value));
 
 		public static Data<Optional<Option<TDataValue[]>>> WithMappedValue<TDataValue, TValue>(this Data<Optional<Option<TDataValue[]>>> data, Option<Option<TValue>[]> value)
 			=> data.DataContainer is IAcceptCollectionValue<Optional<Option<TDataValue[]>>, TValue> dataContainer
@@ -286,6 +304,9 @@ namespace Valigator
 			where TValue : struct
 			=> data.WithMappedValue(ToOptionArray(value));
 
+		public static Data<Optional<Option<TDataValue>[]>> WithMappedValue<TDataValue, TValue>(this Data<Optional<Option<TDataValue>[]>> data, Option<TValue>[] value)
+			=> data.WithMappedValue(Option.Some(value));
+
 		public static Data<Optional<Option<TDataValue>[]>> WithMappedValue<TDataValue, TValue>(this Data<Optional<Option<TDataValue>[]>> data, Option<Option<TValue>[]> value)
 			=> data.DataContainer is IAcceptCollectionValue<Optional<Option<TDataValue>[]>, TValue> dataContainer
 				? dataContainer.WithValue(data, value)
@@ -297,6 +318,9 @@ namespace Valigator
 		public static Data<Optional<Option<Option<TDataValue>[]>>> WithMappedValue<TDataValue, TValue>(this Data<Optional<Option<Option<TDataValue>[]>>> data, TValue?[] value)
 			where TValue : struct
 			=> data.WithMappedValue(ToOptionArray(value));
+
+		public static Data<Optional<Option<Option<TDataValue>[]>>> WithMappedValue<TDataValue, TValue>(this Data<Optional<Option<Option<TDataValue>[]>>> data, Option<TValue>[] value)
+			=> data.WithMappedValue(Option.Some(value));
 
 		public static Data<Optional<Option<Option<TDataValue>[]>>> WithMappedValue<TDataValue, TValue>(this Data<Optional<Option<Option<TDataValue>[]>>> data, Option<Option<TValue>[]> value)
 			=> data.DataContainer is IAcceptCollectionValue<Optional<Option<Option<TDataValue>[]>>, TValue> dataContainer

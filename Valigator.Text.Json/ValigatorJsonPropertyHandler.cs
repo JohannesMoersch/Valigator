@@ -1,9 +1,11 @@
 ﻿using Functional;
 using System;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Valigator.Core;
 using Valigator.Text.Json.PropertyHandlers;
 
 namespace Valigator.Text.Json
@@ -18,10 +20,19 @@ namespace Valigator.Text.Json
 
 		public abstract void WriteProperty(Utf8JsonWriter writer, JsonSerializerOptions options, TObject obj);
 
-		public static ValigatorJsonPropertyHandler<TObject> Create(PropertyInfo property)
+		public static ValigatorJsonPropertyHandler<TObject> Create(TObject obj, PropertyInfo property)
 		{
 			if (!property.PropertyType.IsConstructedGenericType || property.PropertyType.GetGenericTypeDefinition() != typeof(Data<>))
 				throw new ArgumentException("Property must be a Data type.", nameof(property));
+
+			var data = property.GetValue(obj, null) as IData;
+
+			var sourceType = data
+				.DataContainer
+				.GetType()
+				.GetInterfaces()
+				.First(i => i.IsConstructedGenericType && i.GetGenericTypeDefinition() == typeof(IAcceptValue<,>))
+				.GetGenericArguments()[1];
 
 			var type = property.PropertyType.GenericTypeArguments[0];
 
@@ -35,6 +46,10 @@ namespace Valigator.Text.Json
 
 			if (IsCollection(type))
 			{
+				sourceType = sourceType
+					.GetElementType()
+					.GetGenericArguments()[0];
+
 				type = type.GetElementType();
 
 				bool isItemNullable;
@@ -43,28 +58,28 @@ namespace Valigator.Text.Json
 
 				return (isOptional, isNullable, isItemNullable) switch
 				{
-					(false, false, false) => CreatePropertyHandler(property, type, typeof(CollectionPropertyHandler<,>)),
-					(false, false, true) => CreatePropertyHandler(property, type, typeof(CollectionOfNullablePropertyHandler<,>)),
-					(false, true, false) => CreatePropertyHandler(property, type, typeof(NullableCollectionPropertyHandler<,>)),
-					(false, true, true) => CreatePropertyHandler(property, type, typeof(NullableCollectionOfNullablePropertyHandler<,>)),
-					(true, false, false) => CreatePropertyHandler(property, type, typeof(OptionalCollectionPropertyHandler<,>)),
-					(true, false, true) => CreatePropertyHandler(property, type, typeof(OptionalCollectionOfNullablePropertyHandler<,>)),
-					(true, true, false) => CreatePropertyHandler(property, type, typeof(OptionalNullableCollectionPropertyHandler<,>)),
-					(true, true, true) => CreatePropertyHandler(property, type, typeof(OptionalNullableCollectionOfNullablePropertyHandler<,>))
+					(false, false, false) => CreatePropertyHandler(property, type, sourceType, typeof(CollectionPropertyHandler<,,>)),
+					(false, false, true) => CreatePropertyHandler(property, type, sourceType, typeof(CollectionOfNullablePropertyHandler<,,>)),
+					(false, true, false) => CreatePropertyHandler(property, type, sourceType, typeof(NullableCollectionPropertyHandler<,,>)),
+					(false, true, true) => CreatePropertyHandler(property, type, sourceType, typeof(NullableCollectionOfNullablePropertyHandler<,,>)),
+					(true, false, false) => CreatePropertyHandler(property, type, sourceType, typeof(OptionalCollectionPropertyHandler<,,>)),
+					(true, false, true) => CreatePropertyHandler(property, type, sourceType, typeof(OptionalCollectionOfNullablePropertyHandler<,,>)),
+					(true, true, false) => CreatePropertyHandler(property, type, sourceType, typeof(OptionalNullableCollectionPropertyHandler<,,>)),
+					(true, true, true) => CreatePropertyHandler(property, type, sourceType, typeof(OptionalNullableCollectionOfNullablePropertyHandler<,,>))
 				};
 			}
 
 			if (isOptional)
 			{
 				if (isNullable)
-					return CreatePropertyHandler(property, type, typeof(OptionalNullablePropertyHandler<,>));
+					return CreatePropertyHandler(property, type, sourceType, typeof(OptionalNullablePropertyHandler<,,>));
 				else
-					return CreatePropertyHandler(property, type, typeof(OptionalPropertyHandler<,>));
+					return CreatePropertyHandler(property, type, sourceType, typeof(OptionalPropertyHandler<,,>));
 			}
 			else if (isNullable)
-				return CreatePropertyHandler(property, type, typeof(NullablePropertyHandler<,>));
+				return CreatePropertyHandler(property, type, sourceType, typeof(NullablePropertyHandler<,,>));
 			else
-				return CreatePropertyHandler(property, type, typeof(PropertyHandler<,>));
+				return CreatePropertyHandler(property, type, sourceType, typeof(PropertyHandler<,,>));
 		}
 
 		private static bool IsOptional(Type type)
@@ -76,54 +91,7 @@ namespace Valigator.Text.Json
 		private static bool IsCollection(Type type)
 			=> type.IsArray && type.HasElementType;
 
-		private static ValigatorJsonPropertyHandler<TObject> CreatePropertyHandler(PropertyInfo property, Type valueType, Type propertyHandlerType)
-			=> (ValigatorJsonPropertyHandler<TObject>)Activator.CreateInstance(propertyHandlerType.MakeGenericType(typeof(TObject), valueType), property); 
-	}
-
-	internal class ValigatorJsonPropertyHandler<TObject, TDataValue> : ValigatorJsonPropertyHandler<TObject>
-	{
-		private readonly Func<TObject, Data<TDataValue>> _getValue;
-		private readonly Action<TObject, Data<TDataValue>> _setValue;
-
-		public override bool CanRead => _getValue != null;
-		public override bool CanWrite => _setValue != null;
-
-		public ValigatorJsonPropertyHandler(Func<TObject, Data<TDataValue>> getValue, Action<TObject, Data<TDataValue>> setValue)
-		{
-			_getValue = getValue;
-			_setValue = setValue;
-		}
-
-		public override void ReadProperty(ref Utf8JsonReader reader, JsonSerializerOptions options, TObject obj)
-		{
-			if (_getValue != null && _setValue != null)
-				_setValue.Invoke(obj, ValigatorJsonReader.ReadValue(ref reader, options, _getValue.Invoke(obj)));
-			else
-				throw new NotSupportedException();
-		}
-
-		public override void WriteProperty(Utf8JsonWriter writer, JsonSerializerOptions options, TObject obj)
-		{
-			if (_getValue != null)
-				ValigatorJsonWriter.WriteValue(writer, options, _getValue.Invoke(obj));
-			else
-				throw new NotSupportedException();
-		}
-
-		public new static ValigatorJsonPropertyHandler<TObject, TDataValue> Create(PropertyInfo property)
-		{
-			if (property.GetCustomAttribute<JsonIgnoreAttribute>() != null)
-				return new ValigatorJsonPropertyHandler<TObject, TDataValue>(null, null);
-
-			var objParameter = Expression.Parameter(typeof(TObject), "obj");
-			var propertyExpression = Expression.Property(objParameter, property);
-
-			var valueParameter = Expression.Parameter(typeof(Data<TDataValue>), "value");
-
-			var getter = property.CanRead ? Expression.Lambda<Func<TObject, Data<TDataValue>>>(propertyExpression, objParameter).Compile() : null;
-			var setter = property.CanWrite ? Expression.Lambda<Action<TObject, Data<TDataValue>>>(Expression.Assign(propertyExpression, valueParameter), objParameter, valueParameter).Compile() : null;
-
-			return new ValigatorJsonPropertyHandler<TObject, TDataValue>(getter, setter);
-		}
+		private static ValigatorJsonPropertyHandler<TObject> CreatePropertyHandler(PropertyInfo property, Type valueType, Type sourceType, Type propertyHandlerType)
+			=> (ValigatorJsonPropertyHandler<TObject>)Activator.CreateInstance(propertyHandlerType.MakeGenericType(typeof(TObject), valueType, sourceType), property); 
 	}
 }
