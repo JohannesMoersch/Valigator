@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,18 +12,19 @@ namespace Valigator.Newtonsoft.Json
 	public class Converter<TObject> : IConverter
 		where TObject : class
 	{
-		private static Dictionary<string, ValigatorJsonPropertyHandler<TObject>> CreatePropertyHandlers()
+		private static Dictionary<string, ValigatorJsonPropertyHandler<TObject>> CreatePropertyHandlers(TObject obj)
 		{
 			var result = new Dictionary<string, ValigatorJsonPropertyHandler<TObject>>();
 
 			foreach (var property in typeof(TObject).GetProperties(BindingFlags.Public | BindingFlags.Instance))
-				result.Add(property.Name, ValigatorJsonPropertyHandler<TObject>.Create(property));
+				result.Add(property.Name, ValigatorJsonPropertyHandler<TObject>.Create(obj, property));
 
 			return result;
 		}
 
-		private static Dictionary<string, ValigatorJsonPropertyHandler<TObject>> _propertyHandlers;
-		private static Dictionary<string, ValigatorJsonPropertyHandler<TObject>> PropertyHandlers => _propertyHandlers ??= CreatePropertyHandlers();
+		private static Dictionary<string, ValigatorJsonPropertyHandler<TObject>> _getPropertyHandlers;
+		private static Dictionary<string, ValigatorJsonPropertyHandler<TObject>> GetPropertyHandlers(TObject obj)
+			=> _getPropertyHandlers ??= CreatePropertyHandlers(obj);
 
 		private readonly bool _useNewInstances;
 
@@ -41,7 +43,7 @@ namespace Valigator.Newtonsoft.Json
 			}
 		}
 
-		public TObject Read(JsonReader reader, JsonSerializer serializer)
+		public object Read(JsonReader reader, JsonSerializer serializer)
 		{
 			var obj = GetObjectInstance();
 
@@ -58,15 +60,13 @@ namespace Valigator.Newtonsoft.Json
 
 				var propertyName = (string)reader.Value;
 
-				if (PropertyHandlers.TryGetValue(propertyName, out var propertyHandler) && propertyHandler.CanWrite)
-				{
-					if (!reader.Read())
-						throw new Exception();
+				if (!reader.Read())
+					throw new Exception();
 
+				if (GetPropertyHandlers(obj).TryGetValue(propertyName, out var propertyHandler))
 					propertyHandler.ReadProperty(reader, serializer, obj);
-				}
 				else
-					serializer.Deserialize(reader, typeof(object));
+					serializer.Deserialize(reader, typeof(JObject));
 			}
 
 			return obj;
@@ -77,24 +77,14 @@ namespace Valigator.Newtonsoft.Json
 				? Model.CreateNew<TObject>()
 				: Model.CreateClone<TObject>();
 
-		public void Write(JsonWriter writer, TObject value, JsonSerializer serializer)
+		public void Write(JsonWriter writer, object value, JsonSerializer serializer)
 		{
 			writer.WriteStartObject();
 
-			foreach (var handler in PropertyHandlers.Where(kvp => kvp.Value.CanRead))
-			{
-				writer.WritePropertyName(handler.Key);
-
-				handler.Value.WriteProperty(writer, serializer, value);
-			}
+			foreach (var handler in GetPropertyHandlers((TObject)value))
+				handler.Value.WriteProperty(writer, serializer, (TObject)value);
 
 			writer.WriteEndObject();
 		}
-
-		object IConverter.Read(JsonReader reader, JsonSerializer serializer)
-			=> Read(reader, serializer);
-
-		void IConverter.Write(JsonWriter writer, object value, JsonSerializer serializer)
-			=> Write(writer, (TObject)value, serializer);
 	}
 }

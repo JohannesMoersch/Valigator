@@ -201,5 +201,28 @@ namespace Valigator.Tests.Newtonsoft
 					}"
 					.RemoveWhiteSpace()
 				);
+
+		[ValigatorModel]
+		public class OtherTestClass
+		{
+			public override int GetHashCode()
+				=> 0;
+
+			public override bool Equals(object obj)
+				=> obj is OtherTestClass;
+		}
+
+		[Fact]
+		public void DeserializeWithExtraValues()
+			=> JsonConvert
+				.DeserializeObject<OtherTestClass>(@"
+					{
+						""Value"": null
+					}",
+					JsonTestSettings.NewtonsoftSettings
+				)
+				.Verify()
+				.Should()
+				.Be(new OtherTestClass());
 	}
 }

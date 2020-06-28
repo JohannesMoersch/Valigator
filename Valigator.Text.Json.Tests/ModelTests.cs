@@ -205,5 +205,28 @@ namespace Valigator.Tests.Text.Json
 					}"
 					.RemoveWhiteSpace()
 				);
+
+		[ValigatorModel]
+		public class OtherTestClass
+		{
+			public override int GetHashCode()
+				=> 0;
+
+			public override bool Equals(object obj)
+				=> obj is OtherTestClass;
+		}
+
+		[Fact]
+		public void DeserializeWithExtraValues()
+			=> JsonSerializer
+				.Deserialize<OtherTestClass>(@"
+					{
+						""Value"": null
+					}",
+					JsonTestSettings.SystemTextJsonSettings
+				)
+				.Verify()
+				.Should()
+				.Be(new OtherTestClass());
 	}
 }

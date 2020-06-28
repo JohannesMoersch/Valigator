@@ -441,7 +441,8 @@ namespace Valigator.Tests.Newtonsoft
 					.Verify()
 					.TryGetValue()
 					.AssertSuccess()
-					.AssertUnset();
+					.AssertSet()
+					.AssertNone();
 
 			[Fact]
 			public void WithUnSet()

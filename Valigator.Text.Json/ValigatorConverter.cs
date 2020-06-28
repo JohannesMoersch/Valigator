@@ -60,13 +60,11 @@ namespace Valigator.Text.Json
 
 				var propertyName = reader.GetString();
 
-				if (GetPropertyHandlers(obj).TryGetValue(propertyName, out var propertyHandler))
-				{
-					if (!reader.Read())
-						throw new Exception();
+				if (!reader.Read())
+					throw new Exception();
 
+				if (GetPropertyHandlers(obj).TryGetValue(propertyName, out var propertyHandler))
 					propertyHandler.ReadProperty(ref reader, options, obj);
-				}
 				else
 					JsonSerializer.Deserialize(ref reader, typeof(object), options);
 			}
