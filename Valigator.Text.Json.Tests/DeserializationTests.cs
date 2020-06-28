@@ -360,7 +360,7 @@ namespace Valigator.Tests.Text.Json
 			[ValigatorModel]
 			public class TestClass
 			{
-				public Data<Optional<Option<int[]>>> Value { get; set; } = Data.Collection<int>().Optional();
+				public Data<Optional<int[]>> Value { get; set; } = Data.Collection<int>().Optional();
 			}
 
 			[Fact]
@@ -371,7 +371,6 @@ namespace Valigator.Tests.Text.Json
 					.TryGetValue()
 					.AssertSuccess()
 					.AssertSet()
-					.AssertSome()
 					.Should()
 					.BeEquivalentTo(new[] { 1, 2, 3 });
 
@@ -658,7 +657,7 @@ namespace Valigator.Tests.Text.Json
 			[ValigatorModel]
 			public class TestClass
 			{
-				public Data<Optional<Option<Option<int>[]>>> Value { get; set; } = Data.Collection<int>(o => o.Nullable()).Optional();
+				public Data<Optional<Option<int>[]>> Value { get; set; } = Data.Collection<int>(o => o.Nullable()).Optional();
 			}
 
 			[Fact]
@@ -669,7 +668,6 @@ namespace Valigator.Tests.Text.Json
 					.TryGetValue()
 					.AssertSuccess()
 					.AssertSet()
-					.AssertSome()
 					.Should()
 					.BeEquivalentToNullables(new int?[] { 1, 2, 3 });
 
@@ -681,7 +679,6 @@ namespace Valigator.Tests.Text.Json
 					.TryGetValue()
 					.AssertSuccess()
 					.AssertSet()
-					.AssertSome()
 					.Should()
 					.BeEquivalentToNullables(new int?[] { 1, null, 3 });
 

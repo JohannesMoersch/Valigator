@@ -93,7 +93,6 @@ namespace Valigator.Tests
 				.TryGetValue()
 				.AssertSuccess()
 				.AssertSet()
-				.AssertSome()
 				.Should()
 				.BeEquivalentTo(new int[] { 5 });
 
