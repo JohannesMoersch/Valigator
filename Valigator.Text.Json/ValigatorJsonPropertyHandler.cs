@@ -43,10 +43,10 @@ namespace Valigator.Text.Json
 
 				return (isOptional, isNullable, isItemNullable) switch
 				{
-					(false, false, false) => throw new NotSupportedException(),
-					(false, false, true) => throw new NotSupportedException(),
-					(false, true, false) => throw new NotSupportedException(),
-					(false, true, true) => throw new NotSupportedException(),
+					(false, false, false) => CreatePropertyHandler(property, type, typeof(CollectionPropertyHandler<,>)),
+					(false, false, true) => CreatePropertyHandler(property, type, typeof(CollectionOfNullablePropertyHandler<,>)),
+					(false, true, false) => CreatePropertyHandler(property, type, typeof(NullableCollectionPropertyHandler<,>)),
+					(false, true, true) => CreatePropertyHandler(property, type, typeof(NullableCollectionOfNullablePropertyHandler<,>)),
 					(true, false, false) => CreatePropertyHandler(property, type, typeof(OptionalCollectionPropertyHandler<,>)),
 					(true, false, true) => CreatePropertyHandler(property, type, typeof(OptionalCollectionOfNullablePropertyHandler<,>)),
 					(true, true, false) => CreatePropertyHandler(property, type, typeof(OptionalNullableCollectionPropertyHandler<,>)),

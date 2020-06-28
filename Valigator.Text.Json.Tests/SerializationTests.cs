@@ -79,7 +79,7 @@ namespace Valigator.Tests.Text.Json
 					)
 					.Serialize()
 					.Should()
-					.Be(@"{""Value"":null}");
+					.Be(@"{}");
 		}
 
 		public class NullableOptional
@@ -120,7 +120,7 @@ namespace Valigator.Tests.Text.Json
 					)
 					.Serialize()
 					.Should()
-					.Be(@"{""Value"":null}");
+					.Be(@"{}");
 		}
 
 		public class Defaulted
@@ -262,7 +262,7 @@ namespace Valigator.Tests.Text.Json
 					)
 					.Serialize()
 					.Should()
-					.Be(@"{""Value"":null}");
+					.Be(@"{}");
 		}
 
 		public class NullableOptionalCollection
@@ -306,7 +306,7 @@ namespace Valigator.Tests.Text.Json
 					)
 					.Serialize()
 					.Should()
-					.Be(@"{""Value"":null}");
+					.Be(@"{}");
 		}
 
 		public class DefaultedCollection
@@ -453,7 +453,7 @@ namespace Valigator.Tests.Text.Json
 					)
 					.Serialize()
 					.Should()
-					.Be(@"{""Value"":null}");
+					.Be(@"{}");
 		}
 
 		public class NullableOptionalNullableCollection
@@ -497,7 +497,7 @@ namespace Valigator.Tests.Text.Json
 					)
 					.Serialize()
 					.Should()
-					.Be(@"{""Value"":null}");
+					.Be(@"{}");
 		}
 
 		public class DefaultedNullableCollection
