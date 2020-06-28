@@ -70,6 +70,9 @@ namespace Valigator
 			where TValue : struct
 			=> data.WithValue(ToOptionArray(value));
 
+		public static Data<TValue[]> WithValue<TValue>(this Data<TValue[]> data, Option<TValue>[] value)
+			=> data.WithValue(Option.Some(value));
+
 		public static Data<TValue[]> WithValue<TValue>(this Data<TValue[]> data, Option<Option<TValue>[]> value)
 			=> data.DataContainer is IAcceptCollectionValue<TValue[], TValue> dataContainer
 				? dataContainer.WithValue(data, value)

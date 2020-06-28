@@ -7,21 +7,21 @@ using System.Text.Json;
 
 namespace Valigator.Text.Json.PropertyHandlers
 {
-	internal class OptionalNullableNullableCollectionPropertyHandler<TObject, TValue> : ValigatorJsonPropertyHandler<TObject>
+	internal class OptionalCollectionOfNullablePropertyHandler<TObject, TValue> : ValigatorJsonPropertyHandler<TObject>
 	{
-		private readonly Func<TObject, Data<Optional<Option<Option<TValue>[]>>>> _getValue;
-		private readonly Action<TObject, Data<Optional<Option<Option<TValue>[]>>>> _setValue;
+		private readonly Func<TObject, Data<Optional<Option<TValue>[]>>> _getValue;
+		private readonly Action<TObject, Data<Optional<Option<TValue>[]>>> _setValue;
 
 		public string PropertyName { get; }
 
 		public override bool CanRead => _getValue != null;
 		public override bool CanWrite => _setValue != null;
 
-		public OptionalNullableNullableCollectionPropertyHandler(PropertyInfo property)
+		public OptionalCollectionOfNullablePropertyHandler(PropertyInfo property)
 		{
 			PropertyName = property.Name;
-			_getValue = property.GetGetter<TObject, Optional<Option<Option<TValue>[]>>>();
-			_setValue = property.GetSetter<TObject, Optional<Option<Option<TValue>[]>>>();
+			_getValue = property.GetGetter<TObject, Optional<Option<TValue>[]>>();
+			_setValue = property.GetSetter<TObject, Optional<Option<TValue>[]>>();
 		}
 
 		public override void ReadProperty(ref Utf8JsonReader reader, JsonSerializerOptions options, TObject obj)
@@ -63,22 +63,17 @@ namespace Valigator.Text.Json.PropertyHandlers
 				{
 					writer.WritePropertyName(PropertyName);
 
-					if (value.TryGetValue(out var some))
+					writer.WriteStartArray();
+
+					foreach (var option in value)
 					{
-						writer.WriteStartArray();
-
-						foreach (var option in some)
-						{
-							if (option.TryGetValue(out var item))
-								JsonSerializer.Serialize(writer, item, options);
-							else
-								writer.WriteNullValue();
-						}
-
-						writer.WriteEndArray();
+						if (option.TryGetValue(out var item))
+							JsonSerializer.Serialize(writer, item, options);
+						else
+							writer.WriteNullValue();
 					}
-					else
-						writer.WriteNullValue();
+
+					writer.WriteEndArray();
 				}
 			}
 			else

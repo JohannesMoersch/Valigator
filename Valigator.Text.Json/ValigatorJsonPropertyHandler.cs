@@ -47,10 +47,10 @@ namespace Valigator.Text.Json
 					(false, false, true) => throw new NotSupportedException(),
 					(false, true, false) => throw new NotSupportedException(),
 					(false, true, true) => throw new NotSupportedException(),
-					(true, false, false) => throw new NotSupportedException(),
-					(true, false, true) => throw new NotSupportedException(),
-					(true, true, false) => throw new NotSupportedException(),
-					(true, true, true) => CreatePropertyHandler(property, type, typeof(OptionalNullableNullableCollectionPropertyHandler<,>))
+					(true, false, false) => CreatePropertyHandler(property, type, typeof(OptionalCollectionPropertyHandler<,>)),
+					(true, false, true) => CreatePropertyHandler(property, type, typeof(OptionalCollectionOfNullablePropertyHandler<,>)),
+					(true, true, false) => CreatePropertyHandler(property, type, typeof(OptionalNullableCollectionPropertyHandler<,>)),
+					(true, true, true) => CreatePropertyHandler(property, type, typeof(OptionalNullableCollectionOfNullablePropertyHandler<,>))
 				};
 			}
 
