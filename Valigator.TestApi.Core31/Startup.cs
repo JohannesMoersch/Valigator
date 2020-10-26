@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Valigator.AspNetCore;
 
 [assembly: ApiController]
 namespace Valigator.TestApi
@@ -23,6 +22,10 @@ namespace Valigator.TestApi
 		public void ConfigureServices(IServiceCollection services)
 		{
 			services
+				.AddOpenApiDocument(c => 
+				{
+					c.Title = "Title";
+				})
 				.AddControllers()
 				.SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
 				.AddValigator(errors => new JsonResult(errors) { StatusCode = 400 }, errors => new JsonResult(errors.Select(e => new { Path = e.Path.ToString(), Message = e.Message }).ToArray()) { StatusCode = 400 });
@@ -38,7 +41,14 @@ namespace Valigator.TestApi
 			app.UseRouting();
 			app.UseEndpoints(endpoints => {
 				endpoints.MapControllers();
+
+				endpoints.MapGet("/", async context =>
+				{
+					context.Response.Redirect("/swagger/v1/swagger.json");
+					await context.Response.CompleteAsync();
+				});
 			});
+			app.UseOpenApi();
 		}
 	}
 }

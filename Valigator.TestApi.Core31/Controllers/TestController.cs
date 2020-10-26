@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Valigator.TestApi.Controllers
 {
+
 	[Route("test")]
 	public class TestController : ControllerBase
 	{

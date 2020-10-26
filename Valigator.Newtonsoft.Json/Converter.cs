@@ -54,7 +54,7 @@ namespace Valigator.Newtonsoft.Json
 					break;
 
 				if (reader.TokenType != JsonToken.PropertyName)
-					throw new Exception($"TokenType is not JsonToken.PropertyName");
+					throw new Exception($"TokenType is not JsonToken.PropertyName. TokenType is {reader.TokenType}.");
 
 				var propertyName = (string)reader.Value;
 
