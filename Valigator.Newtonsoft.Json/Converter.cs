@@ -37,7 +37,7 @@ namespace Valigator.Newtonsoft.Json
 					_useNewInstances = false;
 					break;
 				default:
-					throw new Exception();
+					throw new Exception($"{nameof(_useNewInstances)} is not set.");
 			}
 		}
 
@@ -48,20 +48,20 @@ namespace Valigator.Newtonsoft.Json
 			while (true)
 			{
 				if (!reader.Read())
-					throw new Exception();
+					throw new Exception($"Could not read JsonReader before property name.");
 
 				if (reader.TokenType == JsonToken.EndObject)
 					break;
 
 				if (reader.TokenType != JsonToken.PropertyName)
-					throw new Exception();
+					throw new Exception($"TokenType is not JsonToken.PropertyName");
 
 				var propertyName = (string)reader.Value;
 
 				if (PropertyHandlers.TryGetValue(propertyName, out var propertyHandler) && propertyHandler.CanWrite)
 				{
 					if (!reader.Read())
-						throw new Exception();
+						throw new Exception($"Could not read JsonReader when getting value.");
 
 					propertyHandler.ReadProperty(reader, serializer, obj);
 				}
