@@ -25,7 +25,7 @@ namespace Valigator.TestApi.Controllers
 	{
 		private static readonly Data<QueryParameters> _data = Data.Required<QueryParameters>();
 
-		public override BindingSource BindingSource => BindingSource.Custom; // BindingSource.Query; // BindingSource.Query will result generation of OpenAPI json taking a veyr long time to complete (it may never complete).
+		public override BindingSource BindingSource => BindingSource.Query; // BindingSource.Query; // BindingSource.Query will result generation of OpenAPI json taking a veyr long time to complete (it may never complete).
 
 		/// <inheritdoc />
 		public override Task<BindResult> BindModel(ModelBindingContext bindingContext)
