@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Functional;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System;
 using System.Reflection.Metadata.Ecma335;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Valigator.TestApi.Controllers
@@ -10,15 +12,15 @@ namespace Valigator.TestApi.Controllers
 	public class QueryParameterController : ControllerBase
 	{
 		[HttpGet]
-		public string Get([QueryParametersBinding]QueryParameters queryParameters)
-		=> $"{nameof(QueryParameters)} - {{ Value1: {queryParameters.Value1}, Value2: {queryParameters.Value2} }}";
+		public string Get([QueryParametersBinding]QueryParameters queryParameters, CancellationToken cancellationToken)
+		=> $"{nameof(QueryParameters)} - {{ Value1: {queryParameters.Value1.Value.ValueOrDefault()}, Value2: {queryParameters.Value2.Value.ValueOrDefault()} }}";
 	}
 
 	[ValigatorModel]
 	public class QueryParameters
 	{
-		public Data<int> Value1 { get; set; } = Data.Required<int>();
-		public Data<string> Value2 { get; set; } = Data.Required<string>();
+		public Data<Option<int>> Value1 { get; set; } = Data.Optional<int>();
+		public Data<Option<int>> Value2 { get; set; } = Data.Optional<int>();
 	}
 
 	internal class QueryParametersBindingAttribute : ValidateModelBinderAttribute
@@ -32,15 +34,23 @@ namespace Valigator.TestApi.Controllers
 		{
 			var obj = new QueryParameters();
 
-			obj.Value1.WithValue(Int32.Parse(bindingContext
+			bindingContext
 				.ValueProvider
 				.GetValue(nameof(QueryParameters.Value1))
-				.FirstValue));
+				.TryFirst()
+				.Do(
+					value => obj.Value1 = Int32.TryParse(value, out var result) ? obj.Value1.WithValue(result) : obj.Value1.WithErrors(new[] { ValidationError.CreateMappingError(typeof(string), typeof(int)) }),
+					() => { }
+				);
 
-			obj.Value2.WithValue( bindingContext
+			bindingContext
 				.ValueProvider
 				.GetValue(nameof(QueryParameters.Value2))
-				.FirstValue);
+				.TryFirst()
+				.Do(
+					value => obj.Value2 = Int32.TryParse(value, out var result) ? obj.Value2.WithValue(result) : obj.Value2.WithErrors(new[] { ValidationError.CreateMappingError(typeof(string), typeof(int)) }),
+					() => { }
+				);
 
 			return Task.FromResult(BindResult.Create(_data.WithValue(obj)));
 		}
