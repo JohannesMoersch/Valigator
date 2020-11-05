@@ -45,7 +45,30 @@ namespace Valigator.Tests
 			result = Model.Verify(model);
 
 			var failure = result.AssertFailure();
-			failure[0].Path.ToString().Should().Be($"{nameof(ArrayPathTestModel.IntValues)}.{nameof(SimplePathTestModel.IntValue)}[0]");
+			failure[0].Path.ToString().Should().Be($"{nameof(ArrayPathTestModel.IntValues)}[0].{nameof(SimplePathTestModel.IntValue)}");
+		}
+
+		[ValigatorModel]
+		private class NestedPathTestModel
+		{
+			public Data<ArrayPathTestModel> OuterIntValue { get; set; } = Data.Required<ArrayPathTestModel>();
+		}
+
+		[Fact]
+		public void NestedPath_IsAsExpectedInError()
+		{
+			var simplePath = new SimplePathTestModel();
+			var arrayPath = new ArrayPathTestModel();
+			arrayPath.IntValues = arrayPath.IntValues.WithValue(new[] { simplePath });
+
+			var model = new NestedPathTestModel();
+			model.OuterIntValue = model.OuterIntValue.WithValue(arrayPath);
+
+			var result = Model.Verify(model);
+			result = Model.Verify(model);
+
+			var failure = result.AssertFailure();
+			failure[0].Path.ToString().Should().Be($"{nameof(NestedPathTestModel.OuterIntValue)}.{nameof(ArrayPathTestModel.IntValues)}[0].{nameof(SimplePathTestModel.IntValue)}");
 		}
 	}
 }

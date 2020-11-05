@@ -316,13 +316,12 @@ namespace Valigator.Core
 		private static MethodInfo _addPathsToErrorsMethod;
 
 		private static ValidationError[] AddPropertyToErrors(ValidationError[] errors, string propertyName)
-		{
-			if (errors != null && !String.IsNullOrEmpty(propertyName))
-			{
-				foreach (var error in errors)
-					error.Path.AddProperty(propertyName);
-			}
+			=> (errors == null || String.IsNullOrEmpty(propertyName)) ? errors : AddPropertyToErrorsInternal(errors, propertyName).ToArray();
 
+		private static IEnumerable<ValidationError> AddPropertyToErrorsInternal(ValidationError[] errors, string propertyName)
+		{
+			foreach (var error in errors)
+				error.Path.AddProperty(propertyName);
 			return errors;
 		}
 	}
