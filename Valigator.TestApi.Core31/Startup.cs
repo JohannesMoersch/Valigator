@@ -51,23 +51,10 @@ namespace Valigator.TestApi
 		public void ConfigureServices(IServiceCollection services)
 		{
 			services
-				.AddSingleton<IObjectModelValidator, NullObjectModelValidator>() //TODO: Disable validation
+				.AddSingleton<IObjectModelValidator, NullObjectModelValidator>() //Disables ASP.NET Core validation because it skips over the ValigatorFilter and, as a result, the AddValigator Funcs will not be called.
 				.AddControllers()
-				//.ConfigureApiBehaviorOptions(opt =>
-				//{
-				//	opt.InvalidModelStateResponseFactory = Thing;
-				//})
-				//.AddMvcOptions(opt =>
-				//{
-				//	opt.Filters.Add<UnhandledExceptionWrappingFilter>();
-				//})
 				.SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
 				.AddValigator(errors => new JsonResult(errors) { StatusCode = 400 }, errors => new JsonResult(errors.Select(e => new { Path = e.Path.ToString(), Message = e.Message }).ToArray()) { StatusCode = 400 });
-		}
-
-		private IActionResult Thing(ActionContext arg)
-		{
-			throw new NotImplementedException();
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
