@@ -310,7 +310,8 @@ namespace Valigator.Core
 			=> result.Match(_ => true, _ => false);
 
 		private static ValidationError[] GetResultFailure<TValue>(Result<TValue, ValidationError[]> result)
-			=> result.Match(_ => default, _ => _);
+			=> result
+				.Match(_ => default, errors => errors);
 
 		private static MethodInfo _addPathsToErrorsMethod;
 

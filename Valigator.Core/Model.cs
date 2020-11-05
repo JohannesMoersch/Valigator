@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using Functional;
 using Valigator.Core;
@@ -42,6 +43,7 @@ namespace Valigator
 		}
 
 		private static readonly ConcurrentDictionary<Type, Func<object, Result<Unit, ValidationError[]>>> _verifyModelFunctions = new ConcurrentDictionary<Type, Func<object, Result<Unit, ValidationError[]>>>();
+		private static readonly ConditionalWeakTable<object, object> _objectVerificationResults = new ConditionalWeakTable<object, object>();
 
 		public static Result<Unit, ValidationError[]> Verify<TModel>(TModel model)
 		{
@@ -57,7 +59,12 @@ namespace Valigator
 				_verifyModelFunctions.TryAdd(modelType, function);
 			}
 
-			return function.Invoke(model);
+			if (_objectVerificationResults.TryGetValue(model, out var value))
+				return (Result<Unit, ValidationError[]>)value;
+
+			var result = function.Invoke(model);
+			_objectVerificationResults.Add(model, result);
+			return result;
 		}
 
 		private static Func<object, Result<Unit, ValidationError[]>> CreateVerifyFunction(Type modelType)
