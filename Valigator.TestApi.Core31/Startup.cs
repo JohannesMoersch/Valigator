@@ -3,7 +3,6 @@ using System.Linq;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,30 +12,6 @@ using Valigator.AspNetCore;
 [assembly: ApiController]
 namespace Valigator.TestApi
 {
-	internal class NullObjectModelValidator : IObjectModelValidator
-	{
-		public void Validate(ActionContext actionContext, ValidationStateDictionary validationState, string prefix, object model)
-		{
-
-		}
-	}
-
-	/// <summary>
-	/// Handle unhandled exceptions by wrapping them in a Service Error and setting the status code to 500
-	/// </summary>
-	internal class UnhandledExceptionWrappingFilter : ExceptionFilterAttribute
-	{
-		private readonly IWebHostEnvironment _hostingEnvironment;
-
-		public UnhandledExceptionWrappingFilter(IWebHostEnvironment hostingEnvironment)
-		{
-			_hostingEnvironment = hostingEnvironment;
-		}
-
-		public override void OnException(ExceptionContext context)
-		{
-		}
-	}
 
 	public class Startup
 	{
