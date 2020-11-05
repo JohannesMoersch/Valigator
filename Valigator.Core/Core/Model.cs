@@ -310,18 +310,17 @@ namespace Valigator.Core
 			=> result.Match(_ => true, _ => false);
 
 		private static ValidationError[] GetResultFailure<TValue>(Result<TValue, ValidationError[]> result)
-			=> result
-				.Match(_ => default, errors => errors);
+			=> result.Match(_ => default, _ => _);
 
 		private static MethodInfo _addPathsToErrorsMethod;
 
 		private static ValidationError[] AddPropertyToErrors(ValidationError[] errors, string propertyName)
-			=> (errors == null || String.IsNullOrEmpty(propertyName)) ? errors : AddPropertyToErrorsInternal(errors, propertyName).ToArray();
-
-		private static IEnumerable<ValidationError> AddPropertyToErrorsInternal(ValidationError[] errors, string propertyName)
 		{
-			foreach (var error in errors)
-				error.Path.AddProperty(propertyName);
+			if (errors != null && !String.IsNullOrEmpty(propertyName))
+			{
+				foreach (var error in errors)
+					error.Path.AddProperty(propertyName);
+			}
 			return errors;
 		}
 	}

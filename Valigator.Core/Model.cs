@@ -53,11 +53,7 @@ namespace Valigator
 			var modelType = model?.GetType() ?? throw new ArgumentNullException(nameof(model));
 
 			if (modelType == typeof(TModel))
-			{
-				var resultValue = Model<TModel>.Verify(model);
-				_objectVerificationResults.Add(model, resultValue);
-				return resultValue;
-			}
+				return AddResultToVerificationResultTable(model, Model<TModel>.Verify(model));
 
 			if (!_verifyModelFunctions.TryGetValue(modelType, out var function))
 			{
@@ -66,7 +62,11 @@ namespace Valigator
 				_verifyModelFunctions.TryAdd(modelType, function);
 			}
 
-			var result = function.Invoke(model);
+			return AddResultToVerificationResultTable(model, function.Invoke(model));
+		}
+
+		private static Result<Unit, ValidationError[]> AddResultToVerificationResultTable<TModel>(TModel model, Result<Unit, ValidationError[]> result)
+		{
 			_objectVerificationResults.Add(model, result);
 			return result;
 		}
