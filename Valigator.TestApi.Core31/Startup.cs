@@ -1,7 +1,9 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -10,6 +12,7 @@ using Valigator.AspNetCore;
 [assembly: ApiController]
 namespace Valigator.TestApi
 {
+
 	public class Startup
 	{
 		public Startup(IConfiguration configuration)
@@ -23,6 +26,7 @@ namespace Valigator.TestApi
 		public void ConfigureServices(IServiceCollection services)
 		{
 			services
+				.AddSingleton<IObjectModelValidator, NullObjectModelValidator>() //Disables ASP.NET Core validation because it skips over the ValigatorFilter and, as a result, the AddValigator Funcs will not be called.
 				.AddControllers()
 				.SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
 				.AddValigator(errors => new JsonResult(errors) { StatusCode = 400 }, errors => new JsonResult(errors.Select(e => new { Path = e.Path.ToString(), Message = e.Message }).ToArray()) { StatusCode = 400 });
@@ -36,7 +40,8 @@ namespace Valigator.TestApi
 
 			app.UseStaticFiles();
 			app.UseRouting();
-			app.UseEndpoints(endpoints => {
+			app.UseEndpoints(endpoints =>
+			{
 				endpoints.MapControllers();
 			});
 		}

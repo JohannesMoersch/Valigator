@@ -44,7 +44,7 @@ namespace Valigator.TestApi.Controllers
 	[ValigatorModel]
 	public class BodyClass
 	{
-		public Data<InnerClass[]> IdentifierCollection { get; set; } = Data.Collection<InnerClass>().Required().ItemCount(1);
+		public Data<InnerClass[]> IdentifierCollection { get; set; } = Data.Collection<InnerClass>().Required().ItemCount(1, 1);
 	}
 
 	[ValigatorModel]
