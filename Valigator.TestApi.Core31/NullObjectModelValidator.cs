@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
-[assembly: ApiController]
 namespace Valigator.TestApi
 {
 	internal class NullObjectModelValidator : IObjectModelValidator

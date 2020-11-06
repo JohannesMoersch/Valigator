@@ -43,17 +43,13 @@ namespace Valigator
 		}
 
 		private static readonly ConcurrentDictionary<Type, Func<object, Result<Unit, ValidationError[]>>> _verifyModelFunctions = new ConcurrentDictionary<Type, Func<object, Result<Unit, ValidationError[]>>>();
-		private static readonly ConditionalWeakTable<object, object> _objectVerificationResults = new ConditionalWeakTable<object, object>();
 
 		public static Result<Unit, ValidationError[]> Verify<TModel>(TModel model)
 		{
-			if (_objectVerificationResults.TryGetValue(model, out var value))
-				return (Result<Unit, ValidationError[]>)value;
-
 			var modelType = model?.GetType() ?? throw new ArgumentNullException(nameof(model));
 
 			if (modelType == typeof(TModel))
-				return AddResultToVerificationResultTable(model, Model<TModel>.Verify(model));
+				return Model<TModel>.Verify(model);
 
 			if (!_verifyModelFunctions.TryGetValue(modelType, out var function))
 			{
@@ -62,13 +58,7 @@ namespace Valigator
 				_verifyModelFunctions.TryAdd(modelType, function);
 			}
 
-			return AddResultToVerificationResultTable(model, function.Invoke(model));
-		}
-
-		private static Result<Unit, ValidationError[]> AddResultToVerificationResultTable<TModel>(TModel model, Result<Unit, ValidationError[]> result)
-		{
-			_objectVerificationResults.Add(model, result);
-			return result;
+			return function.Invoke(model);
 		}
 
 		private static Func<object, Result<Unit, ValidationError[]>> CreateVerifyFunction(Type modelType)
