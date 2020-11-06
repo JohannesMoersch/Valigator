@@ -7,6 +7,8 @@ namespace Valigator.Core
 {
 	public interface IAcceptValue<TDataValue>
 	{
+		Type ValueType { get; }
+
 		Data<TDataValue> WithNull(Data<TDataValue> data);
 	}
 

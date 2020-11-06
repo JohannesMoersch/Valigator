@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using FluentAssertions;
 using Valigator.Core.ValueValidators;
+using Valigator.Tests.Common;
 using Xunit;
 
 namespace Valigator.Tests.ValidatorTests
@@ -24,6 +25,13 @@ namespace Valigator.Tests.ValidatorTests
 		[Fact]
 		public void MaximumBelowMinimum()
 			=> Assert.Throws<ArgumentException>(() => new PrecisionValidator(10, 5));
+
+		[Fact]
+		public void NegativeNumberWithTwoDecimalPlaces()
+			=> new PrecisionValidator(2, 2)
+				.IsValid(-0.01m)
+				.Should()
+				.BeTrue();
 
 		[Fact]
 		public void MinimumOnlyBelowMinimum()

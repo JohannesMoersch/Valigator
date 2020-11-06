@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+		<TargetFrameworks>netcoreapp3.0;netstandard2.0</TargetFrameworks>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<Description>This package adds support for valigator to ASP.NET Core with Newtonsoft.Json.</Description>
+		<PackageTags>validation</PackageTags>
+  </PropertyGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.0'">
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.0.0" />
+	</ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Valigator.AspNetCore\Valigator.AspNetCore.csproj" />
+    <ProjectReference Include="..\Valigator.Newtonsoft.Json\Valigator.Newtonsoft.Json.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -13,6 +13,8 @@ namespace Valigator.Core.DataContainers
 
 		public DataDescriptor DataDescriptor => _dataDescriptorFactory.Invoke();
 
+		public Type ValueType => typeof(TValue);
+
 		public ErrorDataContainer(Func<DataDescriptor> dataDescriptorFactory, ValidationError[] validationErrors)
 		{
 			_dataDescriptorFactory = dataDescriptorFactory;

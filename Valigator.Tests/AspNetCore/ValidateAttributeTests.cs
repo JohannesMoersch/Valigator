@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using FluentAssertions;
 using Valigator.AspNetCore;
+using Valigator.Tests.Common;
 using Xunit;
 
 namespace Valigator.Tests.AspNetCore

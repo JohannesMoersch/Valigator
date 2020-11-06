@@ -189,7 +189,7 @@ namespace Valigator.Core
 
 			var addPathsToErrorsMethod = _addPathsToErrorsMethod ?? (_addPathsToErrorsMethod = typeof(Model<object>).GetMethod(nameof(AddPropertyToErrors), BindingFlags.NonPublic | BindingFlags.Static));
 
-			var getFailure = Expression.Call(addPathsToErrorsMethod, Expression.Call(getFailureMethod, result), Expression.Constant(valueName, typeof(string)));
+			var getFailure = Expression.Call(addPathsToErrorsMethod, Expression.Call(getFailureMethod, result), Expression.Constant(valueName, typeof(string)), Expression.Constant(false, typeof(bool)));
 
 			var onSuccess = Expression.Constant(null, typeof(ValidationError[]));
 
@@ -250,6 +250,10 @@ namespace Valigator.Core
 
 			var isInvalid = Expression.Equal(Expression.Property(dataProperty, nameof(Data<object>.State)), Expression.Constant(DataState.Invalid, typeof(DataState)));
 
+			var isVerified = Expression.Variable(typeof(bool), "isVerified");
+
+			var assignIsVerified = Expression.Assign(isVerified, Expression.Or(isValid, isInvalid));
+
 			var verifiedData = Expression.Assign(dataProperty, Expression.Call(dataProperty, methods.verify, modelExpression));
 
 			var data = Expression.Condition(Expression.OrElse(isValid, isInvalid), dataProperty, verifiedData);
@@ -262,13 +266,13 @@ namespace Valigator.Core
 
 			var addPathsToErrorsMethod = _addPathsToErrorsMethod ?? (_addPathsToErrorsMethod = typeof(Model<object>).GetMethod(nameof(AddPropertyToErrors), BindingFlags.NonPublic | BindingFlags.Static));
 
-			var getFailure = Expression.Call(addPathsToErrorsMethod, Expression.Call(methods.getFailure, result), Expression.Constant(property.Name, typeof(string)));
+			var getFailure = Expression.Call(addPathsToErrorsMethod, Expression.Call(methods.getFailure, result), Expression.Constant(property.Name, typeof(string)), isVerified);
 
 			var onSuccess = Expression.Constant(null, typeof(ValidationError[]));
 
 			var condition = Expression.Condition(isSuccess, onSuccess, getFailure, typeof(ValidationError[]));
 
-			return Expression.Block(new[] { result }, assignedResult, condition);
+			return Expression.Block(new[] { isVerified, result }, assignIsVerified, assignedResult, condition);
 		}
 
 		private static readonly ConcurrentDictionary<Type, (MethodInfo verify, MethodInfo tryGetValue, MethodInfo isSuccess, MethodInfo getFailure)> _getVerifySupportMethods = new ConcurrentDictionary<Type, (MethodInfo verify, MethodInfo tryGetValue, MethodInfo isSuccess, MethodInfo getFailure)>();
@@ -314,9 +318,9 @@ namespace Valigator.Core
 
 		private static MethodInfo _addPathsToErrorsMethod;
 
-		private static ValidationError[] AddPropertyToErrors(ValidationError[] errors, string propertyName)
+		private static ValidationError[] AddPropertyToErrors(ValidationError[] errors, string propertyName, bool skip)
 		{
-			if (errors != null && !String.IsNullOrEmpty(propertyName))
+			if (!skip && errors != null && !String.IsNullOrEmpty(propertyName))
 			{
 				foreach (var error in errors)
 					error.Path.AddProperty(propertyName);

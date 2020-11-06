@@ -9,6 +9,7 @@ using Valigator.Core.DataSources;
 using Valigator.Core.StateValidators;
 using Valigator.Core.ValueDescriptors;
 using Valigator.Core.ValueValidators;
+using Valigator.Tests.Common;
 using Xunit;
 
 namespace Valigator.Tests

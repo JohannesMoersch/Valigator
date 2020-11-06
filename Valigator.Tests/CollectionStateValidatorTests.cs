@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using FluentAssertions;
+using Valigator.Tests.Common;
 using Xunit;
 
 namespace Valigator.Tests
