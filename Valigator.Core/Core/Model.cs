@@ -2,12 +2,15 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.Contracts;
 using System.Dynamic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using Functional;
+using Microsoft.CSharp.RuntimeBinder;
 
 namespace Valigator.Core
 {
@@ -17,7 +20,6 @@ namespace Valigator.Core
 		public Type Type { get; }
 		public Type ComponentType { get; }
 		public Attribute[] CustomAttributes { get; }
-		public Option<Type> BaseType { get; }
 
 		public PropertyOrFieldData(string name, Type type, Type componentType, IEnumerable<Attribute> customAttributes) : this(name, type, componentType, customAttributes.ToArray()) { }
 
@@ -30,9 +32,13 @@ namespace Valigator.Core
 		}
 	}
 
-	public abstract class ValigatorAnonymousObjectBase : DynamicObject, ICustomTypeDescriptor
+	public abstract class ValigatorAnonymousObjectBase : DynamicObject
 	{
-		protected readonly object Inner;
+		
+	}
+	public abstract class ValigatorAnonymousObjectBase<T> : ValigatorAnonymousObjectBase, ICustomTypeDescriptor
+	{
+		public object Inner { get; }
 		private readonly InnerCustomTypeDescriptor _innerTypeDescriptor;
 
 		public ValigatorAnonymousObjectBase(object inner)
@@ -188,7 +194,7 @@ namespace Valigator.Core
 		{
 			var modelParameter = Expression.Parameter(typeof(TModel), "model");
 
-			var modelExpression = CreateModelExpression(modelParameter, model);
+			var modelExpression = Expression.Convert(modelParameter, typeof(TModel));
 
 			var properties = GetAllProperties(model);
 			var fields = GetAllFields(typeof(TModel));
@@ -198,7 +204,7 @@ namespace Valigator.Core
 			var validationErrors = Enumerable
 				.Empty<Expression>()
 				.Concat(dataProperties
-					.Select(property => VerifyDataProperty(modelExpression, property))
+					.Select(property => VerifyDataProperty(modelExpression, property, model))
 				)
 				.Concat(validateContentsMembers
 					.Select(propertyOrField => VerifyPropertyOrFieldContents(modelExpression, propertyOrField))
@@ -209,12 +215,16 @@ namespace Valigator.Core
 			return Expression.Lambda<Func<TModel, ValidationError[][]>>(arrayInitializer, modelParameter).Compile();
 		}
 
-		private static Expression CreateModelExpression(ParameterExpression modelParameter, TModel model)
+		private static Expression CreateExpression(Expression modelParameter, PropertyOrFieldData data, TModel model)
 		{
-			if (typeof(TModel) != typeof(ValigatorAnonymousObjectBase))
-				return Expression.Convert(modelParameter, typeof(TModel));
+			if (!(model is ValigatorAnonymousObjectBase))
+				return Expression.Property(modelParameter, data.Name);
 
-			return (Expression)modelParameter;
+			var innerType = model.GetType().GenericTypeArguments.First();
+			var innerProperty = Expression.Property(modelParameter, model.GetType().GetProperty(nameof(ValigatorAnonymousObjectBase<object>.Inner), BindingFlags.Public | BindingFlags.Instance));
+			var castedInner = Expression.Convert(innerProperty, innerType);
+			var property = Expression.Property(castedInner, data.Name);
+			return property;
 		}
 
 		private static PropertyOrFieldData[] GetAllProperties(TModel model)
@@ -352,11 +362,11 @@ namespace Valigator.Core
 		private static bool IsExplicitInterfaceImplementation(PropertyOrFieldData prop)
 			=> prop.Name.Contains(".");
 
-		private static Expression VerifyDataProperty(Expression modelExpression, PropertyOrFieldData property)
+		private static Expression VerifyDataProperty(Expression modelExpression, PropertyOrFieldData property, TModel model)
 		{
 			var methods = GetVerifySupportMethods(property.Type);
 
-			var dataProperty = Expression.Property(modelExpression, property.Name);
+			var dataProperty = CreateExpression(modelExpression, property, model);// Expression.Property(modelExpression, property.Name);
 
 			var isValid = Expression.Equal(Expression.Property(dataProperty, nameof(Data<object>.State)), Expression.Constant(DataState.Valid, typeof(DataState)));
 

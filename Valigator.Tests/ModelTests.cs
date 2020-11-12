@@ -55,7 +55,7 @@ namespace Valigator.Tests
 			var stuff = new Stuff();
 			stuff.A = stuff.A.WithValue(100);
 
-			var anonymousObject = new ValigatorAnonymousObject(new { AnonymousInner = stuff.A, Other = 1 });
+			var anonymousObject = ValigatorAnonymousObject.Create(new { AnonymousInner = stuff.A, Other = 1 });
 
 			var result = Model.Verify(anonymousObject);
 			var failure = result.AssertFailure();

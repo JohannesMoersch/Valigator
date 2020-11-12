@@ -10,7 +10,7 @@
 
   <ItemGroup>
     <PackageReference Include="Functional.Primitives" Version="1.18.0" />
-    <PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.1" />
     <PackageReference Include="System.Text.Json" Version="4.6.0" />
   </ItemGroup>
