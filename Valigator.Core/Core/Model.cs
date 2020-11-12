@@ -149,7 +149,7 @@ namespace Valigator.Core
 				.Where(p => p.CustomAttributes.OfType<ValidateContentsAttribute>().FirstOrDefault() != null)
 				.ToArray();
 
-			if (model is ValigatorModelBase)
+			if (!(model is ValigatorModelBase))
 			{
 				var noGetters = dataProperties
 					.Concat(validateContentsProperties)

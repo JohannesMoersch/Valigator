@@ -9,6 +9,7 @@ using Valigator.Core;
 using Valigator.Tests.Common;
 using Xunit;
 using System.Reflection;
+using FluentAssertions;
 
 namespace Valigator.Tests
 {
@@ -59,6 +60,9 @@ namespace Valigator.Tests
 
 			var result = Model.Verify(anonymousObject);
 			var failure = result.AssertFailure();
+			failure.Should().HaveCount(1);
+			failure.First().ValueDescriptor.Should().BeOfType<Valigator.Core.ValueDescriptors.RangeDescriptor>();
+			(failure.First().ValueDescriptor as Valigator.Core.ValueDescriptors.RangeDescriptor).LessThanValue.AssertSome().Should().Be(0);
 		}
 	}
 }
