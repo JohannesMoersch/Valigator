@@ -39,6 +39,9 @@ namespace Valigator.Core
 		public override string GetClassName()
 			=> $"{nameof(ValigatorModelBase)}_{Inner.GetType().Name}";
 
+		public object GetInner()
+			=> Inner;
+
 		private class ExpandoPropertyDescriptor : System.ComponentModel.PropertyDescriptor
 		{
 			private readonly IDictionary<string, object> _dictionary;
