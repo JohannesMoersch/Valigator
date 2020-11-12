@@ -30,11 +30,6 @@ namespace Valigator.Core
 				_dictionary.TryAdd(property.Name, property.GetValue(Inner));
 		}
 
-		public override AttributeCollection GetAttributes()
-		{
-			return base.GetAttributes();
-		}
-
 		public override PropertyDescriptorCollection GetProperties()
 			=> new PropertyDescriptorCollection(base.GetProperties().OfType<System.ComponentModel.PropertyDescriptor>().Concat(GetExpandoProperties()).ToArray());
 

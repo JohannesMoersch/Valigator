@@ -145,7 +145,7 @@ namespace Valigator.Core
 
 			var validateContentsProperties = properties
 				.Where(p => !IsValigatorDataType(p.PropertyType))
-				.Where(p => p.CustomAttributes.OfType<ValidateContentsAttribute>().FirstOrDefault() != null)
+				.Where(p => p.GetCustomAttribute<ValidateContentsAttribute>() != null)
 				.ToArray();
 
 			if (!(model is ValigatorModelBase))
@@ -247,7 +247,7 @@ namespace Valigator.Core
 			var currentType = type;
 			while (currentType != null)
 			{
-				var explicitProperties = GetProperties(currentType, BindingFlags.NonPublic | BindingFlags.Instance)
+				var explicitProperties = currentType.GetProperties(BindingFlags.NonPublic | BindingFlags.Instance)
 					.Where(p => IsExplicitInterfaceImplementation(p));
 
 				foreach (var property in explicitProperties)
