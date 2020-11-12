@@ -197,7 +197,7 @@ namespace Valigator.Core
 			else
 				throw new ArgumentException("Value was not of type PropertyInfo or FieldInfo.", nameof(propertyOrField));
 
-			var valueName = propertyOrField.CustomAttributes.OfType<ValidateContentsAttribute>().First().MemberName;
+			var valueName = propertyOrField.GetCustomAttribute<ValidateContentsAttribute>().MemberName;
 
 			var modelVerifyGeneric = _modelVerify ?? (_modelVerify = typeof(Model).GetMethod(nameof(Model.Verify), BindingFlags.Public | BindingFlags.Static));
 
@@ -226,7 +226,7 @@ namespace Valigator.Core
 		private static IEnumerable<PropertyInfo> GetBaseProperties(TModel model)
 		{
 			var currentLevelProperties = GetProperties(model, BindingFlags.NonPublic | BindingFlags.Instance)
-				.Concat(TypeDescriptor.GetProperties(model).OfType<System.ComponentModel.PropertyDescriptor>().Select(property => GetProperty(model, property.Name)))
+				.Concat(model is ValigatorModelBase ? TypeDescriptor.GetProperties(model).OfType<System.ComponentModel.PropertyDescriptor>().Select(property => GetProperty(model, property.Name)) : GetProperties(model, BindingFlags.Public | BindingFlags.Instance)).ToArray()
 				.Where(p => !IsExplicitInterfaceImplementation(p))
 				.ToArray();
 
@@ -263,10 +263,14 @@ namespace Valigator.Core
 				: obj.GetType().GetProperty(name, bindingFlags);
 
 		private static PropertyInfo GetProperty(object obj, string name)
-		 => GetProperty(obj, name, BindingFlags.Default);
+		 => obj is ValigatorModelBase valigatorModelBase
+				? GetProperty(valigatorModelBase.GetInner(), name)
+				: obj.GetType().GetProperty(name);
 
 		private static PropertyInfo[] GetProperties(object obj)
-			=> GetProperties(obj, BindingFlags.Default);
+			=> obj is ValigatorModelBase valigatorModel
+				? GetProperties(valigatorModel.GetInner())
+				: obj.GetType().GetProperties().ToArray();
 
 		private static PropertyInfo[] GetProperties(object obj, BindingFlags bindingFlags)
 			=> obj is ValigatorModelBase valigatorModel
