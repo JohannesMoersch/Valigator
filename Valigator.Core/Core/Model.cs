@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Dynamic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -9,6 +11,106 @@ using Functional;
 
 namespace Valigator.Core
 {
+	internal struct PropertyOrFieldData
+	{
+		public string Name { get; }
+		public Type Type { get; }
+		public Type ComponentType { get; }
+		public Attribute[] CustomAttributes { get; }
+		public Option<Type> BaseType { get; }
+
+		public PropertyOrFieldData(string name, Type type, Type componentType, IEnumerable<Attribute> customAttributes) : this(name, type, componentType, customAttributes.ToArray()) { }
+
+		public PropertyOrFieldData(string name, Type type, Type componentType, Attribute[] customAttributes) : this()
+		{
+			Name = name;
+			Type = type;
+			ComponentType = componentType;
+			CustomAttributes = customAttributes;
+		}
+	}
+
+	public abstract class ValigatorAnonymousObjectBase : DynamicObject, ICustomTypeDescriptor
+	{
+		protected readonly object Inner;
+		private readonly InnerCustomTypeDescriptor _innerTypeDescriptor;
+
+		public ValigatorAnonymousObjectBase(object inner)
+		{
+			Inner = inner;
+			_innerTypeDescriptor = new InnerCustomTypeDescriptor(inner);
+		}
+
+		public override bool TryGetMember(GetMemberBinder binder, out object result)
+		{
+			return base.TryGetMember(binder, out result);
+		}
+
+		public virtual AttributeCollection GetAttributes() => _innerTypeDescriptor.GetAttributes();
+		public virtual string GetClassName() => _innerTypeDescriptor.GetClassName();
+		public string GetComponentName() => _innerTypeDescriptor.GetComponentName();
+		public TypeConverter GetConverter() => _innerTypeDescriptor.GetConverter();
+		public EventDescriptor GetDefaultEvent() => _innerTypeDescriptor.GetDefaultEvent();
+		public System.ComponentModel.PropertyDescriptor GetDefaultProperty() => _innerTypeDescriptor.GetDefaultProperty();
+		public object GetEditor(Type editorBaseType) => _innerTypeDescriptor.GetEditor(editorBaseType);
+		public EventDescriptorCollection GetEvents() => _innerTypeDescriptor.GetEvents();
+		public EventDescriptorCollection GetEvents(Attribute[] attributes) => _innerTypeDescriptor.GetEvents(attributes);
+		public PropertyDescriptorCollection GetProperties() => _innerTypeDescriptor.GetProperties();
+		public PropertyDescriptorCollection GetProperties(Attribute[] attributes) => _innerTypeDescriptor.GetProperties(attributes);
+		public object GetPropertyOwner(System.ComponentModel.PropertyDescriptor pd) => _innerTypeDescriptor.GetPropertyOwner(pd);
+
+		private class InnerCustomTypeDescriptor : CustomTypeDescriptor
+		{
+			protected readonly object _inner;
+			protected readonly IDictionary<string, object> _dictionary = new Dictionary<string, object>();
+
+			public InnerCustomTypeDescriptor(object inner)
+			{
+				_inner = inner;
+				SetupDictionary();
+			}
+
+			private void SetupDictionary()
+			{
+				foreach (var property in _inner.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance))
+					_dictionary.Add(property.Name, property.GetValue(_inner));
+			}
+
+			public override PropertyDescriptorCollection GetProperties()
+				=> new PropertyDescriptorCollection(base.GetProperties().OfType<System.ComponentModel.PropertyDescriptor>().Concat(GetExpandoProperties()).ToArray());
+
+			private IEnumerable<System.ComponentModel.PropertyDescriptor> GetExpandoProperties()
+				=> _dictionary.Select(property => new ExpandoPropertyDescriptor(_dictionary, property.Key));
+
+			public override string GetClassName()
+				=> $"{nameof(ValigatorAnonymousObjectBase)}_{_inner.GetType().Name}";
+		}
+
+		private class ExpandoPropertyDescriptor : System.ComponentModel.PropertyDescriptor
+		{
+			private readonly IDictionary<string, object> _dictionary;
+			private readonly string _name;
+
+			public ExpandoPropertyDescriptor(IDictionary<string, object> expando, string name)
+				: base(name, null)
+			{
+				_dictionary = expando;
+				_name = name;
+			}
+
+			public override Type PropertyType => _dictionary[_name].GetType();
+			public override void SetValue(object component, object value) => _dictionary[_name] = value;
+			public override object GetValue(object component) => _dictionary[_name];
+			public override bool IsReadOnly { get; } = false;
+			public override Type ComponentType { get; } = null;
+			public override bool CanResetValue(object component) => false;
+			public override void ResetValue(object component) { }
+			public override bool ShouldSerializeValue(object component) => false;
+			public override string Category { get; } = String.Empty;
+			public override string Description { get; } = String.Empty;
+		}
+	}
+
 	internal static class Model<TModel>
 	{
 		private static object _getPropertyDescriptorsLockObj = new object();
@@ -69,7 +171,7 @@ namespace Valigator.Core
 				lock (_verifyModelLockObj)
 				{
 					if (_verifyMethod == null)
-						_verifyMethod = CreateVerifyFunction();
+						_verifyMethod = CreateVerifyFunction(model);
 				}
 			}
 
@@ -82,13 +184,13 @@ namespace Valigator.Core
 			return Result.Create(validationErrors.Length == 0, Unit.Value, validationErrors);
 		}
 
-		private static Func<TModel, ValidationError[][]> CreateVerifyFunction()
+		private static Func<TModel, ValidationError[][]> CreateVerifyFunction(TModel model)
 		{
 			var modelParameter = Expression.Parameter(typeof(TModel), "model");
 
-			var modelExpression = Expression.Convert(modelParameter, typeof(TModel));
+			var modelExpression = CreateModelExpression(modelParameter, model);
 
-			var properties = GetAllProperties(typeof(TModel));
+			var properties = GetAllProperties(model);
 			var fields = GetAllFields(typeof(TModel));
 
 			var (dataProperties, validateContentsMembers) = FilterToDataPropertiesAndValidateContentsMembers(properties, fields);
@@ -107,43 +209,52 @@ namespace Valigator.Core
 			return Expression.Lambda<Func<TModel, ValidationError[][]>>(arrayInitializer, modelParameter).Compile();
 		}
 
-		private static PropertyInfo[] GetAllProperties(Type type)
-			=> GetBaseProperties(type)
-				.Concat(GetExplicitProperties(type))
+		private static Expression CreateModelExpression(ParameterExpression modelParameter, TModel model)
+		{
+			if (typeof(TModel) != typeof(ValigatorAnonymousObjectBase))
+				return Expression.Convert(modelParameter, typeof(TModel));
+
+			return (Expression)modelParameter;
+		}
+
+		private static PropertyOrFieldData[] GetAllProperties(TModel model)
+			=> GetBaseProperties(model)
+				.Concat(GetExplicitProperties(typeof(TModel)))
 				.ToArray();
 
 		private static FieldInfo[] GetAllFields(Type type)
 			=> type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 
-		private static (PropertyInfo[] dataProperties, MemberInfo[] validateContentsMembers) FilterToDataPropertiesAndValidateContentsMembers(PropertyInfo[] properties, FieldInfo[] fields)
+		private static (PropertyOrFieldData[] dataProperties, PropertyOrFieldData[] validateContentsMembers) FilterToDataPropertiesAndValidateContentsMembers(PropertyOrFieldData[] properties, FieldInfo[] fields)
 		{
 			var dataProperties = properties
-				.Where(p => IsValigatorDataType(p.PropertyType))
+				.Where(p => IsValigatorDataType(p.Type))
 				.ToArray();
 
 			var validateContentsProperties = properties
-				.Where(p => !IsValigatorDataType(p.PropertyType))
-				.Where(p => p.GetCustomAttribute<ValidateContentsAttribute>() != null)
+				.Where(p => !IsValigatorDataType(p.Type))
+				.Where(p => p.CustomAttributes.OfType<ValidateContentsAttribute>().FirstOrDefault() != null)
 				.ToArray();
 
-			var noGetters = dataProperties
-				.Concat(validateContentsProperties)
-				.Where(x => x.GetMethod == null)
-				.ToArray();
+			//var noGetters = dataProperties
+			//	.Concat(validateContentsProperties)
+			//	.Where(x => x.GetMethod == null)
+			//	.ToArray();
 
-			var noSetters = dataProperties
-				.Where(x => x.SetMethod == null)
-				.ToArray();
+			//var noSetters = dataProperties
+			//	.Where(x => x.SetMethod == null)
+			//	.ToArray();
 
-			if (noGetters.Any() || noSetters.Any())
-				throw new MissingAccessorsException(noGetters, noSetters);
+			//if (noGetters.Any() || noSetters.Any())
+			//	throw new MissingAccessorsException(noGetters, noSetters);
 
 			var validateContentsFields = fields
 				.Where(p => p.GetCustomAttribute<ValidateContentsAttribute>() != null)
+				.Select(member => new PropertyOrFieldData(member.Name, member.FieldType, member.DeclaringType, member.GetCustomAttributes()))
 				.ToArray();
 
 			var validateContentsMembers = Enumerable
-				.Empty<MemberInfo>()
+				.Empty<PropertyOrFieldData>()
 				.Concat(validateContentsProperties)
 				.Concat(validateContentsFields)
 				.ToArray();
@@ -155,24 +266,12 @@ namespace Valigator.Core
 		private static MethodInfo _isSuccess;
 		private static MethodInfo _getFailure;
 
-		private static Expression VerifyPropertyOrFieldContents(Expression modelExpression, MemberInfo propertyOrField)
+		private static Expression VerifyPropertyOrFieldContents(Expression modelExpression, PropertyOrFieldData propertyOrField)
 		{
-			Expression valueAccessor;
-			Type valueType;
-			if (propertyOrField is PropertyInfo property)
-			{
-				valueAccessor = Expression.Property(modelExpression, property);
-				valueType = property.PropertyType;
-			}
-			else if (propertyOrField is FieldInfo field)
-			{
-				valueAccessor = Expression.Field(modelExpression, field);
-				valueType = field.FieldType;
-			}
-			else
-				throw new ArgumentException("Value was not of type PropertyInfo or FieldInfo.", nameof(propertyOrField));
+			var valueAccessor = Expression.Property(modelExpression, propertyOrField.Name);
+			var valueType = propertyOrField.Type;
 
-			var valueName = propertyOrField.GetCustomAttribute<ValidateContentsAttribute>().MemberName;
+			var valueName = propertyOrField.CustomAttributes.OfType<ValidateContentsAttribute>().First().MemberName;
 
 			var modelVerifyGeneric = _modelVerify ?? (_modelVerify = typeof(Model).GetMethod(nameof(Model.Verify), BindingFlags.Public | BindingFlags.Static));
 
@@ -198,53 +297,66 @@ namespace Valigator.Core
 			return Expression.Block(new[] { result }, assignedResult, condition);
 		}
 
-		private static IEnumerable<PropertyInfo> GetBaseProperties(Type type)
+		private static IEnumerable<PropertyOrFieldData> GetBaseProperties(TModel model)
 		{
-			var currentLevelProperties = type
-				.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
+			var currentLevelProperties = GetProperties(typeof(TModel), BindingFlags.NonPublic | BindingFlags.Instance)
+				.Concat(TypeDescriptor.GetProperties(model).OfType<System.ComponentModel.PropertyDescriptor>().Select(property => new PropertyOrFieldData(property.Name, property.PropertyType, property.ComponentType, property.PropertyType.GetCustomAttributes().ToArray())))
 				.Where(p => !IsExplicitInterfaceImplementation(p));
 
 			foreach (var currentProperty in currentLevelProperties)
 			{
-				var propertyToUse = currentProperty;
-				var method = currentProperty.GetGetMethod(true) ?? currentProperty.GetSetMethod(true);
+				if (currentProperty.ComponentType != null)
+				{
+					var method = currentProperty.ComponentType.GetProperty(currentProperty.Name).GetGetMethod() ?? currentProperty.ComponentType.GetProperty(currentProperty.Name).GetSetMethod();
 
-				var baseType = method.GetBaseDefinition().DeclaringType;
-				if (baseType != type)
-					propertyToUse = baseType.GetProperty(currentProperty.Name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-
-				yield return propertyToUse;
+					var baseType = method.GetBaseDefinition().DeclaringType;
+					if (baseType != typeof(TModel))
+						yield return GetProperty(baseType, currentProperty.Name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+				}
+				else
+					yield return currentProperty;
 			}
 		}
 
-		private static IEnumerable<PropertyInfo> GetExplicitProperties(Type type)
+		private static IEnumerable<PropertyOrFieldData> GetExplicitProperties(Type type)
 		{
 			var currentType = type;
 			while (currentType != null)
 			{
-				var explicitProperties = currentType
-					.GetProperties(BindingFlags.NonPublic | BindingFlags.Instance)
+				var explicitProperties = GetProperties(currentType, BindingFlags.NonPublic | BindingFlags.Instance)
 					.Where(p => IsExplicitInterfaceImplementation(p));
 
-				foreach (var property in currentType.GetProperties(BindingFlags.NonPublic | BindingFlags.Instance).Where(p => IsExplicitInterfaceImplementation(p)))
+				foreach (var property in explicitProperties)
 					yield return property;
 
 				currentType = currentType.BaseType;
 			}
 		}
 
+		private static PropertyOrFieldData GetProperty(Type type, string name, BindingFlags bindingFlags)
+		{
+			var property = type.GetProperty(name, bindingFlags);
+			return new PropertyOrFieldData(property.Name, property.PropertyType, property.DeclaringType, property.GetCustomAttributes());
+		}
+
+		private static PropertyOrFieldData[] GetProperties(Type type, BindingFlags bindingFlags)
+			=> type
+				.GetProperties(bindingFlags)
+				.Select(property => new PropertyOrFieldData(property.Name, property.PropertyType, property.DeclaringType, property.GetCustomAttributes()))
+				.ToArray();
+
 		private static bool IsValigatorDataType(Type type)
 			=> type.IsConstructedGenericType && type.GetGenericTypeDefinition() == typeof(Data<>);
 
 
-		private static bool IsExplicitInterfaceImplementation(PropertyInfo prop)
+		private static bool IsExplicitInterfaceImplementation(PropertyOrFieldData prop)
 			=> prop.Name.Contains(".");
 
-		private static Expression VerifyDataProperty(Expression modelExpression, PropertyInfo property)
+		private static Expression VerifyDataProperty(Expression modelExpression, PropertyOrFieldData property)
 		{
-			var methods = GetVerifySupportMethods(property.PropertyType);
+			var methods = GetVerifySupportMethods(property.Type);
 
-			var dataProperty = Expression.Property(modelExpression, property);
+			var dataProperty = Expression.Property(modelExpression, property.Name);
 
 			var isValid = Expression.Equal(Expression.Property(dataProperty, nameof(Data<object>.State)), Expression.Constant(DataState.Valid, typeof(DataState)));
 
@@ -258,7 +370,7 @@ namespace Valigator.Core
 
 			var data = Expression.Condition(Expression.OrElse(isValid, isInvalid), dataProperty, verifiedData);
 
-			var result = Expression.Variable(typeof(Result<,>).MakeGenericType(property.PropertyType.GetGenericArguments()[0], typeof(ValidationError[])), "result");
+			var result = Expression.Variable(typeof(Result<,>).MakeGenericType(property.Type.GetGenericArguments()[0], typeof(ValidationError[])), "result");
 
 			var assignedResult = Expression.Assign(result, Expression.Call(data, methods.tryGetValue));
 

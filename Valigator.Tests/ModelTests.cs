@@ -1,9 +1,14 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Dynamic;
 using System.Text;
 using Functional;
 using Valigator.Core;
+using Valigator.Tests.Common;
 using Xunit;
+using System.Reflection;
 
 namespace Valigator.Tests
 {
@@ -42,6 +47,18 @@ namespace Valigator.Tests
 			model.Four = model.Four.WithMappedValue(-5);
 
 			var result = Model.Verify(model);
+		}
+
+		[Fact]
+		public void VerifyAnonymousObject()
+		{
+			var stuff = new Stuff();
+			stuff.A = stuff.A.WithValue(100);
+
+			var anonymousObject = new ValigatorAnonymousObject(new { AnonymousInner = stuff.A, Other = 1 });
+
+			var result = Model.Verify(anonymousObject);
+			var failure = result.AssertFailure();
 		}
 	}
 }
