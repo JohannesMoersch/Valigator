@@ -7,23 +7,22 @@ using System.Reflection;
 
 namespace Valigator.Core
 {
-	public abstract class ValigatorAnonymousObjectBase : CustomTypeDescriptor, ICustomTypeDescriptor
+	public abstract class ValigatorModelBase : CustomTypeDescriptor, ICustomTypeDescriptor
 	{
 		private readonly ConcurrentDictionary<string, object> _dictionary = new ConcurrentDictionary<string, object>();
 		protected readonly object Inner;
 
-		public ValigatorAnonymousObjectBase(object inner)
+		public ValigatorModelBase(object inner)
 		{
 			Inner = inner;
 			SetupDictionary();
 		}
 
-		public object GetMember(string name)
-			=> _dictionary.TryGetValue(name, out var value) ? value : null;
+		public T GetMember<T>(string name)
+			=> (T)(_dictionary.TryGetValue(name, out var value) ? value : null);
 
-		public object SetMember(string name, object value)
-			=> _dictionary.AddOrUpdate(name, value, (_, __) => value);
-
+		public T SetMember<T>(string name, T value)
+			=> (T)_dictionary.AddOrUpdate(name, value, (_, __) => value);
 
 		private void SetupDictionary()
 		{
@@ -38,7 +37,7 @@ namespace Valigator.Core
 			=> _dictionary.Select(property => new ExpandoPropertyDescriptor(_dictionary, property.Key));
 
 		public override string GetClassName()
-			=> $"{nameof(ValigatorAnonymousObjectBase)}_{Inner.GetType().Name}";
+			=> $"{nameof(ValigatorModelBase)}_{Inner.GetType().Name}";
 
 		private class ExpandoPropertyDescriptor : System.ComponentModel.PropertyDescriptor
 		{

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace Valigator.Core
 {
@@ -20,5 +21,8 @@ namespace Valigator.Core
 			ComponentType = componentType;
 			CustomAttributes = customAttributes;
 		}
+
+		public PropertyInfo GetPropertyInfo()
+			=> ComponentType?.GetProperty(Name);
 	}
 }
