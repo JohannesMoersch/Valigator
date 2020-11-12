@@ -15,14 +15,7 @@ namespace Valigator
 	}
 
 	[ValigatorModel]
-	public static class ValigatorAnonymousObject
-	{
-		public static ValigatorAnonymousObject<T> Create<T>(T inner)
-			=> new ValigatorAnonymousObject<T>(inner);
-	}
-
-	[ValigatorModel]
-	public class ValigatorAnonymousObject<T> : ValigatorAnonymousObjectBase<T>
+	public class ValigatorAnonymousObject : ValigatorAnonymousObjectBase
 	{
 		internal ValigatorAnonymousObject(object inner) : base(inner)
 		{
@@ -33,5 +26,8 @@ namespace Valigator
 
 		public override string GetClassName()
 			=> $"{nameof(ValigatorAnonymousObject)}_{Inner.GetType().Name}";
+
+		public static ValigatorAnonymousObject Create(object inner)
+			=> new ValigatorAnonymousObject(inner);
 	}
 }

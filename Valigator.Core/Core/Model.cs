@@ -32,65 +32,38 @@ namespace Valigator.Core
 		}
 	}
 
-	public abstract class ValigatorAnonymousObjectBase : DynamicObject
+	public abstract class ValigatorAnonymousObjectBase : CustomTypeDescriptor, ICustomTypeDescriptor
 	{
-		
-	}
-	public abstract class ValigatorAnonymousObjectBase<T> : ValigatorAnonymousObjectBase, ICustomTypeDescriptor
-	{
-		public object Inner { get; }
-		private readonly InnerCustomTypeDescriptor _innerTypeDescriptor;
+		private readonly ConcurrentDictionary<string, object> _dictionary = new ConcurrentDictionary<string, object>();
+		protected readonly object Inner;
 
 		public ValigatorAnonymousObjectBase(object inner)
 		{
 			Inner = inner;
-			_innerTypeDescriptor = new InnerCustomTypeDescriptor(inner);
+			SetupDictionary();
 		}
 
-		public override bool TryGetMember(GetMemberBinder binder, out object result)
+		public object GetMember(string name)
+			=> _dictionary.TryGetValue(name, out var value) ? value : null;
+
+		public object SetMember(string name, object value)
+			=> _dictionary.AddOrUpdate(name, value, (_, __) => value);
+
+
+		private void SetupDictionary()
 		{
-			return base.TryGetMember(binder, out result);
+			foreach (var property in Inner.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance))
+				_dictionary.TryAdd(property.Name, property.GetValue(Inner));
 		}
 
-		public virtual AttributeCollection GetAttributes() => _innerTypeDescriptor.GetAttributes();
-		public virtual string GetClassName() => _innerTypeDescriptor.GetClassName();
-		public string GetComponentName() => _innerTypeDescriptor.GetComponentName();
-		public TypeConverter GetConverter() => _innerTypeDescriptor.GetConverter();
-		public EventDescriptor GetDefaultEvent() => _innerTypeDescriptor.GetDefaultEvent();
-		public System.ComponentModel.PropertyDescriptor GetDefaultProperty() => _innerTypeDescriptor.GetDefaultProperty();
-		public object GetEditor(Type editorBaseType) => _innerTypeDescriptor.GetEditor(editorBaseType);
-		public EventDescriptorCollection GetEvents() => _innerTypeDescriptor.GetEvents();
-		public EventDescriptorCollection GetEvents(Attribute[] attributes) => _innerTypeDescriptor.GetEvents(attributes);
-		public PropertyDescriptorCollection GetProperties() => _innerTypeDescriptor.GetProperties();
-		public PropertyDescriptorCollection GetProperties(Attribute[] attributes) => _innerTypeDescriptor.GetProperties(attributes);
-		public object GetPropertyOwner(System.ComponentModel.PropertyDescriptor pd) => _innerTypeDescriptor.GetPropertyOwner(pd);
+		public override PropertyDescriptorCollection GetProperties()
+			=> new PropertyDescriptorCollection(base.GetProperties().OfType<System.ComponentModel.PropertyDescriptor>().Concat(GetExpandoProperties()).ToArray());
 
-		private class InnerCustomTypeDescriptor : CustomTypeDescriptor
-		{
-			protected readonly object _inner;
-			protected readonly IDictionary<string, object> _dictionary = new Dictionary<string, object>();
+		private IEnumerable<System.ComponentModel.PropertyDescriptor> GetExpandoProperties()
+			=> _dictionary.Select(property => new ExpandoPropertyDescriptor(_dictionary, property.Key));
 
-			public InnerCustomTypeDescriptor(object inner)
-			{
-				_inner = inner;
-				SetupDictionary();
-			}
-
-			private void SetupDictionary()
-			{
-				foreach (var property in _inner.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance))
-					_dictionary.Add(property.Name, property.GetValue(_inner));
-			}
-
-			public override PropertyDescriptorCollection GetProperties()
-				=> new PropertyDescriptorCollection(base.GetProperties().OfType<System.ComponentModel.PropertyDescriptor>().Concat(GetExpandoProperties()).ToArray());
-
-			private IEnumerable<System.ComponentModel.PropertyDescriptor> GetExpandoProperties()
-				=> _dictionary.Select(property => new ExpandoPropertyDescriptor(_dictionary, property.Key));
-
-			public override string GetClassName()
-				=> $"{nameof(ValigatorAnonymousObjectBase)}_{_inner.GetType().Name}";
-		}
+		public override string GetClassName()
+			=> $"{nameof(ValigatorAnonymousObjectBase)}_{Inner.GetType().Name}";
 
 		private class ExpandoPropertyDescriptor : System.ComponentModel.PropertyDescriptor
 		{
@@ -194,7 +167,7 @@ namespace Valigator.Core
 		{
 			var modelParameter = Expression.Parameter(typeof(TModel), "model");
 
-			var modelExpression = Expression.Convert(modelParameter, typeof(TModel));
+			var modelExpression = CreateModelExpression(modelParameter, model);
 
 			var properties = GetAllProperties(model);
 			var fields = GetAllFields(typeof(TModel));
@@ -215,16 +188,44 @@ namespace Valigator.Core
 			return Expression.Lambda<Func<TModel, ValidationError[][]>>(arrayInitializer, modelParameter).Compile();
 		}
 
-		private static Expression CreateExpression(Expression modelParameter, PropertyOrFieldData data, TModel model)
+		private static Expression CreateModelExpression(ParameterExpression modelParameter, TModel model)
+		{
+			//if (!(model is ValigatorAnonymousObjectBase))
+			return Expression.Convert(modelParameter, typeof(TModel));
+
+			//var castedModelParameter = Expression.Convert(modelParameter, typeof(object));
+			//return castedModelParameter;
+		}
+
+		private static Expression CreateDataExpression(Expression modelParameter, PropertyOrFieldData data, TModel model)
 		{
 			if (!(model is ValigatorAnonymousObjectBase))
 				return Expression.Property(modelParameter, data.Name);
 
-			var innerType = model.GetType().GenericTypeArguments.First();
-			var innerProperty = Expression.Property(modelParameter, model.GetType().GetProperty(nameof(ValigatorAnonymousObjectBase<object>.Inner), BindingFlags.Public | BindingFlags.Instance));
-			var castedInner = Expression.Convert(innerProperty, innerType);
-			var property = Expression.Property(castedInner, data.Name);
-			return property;
+
+			//var binder = Microsoft.CSharp.RuntimeBinder.Binder.GetMember(CSharpBinderFlags.None, data.Name, model.GetType(), new[] { CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.None, null) });
+			//var propertyExpression = Expression.Dynamic(binder, data.Type, modelParameter);
+			//var castedPropertyExpression = Expression.Convert(propertyExpression, data.Type);
+
+			var methodCallExpression = Expression.Call(modelParameter, model.GetType().GetMethod(nameof(ValigatorAnonymousObjectBase.GetMember)), Expression.Constant(data.Name));
+
+			return Expression.Convert(methodCallExpression, data.Type);
+			//var innerType = model.GetType().GenericTypeArguments.First();
+			//var innerProperty = Expression.Property(modelParameter, model.GetType().GetProperty(nameof(ValigatorAnonymousObjectBase.Inner), BindingFlags.Public | BindingFlags.Instance));
+			//var castedInner = Expression.Convert(innerProperty, innerType);
+			//var property = Expression.Property(castedInner, data.Name);
+			//return property;
+		}
+
+
+		private static Expression CreateAssignExpression(Expression dataProperty, (MethodInfo verify, MethodInfo tryGetValue, MethodInfo isSuccess, MethodInfo getFailure) methods, Expression modelExpression, TModel model, PropertyOrFieldData propertyData)
+		{
+			if (!(model is ValigatorAnonymousObjectBase))
+				return Expression.Assign(dataProperty, Expression.Call(dataProperty, methods.verify, modelExpression));
+
+			var verifyExpression = Expression.Call(dataProperty, methods.verify, modelExpression);
+			var callMethodExpression = Expression.Call(modelExpression, model.GetType().GetMethod(nameof(ValigatorAnonymousObjectBase.SetMember)), Expression.Constant(propertyData.Name), Expression.Convert(verifyExpression, typeof(object)));
+			return Expression.Convert(callMethodExpression, propertyData.Type);
 		}
 
 		private static PropertyOrFieldData[] GetAllProperties(TModel model)
@@ -366,7 +367,7 @@ namespace Valigator.Core
 		{
 			var methods = GetVerifySupportMethods(property.Type);
 
-			var dataProperty = CreateExpression(modelExpression, property, model);// Expression.Property(modelExpression, property.Name);
+			var dataProperty = CreateDataExpression(modelExpression, property, model);// Expression.Property(modelExpression, property.Name);
 
 			var isValid = Expression.Equal(Expression.Property(dataProperty, nameof(Data<object>.State)), Expression.Constant(DataState.Valid, typeof(DataState)));
 
@@ -376,7 +377,7 @@ namespace Valigator.Core
 
 			var assignIsVerified = Expression.Assign(isVerified, Expression.Or(isValid, isInvalid));
 
-			var verifiedData = Expression.Assign(dataProperty, Expression.Call(dataProperty, methods.verify, modelExpression));
+			var verifiedData = CreateAssignExpression(dataProperty, methods, modelExpression, model, property);
 
 			var data = Expression.Condition(Expression.OrElse(isValid, isInvalid), dataProperty, verifiedData);
 
