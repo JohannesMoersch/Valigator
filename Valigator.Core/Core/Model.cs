@@ -110,24 +110,24 @@ namespace Valigator.Core
 			return Expression.Lambda<Func<TModel, ValidationError[][]>>(arrayInitializer, modelParameter).Compile();
 		}
 
-		private static Expression CreateDataExpression(Expression modelParameter, PropertyInfo propertyInfo, TModel model)
-			=> !(model is ValigatorModelBase)
-				? (Expression)Expression.Property(modelParameter, propertyInfo.Name)
-				: Expression.Call(
-					modelParameter,
+		private static Expression CreateDataExpression(Expression modelExpression, PropertyInfo propertyInfo, TModel model)
+			=> model is ValigatorModelBase
+				? Expression.Call(
+					modelExpression,
 					model.GetType().GetMethod(nameof(ValigatorModelBase.GetMember)).MakeGenericMethod(propertyInfo.PropertyType),
 					Expression.Constant(propertyInfo.Name)
-				);
+				)
+				: (Expression)Expression.Property(modelExpression, propertyInfo);
 
 		private static Expression CreateAssignExpression(Expression dataProperty, MethodInfo verifyMethod, Expression modelExpression, TModel model, PropertyInfo propertyInfo)
-			=> !(model is ValigatorModelBase)
-				? (Expression)Expression.Assign(dataProperty, Expression.Call(dataProperty, verifyMethod, modelExpression))
-				: Expression.Call(
+			=> model is ValigatorModelBase
+				? Expression.Call(
 						modelExpression,
 						model.GetType().GetMethod(nameof(ValigatorModelBase.SetMember)).MakeGenericMethod(propertyInfo.PropertyType),
 						Expression.Constant(propertyInfo.Name),
 						Expression.Call(dataProperty, verifyMethod, modelExpression)
-					);
+					)
+				: (Expression)Expression.Assign(dataProperty, Expression.Call(dataProperty, verifyMethod, modelExpression));
 
 		private static PropertyInfo[] GetAllProperties(TModel model)
 			=> GetBaseProperties(model)
@@ -288,7 +288,7 @@ namespace Valigator.Core
 		{
 			var methods = GetVerifySupportMethods(property.PropertyType);
 
-			var dataProperty = CreateDataExpression(modelExpression, property, model);// Expression.Property(modelExpression, property.Name);
+			var dataProperty = CreateDataExpression(modelExpression, property, model);
 
 			var isValid = Expression.Equal(Expression.Property(dataProperty, nameof(Data<object>.State)), Expression.Constant(DataState.Valid, typeof(DataState)));
 
