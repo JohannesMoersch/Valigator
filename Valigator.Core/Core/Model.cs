@@ -210,14 +210,18 @@ namespace Valigator.Core
 
 			foreach (var currentProperty in currentLevelProperties)
 			{
-				var currentModel = type.IsValigatorModelBase() ? type.GetValigatorModelBaseInnerType() : type;
-				var method = currentProperty.GetGetMethod(true) ?? currentProperty.GetSetMethod(true);
-
-				var baseType = method?.GetBaseDefinition().DeclaringType;
-				if (baseType != typeof(TModel))
-					yield return ValigatorModelBaseHelpers.GetProperty(baseType, currentProperty.Name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-				else
+				if (type.IsValigatorModelBase())
 					yield return currentProperty;
+				else
+				{
+					var method = currentProperty.GetGetMethod(true) ?? currentProperty.GetSetMethod(true);
+
+					var baseType = method?.GetBaseDefinition().DeclaringType;
+					if (baseType != typeof(TModel))
+						yield return ValigatorModelBaseHelpers.GetProperty(baseType, currentProperty.Name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+					else
+						yield return currentProperty;
+				}
 			}
 		}
 

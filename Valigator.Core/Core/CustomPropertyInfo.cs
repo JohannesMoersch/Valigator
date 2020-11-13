@@ -18,11 +18,11 @@ namespace Valigator.Core
 		public override Type ReflectedType => typeof(ValigatorModelBase);
 
 		public override MethodInfo GetGetMethod(bool nonPublic)
-			=> typeof(ValigatorModelBase).GetMethod(nameof(ValigatorModelBase.GetMember), BindingFlags.Public | BindingFlags.Instance).MakeGenericMethod(Inner.PropertyType);
+			=> typeof(ValigatorModelBase).GetMethod(nameof(ValigatorModelBase.GetMember), BindingFlags.Public | BindingFlags.Instance);
 		public override MethodInfo GetMethod => GetGetMethod(true);
 
 		public override MethodInfo GetSetMethod(bool nonPublic)
-			=> typeof(ValigatorModelBase).GetMethod(nameof(ValigatorModelBase.SetMember), BindingFlags.Public | BindingFlags.Instance).MakeGenericMethod(Inner.PropertyType);
+			=> typeof(ValigatorModelBase).GetMethod(nameof(ValigatorModelBase.SetMember), BindingFlags.Public | BindingFlags.Instance);
 		public override MethodInfo SetMethod => GetSetMethod(true);
 
 		public override void SetValue(object obj, object value, BindingFlags invokeAttr, Binder binder, object[] index, CultureInfo culture) => SetValigatorModelValue(obj, value);
