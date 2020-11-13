@@ -213,7 +213,7 @@ namespace Valigator.Core
 
 				var baseType = method?.GetBaseDefinition().DeclaringType;
 				if (baseType != typeof(TModel))
-					yield return ValigatorModelBaseHelpers.GetProperty(currentModel, currentProperty.Name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+					yield return ValigatorModelBaseHelpers.GetProperty(model, currentProperty.Name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 				else
 					yield return currentProperty;
 			}
@@ -245,7 +245,12 @@ namespace Valigator.Core
 		{
 			var methods = GetVerifySupportMethods(property.PropertyType);
 
-			var dataProperty = (Expression)Expression.Property(modelExpression, property);
+			var propertyInfoGetValue = property.GetType().GetMethod(nameof(PropertyInfo.GetValue), new[] { typeof(object) });
+			var propertyInfoSetValue = property.GetType().GetMethod(nameof(PropertyInfo.SetValue), new[] { typeof(object), typeof(object) });
+			var propertyParameter = Expression.Constant(property);
+
+			var getValueCall = Expression.Call(propertyParameter, propertyInfoGetValue, modelExpression);// (Expression)Expression.Call(modelExpression, getter); //Expression.Property(modelExpression, getter);// Expression.Property(modelExpression, property);
+			var dataProperty = Expression.Convert(getValueCall, property.PropertyType);
 
 			var isValid = Expression.Equal(Expression.Property(dataProperty, nameof(Data<object>.State)), Expression.Constant(DataState.Valid, typeof(DataState)));
 
@@ -255,7 +260,9 @@ namespace Valigator.Core
 
 			var assignIsVerified = Expression.Assign(isVerified, Expression.Or(isValid, isInvalid));
 
-			var verifiedData = Expression.Assign(dataProperty, Expression.Call(dataProperty, methods.verify, modelExpression));
+			var verifyResult = Expression.Convert(Expression.Call(dataProperty, methods.verify, modelExpression), typeof(object));
+			var setValueCall = Expression.Call(propertyParameter, propertyInfoSetValue, modelExpression, verifyResult);
+			var verifiedData = Expression.Block(setValueCall, dataProperty);//Expression.Assign(dataProperty, verifyResult);
 
 			var data = Expression.Condition(Expression.OrElse(isValid, isInvalid), dataProperty, verifiedData);
 

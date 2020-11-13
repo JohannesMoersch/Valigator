@@ -56,6 +56,8 @@ namespace Valigator.Core
 		public override ParameterInfo[] GetParameters() => _inner.GetParameters();
 		public override object Invoke(object obj, BindingFlags invokeAttr, Binder binder, object[] parameters, CultureInfo culture) => _inner.Invoke(obj, invokeAttr, binder, parameters, culture);
 		public override bool IsDefined(Type attributeType, bool inherit) => _inner.IsDefined(attributeType, inherit);
+		public override Type ReturnType => _inner.ReturnType;
+		public override ParameterInfo ReturnParameter => _inner.ReturnParameter;
 	}
 
 	internal class CustomPropertyInfo : PropertyInfo
@@ -96,40 +98,28 @@ namespace Valigator.Core
 			//var call = Expression.Call(valigatorModelBase, method, name);
 			//var cast = Expression.Convert(call, typeof(object));
 			//return Expression.Lambda<Func<object>>(cast).Compile().Method;
+			//var f = Expression.Call(Expression.Convert(Expression.Parameter(Inner.GetType(), "model"), Inner.GetType()), Inner.GetGetMethod());
 
-			return new TempClass(Name, _valigatorModelBase).GetType().GetMethod(nameof(TempClass.GetValigatorModelValue), BindingFlags.Public | BindingFlags.Instance).MakeGenericMethod(Inner.PropertyType);
+			return new CustomMethodInfo(_valigatorModelBase.GetType().GetMethod(nameof(ValigatorModelBase.GetMember), BindingFlags.Public | BindingFlags.Instance).MakeGenericMethod(Inner.PropertyType), _valigatorModelBase);
 		}
 		public override MethodInfo GetMethod => GetGetMethod(true);
 
-		public override MethodInfo GetSetMethod(bool nonPublic) => new TempClass(Name, _valigatorModelBase).GetType().GetMethod(nameof(TempClass.SetValigatorModelValue), BindingFlags.Public | BindingFlags.Instance).MakeGenericMethod(Inner.PropertyType); //new Action<object>(value => _valigatorModelBase.SetMember(Name, value)).Method;// 
+		public override MethodInfo GetSetMethod(bool nonPublic) => new CustomMethodInfo(_valigatorModelBase.GetType().GetMethod(nameof(ValigatorModelBase.SetMember), BindingFlags.Public | BindingFlags.Instance).MakeGenericMethod(Inner.PropertyType), _valigatorModelBase); //new Action<object>(value => _valigatorModelBase.SetMember(Name, value)).Method;// 
 		public override MethodInfo SetMethod => GetSetMethod(true);
-		public override void SetValue(object obj, object value, BindingFlags invokeAttr, Binder binder, object[] index, CultureInfo culture) => new TempClass(Name, _valigatorModelBase).SetValigatorModelValue(value);
-		public override void SetValue(object obj, object value, object[] index) => new TempClass(Name, _valigatorModelBase).SetValigatorModelValue(value);
+		public override void SetValue(object obj, object value, BindingFlags invokeAttr, Binder binder, object[] index, CultureInfo culture) => SetValigatorModelValue(value);
+		public override void SetValue(object obj, object value, object[] index) => SetValigatorModelValue(value);
 		
 
 		public override ParameterInfo[] GetIndexParameters() => Inner.GetIndexParameters();
-		public override object GetValue(object obj, BindingFlags invokeAttr, Binder binder, object[] index, CultureInfo culture) => new TempClass(Name, _valigatorModelBase).GetValigatorModelValue<object>();
+		public override object GetValue(object obj, BindingFlags invokeAttr, Binder binder, object[] index, CultureInfo culture) => GetValigatorModelValue<object>();
 
-		public override object GetValue(object obj, object[] index) => new TempClass(Name, _valigatorModelBase).GetValigatorModelValue<object>();
+		public override object GetValue(object obj, object[] index) => GetValigatorModelValue<object>();
 
-		
+
+		private void SetValigatorModelValue<T>(T value) => _valigatorModelBase.SetMember(Name, value);
+		private T GetValigatorModelValue<T>() => _valigatorModelBase.GetMember<T>(Name);
 
 		public override bool IsDefined(Type attributeType, bool inherit) => Inner.IsDefined(attributeType, inherit);
-	}
-
-	public class TempClass
-	{
-		public TempClass(string name, ValigatorModelBase valigatorModelBase)
-		{
-			Name = name;
-			ValigatorModelBase = valigatorModelBase;
-		}
-
-		public string Name { get; }
-		public ValigatorModelBase ValigatorModelBase { get; }
-
-		public void SetValigatorModelValue<T>(T value) => ValigatorModelBase.SetMember(Name, value);
-		public T GetValigatorModelValue<T>() => ValigatorModelBase.GetMember<T>(Name);
 	}
 
 	public static class ValigatorModelBaseHelpers
