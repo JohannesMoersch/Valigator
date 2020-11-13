@@ -81,15 +81,5 @@ namespace Valigator.Text.Json
 					Expression.Constant(propertyInfo.Name)
 				)
 				: (Expression)Expression.Property(objParameter, propertyInfo);
-
-		//private static Expression CreateAssignExpression(Expression dataProperty, MethodInfo verifyMethod, Expression modelExpression, TModel model, PropertyInfo propertyInfo)
-		//	=> model is ValigatorModelBase
-		//		? Expression.Call(
-		//				modelExpression,
-		//				model.GetType().GetMethod(nameof(ValigatorModelBase.SetMember)).MakeGenericMethod(propertyInfo.PropertyType),
-		//				Expression.Constant(propertyInfo.Name),
-		//				Expression.Call(dataProperty, verifyMethod, modelExpression)
-		//			)
-		//		: (Expression)Expression.Assign(dataProperty, Expression.Call(dataProperty, verifyMethod, modelExpression));
 	}
 }

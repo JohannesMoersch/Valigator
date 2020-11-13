@@ -2,6 +2,7 @@
 using System;
 using System.Linq.Expressions;
 using System.Reflection;
+using Valigator.Core;
 
 namespace Valigator.Newtonsoft.Json
 {
@@ -15,13 +16,13 @@ namespace Valigator.Newtonsoft.Json
 
 		public abstract void WriteProperty(JsonWriter writer, JsonSerializer serializer, TObject obj);
 
-		public static ValigatorJsonPropertyHandler<TObject> Create(PropertyInfo property)
+		public static ValigatorJsonPropertyHandler<TObject> Create(PropertyInfo property, TObject obj)
 		{
 			var handlerType = typeof(ValigatorJsonPropertyHandler<,>).MakeGenericType(typeof(TObject), property.PropertyType.GetGenericArguments()[0]);
 
-			var createMethod = handlerType.GetMethod(nameof(ValigatorJsonPropertyHandler<TObject, bool>.Create), BindingFlags.Public | BindingFlags.Static, Type.DefaultBinder, new[] { typeof(PropertyInfo) }, null);
+			var createMethod = handlerType.GetMethod(nameof(ValigatorJsonPropertyHandler<TObject, bool>.Create), BindingFlags.Public | BindingFlags.Static, Type.DefaultBinder, new[] { typeof(PropertyInfo), typeof(TObject) }, null);
 
-			return (ValigatorJsonPropertyHandler<TObject>)createMethod.Invoke(null, new[] { property });
+			return (ValigatorJsonPropertyHandler<TObject>)createMethod.Invoke(null, new object[] { property, obj });
 		}
 	}
 
@@ -55,13 +56,13 @@ namespace Valigator.Newtonsoft.Json
 				throw new NotSupportedException();
 		}
 
-		public new static ValigatorJsonPropertyHandler<TObject, TDataValue> Create(PropertyInfo property)
+		public new static ValigatorJsonPropertyHandler<TObject, TDataValue> Create(PropertyInfo property, TObject obj)
 		{
 			if (property.GetCustomAttribute<JsonIgnoreAttribute>() != null)
 				return new ValigatorJsonPropertyHandler<TObject, TDataValue>(null, null);
 
 			var objParameter = Expression.Parameter(typeof(TObject), "obj");
-			var propertyExpression = Expression.Property(objParameter, property);
+			var propertyExpression = CreateDataExpression(objParameter, property, obj);
 
 			var valueParameter = Expression.Parameter(typeof(Data<TDataValue>), "value");
 
@@ -70,5 +71,14 @@ namespace Valigator.Newtonsoft.Json
 
 			return new ValigatorJsonPropertyHandler<TObject, TDataValue>(getter, setter);
 		}
+
+		private static Expression CreateDataExpression(Expression objParameter, PropertyInfo propertyInfo, TObject model)
+			=> model is ValigatorModelBase
+				? Expression.Call(
+					objParameter,
+					model.GetType().GetMethod(nameof(ValigatorModelBase.GetMember)).MakeGenericMethod(propertyInfo.PropertyType),
+					Expression.Constant(propertyInfo.Name)
+				)
+				: (Expression)Expression.Property(objParameter, propertyInfo);
 	}
 }
