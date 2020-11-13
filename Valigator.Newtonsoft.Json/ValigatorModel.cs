@@ -5,15 +5,18 @@ using Valigator.Core;
 
 namespace Valigator
 {
+	public static class ValigatorModel
+	{
+		public static ValigatorModel<T> Create<T>(T inner)
+			=> new ValigatorModel<T>(inner);
+	}
+
 	/// <inheritdoc />
 	[ValigatorModel]
-	public class ValigatorModel : ValigatorModelBase
+	public class ValigatorModel<T> : ValigatorModelBase<T>
 	{
-		internal ValigatorModel(object inner) : base(inner)
+		internal ValigatorModel(T inner) : base(inner)
 		{
 		}
-
-		public static ValigatorModel Create(object inner)
-			=> new ValigatorModel(inner);
 	}
 }

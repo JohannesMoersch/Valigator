@@ -6,14 +6,18 @@ using Valigator.Core;
 namespace Valigator.Text.Json
 {
 	/// <inheritdoc />
-	[ValigatorModel]
-	public class ValigatorModel : ValigatorModelBase
+	public static class ValigatorModel
 	{
-		internal ValigatorModel(object inner) : base(inner)
+		public static ValigatorModel<T> Create<T>(T inner)
+			=> new ValigatorModel<T>(inner);
+	}
+
+	/// <inheritdoc />
+	[ValigatorModel]
+	public class ValigatorModel<T> : ValigatorModelBase<T>
+	{
+		internal ValigatorModel(T inner) : base(inner)
 		{
 		}
-
-		public static ValigatorModel Create(object inner)
-			=> new ValigatorModel(inner);
 	}
 }
