@@ -1,4 +1,5 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Reflection;
 
 namespace Valigator.Core
@@ -6,9 +7,9 @@ namespace Valigator.Core
 	/// <summary>
 	/// Create a Valigator Model. The inner object will be validated as a if it had a [ValigatorModel] attribute on it.
 	/// </summary>
-	public class ValigatorModelBase
+	public abstract class ValigatorModelBase
 	{
-		private readonly ConcurrentDictionary<string, object> _dictionary = new ConcurrentDictionary<string, object>();
+		protected readonly ConcurrentDictionary<string, object> Dictionary = new ConcurrentDictionary<string, object>();
 		protected readonly object Inner;
 
 		public ValigatorModelBase(object inner)
@@ -20,12 +21,20 @@ namespace Valigator.Core
 		private void SetupDictionary()
 		{
 			foreach (var property in Inner.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance))
-				_dictionary.TryAdd(property.Name, property.GetValue(Inner));
+				Dictionary.TryAdd(property.Name, property.GetValue(Inner));
 		}
 
 		public object GetInner() => Inner;
+		public Type GetInnerType() => Inner.GetType();
 
-		public T GetMember<T>(string name) => (T)(_dictionary.TryGetValue(name, out var value) ? value : null);
-		public void SetMember<T>(string name, T value) => _dictionary.AddOrUpdate(name, value, (_, __) => value);
+		public object GetMember(string name) => (Dictionary.TryGetValue(name, out var value) ? value : null);
+		public void SetMember(string name, object value) => Dictionary.AddOrUpdate(name, value, (_, __) => value);
+	}
+	/// <summary>
+	/// Create a Valigator Model. The inner object will be validated as a if it had a [ValigatorModel] attribute on it.
+	/// </summary>
+	public abstract class ValigatorModelBase<TInner> : ValigatorModelBase
+	{
+		public ValigatorModelBase(TInner inner) : base(inner) { }
 	}
 }

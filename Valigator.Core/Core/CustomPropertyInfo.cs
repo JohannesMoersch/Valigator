@@ -8,35 +8,33 @@ namespace Valigator.Core
 	internal class CustomPropertyInfo : PropertyInfo
 	{
 		public PropertyInfo Inner { get; }
-		private readonly ValigatorModelBase _valigatorModelBase;
 
-		public CustomPropertyInfo(PropertyInfo inner, ValigatorModelBase valigatorModelBase)
+		public CustomPropertyInfo(PropertyInfo inner)
 		{
 			Inner = inner;
-			_valigatorModelBase = valigatorModelBase;
 		}
 
-		public override Type DeclaringType => _valigatorModelBase.GetType();
-		public override Type ReflectedType => _valigatorModelBase.GetType();
+		public override Type DeclaringType => typeof(ValigatorModelBase);
+		public override Type ReflectedType => typeof(ValigatorModelBase);
 
 		public override MethodInfo GetGetMethod(bool nonPublic)
-			=> _valigatorModelBase.GetType().GetMethod(nameof(ValigatorModelBase.GetMember), BindingFlags.Public | BindingFlags.Instance).MakeGenericMethod(Inner.PropertyType);
+			=> typeof(ValigatorModelBase).GetMethod(nameof(ValigatorModelBase.GetMember), BindingFlags.Public | BindingFlags.Instance).MakeGenericMethod(Inner.PropertyType);
 		public override MethodInfo GetMethod => GetGetMethod(true);
 
 		public override MethodInfo GetSetMethod(bool nonPublic)
-			=> _valigatorModelBase.GetType().GetMethod(nameof(ValigatorModelBase.SetMember), BindingFlags.Public | BindingFlags.Instance).MakeGenericMethod(Inner.PropertyType);
+			=> typeof(ValigatorModelBase).GetMethod(nameof(ValigatorModelBase.SetMember), BindingFlags.Public | BindingFlags.Instance).MakeGenericMethod(Inner.PropertyType);
 		public override MethodInfo SetMethod => GetSetMethod(true);
 
-		public override void SetValue(object obj, object value, BindingFlags invokeAttr, Binder binder, object[] index, CultureInfo culture) => SetValigatorModelValue(value);
-		public override void SetValue(object obj, object value, object[] index) => SetValigatorModelValue(value);
+		public override void SetValue(object obj, object value, BindingFlags invokeAttr, Binder binder, object[] index, CultureInfo culture) => SetValigatorModelValue(obj, value);
+		public override void SetValue(object obj, object value, object[] index) => SetValigatorModelValue(obj, value);
 
 		public override ParameterInfo[] GetIndexParameters() => Inner.GetIndexParameters();
-		public override object GetValue(object obj, BindingFlags invokeAttr, Binder binder, object[] index, CultureInfo culture) => GetValigatorModelValue<object>();
+		public override object GetValue(object obj, BindingFlags invokeAttr, Binder binder, object[] index, CultureInfo culture) => GetValigatorModelValue(obj);
 
-		public override object GetValue(object obj, object[] index) => GetValigatorModelValue<object>();
+		public override object GetValue(object obj, object[] index) => GetValigatorModelValue(obj);
 
-		private void SetValigatorModelValue<T>(T value) => _valigatorModelBase.SetMember(Name, value);
-		private T GetValigatorModelValue<T>() => _valigatorModelBase.GetMember<T>(Name);
+		private void SetValigatorModelValue(object valigatorModelBase, object value) => (valigatorModelBase as ValigatorModelBase).SetMember(Name, value);
+		private object GetValigatorModelValue(object valigatorModelBase) => (valigatorModelBase as ValigatorModelBase).GetMember(Name);
 
 		public override IEnumerable<CustomAttributeData> CustomAttributes => Inner.CustomAttributes;
 		public override Module Module => Inner.Module;

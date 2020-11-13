@@ -25,18 +25,18 @@ namespace Valigator.Core
 				lock (_getPropertyDescriptorsLockObj)
 				{
 					if (_getPropertyDescriptors == null)
-						_getPropertyDescriptors = CreatePropertyDescriptorsFunction(model);
+						_getPropertyDescriptors = CreatePropertyDescriptorsFunction(typeof(TModel));
 				}
 			}
 
 			return _getPropertyDescriptors.Invoke(model);
 		}
 
-		private static Func<TModel, PropertyDescriptor[]> CreatePropertyDescriptorsFunction(TModel model)
+		private static Func<TModel, PropertyDescriptor[]> CreatePropertyDescriptorsFunction(Type type)
 		{
 			var modelExpression = Expression.Parameter(typeof(TModel), "model");
 
-			var propertyDescriptors = ValigatorModelBaseHelpers.GetProperties(model)
+			var propertyDescriptors = ValigatorModelBaseHelpers.GetProperties(type)
 				.Where(property => property.PropertyType.IsConstructedGenericType && property.PropertyType.GetGenericTypeDefinition() == typeof(Data<>))
 				.Select(property => CreatePropertyDescriptor(modelExpression, property));
 
@@ -69,7 +69,7 @@ namespace Valigator.Core
 				lock (_verifyModelLockObj)
 				{
 					if (_verifyMethod == null)
-						_verifyMethod = CreateVerifyFunction(model);
+						_verifyMethod = CreateVerifyFunction(typeof(TModel));
 				}
 			}
 
@@ -82,21 +82,21 @@ namespace Valigator.Core
 			return Result.Create(validationErrors.Length == 0, Unit.Value, validationErrors);
 		}
 
-		private static Func<TModel, ValidationError[][]> CreateVerifyFunction(TModel model)
+		private static Func<TModel, ValidationError[][]> CreateVerifyFunction(Type type)
 		{
 			var modelParameter = Expression.Parameter(typeof(TModel), "model");
 
 			var modelExpression = Expression.Convert(modelParameter, typeof(TModel));
 
-			var properties = GetAllProperties(model);
-			var fields = GetAllFields(model);
+			var properties = GetAllProperties(type);
+			var fields = GetAllFields(type);
 
-			var (dataProperties, validateContentsMembers) = FilterToDataPropertiesAndValidateContentsMembers(properties, fields, model);
+			var (dataProperties, validateContentsMembers) = FilterToDataPropertiesAndValidateContentsMembers(properties, fields);
 
 			var validationErrors = Enumerable
 				.Empty<Expression>()
 				.Concat(dataProperties
-					.Select(property => VerifyDataProperty(modelExpression, property, model))
+					.Select(property => VerifyDataProperty(modelExpression, property))
 				)
 				.Concat(validateContentsMembers
 					.Select(propertyOrField => VerifyPropertyOrFieldContents(modelExpression, propertyOrField))
@@ -107,18 +107,17 @@ namespace Valigator.Core
 			return Expression.Lambda<Func<TModel, ValidationError[][]>>(arrayInitializer, modelParameter).Compile();
 		}
 
-		private static PropertyInfo[] GetAllProperties(TModel model)
-			=> GetBaseProperties(model)
+		private static PropertyInfo[] GetAllProperties(Type type)
+			=> GetBaseProperties(type)
 				.Concat(GetExplicitProperties(typeof(TModel)))
 				.ToArray();
 
-		private static FieldInfo[] GetAllFields(TModel model)
-			=> model
-				.GetType()
+		private static FieldInfo[] GetAllFields(Type type)
+			=> type
 				.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
 				.ToArray();
 
-		private static (PropertyInfo[] dataProperties, MemberInfo[] validateContentsMembers) FilterToDataPropertiesAndValidateContentsMembers(PropertyInfo[] properties, FieldInfo[] fields, TModel model)
+		private static (PropertyInfo[] dataProperties, MemberInfo[] validateContentsMembers) FilterToDataPropertiesAndValidateContentsMembers(PropertyInfo[] properties, FieldInfo[] fields)
 		{
 			var dataProperties = properties
 				.Where(p => IsValigatorDataType(p.PropertyType))
@@ -201,24 +200,29 @@ namespace Valigator.Core
 			return Expression.Block(new[] { result }, assignedResult, condition);
 		}
 
-		private static IEnumerable<PropertyInfo> GetBaseProperties(TModel model)
+		private static IEnumerable<PropertyInfo> GetBaseProperties(Type type)
 		{
-			var currentLevelProperties = ValigatorModelBaseHelpers.GetProperties(model, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
+			var currentLevelProperties = ValigatorModelBaseHelpers.GetProperties(type, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
 				.Where(p => !IsExplicitInterfaceImplementation(p))
 				.ToArray();
 
+			var castMethod = typeof(Model<TModel>).GetMethod(nameof(Cast), BindingFlags.NonPublic | BindingFlags.Static);
+
 			foreach (var currentProperty in currentLevelProperties)
 			{
-				var currentModel = model is ValigatorModelBase valigatorModelBase ? valigatorModelBase.GetInner() : model;
+				var currentModel = type.IsValigatorModelBase() ? type.GetValigatorModelBaseInnerType() : type;
 				var method = currentProperty.GetGetMethod(true) ?? currentProperty.GetSetMethod(true);
 
 				var baseType = method?.GetBaseDefinition().DeclaringType;
 				if (baseType != typeof(TModel))
-					yield return ValigatorModelBaseHelpers.GetProperty(model, currentProperty.Name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+					yield return ValigatorModelBaseHelpers.GetProperty(baseType, currentProperty.Name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 				else
 					yield return currentProperty;
 			}
 		}
+
+		private static T Cast<T>(T item)
+			=> item;
 
 		private static IEnumerable<PropertyInfo> GetExplicitProperties(Type type)
 		{
@@ -242,7 +246,7 @@ namespace Valigator.Core
 		private static bool IsExplicitInterfaceImplementation(PropertyInfo prop)
 			=> prop.Name.Contains(".");
 
-		private static Expression VerifyDataProperty(Expression modelExpression, PropertyInfo property, TModel model)
+		private static Expression VerifyDataProperty(Expression modelExpression, PropertyInfo property)
 		{
 			var methods = GetVerifySupportMethods(property.PropertyType);
 

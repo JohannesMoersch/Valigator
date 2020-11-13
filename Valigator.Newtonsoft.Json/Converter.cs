@@ -16,7 +16,7 @@ namespace Valigator.Newtonsoft.Json
 		{
 			var result = new Dictionary<string, ValigatorJsonPropertyHandler<TObject>>();
 
-			foreach (var property in ValigatorModelBaseHelpers.GetProperties(BindingFlags.Public | BindingFlags.Instance))
+			foreach (var property in ValigatorModelBaseHelpers.GetProperties(typeof(TObject), BindingFlags.Public | BindingFlags.Instance))
 				result.Add(property.Name, ValigatorJsonPropertyHandler<TObject>.Create(property));
 
 			return result;

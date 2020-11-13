@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Reflection;
 using Valigator.Core.Helpers;
 
@@ -7,34 +8,36 @@ namespace Valigator.Core.Helpers
 
 	public static class ValigatorModelBaseHelpers
 	{
-		public static PropertyInfo GetProperty(object obj, string name, BindingFlags bindingFlags)
-		 => obj is ValigatorModelBase valigatorModelBase
-				? GetProperPropertyInfo(GetProperty(valigatorModelBase.GetInner(), name, bindingFlags), valigatorModelBase)
-				: obj.GetType().GetProperty(name, bindingFlags);
+		public static PropertyInfo GetProperty(Type type, string name, BindingFlags bindingFlags)
+		 => type.IsValigatorModelBase()
+				? GetProperPropertyInfo(GetProperty(type.GetValigatorModelBaseInnerType(), name, bindingFlags))
+				: type.GetProperty(name, bindingFlags);
 
-		public static PropertyInfo GetProperty(object obj, string name)
-		 => obj is ValigatorModelBase valigatorModelBase
-				? GetProperPropertyInfo(GetProperty(valigatorModelBase.GetInner(), name), valigatorModelBase)
-				: obj.GetType().GetProperty(name);
+		public static PropertyInfo GetProperty(Type type, string name)
+		 => type.IsValigatorModelBase()
+				? GetProperPropertyInfo(GetProperty(type.GetValigatorModelBaseInnerType(), name))
+				: type.GetProperty(name);
 
-		public static PropertyInfo[] GetProperties(object obj)
-			=> (obj is ValigatorModelBase valigatorModel
-					? GetProperties(valigatorModel.GetInner()).Select(p => GetProperPropertyInfo(p, valigatorModel))
-					: obj.GetType().GetProperties()
-				)
-				.ToArray();
+		public static PropertyInfo[] GetProperties(Type type)
+			=> type.IsValigatorModelBase()
+				? GetProperties(type.GetValigatorModelBaseInnerType()).Select(property => GetProperPropertyInfo(property)).ToArray()
+				: type.GetProperties();
 
-		public static PropertyInfo[] GetProperties(object obj, BindingFlags bindingFlags)
-			=> (obj is ValigatorModelBase valigatorModel
-					? GetProperties(valigatorModel.GetInner(), bindingFlags).Select(p => GetProperPropertyInfo(p, valigatorModel))
-					: obj.GetType().GetProperties(bindingFlags)
-				)
-				.ToArray();
+		public static PropertyInfo[] GetProperties(Type type, BindingFlags bindingFlags)
+			=> type.IsValigatorModelBase()
+				? GetProperties(type.GetValigatorModelBaseInnerType(), bindingFlags).Select(property => GetProperPropertyInfo(property)).ToArray()
+				: type.GetProperties(bindingFlags);
 
-		private static PropertyInfo GetProperPropertyInfo(PropertyInfo p, ValigatorModelBase valigatorModel)
-			=> p.IsMissingGetterOrSetter() ? new CustomPropertyInfo(p, valigatorModel) : p;
+		private static PropertyInfo GetProperPropertyInfo(PropertyInfo property)
+			=> property.IsMissingGetterOrSetter() ? new CustomPropertyInfo(property) : property;
 
 		private static bool IsMissingGetterOrSetter(this PropertyInfo p)
 			=> p.GetGetMethod() == null || p.GetSetMethod() == null;
+
+		internal static bool IsValigatorModelBase(this Type type)
+			=> typeof(ValigatorModelBase<>).IsAssignableFrom(type);
+
+		internal static Type GetValigatorModelBaseInnerType(this Type type)
+			=> type.GetType().GetGenericArguments().First();
 	}
 }
