@@ -25,18 +25,18 @@ namespace Valigator.Core
 				lock (_getPropertyDescriptorsLockObj)
 				{
 					if (_getPropertyDescriptors == null)
-						_getPropertyDescriptors = CreatePropertyDescriptorsFunction(typeof(TModel));
+						_getPropertyDescriptors = CreatePropertyDescriptorsFunction();
 				}
 			}
 
 			return _getPropertyDescriptors.Invoke(model);
 		}
 
-		private static Func<TModel, PropertyDescriptor[]> CreatePropertyDescriptorsFunction(Type type)
+		private static Func<TModel, PropertyDescriptor[]> CreatePropertyDescriptorsFunction()
 		{
 			var modelExpression = Expression.Parameter(typeof(TModel), "model");
 
-			var propertyDescriptors = ValigatorModelBaseHelpers.GetProperties(type)
+			var propertyDescriptors = ValigatorModelBaseHelpers.GetProperties(typeof(TModel))
 				.Where(property => property.PropertyType.IsConstructedGenericType && property.PropertyType.GetGenericTypeDefinition() == typeof(Data<>))
 				.Select(property => CreatePropertyDescriptor(modelExpression, property));
 
@@ -69,7 +69,7 @@ namespace Valigator.Core
 				lock (_verifyModelLockObj)
 				{
 					if (_verifyMethod == null)
-						_verifyMethod = CreateVerifyFunction(typeof(TModel));
+						_verifyMethod = CreateVerifyFunction();
 				}
 			}
 
@@ -82,14 +82,14 @@ namespace Valigator.Core
 			return Result.Create(validationErrors.Length == 0, Unit.Value, validationErrors);
 		}
 
-		private static Func<TModel, ValidationError[][]> CreateVerifyFunction(Type type)
+		private static Func<TModel, ValidationError[][]> CreateVerifyFunction()
 		{
 			var modelParameter = Expression.Parameter(typeof(TModel), "model");
 
 			var modelExpression = Expression.Convert(modelParameter, typeof(TModel));
 
-			var properties = GetAllProperties(type);
-			var fields = GetAllFields(type);
+			var properties = GetAllProperties(typeof(TModel));
+			var fields = GetAllFields(typeof(TModel));
 
 			var (dataProperties, validateContentsMembers) = FilterToDataPropertiesAndValidateContentsMembers(properties, fields);
 
@@ -109,7 +109,7 @@ namespace Valigator.Core
 
 		private static PropertyInfo[] GetAllProperties(Type type)
 			=> GetBaseProperties(type)
-				.Concat(GetExplicitProperties(typeof(TModel)))
+				.Concat(GetExplicitProperties(type))
 				.ToArray();
 
 		private static FieldInfo[] GetAllFields(Type type)
