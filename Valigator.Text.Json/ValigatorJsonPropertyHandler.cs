@@ -63,7 +63,7 @@ namespace Valigator.Text.Json
 				return new ValigatorJsonPropertyHandler<TObject, TDataValue>(null, null);
 
 			var objParameter = Expression.Parameter(typeof(TObject), "obj");
-			var propertyExpression = CreateDataExpression(objParameter, property, obj);
+			var propertyExpression = ValigatorModelBaseHelpers.CreateDataExpression(objParameter, property, obj);
 
 			var getter = property.CanRead ? Expression.Lambda<Func<TObject, Data<TDataValue>>>(propertyExpression, objParameter).Compile() : null;
 
@@ -72,14 +72,5 @@ namespace Valigator.Text.Json
 
 			return new ValigatorJsonPropertyHandler<TObject, TDataValue>(getter, setter);
 		}
-
-		private static Expression CreateDataExpression(Expression objParameter, PropertyInfo propertyInfo, TObject model)
-			=> model is ValigatorModelBase
-				? Expression.Call(
-					objParameter,
-					model.GetType().GetMethod(nameof(ValigatorModelBase.GetMember)).MakeGenericMethod(propertyInfo.PropertyType),
-					Expression.Constant(propertyInfo.Name)
-				)
-				: (Expression)Expression.Property(objParameter, propertyInfo);
 	}
 }

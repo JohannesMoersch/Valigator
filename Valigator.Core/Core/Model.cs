@@ -106,15 +106,6 @@ namespace Valigator.Core
 			return Expression.Lambda<Func<TModel, ValidationError[][]>>(arrayInitializer, modelParameter).Compile();
 		}
 
-		private static Expression CreateDataExpression(Expression modelExpression, PropertyInfo propertyInfo, TModel model)
-			=> model is ValigatorModelBase
-				? Expression.Call(
-					modelExpression,
-					model.GetType().GetMethod(nameof(ValigatorModelBase.GetMember)).MakeGenericMethod(propertyInfo.PropertyType),
-					Expression.Constant(propertyInfo.Name)
-				)
-				: (Expression)Expression.Property(modelExpression, propertyInfo);
-
 		private static Expression CreateAssignExpression(Expression dataProperty, MethodInfo verifyMethod, Expression modelExpression, TModel model, PropertyInfo propertyInfo)
 			=> model is ValigatorModelBase
 				? Expression.Call(
@@ -264,7 +255,7 @@ namespace Valigator.Core
 		{
 			var methods = GetVerifySupportMethods(property.PropertyType);
 
-			var dataProperty = CreateDataExpression(modelExpression, property, model);
+			var dataProperty = ValigatorModelBaseHelpers.CreateDataExpression(modelExpression, property, model);
 
 			var isValid = Expression.Equal(Expression.Property(dataProperty, nameof(Data<object>.State)), Expression.Constant(DataState.Valid, typeof(DataState)));
 

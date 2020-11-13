@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 
 namespace Valigator.Core
@@ -24,5 +25,14 @@ namespace Valigator.Core
 			=> obj is ValigatorModelBase valigatorModel
 				? GetProperties(valigatorModel.GetInner(), bindingFlags)
 				: obj.GetType().GetProperties(bindingFlags).ToArray();
+
+		public static Expression CreateDataExpression<TObject>(Expression objParameter, PropertyInfo propertyInfo, TObject model)
+			=> model is ValigatorModelBase
+				? Expression.Call(
+					objParameter,
+					model.GetType().GetMethod(nameof(ValigatorModelBase.GetMember)).MakeGenericMethod(propertyInfo.PropertyType),
+					Expression.Constant(propertyInfo.Name)
+				)
+				: (Expression)Expression.Property(objParameter, propertyInfo);
 	}
 }
