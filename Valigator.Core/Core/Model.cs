@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using Valigator.Core.Helpers;
 
 namespace Valigator.Core
 {
@@ -245,26 +246,26 @@ namespace Valigator.Core
 		{
 			var methods = GetVerifySupportMethods(property.PropertyType);
 
-			var propertyInfoGetValue = property.GetType().GetMethod(nameof(PropertyInfo.GetValue), new[] { typeof(object) });
-			var propertyInfoSetValue = property.GetType().GetMethod(nameof(PropertyInfo.SetValue), new[] { typeof(object), typeof(object) });
 			var propertyParameter = Expression.Constant(property);
 
-			var getValueCall = Expression.Call(propertyParameter, propertyInfoGetValue, modelExpression);// (Expression)Expression.Call(modelExpression, getter); //Expression.Property(modelExpression, getter);// Expression.Property(modelExpression, property);
-			var dataProperty = Expression.Convert(getValueCall, property.PropertyType);
+			var getValueMethod = property.GetType().GetMethod(nameof(PropertyInfo.GetValue), new[] { typeof(object) });
+			var getProperty = Expression.Convert(Expression.Call(propertyParameter, getValueMethod, modelExpression), property.PropertyType);
 
-			var isValid = Expression.Equal(Expression.Property(dataProperty, nameof(Data<object>.State)), Expression.Constant(DataState.Valid, typeof(DataState)));
+			var isValid = Expression.Equal(Expression.Property(getProperty, nameof(Data<object>.State)), Expression.Constant(DataState.Valid, typeof(DataState)));
 
-			var isInvalid = Expression.Equal(Expression.Property(dataProperty, nameof(Data<object>.State)), Expression.Constant(DataState.Invalid, typeof(DataState)));
+			var isInvalid = Expression.Equal(Expression.Property(getProperty, nameof(Data<object>.State)), Expression.Constant(DataState.Invalid, typeof(DataState)));
 
 			var isVerified = Expression.Variable(typeof(bool), "isVerified");
 
 			var assignIsVerified = Expression.Assign(isVerified, Expression.Or(isValid, isInvalid));
 
-			var verifyResult = Expression.Convert(Expression.Call(dataProperty, methods.verify, modelExpression), typeof(object));
-			var setValueCall = Expression.Call(propertyParameter, propertyInfoSetValue, modelExpression, verifyResult);
-			var verifiedData = Expression.Block(setValueCall, dataProperty);//Expression.Assign(dataProperty, verifyResult);
+			var verifiedResult = Expression.Convert(Expression.Call(getProperty, methods.verify, modelExpression), typeof(object));
 
-			var data = Expression.Condition(Expression.OrElse(isValid, isInvalid), dataProperty, verifiedData);
+			var setValueMethod = property.GetType().GetMethod(nameof(PropertyInfo.SetValue), new[] { typeof(object), typeof(object) });
+			var setProperty = Expression.Call(propertyParameter, setValueMethod, modelExpression, verifiedResult);
+			var setAndGetData = Expression.Block(setProperty, getProperty);
+
+			var data = Expression.Condition(Expression.OrElse(isValid, isInvalid), getProperty, setAndGetData);
 
 			var result = Expression.Variable(typeof(Result<,>).MakeGenericType(property.PropertyType.GetGenericArguments()[0], typeof(ValidationError[])), "result");
 
