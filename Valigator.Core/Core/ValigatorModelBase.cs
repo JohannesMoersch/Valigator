@@ -8,8 +8,9 @@ using System.Reflection;
 
 namespace Valigator.Core
 {
-	//TODO: Nathan make this into a dictionary so that it outputs properly via valigator.
-	// Or perhaps make a custom converter for it.
+	/// <summary>
+	/// Create a Valigator Model. The inner object will be validated as a if it had a [ValigatorModel] attribute on it.
+	/// </summary>
 	public abstract class ValigatorModelBase : CustomTypeDescriptor
 	{
 		private readonly ConcurrentDictionary<string, object> _dictionary = new ConcurrentDictionary<string, object>();
@@ -38,7 +39,7 @@ namespace Valigator.Core
 
 		public override string GetClassName() => $"{nameof(ValigatorModelBase)}_{Inner.GetType().Name}";
 		public object GetInner() => Inner;
-		
+
 		private class ExpandoPropertyDescriptor : System.ComponentModel.PropertyDescriptor
 		{
 			private readonly IDictionary<string, object> _dictionary;
@@ -51,13 +52,6 @@ namespace Valigator.Core
 				_name = name;
 
 				AttributeArray = new[] { new ValidateContentsAttribute() };
-			}
-
-			protected override Attribute[] AttributeArray { get => base.AttributeArray; set => base.AttributeArray = value; }
-			public override AttributeCollection Attributes => base.Attributes;
-			protected override AttributeCollection CreateAttributeCollection()
-			{
-				return base.CreateAttributeCollection();
 			}
 
 			public override Type PropertyType => _dictionary[_name].GetType();

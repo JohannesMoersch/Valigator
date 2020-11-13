@@ -5,6 +5,7 @@ using Valigator.Core;
 
 namespace Valigator
 {
+	/// <inheritdoc />
 	[ValigatorModel]
 	public class ValigatorModel : ValigatorModelBase
 	{

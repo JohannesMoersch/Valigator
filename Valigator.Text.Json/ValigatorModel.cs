@@ -5,6 +5,7 @@ using Valigator.Core;
 
 namespace Valigator.Text.Json
 {
+	/// <inheritdoc />
 	[ValigatorModel]
 	public class ValigatorModel : ValigatorModelBase
 	{

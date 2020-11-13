@@ -88,7 +88,7 @@ namespace Valigator.Core
 			var modelExpression = Expression.Convert(modelParameter, typeof(TModel));
 
 			var properties = GetAllProperties(model);
-			var fields = GetAllFields(typeof(TModel));
+			var fields = GetAllFields(model);
 
 			var (dataProperties, validateContentsMembers) = FilterToDataPropertiesAndValidateContentsMembers(properties, fields, model);
 
@@ -121,8 +121,9 @@ namespace Valigator.Core
 				.Concat(GetExplicitProperties(typeof(TModel)))
 				.ToArray();
 
-		private static FieldInfo[] GetAllFields(Type type)
-			=> type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+		private static FieldInfo[] GetAllFields(TModel model)
+			=> ValigatorModelBaseHelpers.GetFields(model, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
+				.ToArray();
 
 		private static (PropertyInfo[] dataProperties, MemberInfo[] validateContentsMembers) FilterToDataPropertiesAndValidateContentsMembers(PropertyInfo[] properties, FieldInfo[] fields, TModel model)
 		{
