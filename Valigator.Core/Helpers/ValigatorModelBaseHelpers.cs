@@ -35,9 +35,9 @@ namespace Valigator.Core.Helpers
 			=> p.GetGetMethod() == null || p.GetSetMethod() == null;
 
 		internal static bool IsValigatorModelBase(this Type type)
-			=> typeof(ValigatorModelBase<>).IsAssignableFrom(type);
+			=> type.IsGenericType && typeof(ValigatorModelBase).IsAssignableFrom(type.GetGenericTypeDefinition());
 
 		internal static Type GetValigatorModelBaseInnerType(this Type type)
-			=> type.GetType().GetGenericArguments().First();
+			=> type.GetGenericArguments().First();
 	}
 }
