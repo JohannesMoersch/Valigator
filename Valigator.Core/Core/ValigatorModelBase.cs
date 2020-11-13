@@ -15,16 +15,6 @@ namespace Valigator.Core
 		private readonly ConcurrentDictionary<string, object> _dictionary = new ConcurrentDictionary<string, object>();
 		protected readonly object Inner;
 
-		//public ICollection<string> Keys => throw new NotImplementedException();
-
-		//public ICollection<object> Values => throw new NotImplementedException();
-
-		//public int Count => throw new NotImplementedException();
-
-		//public bool IsReadOnly => throw new NotImplementedException();
-
-		//public object this[string key] { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
 		public ValigatorModelBase(object inner)
 		{
 			Inner = inner;
@@ -48,24 +38,7 @@ namespace Valigator.Core
 
 		public override string GetClassName() => $"{nameof(ValigatorModelBase)}_{Inner.GetType().Name}";
 		public object GetInner() => Inner;
-
-		//public void Add(string key, object value) => _dictionary.TryAdd(key, value);
-		//public bool ContainsKey(string key) => _dictionary.ContainsKey(key);
-		//public bool Remove(string key) => _dictionary.TryRemove(key, out var _);
-		//public bool TryGetValue(string key, out object value) => _dictionary.TryGetValue(key, out value);
-		//public void Add(KeyValuePair<string, object> item) => _dictionary.TryAdd(item.Key, item.Value);
-		//public void Clear() => _dictionary.Clear();
-		//public bool Contains(KeyValuePair<string, object> item) => _dictionary.Contains(item);
-
-		//public void CopyTo(KeyValuePair<string, object>[] array, int arrayIndex)
-		//{
-		//	foreach (var item in _dictionary)
-		//		array[arrayIndex++] = item;
-		//}
-		//public bool Remove(KeyValuePair<string, object> item) => _dictionary.TryRemove(item.Key, out var _);
-		//public IEnumerator<KeyValuePair<string, object>> GetEnumerator() => _dictionary.GetEnumerator();
-		//IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-
+		
 		private class ExpandoPropertyDescriptor : System.ComponentModel.PropertyDescriptor
 		{
 			private readonly IDictionary<string, object> _dictionary;
