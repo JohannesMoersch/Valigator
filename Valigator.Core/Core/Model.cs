@@ -122,7 +122,9 @@ namespace Valigator.Core
 				.ToArray();
 
 		private static FieldInfo[] GetAllFields(TModel model)
-			=> ValigatorModelBaseHelpers.GetFields(model, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
+			=> model
+				.GetType()
+				.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
 				.ToArray();
 
 		private static (PropertyInfo[] dataProperties, MemberInfo[] validateContentsMembers) FilterToDataPropertiesAndValidateContentsMembers(PropertyInfo[] properties, FieldInfo[] fields, TModel model)
@@ -152,7 +154,7 @@ namespace Valigator.Core
 			}
 
 			var validateContentsFields = fields
-				.Where(field => field.GetCustomAttributes(typeof(ValidateContentsAttribute), true) != null)
+				.Where(p => p.GetCustomAttribute<ValidateContentsAttribute>() != null)
 				.ToArray();
 
 			var validateContentsMembers = Enumerable

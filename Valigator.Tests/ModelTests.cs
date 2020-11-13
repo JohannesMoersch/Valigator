@@ -72,28 +72,5 @@ namespace Valigator.Tests
 				(failure.First().ValueDescriptor as Valigator.Core.ValueDescriptors.RangeDescriptor).LessThanValue.AssertSome().Should().Be(0);
 			}
 		}
-
-		[Theory]
-		[InlineData(100, false)]
-		[InlineData(-100, true)]
-		public void VerifyNamedValueTuple(int value, bool success)
-		{
-			var stuff = new Stuff();
-			stuff.A = stuff.A.WithValue(value);
-
-			var anonymousObject = ValigatorModel.Create((AnonymousInner: stuff.A, Other: 1));
-
-			var result = Model.Verify(anonymousObject);
-
-			if (success)
-				result.AssertSuccess();
-			else
-			{
-				var failure = result.AssertFailure();
-				failure.Should().HaveCount(1);
-				failure.First().ValueDescriptor.Should().BeOfType<Valigator.Core.ValueDescriptors.RangeDescriptor>();
-				(failure.First().ValueDescriptor as Valigator.Core.ValueDescriptors.RangeDescriptor).LessThanValue.AssertSome().Should().Be(0);
-			}
-		}
 	}
 }
