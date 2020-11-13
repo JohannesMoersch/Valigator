@@ -1,29 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Valigator.Core;
 
 namespace Valigator.Text.Json
 {
 	public class ValigatorConverter<TObject> : JsonConverter<TObject>
 		where TObject : class
 	{
-		private static Dictionary<string, ValigatorJsonPropertyHandler<TObject>> CreatePropertyHandlers()
+		private static Dictionary<string, ValigatorJsonPropertyHandler<TObject>> CreatePropertyHandlers(TObject obj)
 		{
 			var result = new Dictionary<string, ValigatorJsonPropertyHandler<TObject>>();
 
-			foreach (var property in typeof(TObject).GetProperties(BindingFlags.Public | BindingFlags.Instance))
-				result.Add(property.Name, ValigatorJsonPropertyHandler<TObject>.Create(property));
+			var properties = ValigatorModelBaseHelpers.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+				.Concat(obj is ValigatorModelBase ? TypeDescriptor.GetProperties(obj).OfType<System.ComponentModel.PropertyDescriptor>().Select(property => ValigatorModelBaseHelpers.GetProperty(obj, property.Name)) : ValigatorModelBaseHelpers.GetProperties(obj, BindingFlags.Public | BindingFlags.Instance)).ToArray();
+
+			foreach (var property in properties)
+				result.Add(property.Name, ValigatorJsonPropertyHandler<TObject>.Create(property, obj));
 
 			return result;
 		}
 
 		private static Dictionary<string, ValigatorJsonPropertyHandler<TObject>> _propertyHandlers;
-		private static Dictionary<string, ValigatorJsonPropertyHandler<TObject>> PropertyHandlers => _propertyHandlers ??= CreatePropertyHandlers();
+		private static Dictionary<string, ValigatorJsonPropertyHandler<TObject>> GetPropertyHandlers(TObject obj) => _propertyHandlers ??= CreatePropertyHandlers(obj);
 
 		private readonly bool _useNewInstances;
 
@@ -59,7 +64,7 @@ namespace Valigator.Text.Json
 
 				var propertyName = reader.GetString();
 
-				if (PropertyHandlers.TryGetValue(propertyName, out var propertyHandler))
+				if (GetPropertyHandlers(obj).TryGetValue(propertyName, out var propertyHandler))
 				{
 					if (!reader.Read())
 						throw new Exception();
@@ -82,7 +87,7 @@ namespace Valigator.Text.Json
 		{
 			writer.WriteStartObject();
 
-			foreach (var handler in PropertyHandlers)
+			foreach (var handler in GetPropertyHandlers(value))
 			{
 				writer.WritePropertyName(handler.Key);
 

@@ -23,6 +23,10 @@ namespace Valigator.TestApi.Controllers
 		[HttpPost("post2")]
 		public JsonResult Post([FromBody] GuidBodyClass bodyValue)
 			=> new JsonResult(bodyValue.IdentifierCollection.Value.Select(id => id.TheIdentifier.Value).ToArray());
+
+		[HttpPost("anonymousObjectOutput")]
+		public JsonResult PostReturnsAnonymousObject([FromBody] GuidBodyClass bodyValue)
+			=> new JsonResult(new { TheOutputOfThePost = bodyValue.IdentifierCollection }.ToValigatorModel());
 	}
 
 	[ValigatorModel]

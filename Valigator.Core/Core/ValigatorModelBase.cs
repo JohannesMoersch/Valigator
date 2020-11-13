@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -7,10 +8,22 @@ using System.Reflection;
 
 namespace Valigator.Core
 {
-	public abstract class ValigatorModelBase : CustomTypeDescriptor, ICustomTypeDescriptor
+	//TODO: Nathan make this into a dictionary so that it outputs properly via valigator.
+	// Or perhaps make a custom converter for it.
+	public abstract class ValigatorModelBase : CustomTypeDescriptor
 	{
 		private readonly ConcurrentDictionary<string, object> _dictionary = new ConcurrentDictionary<string, object>();
 		protected readonly object Inner;
+
+		//public ICollection<string> Keys => throw new NotImplementedException();
+
+		//public ICollection<object> Values => throw new NotImplementedException();
+
+		//public int Count => throw new NotImplementedException();
+
+		//public bool IsReadOnly => throw new NotImplementedException();
+
+		//public object this[string key] { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
 		public ValigatorModelBase(object inner)
 		{
@@ -18,11 +31,8 @@ namespace Valigator.Core
 			SetupDictionary();
 		}
 
-		public T GetMember<T>(string name)
-			=> (T)(_dictionary.TryGetValue(name, out var value) ? value : null);
-
-		public T SetMember<T>(string name, T value)
-			=> (T)_dictionary.AddOrUpdate(name, value, (_, __) => value);
+		public T GetMember<T>(string name) => (T)(_dictionary.TryGetValue(name, out var value) ? value : null);
+		public T SetMember<T>(string name, T value) => (T)_dictionary.AddOrUpdate(name, value, (_, __) => value);
 
 		private void SetupDictionary()
 		{
@@ -36,11 +46,25 @@ namespace Valigator.Core
 		private IEnumerable<System.ComponentModel.PropertyDescriptor> GetExpandoProperties()
 			=> _dictionary.Select(property => new ExpandoPropertyDescriptor(_dictionary, property.Key));
 
-		public override string GetClassName()
-			=> $"{nameof(ValigatorModelBase)}_{Inner.GetType().Name}";
+		public override string GetClassName() => $"{nameof(ValigatorModelBase)}_{Inner.GetType().Name}";
+		public object GetInner() => Inner;
 
-		public object GetInner()
-			=> Inner;
+		//public void Add(string key, object value) => _dictionary.TryAdd(key, value);
+		//public bool ContainsKey(string key) => _dictionary.ContainsKey(key);
+		//public bool Remove(string key) => _dictionary.TryRemove(key, out var _);
+		//public bool TryGetValue(string key, out object value) => _dictionary.TryGetValue(key, out value);
+		//public void Add(KeyValuePair<string, object> item) => _dictionary.TryAdd(item.Key, item.Value);
+		//public void Clear() => _dictionary.Clear();
+		//public bool Contains(KeyValuePair<string, object> item) => _dictionary.Contains(item);
+
+		//public void CopyTo(KeyValuePair<string, object>[] array, int arrayIndex)
+		//{
+		//	foreach (var item in _dictionary)
+		//		array[arrayIndex++] = item;
+		//}
+		//public bool Remove(KeyValuePair<string, object> item) => _dictionary.TryRemove(item.Key, out var _);
+		//public IEnumerator<KeyValuePair<string, object>> GetEnumerator() => _dictionary.GetEnumerator();
+		//IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
 		private class ExpandoPropertyDescriptor : System.ComponentModel.PropertyDescriptor
 		{
@@ -52,6 +76,15 @@ namespace Valigator.Core
 			{
 				_dictionary = expando;
 				_name = name;
+
+				AttributeArray = new[] { new ValidateContentsAttribute() };
+			}
+
+			protected override Attribute[] AttributeArray { get => base.AttributeArray; set => base.AttributeArray = value; }
+			public override AttributeCollection Attributes => base.Attributes;
+			protected override AttributeCollection CreateAttributeCollection()
+			{
+				return base.CreateAttributeCollection();
 			}
 
 			public override Type PropertyType => _dictionary[_name].GetType();

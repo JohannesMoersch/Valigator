@@ -73,5 +73,18 @@ namespace Valigator.AspNetCore3.IntegrationTests
 				{
 					str.Should().Be("[\"61f45cfd-6389-4380-a803-c23881e982af\"]");
 				});
+
+		[Fact]
+		public Task AnonymousObjectOutputTest()
+			=> CreateClient()
+				.BuildTest()
+				.Post("test/anonymousObjectOutput")
+				.WithJsonBody($"{{ \"{nameof(BodyClass.IdentifierCollection)}\": [ {{\"{nameof(InnerClass.TheIdentifier)}\" : \"61f45cfd-6389-4380-a803-c23881e982af\"}} ] }}")
+				.Send()
+				.IsSuccess()
+				.AssertJsonBody(str =>
+				{
+					str.Should().Be("{\"TheOutputOfThePost\":[{\"TheIdentifier\":\"61f45cfd-6389-4380-a803-c23881e982af\"}]}");
+				});
 	}
 }

@@ -1,15 +1,11 @@
-﻿using System;
+﻿using Functional;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics.Contracts;
-using System.Dynamic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
-using Functional;
-using Microsoft.CSharp.RuntimeBinder;
 
 namespace Valigator.Core
 {
@@ -39,7 +35,7 @@ namespace Valigator.Core
 		{
 			var modelExpression = Expression.Parameter(typeof(TModel), "model");
 
-			var propertyDescriptors = GetProperties(model)
+			var propertyDescriptors = ValigatorModelBaseHelpers.GetProperties(model)
 				.Where(property => property.PropertyType.IsConstructedGenericType && property.PropertyType.GetGenericTypeDefinition() == typeof(Data<>))
 				.Select(property => CreatePropertyDescriptor(modelExpression, property));
 
@@ -225,8 +221,8 @@ namespace Valigator.Core
 
 		private static IEnumerable<PropertyInfo> GetBaseProperties(TModel model)
 		{
-			var currentLevelProperties = GetProperties(model, BindingFlags.NonPublic | BindingFlags.Instance)
-				.Concat(model is ValigatorModelBase ? TypeDescriptor.GetProperties(model).OfType<System.ComponentModel.PropertyDescriptor>().Select(property => GetProperty(model, property.Name)) : GetProperties(model, BindingFlags.Public | BindingFlags.Instance)).ToArray()
+			var currentLevelProperties = ValigatorModelBaseHelpers.GetProperties(model, BindingFlags.NonPublic | BindingFlags.Instance)
+				.Concat(model is ValigatorModelBase ? TypeDescriptor.GetProperties(model).OfType<System.ComponentModel.PropertyDescriptor>().Select(property => ValigatorModelBaseHelpers.GetProperty(model, property.Name)) : ValigatorModelBaseHelpers.GetProperties(model, BindingFlags.Public | BindingFlags.Instance)).ToArray()
 				.Where(p => !IsExplicitInterfaceImplementation(p))
 				.ToArray();
 
@@ -256,26 +252,6 @@ namespace Valigator.Core
 				currentType = currentType.BaseType;
 			}
 		}
-
-		private static PropertyInfo GetProperty(object obj, string name, BindingFlags bindingFlags)
-		 => obj is ValigatorModelBase valigatorModelBase
-				? GetProperty(valigatorModelBase.GetInner(), name, bindingFlags)
-				: obj.GetType().GetProperty(name, bindingFlags);
-
-		private static PropertyInfo GetProperty(object obj, string name)
-		 => obj is ValigatorModelBase valigatorModelBase
-				? GetProperty(valigatorModelBase.GetInner(), name)
-				: obj.GetType().GetProperty(name);
-
-		private static PropertyInfo[] GetProperties(object obj)
-			=> obj is ValigatorModelBase valigatorModel
-				? GetProperties(valigatorModel.GetInner())
-				: obj.GetType().GetProperties().ToArray();
-
-		private static PropertyInfo[] GetProperties(object obj, BindingFlags bindingFlags)
-			=> obj is ValigatorModelBase valigatorModel
-				? GetProperties(valigatorModel.GetInner(), bindingFlags)
-				: obj.GetType().GetProperties(bindingFlags).ToArray();
 
 		private static bool IsValigatorDataType(Type type)
 			=> type.IsConstructedGenericType && type.GetGenericTypeDefinition() == typeof(Data<>);
