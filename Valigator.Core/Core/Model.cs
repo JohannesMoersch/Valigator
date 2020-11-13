@@ -152,7 +152,7 @@ namespace Valigator.Core
 			}
 
 			var validateContentsFields = fields
-				.Where(p => p.GetCustomAttribute<ValidateContentsAttribute>() != null)
+				.Where(field => field.GetCustomAttributes(typeof(ValidateContentsAttribute), true) != null)
 				.ToArray();
 
 			var validateContentsMembers = Enumerable
