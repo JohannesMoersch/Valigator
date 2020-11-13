@@ -36,7 +36,8 @@ namespace Valigator.Core
 		{
 			var modelExpression = Expression.Parameter(typeof(TModel), "model");
 
-			var propertyDescriptors = ValigatorModelBaseHelpers.GetProperties(typeof(TModel))
+			var propertyDescriptors = ValigatorModelBaseHelpers
+				.GetProperties(typeof(TModel))
 				.Where(property => property.PropertyType.IsConstructedGenericType && property.PropertyType.GetGenericTypeDefinition() == typeof(Data<>))
 				.Select(property => CreatePropertyDescriptor(modelExpression, property));
 
@@ -202,11 +203,10 @@ namespace Valigator.Core
 
 		private static IEnumerable<PropertyInfo> GetBaseProperties(Type type)
 		{
-			var currentLevelProperties = ValigatorModelBaseHelpers.GetProperties(type, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
+			var currentLevelProperties = ValigatorModelBaseHelpers
+				.GetProperties(type, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
 				.Where(p => !IsExplicitInterfaceImplementation(p))
 				.ToArray();
-
-			var castMethod = typeof(Model<TModel>).GetMethod(nameof(Cast), BindingFlags.NonPublic | BindingFlags.Static);
 
 			foreach (var currentProperty in currentLevelProperties)
 			{
@@ -225,15 +225,13 @@ namespace Valigator.Core
 			}
 		}
 
-		private static T Cast<T>(T item)
-			=> item;
-
 		private static IEnumerable<PropertyInfo> GetExplicitProperties(Type type)
 		{
 			var currentType = type;
 			while (currentType != null)
 			{
-				var explicitProperties = currentType.GetProperties(BindingFlags.NonPublic | BindingFlags.Instance)
+				var explicitProperties = currentType
+					.GetProperties(BindingFlags.NonPublic | BindingFlags.Instance)
 					.Where(p => IsExplicitInterfaceImplementation(p));
 
 				foreach (var property in explicitProperties)
@@ -245,7 +243,6 @@ namespace Valigator.Core
 
 		private static bool IsValigatorDataType(Type type)
 			=> type.IsConstructedGenericType && type.GetGenericTypeDefinition() == typeof(Data<>);
-
 
 		private static bool IsExplicitInterfaceImplementation(PropertyInfo prop)
 			=> prop.Name.Contains(".");

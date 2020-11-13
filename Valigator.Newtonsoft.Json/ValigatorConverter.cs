@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using Valigator.Core;
+using Valigator.Core.Helpers;
 
 namespace Valigator.Newtonsoft.Json
 {
@@ -21,7 +22,7 @@ namespace Valigator.Newtonsoft.Json
 				.GetOrAdd
 				(
 					typeToConvert,
-					type => type.GetCustomAttribute<ValigatorModelAttribute>() is ValigatorModelAttribute attribute || typeof(ValigatorModelBase).IsAssignableFrom(type)
+					type => type.GetCustomAttribute<ValigatorModelAttribute>() is ValigatorModelAttribute attribute || type.IsValigatorModelBase()
 						? CreateConverterInstance(type)
 						: null
 				);

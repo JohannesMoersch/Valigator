@@ -34,7 +34,7 @@ namespace Valigator.Core.Helpers
 		private static bool IsMissingGetterOrSetter(this PropertyInfo p)
 			=> p.GetGetMethod() == null || p.GetSetMethod() == null;
 
-		internal static bool IsValigatorModelBase(this Type type)
+		public static bool IsValigatorModelBase(this Type type)
 			=> type.IsGenericType && typeof(ValigatorModelBase).IsAssignableFrom(type.GetGenericTypeDefinition());
 
 		internal static Type GetValigatorModelBaseInnerType(this Type type)

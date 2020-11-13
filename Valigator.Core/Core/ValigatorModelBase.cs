@@ -30,9 +30,8 @@ namespace Valigator.Core
 		public object GetMember(string name) => (Dictionary.TryGetValue(name, out var value) ? value : null);
 		public void SetMember(string name, object value) => Dictionary.AddOrUpdate(name, value, (_, __) => value);
 	}
-	/// <summary>
-	/// Create a Valigator Model. The inner object will be validated as a if it had a [ValigatorModel] attribute on it.
-	/// </summary>
+
+	/// <inheritdoc />
 	public abstract class ValigatorModelBase<TInner> : ValigatorModelBase
 	{
 		public ValigatorModelBase(TInner inner) : base(inner) { }
