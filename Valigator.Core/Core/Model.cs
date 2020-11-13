@@ -106,16 +106,6 @@ namespace Valigator.Core
 			return Expression.Lambda<Func<TModel, ValidationError[][]>>(arrayInitializer, modelParameter).Compile();
 		}
 
-		private static Expression CreateAssignExpression(Expression dataProperty, MethodInfo verifyMethod, Expression modelExpression, TModel model, PropertyInfo propertyInfo)
-			=> model is ValigatorModelBase
-				? Expression.Call(
-						modelExpression,
-						model.GetType().GetMethod(nameof(ValigatorModelBase.SetMember)).MakeGenericMethod(propertyInfo.PropertyType),
-						Expression.Constant(propertyInfo.Name),
-						Expression.Call(dataProperty, verifyMethod, modelExpression)
-					)
-				: (Expression)Expression.Assign(dataProperty, Expression.Call(dataProperty, verifyMethod, modelExpression));
-
 		private static PropertyInfo[] GetAllProperties(TModel model)
 			=> GetBaseProperties(model)
 				.Concat(GetExplicitProperties(typeof(TModel)))
@@ -138,20 +128,17 @@ namespace Valigator.Core
 				.Where(p => p.GetCustomAttribute<ValidateContentsAttribute>() != null)
 				.ToArray();
 
-			if (!(model is ValigatorModelBase))
-			{
-				var noGetters = dataProperties
-					.Concat(validateContentsProperties)
-					.Where(x => x.GetMethod == null)
-					.ToArray();
+			var noGetters = dataProperties
+				.Concat(validateContentsProperties)
+				.Where(x => x.GetMethod == null)
+				.ToArray();
 
-				var noSetters = dataProperties
-					.Where(x => x.SetMethod == null)
-					.ToArray();
+			var noSetters = dataProperties
+				.Where(x => x.SetMethod == null)
+				.ToArray();
 
-				if (noGetters.Any() || noSetters.Any())
-					throw new MissingAccessorsException(noGetters, noSetters);
-			}
+			if (noGetters.Any() || noSetters.Any())
+				throw new MissingAccessorsException(noGetters, noSetters);
 
 			var validateContentsFields = fields
 				.Where(p => p.GetCustomAttribute<ValidateContentsAttribute>() != null)
@@ -215,8 +202,7 @@ namespace Valigator.Core
 
 		private static IEnumerable<PropertyInfo> GetBaseProperties(TModel model)
 		{
-			var currentLevelProperties = ValigatorModelBaseHelpers.GetProperties(model, BindingFlags.NonPublic | BindingFlags.Instance)
-				.Concat(model is ValigatorModelBase ? TypeDescriptor.GetProperties(model).OfType<System.ComponentModel.PropertyDescriptor>().Select(property => ValigatorModelBaseHelpers.GetProperty(model, property.Name)) : ValigatorModelBaseHelpers.GetProperties(model, BindingFlags.Public | BindingFlags.Instance)).ToArray()
+			var currentLevelProperties = ValigatorModelBaseHelpers.GetProperties(model, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
 				.Where(p => !IsExplicitInterfaceImplementation(p))
 				.ToArray();
 
@@ -259,7 +245,7 @@ namespace Valigator.Core
 		{
 			var methods = GetVerifySupportMethods(property.PropertyType);
 
-			var dataProperty = ValigatorModelBaseHelpers.CreateDataExpression(modelExpression, property, model);
+			var dataProperty = (Expression)Expression.Property(modelExpression, property);
 
 			var isValid = Expression.Equal(Expression.Property(dataProperty, nameof(Data<object>.State)), Expression.Constant(DataState.Valid, typeof(DataState)));
 
@@ -269,7 +255,7 @@ namespace Valigator.Core
 
 			var assignIsVerified = Expression.Assign(isVerified, Expression.Or(isValid, isInvalid));
 
-			var verifiedData = CreateAssignExpression(dataProperty, methods.verify, modelExpression, model, property);
+			var verifiedData = Expression.Assign(dataProperty, Expression.Call(dataProperty, methods.verify, modelExpression));
 
 			var data = Expression.Condition(Expression.OrElse(isValid, isInvalid), dataProperty, verifiedData);
 

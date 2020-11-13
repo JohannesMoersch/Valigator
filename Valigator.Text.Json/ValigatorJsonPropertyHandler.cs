@@ -3,7 +3,6 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Valigator.Core;
 
 namespace Valigator.Text.Json
 {
@@ -17,13 +16,13 @@ namespace Valigator.Text.Json
 
 		public abstract void WriteProperty(Utf8JsonWriter writer, JsonSerializerOptions options, TObject obj);
 
-		public static ValigatorJsonPropertyHandler<TObject> Create(PropertyInfo property, TObject obj)
+		public static ValigatorJsonPropertyHandler<TObject> Create(PropertyInfo property)
 		{
 			var handlerType = typeof(ValigatorJsonPropertyHandler<,>).MakeGenericType(typeof(TObject), property.PropertyType.GetGenericArguments()[0]);
 
-			var createMethod = handlerType.GetMethod(nameof(ValigatorJsonPropertyHandler<TObject, bool>.Create), BindingFlags.Public | BindingFlags.Static, Type.DefaultBinder, new[] { typeof(PropertyInfo), typeof(TObject) }, null);
+			var createMethod = handlerType.GetMethod(nameof(ValigatorJsonPropertyHandler<TObject, bool>.Create), BindingFlags.Public | BindingFlags.Static, Type.DefaultBinder, new[] { typeof(PropertyInfo) }, null);
 
-			return (ValigatorJsonPropertyHandler<TObject>)createMethod.Invoke(null, new object[] { property, obj });
+			return (ValigatorJsonPropertyHandler<TObject>)createMethod.Invoke(null, new[] { property });
 		}
 	}
 
@@ -57,17 +56,17 @@ namespace Valigator.Text.Json
 				throw new NotSupportedException();
 		}
 
-		public new static ValigatorJsonPropertyHandler<TObject, TDataValue> Create(PropertyInfo property, TObject obj)
+		public new static ValigatorJsonPropertyHandler<TObject, TDataValue> Create(PropertyInfo property)
 		{
 			if (property.GetCustomAttribute<JsonIgnoreAttribute>() != null)
 				return new ValigatorJsonPropertyHandler<TObject, TDataValue>(null, null);
 
 			var objParameter = Expression.Parameter(typeof(TObject), "obj");
-			var propertyExpression = ValigatorModelBaseHelpers.CreateDataExpression(objParameter, property, obj);
-
-			var getter = property.CanRead ? Expression.Lambda<Func<TObject, Data<TDataValue>>>(propertyExpression, objParameter).Compile() : null;
+			var propertyExpression = Expression.Property(objParameter, property);
 
 			var valueParameter = Expression.Parameter(typeof(Data<TDataValue>), "value");
+
+			var getter = property.CanRead ? Expression.Lambda<Func<TObject, Data<TDataValue>>>(propertyExpression, objParameter).Compile() : null;
 			var setter = property.CanWrite ? Expression.Lambda<Action<TObject, Data<TDataValue>>>(Expression.Assign(propertyExpression, valueParameter), objParameter, valueParameter).Compile() : null;
 
 			return new ValigatorJsonPropertyHandler<TObject, TDataValue>(getter, setter);

@@ -13,12 +13,6 @@ namespace Valigator
 		{
 		}
 
-		public override AttributeCollection GetAttributes()
-			=> new AttributeCollection(base.GetAttributes().OfType<Attribute>().Append(new ValigatorModelAttribute()).ToArray());
-
-		public override string GetClassName()
-			=> $"{nameof(ValigatorModel)}_{Inner.GetType().Name}";
-
 		public static ValigatorModel Create(object inner)
 			=> new ValigatorModel(inner);
 	}

@@ -1,7 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -13,21 +12,18 @@ namespace Valigator.Newtonsoft.Json
 	public class Converter<TObject> : IConverter
 		where TObject : class
 	{
-		private static Dictionary<string, ValigatorJsonPropertyHandler<TObject>> CreatePropertyHandlers(TObject obj)
+		private static Dictionary<string, ValigatorJsonPropertyHandler<TObject>> CreatePropertyHandlers()
 		{
 			var result = new Dictionary<string, ValigatorJsonPropertyHandler<TObject>>();
 
-			var properties = ValigatorModelBaseHelpers.GetProperties(BindingFlags.Public | BindingFlags.Instance)
-				.Concat(obj is ValigatorModelBase ? TypeDescriptor.GetProperties(obj).OfType<System.ComponentModel.PropertyDescriptor>().Select(property => ValigatorModelBaseHelpers.GetProperty(obj, property.Name)) : ValigatorModelBaseHelpers.GetProperties(obj, BindingFlags.Public | BindingFlags.Instance)).ToArray();
-
-			foreach (var property in properties)
-				result.Add(property.Name, ValigatorJsonPropertyHandler<TObject>.Create(property, obj));
+			foreach (var property in ValigatorModelBaseHelpers.GetProperties(BindingFlags.Public | BindingFlags.Instance))
+				result.Add(property.Name, ValigatorJsonPropertyHandler<TObject>.Create(property));
 
 			return result;
 		}
 
 		private static Dictionary<string, ValigatorJsonPropertyHandler<TObject>> _propertyHandlers;
-		private static Dictionary<string, ValigatorJsonPropertyHandler<TObject>> GetPropertyHandlers(TObject obj) => _propertyHandlers ??= CreatePropertyHandlers(obj);
+		private static Dictionary<string, ValigatorJsonPropertyHandler<TObject>> PropertyHandlers => _propertyHandlers ??= CreatePropertyHandlers();
 
 		private readonly bool _useNewInstances;
 
@@ -63,7 +59,7 @@ namespace Valigator.Newtonsoft.Json
 
 				var propertyName = (string)reader.Value;
 
-				if (GetPropertyHandlers(obj).TryGetValue(propertyName, out var propertyHandler) && propertyHandler.CanWrite)
+				if (PropertyHandlers.TryGetValue(propertyName, out var propertyHandler) && propertyHandler.CanWrite)
 				{
 					if (!reader.Read())
 						throw new Exception();
@@ -86,7 +82,7 @@ namespace Valigator.Newtonsoft.Json
 		{
 			writer.WriteStartObject();
 
-			foreach (var handler in GetPropertyHandlers(value).Where(kvp => kvp.Value.CanRead))
+			foreach (var handler in PropertyHandlers.Where(kvp => kvp.Value.CanRead))
 			{
 				writer.WritePropertyName(handler.Key);
 
