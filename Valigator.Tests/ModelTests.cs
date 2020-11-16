@@ -74,9 +74,9 @@ namespace Valigator.Tests
 		}
 
 		[Theory]
-		[InlineData(100)]
-		[InlineData(-100)]
-		public void VerifyNestedAnonymousObjects_AlwaysSuccessfulBecauseNestedObjectDoesNotValidateContents(int value)
+		[InlineData(100, true)]
+		[InlineData(-100, true)]
+		public void VerifyNestedAnonymousObjects_AlwaysSuccessfulBecauseNestedObjectDoesNotValidateContents(int value, bool success)
 		{
 			var stuff = new Stuff();
 			stuff.A = stuff.A.WithValue(value);
@@ -85,7 +85,15 @@ namespace Valigator.Tests
 
 			var result = Model.Verify(anonymousObject);
 
+			if (success)
 				result.AssertSuccess();
+			else
+			{
+				var failure = result.AssertFailure();
+				failure.Should().HaveCount(1);
+				failure.First().ValueDescriptor.Should().BeOfType<Valigator.Core.ValueDescriptors.RangeDescriptor>();
+				(failure.First().ValueDescriptor as Valigator.Core.ValueDescriptors.RangeDescriptor).LessThanValue.AssertSome().Should().Be(0);
+			}
 		}
 
 		public class TypeWithoutSetters

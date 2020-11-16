@@ -5,11 +5,11 @@ using System.Reflection;
 
 namespace Valigator.Core
 {
-	internal class CustomPropertyInfo : PropertyInfo
+	internal class ValigatorModelPropertyInfo : PropertyInfo
 	{
 		public PropertyInfo Inner { get; }
 
-		public CustomPropertyInfo(PropertyInfo inner)
+		public ValigatorModelPropertyInfo(PropertyInfo inner)
 		{
 			Inner = inner;
 		}
