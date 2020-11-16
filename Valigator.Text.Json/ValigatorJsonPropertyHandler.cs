@@ -62,12 +62,17 @@ namespace Valigator.Text.Json
 				return new ValigatorJsonPropertyHandler<TObject, TDataValue>(null, null);
 
 			var objParameter = Expression.Parameter(typeof(TObject), "obj");
-			var propertyExpression = Expression.Property(objParameter, property);
+
+			var propertyParameter = Expression.Constant(property);
+			var getValueMethod = property.GetType().GetMethod(nameof(PropertyInfo.GetValue), new[] { typeof(object) });
+			var propertyExpression = Expression.Convert(Expression.Call(propertyParameter, getValueMethod, objParameter), property.PropertyType);
 
 			var valueParameter = Expression.Parameter(typeof(Data<TDataValue>), "value");
+			var setValueMethod = property.GetType().GetMethod(nameof(PropertyInfo.SetValue), new[] { typeof(object), typeof(object) });
+			var setProperty = Expression.Call(propertyParameter, setValueMethod, objParameter, Expression.Convert(valueParameter, typeof(object)));
 
 			var getter = property.CanRead ? Expression.Lambda<Func<TObject, Data<TDataValue>>>(propertyExpression, objParameter).Compile() : null;
-			var setter = property.CanWrite ? Expression.Lambda<Action<TObject, Data<TDataValue>>>(Expression.Assign(propertyExpression, valueParameter), objParameter, valueParameter).Compile() : null;
+			var setter = property.CanWrite ? Expression.Lambda<Action<TObject, Data<TDataValue>>>(setProperty, objParameter, valueParameter).Compile() : null;
 
 			return new ValigatorJsonPropertyHandler<TObject, TDataValue>(getter, setter);
 		}

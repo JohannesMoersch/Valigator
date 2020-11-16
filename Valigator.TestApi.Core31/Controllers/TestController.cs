@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Functional;
@@ -12,7 +13,7 @@ namespace Valigator.TestApi.Controllers
 	public class TestController : ControllerBase
 	{
 		[HttpGet("header")]
-		public JsonResult Header([DefaultedModelBinder]Option<string> header)
+		public JsonResult Header([DefaultedModelBinder] Option<string> header)
 			=> new JsonResult(header.Match(_ => _, () => null));
 
 		[HttpPost("post")]
@@ -22,6 +23,10 @@ namespace Valigator.TestApi.Controllers
 		[HttpPost("post2")]
 		public JsonResult Post([FromBody] GuidBodyClass bodyValue)
 			=> new JsonResult(bodyValue.IdentifierCollection.Value.Select(id => id.TheIdentifier.Value).ToArray());
+
+		[HttpPost("anonymousObjectOutput")]
+		public JsonResult PostReturnsAnonymousObject([FromBody] GuidBodyClass bodyValue)
+			=> new JsonResult(new { TheOutputOfThePost = bodyValue.IdentifierCollection }.ToValigatorModel());
 	}
 
 	[ValigatorModel]

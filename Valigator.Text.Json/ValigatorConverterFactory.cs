@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Valigator.Core.Helpers;
 
 namespace Valigator.Text.Json
 {
@@ -20,7 +19,7 @@ namespace Valigator.Text.Json
 				.GetOrAdd
 				(
 					typeToConvert,
-					type => type.GetCustomAttribute<ValigatorModelAttribute>() is ValigatorModelAttribute attribute
+					type => type.GetCustomAttribute<ValigatorModelAttribute>() is ValigatorModelAttribute attribute || type.IsValigatorModelBase()
 						? CreateConverterInstance(type)
 						: null
 				);

@@ -1,9 +1,15 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Dynamic;
 using System.Text;
 using Functional;
 using Valigator.Core;
+using Valigator.Tests.Common;
 using Xunit;
+using System.Reflection;
+using FluentAssertions;
 
 namespace Valigator.Tests
 {
@@ -42,6 +48,87 @@ namespace Valigator.Tests
 			model.Four = model.Four.WithMappedValue(-5);
 
 			var result = Model.Verify(model);
+		}
+
+		[Theory]
+		[InlineData(100, false)]
+		[InlineData(-100, true)]
+		public void VerifyAnonymousObject(int value, bool success)
+		{
+			var stuff = new Stuff();
+			stuff.A = stuff.A.WithValue(value);
+
+			var anonymousObject = ValigatorModel.Create(new { AnonymousInner = stuff.A, Other = 1 });
+
+			var result = Model.Verify(anonymousObject);
+
+			if (success)
+				result.AssertSuccess();
+			else
+			{
+				var failure = result.AssertFailure();
+				failure.Should().HaveCount(1);
+				failure.First().ValueDescriptor.Should().BeOfType<Valigator.Core.ValueDescriptors.RangeDescriptor>();
+				(failure.First().ValueDescriptor as Valigator.Core.ValueDescriptors.RangeDescriptor).LessThanValue.AssertSome().Should().Be(0);
+			}
+		}
+
+		[Theory]
+		[InlineData(100, true)]
+		[InlineData(-100, true)]
+		public void VerifyNestedAnonymousObjects_AlwaysSuccessfulBecauseNestedObjectDoesNotValidateContents(int value, bool success)
+		{
+			var stuff = new Stuff();
+			stuff.A = stuff.A.WithValue(value);
+
+			var anonymousObject = ValigatorModel.Create(new { AnonymousOuter = ValigatorModel.Create(new { AnonymousInner = stuff }), Other = 1 });
+
+			var result = Model.Verify(anonymousObject);
+
+			if (success)
+				result.AssertSuccess();
+			else
+			{
+				var failure = result.AssertFailure();
+				failure.Should().HaveCount(1);
+				failure.First().ValueDescriptor.Should().BeOfType<Valigator.Core.ValueDescriptors.RangeDescriptor>();
+				(failure.First().ValueDescriptor as Valigator.Core.ValueDescriptors.RangeDescriptor).LessThanValue.AssertSome().Should().Be(0);
+			}
+		}
+
+		public class TypeWithoutSetters
+		{
+			public Data<int> A { get; } = Data.Defaulted(5).LessThan(0);
+		}
+
+		[Fact]
+		public void VerifyValigatorModelWRapperOnTypeWithoutSetterWrappedInValigatorModel()
+		{
+			var typeWithoutSetter = new TypeWithoutSetters();
+
+			var anonymousObject = ValigatorModel.Create(typeWithoutSetter);
+
+			var result = Model.Verify(anonymousObject);
+
+				var failure = result.AssertFailure();
+				failure.Should().HaveCount(1);
+				failure.First().ValueDescriptor.Should().BeOfType<Valigator.Core.ValueDescriptors.RangeDescriptor>();
+				(failure.First().ValueDescriptor as Valigator.Core.ValueDescriptors.RangeDescriptor).LessThanValue.AssertSome().Should().Be(0);
+		}
+
+		[Fact]
+		public void VerifyValigatorModelWrapperOnTypeWithSetterWrappedInValigatorModel()
+		{
+			var typeWithSetter = new Stuff();
+
+			var anonymousObject = ValigatorModel.Create(typeWithSetter);
+
+			var result = Model.Verify(anonymousObject);
+
+			var failure = result.AssertFailure();
+			failure.Should().HaveCount(1);
+			failure.First().ValueDescriptor.Should().BeOfType<Valigator.Core.ValueDescriptors.RangeDescriptor>();
+			(failure.First().ValueDescriptor as Valigator.Core.ValueDescriptors.RangeDescriptor).LessThanValue.AssertSome().Should().Be(0);
 		}
 	}
 }

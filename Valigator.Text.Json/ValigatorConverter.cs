@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Runtime.Serialization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Valigator.Core.Helpers;
 
 namespace Valigator.Text.Json
 {
@@ -16,7 +17,7 @@ namespace Valigator.Text.Json
 		{
 			var result = new Dictionary<string, ValigatorJsonPropertyHandler<TObject>>();
 
-			foreach (var property in typeof(TObject).GetProperties(BindingFlags.Public | BindingFlags.Instance))
+			foreach (var property in ValigatorModelBaseHelpers.GetProperties(typeof(TObject), BindingFlags.Public | BindingFlags.Instance))
 				result.Add(property.Name, ValigatorJsonPropertyHandler<TObject>.Create(property));
 
 			return result;

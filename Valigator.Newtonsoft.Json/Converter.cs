@@ -5,6 +5,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.Serialization;
+using Valigator.Core.Helpers;
 
 namespace Valigator.Newtonsoft.Json
 {
@@ -15,7 +16,7 @@ namespace Valigator.Newtonsoft.Json
 		{
 			var result = new Dictionary<string, ValigatorJsonPropertyHandler<TObject>>();
 
-			foreach (var property in typeof(TObject).GetProperties(BindingFlags.Public | BindingFlags.Instance))
+			foreach (var property in ValigatorModelBaseHelpers.GetProperties(typeof(TObject), BindingFlags.Public | BindingFlags.Instance))
 				result.Add(property.Name, ValigatorJsonPropertyHandler<TObject>.Create(property));
 
 			return result;

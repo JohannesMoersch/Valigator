@@ -1,11 +1,12 @@
-﻿using System;
+﻿using Functional;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
-using Functional;
+using Valigator.Core.Helpers;
 
 namespace Valigator.Core
 {
@@ -35,8 +36,8 @@ namespace Valigator.Core
 		{
 			var modelExpression = Expression.Parameter(typeof(TModel), "model");
 
-			var propertyDescriptors = typeof(TModel)
-				.GetProperties()
+			var propertyDescriptors = ValigatorModelBaseHelpers
+				.GetProperties(typeof(TModel))
 				.Where(property => property.PropertyType.IsConstructedGenericType && property.PropertyType.GetGenericTypeDefinition() == typeof(Data<>))
 				.Select(property => CreatePropertyDescriptor(modelExpression, property));
 
@@ -113,7 +114,9 @@ namespace Valigator.Core
 				.ToArray();
 
 		private static FieldInfo[] GetAllFields(Type type)
-			=> type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+			=> type
+				.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
+				.ToArray();
 
 		private static (PropertyInfo[] dataProperties, MemberInfo[] validateContentsMembers) FilterToDataPropertiesAndValidateContentsMembers(PropertyInfo[] properties, FieldInfo[] fields)
 		{
@@ -200,20 +203,25 @@ namespace Valigator.Core
 
 		private static IEnumerable<PropertyInfo> GetBaseProperties(Type type)
 		{
-			var currentLevelProperties = type
-				.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
-				.Where(p => !IsExplicitInterfaceImplementation(p));
+			var currentLevelProperties = ValigatorModelBaseHelpers
+				.GetProperties(type, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
+				.Where(p => !IsExplicitInterfaceImplementation(p))
+				.ToArray();
 
 			foreach (var currentProperty in currentLevelProperties)
 			{
-				var propertyToUse = currentProperty;
-				var method = currentProperty.GetGetMethod(true) ?? currentProperty.GetSetMethod(true);
+				if (type.IsValigatorModelBase())
+					yield return currentProperty;
+				else
+				{
+					var method = currentProperty.GetGetMethod(true) ?? currentProperty.GetSetMethod(true);
 
-				var baseType = method.GetBaseDefinition().DeclaringType;
-				if (baseType != type)
-					propertyToUse = baseType.GetProperty(currentProperty.Name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-
-				yield return propertyToUse;
+					var baseType = method?.GetBaseDefinition().DeclaringType;
+					if (baseType != typeof(TModel))
+						yield return ValigatorModelBaseHelpers.GetProperty(baseType, currentProperty.Name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+					else
+						yield return currentProperty;
+				}
 			}
 		}
 
@@ -226,7 +234,7 @@ namespace Valigator.Core
 					.GetProperties(BindingFlags.NonPublic | BindingFlags.Instance)
 					.Where(p => IsExplicitInterfaceImplementation(p));
 
-				foreach (var property in currentType.GetProperties(BindingFlags.NonPublic | BindingFlags.Instance).Where(p => IsExplicitInterfaceImplementation(p)))
+				foreach (var property in explicitProperties)
 					yield return property;
 
 				currentType = currentType.BaseType;
@@ -236,7 +244,6 @@ namespace Valigator.Core
 		private static bool IsValigatorDataType(Type type)
 			=> type.IsConstructedGenericType && type.GetGenericTypeDefinition() == typeof(Data<>);
 
-
 		private static bool IsExplicitInterfaceImplementation(PropertyInfo prop)
 			=> prop.Name.Contains(".");
 
@@ -244,19 +251,26 @@ namespace Valigator.Core
 		{
 			var methods = GetVerifySupportMethods(property.PropertyType);
 
-			var dataProperty = Expression.Property(modelExpression, property);
+			var propertyParameter = Expression.Constant(property);
 
-			var isValid = Expression.Equal(Expression.Property(dataProperty, nameof(Data<object>.State)), Expression.Constant(DataState.Valid, typeof(DataState)));
+			var getValueMethod = property.GetType().GetMethod(nameof(PropertyInfo.GetValue), new[] { typeof(object) });
+			var getProperty = Expression.Convert(Expression.Call(propertyParameter, getValueMethod, modelExpression), property.PropertyType);
 
-			var isInvalid = Expression.Equal(Expression.Property(dataProperty, nameof(Data<object>.State)), Expression.Constant(DataState.Invalid, typeof(DataState)));
+			var isValid = Expression.Equal(Expression.Property(getProperty, nameof(Data<object>.State)), Expression.Constant(DataState.Valid, typeof(DataState)));
+
+			var isInvalid = Expression.Equal(Expression.Property(getProperty, nameof(Data<object>.State)), Expression.Constant(DataState.Invalid, typeof(DataState)));
 
 			var isVerified = Expression.Variable(typeof(bool), "isVerified");
 
 			var assignIsVerified = Expression.Assign(isVerified, Expression.Or(isValid, isInvalid));
 
-			var verifiedData = Expression.Assign(dataProperty, Expression.Call(dataProperty, methods.verify, modelExpression));
+			var verifiedResult = Expression.Convert(Expression.Call(getProperty, methods.verify, modelExpression), typeof(object));
 
-			var data = Expression.Condition(Expression.OrElse(isValid, isInvalid), dataProperty, verifiedData);
+			var setValueMethod = property.GetType().GetMethod(nameof(PropertyInfo.SetValue), new[] { typeof(object), typeof(object) });
+			var setProperty = Expression.Call(propertyParameter, setValueMethod, modelExpression, verifiedResult);
+			var setAndGetData = Expression.Block(setProperty, getProperty);
+
+			var data = Expression.Condition(Expression.OrElse(isValid, isInvalid), getProperty, setAndGetData);
 
 			var result = Expression.Variable(typeof(Result<,>).MakeGenericType(property.PropertyType.GetGenericArguments()[0], typeof(ValidationError[])), "result");
 
