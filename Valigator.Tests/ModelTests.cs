@@ -73,6 +73,21 @@ namespace Valigator.Tests
 			}
 		}
 
+		[Theory]
+		[InlineData(100)]
+		[InlineData(-100)]
+		public void VerifyNestedAnonymousObjects_AlwaysSuccessfulBecauseNestedObjectDoesNotValidateContents(int value)
+		{
+			var stuff = new Stuff();
+			stuff.A = stuff.A.WithValue(value);
+
+			var anonymousObject = ValigatorModel.Create(new { AnonymousOuter = ValigatorModel.Create(new { AnonymousInner = stuff }), Other = 1 });
+
+			var result = Model.Verify(anonymousObject);
+
+				result.AssertSuccess();
+		}
+
 		public class TypeWithoutSetters
 		{
 			public Data<int> A { get; } = Data.Defaulted(5).LessThan(0);
