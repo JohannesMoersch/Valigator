@@ -72,5 +72,25 @@ namespace Valigator.Tests
 				(failure.First().ValueDescriptor as Valigator.Core.ValueDescriptors.RangeDescriptor).LessThanValue.AssertSome().Should().Be(0);
 			}
 		}
+
+		public class TypeWithoutSetters
+		{
+			public Data<int> A { get; } = Data.Defaulted(5).LessThan(0);
+		}
+
+		[Fact]
+		public void VerifyTypeWithoutSetterWrappedInValigatorModel()
+		{
+			var typeWithoutSetter = new TypeWithoutSetters();
+
+			var anonymousObject = ValigatorModel.Create(typeWithoutSetter);
+
+			var result = Model.Verify(anonymousObject);
+
+				var failure = result.AssertFailure();
+				failure.Should().HaveCount(1);
+				failure.First().ValueDescriptor.Should().BeOfType<Valigator.Core.ValueDescriptors.RangeDescriptor>();
+				(failure.First().ValueDescriptor as Valigator.Core.ValueDescriptors.RangeDescriptor).LessThanValue.AssertSome().Should().Be(0);
+		}
 	}
 }
