@@ -29,10 +29,7 @@ namespace Valigator.Core.Helpers
 				: type.GetProperties(bindingFlags);
 
 		private static PropertyInfo GetProperPropertyInfo(PropertyInfo property)
-			=> property.IsMissingGetterOrSetter() ? new CustomPropertyInfo(property) : property;
-
-		private static bool IsMissingGetterOrSetter(this PropertyInfo p)
-			=> p.GetGetMethod() == null || p.GetSetMethod() == null;
+			=> new CustomPropertyInfo(property);
 
 		public static bool IsValigatorModelBase(this Type type)
 			=> type.IsGenericType && typeof(ValigatorModelBase).IsAssignableFrom(type.GetGenericTypeDefinition());

@@ -79,7 +79,7 @@ namespace Valigator.Tests
 		}
 
 		[Fact]
-		public void VerifyTypeWithoutSetterWrappedInValigatorModel()
+		public void VerifyValigatorModelWRapperOnTypeWithoutSetterWrappedInValigatorModel()
 		{
 			var typeWithoutSetter = new TypeWithoutSetters();
 
@@ -91,6 +91,21 @@ namespace Valigator.Tests
 				failure.Should().HaveCount(1);
 				failure.First().ValueDescriptor.Should().BeOfType<Valigator.Core.ValueDescriptors.RangeDescriptor>();
 				(failure.First().ValueDescriptor as Valigator.Core.ValueDescriptors.RangeDescriptor).LessThanValue.AssertSome().Should().Be(0);
+		}
+
+		[Fact]
+		public void VerifyValigatorModelWrapperOnTypeWithSetterWrappedInValigatorModel()
+		{
+			var typeWithSetter = new Stuff();
+
+			var anonymousObject = ValigatorModel.Create(typeWithSetter);
+
+			var result = Model.Verify(anonymousObject);
+
+			var failure = result.AssertFailure();
+			failure.Should().HaveCount(1);
+			failure.First().ValueDescriptor.Should().BeOfType<Valigator.Core.ValueDescriptors.RangeDescriptor>();
+			(failure.First().ValueDescriptor as Valigator.Core.ValueDescriptors.RangeDescriptor).LessThanValue.AssertSome().Should().Be(0);
 		}
 	}
 }
