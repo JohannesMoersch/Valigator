@@ -30,7 +30,7 @@ namespace Valigator.TestApi.Controllers
 
 		[HttpPost("nonDataPropertyObject")]
 		public JsonResult PostWithNonDataPropertyObject([FromBody] GuidBodyClass bodyValue)
-		=> new JsonResult(new NonDataPropertyModel(bodyValue.IdentifierCollection.Value));
+			=> new JsonResult(new NonDataPropertyModel(bodyValue.IdentifierCollection.Value));
 	}
 
 	[ValigatorModel]
