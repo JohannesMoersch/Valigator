@@ -18,9 +18,7 @@ namespace Valigator.Text.Json
 
 		public static ValigatorJsonPropertyHandler<TObject> Create(PropertyInfo property)
 		{
-			var propertyHandlerType = property.PropertyType.IsValigatorDataType() ? typeof(ValigatorJsonPropertyHandler<,>) : typeof(NonValigatorDataJsonPropertyHandler<,>);
-
-			var propertyType = property.PropertyType.IsValigatorDataType() ? property.PropertyType.GetGenericArguments()[0] : property.PropertyType;
+			var (propertyHandlerType, propertyType) = GetPropertyTypeAndHandlerType(property);
 
 			var handlerType = propertyHandlerType.MakeGenericType(typeof(TObject), propertyType);
 
@@ -28,6 +26,9 @@ namespace Valigator.Text.Json
 
 			return (ValigatorJsonPropertyHandler<TObject>)createMethod.Invoke(null, new[] { property });
 		}
+
+		private static (Type HandlerType, Type PropertyType) GetPropertyTypeAndHandlerType(PropertyInfo property)
+			=> property.PropertyType.IsValigatorDataType() ? (typeof(ValigatorJsonPropertyHandler<,>), property.PropertyType.GetGenericArguments()[0]) : (typeof(NonValigatorDataJsonPropertyHandler<,>), property.PropertyType);
 
 		internal static Func<TObject, TValue> CreateGetter<TValue>(PropertyInfo property)
 		{
