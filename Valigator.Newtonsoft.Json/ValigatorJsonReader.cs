@@ -51,7 +51,7 @@ namespace Valigator.Newtonsoft.Json
 			if (serializer.Deserialize(reader, typeof(TValue)) is TValue value)
 				return SetValue(data, Option.Some(value));
 
-			return SetValue(data, Option.None<TValue>());
+			return SetNull(data);
 		}
 
 		private static Data<TDataValue> ReadCollectionValue<TDataValue, TValue>(JsonReader reader, JsonSerializer serializer, Data<TDataValue> data)
