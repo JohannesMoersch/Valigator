@@ -39,12 +39,8 @@ namespace Valigator.TestApi
 
 			services
 				.AddSingleton<IObjectModelValidator, NullObjectModelValidator>() //Disables ASP.NET Core validation because it skips over the ValigatorFilter and, as a result, the AddValigator Funcs will not be called.
-				.AddSingleton<IClientErrorFactory, NullClientErrorFactory>()
 				.AddControllers(opt =>
 				{
-					var ori = opt.InputFormatters.First();
-					opt.InputFormatters.Clear();
-					opt.InputFormatters.Add(new CustomNewtonsoftJsonInputFormatter(ori));
 				})
 				.AddNewtonsoftJson(opt =>
 				{
@@ -66,39 +62,6 @@ namespace Valigator.TestApi
 			{
 				endpoints.MapControllers();
 			});
-		}
-	}
-
-	public class CustomNewtonsoftJsonInputFormatter : TextInputFormatter, IInputFormatterExceptionPolicy
-	{
-		private readonly NewtonsoftJsonInputFormatter _inner;
-
-		public CustomNewtonsoftJsonInputFormatter(TextInputFormatter inner) : base()
-		{
-			_inner = inner;
-		}
-
-		public InputFormatterExceptionPolicy ExceptionPolicy { get; } = InputFormatterExceptionPolicy.MalformedInputExceptions;
-
-		public override Task<InputFormatterResult> ReadRequestBodyAsync(InputFormatterContext context, Encoding encoding)
-			=> _inner.ReadRequestBodyAsync(context, encoding);
-	}
-
-	public class NullClientErrorFactory : ProblemDetailsFactory, IClientErrorFactory
-	{
-		public override ProblemDetails CreateProblemDetails(HttpContext httpContext, int? statusCode = null, string title = null, string type = null, string detail = null, string instance = null)
-		{
-			throw new NotImplementedException();
-		}
-
-		public override ValidationProblemDetails CreateValidationProblemDetails(HttpContext httpContext, ModelStateDictionary modelStateDictionary, int? statusCode = null, string title = null, string type = null, string detail = null, string instance = null)
-		{
-			throw new NotImplementedException();
-		}
-
-		public IActionResult GetClientError(ActionContext actionContext, IClientErrorActionResult clientError)
-		{
-			return new JsonResult("");
 		}
 	}
 }
