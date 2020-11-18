@@ -82,7 +82,7 @@ namespace Valigator.Text.Json
 		public override void Write(Utf8JsonWriter writer, TObject value, JsonSerializerOptions options)
 		{
 			writer.WriteStartObject();
-
+			
 			foreach (var handler in PropertyHandlers)
 			{
 				writer.WritePropertyName(handler.Key);

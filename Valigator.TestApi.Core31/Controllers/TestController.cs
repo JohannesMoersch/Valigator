@@ -26,7 +26,24 @@ namespace Valigator.TestApi.Controllers
 
 		[HttpPost("anonymousObjectOutput")]
 		public JsonResult PostReturnsAnonymousObject([FromBody] GuidBodyClass bodyValue)
-			=> new JsonResult(new { TheOutputOfThePost = bodyValue.IdentifierCollection }.ToValigatorModel());
+			=> new JsonResult(new { TheOutputOfThePost = bodyValue.IdentifierCollection, SecondValue = 1 }.ToValigatorModel());
+
+		[HttpPost("nonDataPropertyObject")]
+		public JsonResult PostWithNonDataPropertyObject([FromBody] GuidBodyClass bodyValue)
+			=> new JsonResult(new NonDataPropertyModel(bodyValue.IdentifierCollection.Value));
+	}
+
+	[ValigatorModel]
+	public class NonDataPropertyModel
+	{
+		public Data<GuidInnerClass[]> IdentifierCollection { get; set; } = Data.Collection<GuidInnerClass>().Required().ItemCount(1);
+
+		public NonDataPropertyModel(GuidInnerClass[] identifierCollection)
+		{
+			IdentifierCollection = IdentifierCollection.WithValue(identifierCollection);
+		}
+
+		public int SecondValue { get; set; } = 1;
 	}
 
 	[ValigatorModel]

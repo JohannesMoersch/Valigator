@@ -84,7 +84,20 @@ namespace Valigator.AspNetCore3.IntegrationTests
 				.IsSuccess()
 				.AssertJsonBody(str =>
 				{
-					str.Should().Be("{\"TheOutputOfThePost\":[{\"TheIdentifier\":\"61f45cfd-6389-4380-a803-c23881e982af\"}]}");
+					str.Should().Be("{\"TheOutputOfThePost\":[{\"TheIdentifier\":\"61f45cfd-6389-4380-a803-c23881e982af\"}],\"SecondValue\":1}");
+				});
+
+		[Fact]
+		public Task ObjectWithNonDataPropertyTest()
+			=> CreateClient()
+				.BuildTest()
+				.Post("test/nonDataPropertyObject")
+				.WithJsonBody($"{{ \"{nameof(BodyClass.IdentifierCollection)}\": [ {{\"{nameof(InnerClass.TheIdentifier)}\" : \"61f45cfd-6389-4380-a803-c23881e982af\"}} ] }}")
+				.Send()
+				.IsSuccess()
+				.AssertJsonBody(str =>
+				{
+					str.Should().Be("{\"IdentifierCollection\":[{\"TheIdentifier\":\"61f45cfd-6389-4380-a803-c23881e982af\"}],\"SecondValue\":1}");
 				});
 	}
 }

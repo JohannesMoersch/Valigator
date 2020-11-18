@@ -121,11 +121,11 @@ namespace Valigator.Core
 		private static (PropertyInfo[] dataProperties, MemberInfo[] validateContentsMembers) FilterToDataPropertiesAndValidateContentsMembers(PropertyInfo[] properties, FieldInfo[] fields)
 		{
 			var dataProperties = properties
-				.Where(p => IsValigatorDataType(p.PropertyType))
+				.Where(p => p.PropertyType.IsValigatorDataType())
 				.ToArray();
 
 			var validateContentsProperties = properties
-				.Where(p => !IsValigatorDataType(p.PropertyType))
+				.Where(p => !p.PropertyType.IsValigatorDataType())
 				.Where(p => p.GetCustomAttribute<ValidateContentsAttribute>() != null)
 				.ToArray();
 
@@ -240,9 +240,6 @@ namespace Valigator.Core
 				currentType = currentType.BaseType;
 			}
 		}
-
-		private static bool IsValigatorDataType(Type type)
-			=> type.IsConstructedGenericType && type.GetGenericTypeDefinition() == typeof(Data<>);
 
 		private static bool IsExplicitInterfaceImplementation(PropertyInfo prop)
 			=> prop.Name.Contains(".");
