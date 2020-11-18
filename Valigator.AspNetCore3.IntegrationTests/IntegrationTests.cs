@@ -99,5 +99,31 @@ namespace Valigator.AspNetCore3.IntegrationTests
 				{
 					str.Should().Be("{\"IdentifierCollection\":[{\"TheIdentifier\":\"61f45cfd-6389-4380-a803-c23881e982af\"}],\"SecondValue\":1}");
 				});
+
+		[Fact]
+		public Task MappedGuidEndpointReturnsProperError()
+			=> CreateClient()
+				.BuildTest()
+				.Post("mappedGuid/mappedGuid")
+				.WithJsonBody($"{{\"Items\":[{{\"MappedGuid\":\"NotAGuid\"}}]}}")
+				.Send()
+				.IsSuccess()
+				.AssertJsonBody(str =>
+				{
+					str.Should().ContainAll("");
+				});
+
+		[Fact]
+		public Task MappedGuidEndpointWorks()
+			=> CreateClient()
+				.BuildTest()
+				.Post("mappedGuid/mappedGuid")
+				.WithJsonBody($"{{\"Items\":[{{\"MappedGuid\":\"61f45cfd-6389-4380-a803-c23881e982af\"}}]}}")
+				.Send()
+				.IsSuccess()
+				.AssertJsonBody(str =>
+				{
+					str.Should().Be("true");
+				});
 	}
 }
