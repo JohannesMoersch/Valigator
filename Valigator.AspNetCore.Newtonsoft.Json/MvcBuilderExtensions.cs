@@ -57,9 +57,9 @@ namespace Valigator
 					options.Filters.Add(new ValigatorResultFilter(resultErrorCreator));
 				})
 #if NETCOREAPP3_0
-				.AddNewtonsoftJson(o => o.SerializerSettings.Converters.Add(new ValigatorConverter()));
+				.AddNewtonsoftJson(o => o.SerializerSettings.Converters.Add(new ValigatorConverter(o.SerializerSettings)));
 #else
-				.AddJsonOptions(o => o.SerializerSettings.Converters.Add(new ValigatorConverter()));
+				.AddJsonOptions(o => o.SerializerSettings.Converters.Add(new ValigatorConverter(o.SerializerSettings)));
 #endif
 		}
 
