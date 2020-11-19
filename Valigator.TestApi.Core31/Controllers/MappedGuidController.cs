@@ -142,9 +142,30 @@ namespace Valigator.TestApi.Controllers
 				 Option.None<decimal>();
 	}
 
-	public class MappedGuidConverter : JsonConverter
+	public class SystemTextMappedGuidConverter : System.Text.Json.Serialization.JsonConverter<MappedGuid>
 	{
-		public static readonly MappedGuidConverter Instance = new MappedGuidConverter();
+		public static SystemTextMappedGuidConverter Instance = new SystemTextMappedGuidConverter();
+
+		public override MappedGuid Read(ref System.Text.Json.Utf8JsonReader reader, Type typeToConvert, System.Text.Json.JsonSerializerOptions options)
+		{
+			if (reader.Read())
+			{
+				var guid = Guid.Parse(reader.GetString());
+				return MappedGuidHelpers.Create(guid).Match(s => s, e => throw e);
+			}
+
+			throw new Exception("Didn't map guid");
+		}
+
+		public override void Write(System.Text.Json.Utf8JsonWriter writer, MappedGuid value, System.Text.Json.JsonSerializerOptions options)
+		{
+			writer.WriteStringValue(value.Value);
+		}
+	}
+
+	public class NewtonsoftMappedGuidConverter : JsonConverter
+	{
+		public static readonly NewtonsoftMappedGuidConverter Instance = new NewtonsoftMappedGuidConverter();
 
 		public override bool CanRead { get; } = true;
 		public override bool CanWrite { get; } = true;

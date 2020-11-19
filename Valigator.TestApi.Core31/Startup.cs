@@ -33,10 +33,11 @@ namespace Valigator.TestApi
 
 			services
 				.AddControllers()
-				.AddNewtonsoftJson(opt =>
-				{
-					opt.SerializerSettings.Converters.Add(MappedGuidConverter.Instance);
-				})
+				//.AddNewtonsoftJson(opt =>
+				//{
+				//	opt.SerializerSettings.Converters.Add(NewtonsoftMappedGuidConverter.Instance);
+				//})
+				.AddJsonOptions(opt => opt.JsonSerializerOptions.Converters.Add(SystemTextMappedGuidConverter.Instance))
 				.SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
 				.AddValigator(errors => new JsonResult(errors) { StatusCode = 400 }, errors => new JsonResult(errors.Select(e => new { Path = e.Path.ToString(), Message = e.Message }).ToArray()) { StatusCode = 400 });
 		}

@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Text.Json;
 using Functional;
 using Valigator.Core;
+using Valigator.Core.ValueDescriptors;
 
 namespace Valigator.Text.Json
 {
@@ -46,9 +47,15 @@ namespace Valigator.Text.Json
 		{
 			if (reader.TokenType == JsonTokenType.Null)
 				return SetValue(data, Option.None<TValue>());
-
-			if (JsonSerializer.Deserialize<TValue>(ref reader, options) is TValue value)
-				return SetValue(data, Option.Some(value));
+			try
+			{
+				if (JsonSerializer.Deserialize<TValue>(ref reader, options) is TValue value)
+					return SetValue(data, Option.Some(value));
+			}
+			catch(JsonException ex)
+			{
+				return SetError<TValue, TDataValue>(data, ex.Message);
+			}
 
 			return SetNull(data);
 		}
@@ -83,5 +90,8 @@ namespace Valigator.Text.Json
 
 		private static Data<TDataValue> SetNull<TDataValue>(Data<TDataValue> data)
 			=> (data.DataContainer as IAcceptValue<TDataValue>).WithNull(data);
+
+		private static Data<TDataValue> SetError<TValue, TDataValue>(Data<TDataValue> data, string message)
+			=> data.WithErrors(MappingError.Create<TValue, TDataValue>(message));
 	}
 }
