@@ -54,7 +54,7 @@ namespace Valigator.Text.Json
 			}
 			catch(JsonException ex)
 			{
-				return SetError<TValue, TDataValue>(data, ex.Message);
+				return SetError<object, TValue>(data, ex.Message);
 			}
 
 			return SetNull(data);
@@ -91,7 +91,7 @@ namespace Valigator.Text.Json
 		private static Data<TDataValue> SetNull<TDataValue>(Data<TDataValue> data)
 			=> (data.DataContainer as IAcceptValue<TDataValue>).WithNull(data);
 
-		private static Data<TDataValue> SetError<TValue, TDataValue>(Data<TDataValue> data, string message)
-			=> data.WithErrors(MappingError.Create<TValue, TDataValue>(message));
+		private static Data<TTo> SetError<TFrom, TTo>(Data<TTo> data, string message)
+			=> data.WithErrors(MappingError.Create<TFrom, TTo>(message));
 	}
 }
