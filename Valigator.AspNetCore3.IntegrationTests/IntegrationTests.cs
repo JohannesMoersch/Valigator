@@ -145,7 +145,15 @@ namespace Valigator.AspNetCore3.IntegrationTests
 				.IsBadRequest()
 				.AssertJsonBody(str =>
 				{
-					str.Should().Be("[{\"name\":\"TheHeader\",\"source\":1,\"validationError\":{\"message\":\"Error mapping input to Guid.\",\"path\":{},\"valueDescriptor\":{\"fromType\":\"System.String, System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e\",\"toType\":\"System.Guid, System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e\"}}}]");
+					str
+						.Should()
+						.Match<string>(str =>
+							// Newtonsoft
+							str == "[{\"name\":\"TheHeader\",\"source\":1,\"validationError\":{\"message\":\"Error mapping input to Guid.\",\"path\":{},\"valueDescriptor\":{\"fromType\":\"System.String, System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e\",\"toType\":\"System.Guid, System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e\"}}}]"
+						||
+							// System.Text
+							str == "[{\"name\":\"TheHeader\",\"source\":1,\"validationError\":{\"message\":\"Error mapping input to Guid.\",\"path\":{},\"valueDescriptor\":{}}}]"
+						);
 				});
 
 		[Fact]
@@ -159,7 +167,15 @@ namespace Valigator.AspNetCore3.IntegrationTests
 				.IsBadRequest()
 				.AssertJsonBody(str =>
 				{
-					str.Should().Be("[{\"name\":\"TheHeader\",\"source\":1,\"validationError\":{\"message\":\"Error mapping input to Guid.\",\"path\":{},\"valueDescriptor\":{\"fromType\":\"System.String, System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e\",\"toType\":\"System.Guid, System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e\"}}}]");
+					str
+						.Should()
+						.Match<string>(str =>
+							// Newtonsoft
+							str == "[{\"name\":\"TheHeader\",\"source\":1,\"validationError\":{\"message\":\"Error mapping input to Guid.\",\"path\":{},\"valueDescriptor\":{\"fromType\":\"System.String, System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e\",\"toType\":\"System.Guid, System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e\"}}}]"
+						||
+							// System.Text
+							str == "[{\"name\":\"TheHeader\",\"source\":1,\"validationError\":{\"message\":\"Error mapping input to Guid.\",\"path\":{},\"valueDescriptor\":{}}}]"
+						);
 				});
 	}
 }
