@@ -6,8 +6,12 @@ using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using System;
 using System.Buffers;
 using System.Linq;
+using System.Reflection;
 using Valigator.TestApi.Controllers;
 
 [assembly: ApiController]
@@ -29,7 +33,10 @@ namespace Valigator.TestApi
 
 			services
 				.AddControllers()
-				.AddNewtonsoftJson(opt => opt.SerializerSettings.Converters.Add(MappedGuidConverter.Instance))
+				.AddNewtonsoftJson(opt =>
+				{
+					opt.SerializerSettings.Converters.Add(MappedGuidConverter.Instance);
+				})
 				.SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
 				.AddValigator(errors => new JsonResult(errors) { StatusCode = 400 }, errors => new JsonResult(errors.Select(e => new { Path = e.Path.ToString(), Message = e.Message }).ToArray()) { StatusCode = 400 });
 		}

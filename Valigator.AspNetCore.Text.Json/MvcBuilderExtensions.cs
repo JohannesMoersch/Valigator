@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Valigator.AspNetCore;
@@ -44,6 +45,9 @@ namespace Valigator
 		{
 			builder
 				.Services
+#if NETCOREAPP3_0
+				.AddSingleton<IObjectModelValidator, NullObjectModelValidator>() //Disables ASP.NET Core validation because it skips over the ValigatorFilter and, as a result, the AddValigator Funcs will not be called.
+#endif
 				.AddSingleton<IModelBinderFactory, Factory>();
 
 			return builder
@@ -53,6 +57,11 @@ namespace Valigator
 					options.Filters.Add(new ValigatorResultFilter(resultErrorCreator));
 				})
 				.AddJsonOptions(o => o.JsonSerializerOptions.Converters.Add(new ValigatorConverterFactory()));
+		}
+
+		private class NullObjectModelValidator : IObjectModelValidator
+		{
+			public void Validate(ActionContext actionContext, ValidationStateDictionary validationState, string prefix, object model) { }
 		}
 	}
 }

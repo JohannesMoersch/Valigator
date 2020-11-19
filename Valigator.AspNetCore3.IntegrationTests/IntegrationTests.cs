@@ -110,7 +110,7 @@ namespace Valigator.AspNetCore3.IntegrationTests
 				.IsBadRequest()
 				.AssertJsonBody(str =>
 				{
-					str.Should().Be("");
+					str.Should().Be("[{\"name\":\"bodyValue\",\"source\":0,\"validationError\":{\"message\":\"Error converting value \\\"NotAGuid\\\" to type 'System.Guid'. Path 'Items[0].MappedGuid', line 1, position 34.\",\"path\":{},\"valueDescriptor\":{\"fromType\":\"System.Guid, System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e\",\"toType\":\"Valigator.TestApi.Controllers.MappedGuid, Valigator.TestApi.Core31, Version=2.1.1.0, Culture=neutral, PublicKeyToken=null\"}}}]");
 				});
 
 		[Fact]
@@ -137,7 +137,7 @@ namespace Valigator.AspNetCore3.IntegrationTests
 				.IsBadRequest()
 				.AssertJsonBody(str =>
 				{
-					str.Should().Be("");
+					str.Should().Be("[{\"name\":\"TheHeader\",\"source\":1,\"validationError\":{\"message\":\"Error mapping input to Guid.\",\"path\":{},\"valueDescriptor\":{\"fromType\":\"System.String, System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e\",\"toType\":\"System.Guid, System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e\"}}}]");
 				});
 
 		[Fact]
@@ -151,7 +151,7 @@ namespace Valigator.AspNetCore3.IntegrationTests
 				.IsBadRequest()
 				.AssertJsonBody(str =>
 				{
-					str.Should().Be("");
+					str.Should().Be("[{\"name\":\"TheHeader\",\"source\":1,\"validationError\":{\"message\":\"Error mapping input to Guid.\",\"path\":{},\"valueDescriptor\":{\"fromType\":\"System.String, System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e\",\"toType\":\"System.Guid, System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e\"}}}]");
 				});
 	}
 }
