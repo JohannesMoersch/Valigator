@@ -56,7 +56,7 @@ namespace Valigator.Newtonsoft.Json
 			}
 			catch (JsonSerializationException ex)
 			{
-				return SetError<object, TValue>(data, ex.Message);
+				return SetError<object, TValue, TDataValue>(data, ex.Message);
 			}
 
 
@@ -94,7 +94,7 @@ namespace Valigator.Newtonsoft.Json
 		private static Data<TDataValue> SetNull<TDataValue>(Data<TDataValue> data)
 			=> (data.DataContainer as IAcceptValue<TDataValue>).WithNull(data);
 
-		private static Data<TTo> SetError<TFrom, TTo>(Data<TTo> data, string message)
+		private static Data<TDataValue> SetError<TFrom, TTo, TDataValue>(Data<TDataValue> data, string message)
 			=> data.WithErrors(MappingError.Create<TFrom, TTo>(message));
 	}
 }
