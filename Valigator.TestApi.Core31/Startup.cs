@@ -12,7 +12,7 @@ using System;
 using System.Buffers;
 using System.Linq;
 using System.Reflection;
-using Valigator.TestApi.Controllers;
+using Valigator.TestApi.Core31.MappedGuid;
 
 [assembly: ApiController]
 namespace Valigator.TestApi
