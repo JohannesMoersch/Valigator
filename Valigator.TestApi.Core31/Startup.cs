@@ -28,12 +28,8 @@ namespace Valigator.TestApi
 		{
 
 			services
-				.AddSingleton<IObjectModelValidator, NullObjectModelValidator>() //Disables ASP.NET Core validation because it skips over the ValigatorFilter and, as a result, the AddValigator Funcs will not be called.
 				.AddControllers()
-				.AddNewtonsoftJson(opt =>
-				{
-					opt.SerializerSettings.Converters.Add(MappedGuidConverter.Instance);
-				})
+				.AddNewtonsoftJson(opt => opt.SerializerSettings.Converters.Add(MappedGuidConverter.Instance))
 				.SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
 				.AddValigator(errors => new JsonResult(errors) { StatusCode = 400 }, errors => new JsonResult(errors.Select(e => new { Path = e.Path.ToString(), Message = e.Message }).ToArray()) { StatusCode = 400 });
 		}

@@ -61,7 +61,7 @@ namespace Valigator
 				})
 #if NETCOREAPP3_0
 				.AddNewtonsoftJson(o => o.SerializerSettings.Converters.Add(new ValigatorConverter()))
-				.ConfigureApiBehaviorOptions(opt => opt.InvalidModelStateResponseFactory = arg => CreateInvalidModelStateResponse(arg, errors => new JsonResult(errors) { StatusCode = 400 }));
+				.ConfigureApiBehaviorOptions(opt => opt.InvalidModelStateResponseFactory = arg => CreateInvalidModelStateResponse(arg, inputErrorCreater));
 #else
 				.AddJsonOptions(o => o.SerializerSettings.Converters.Add(new ValigatorConverter()));
 #endif
