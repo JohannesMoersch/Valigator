@@ -107,10 +107,10 @@ namespace Valigator.AspNetCore3.IntegrationTests
 				.Post("mappedGuid/mappedGuid")
 				.WithJsonBody($"{{\"Items\":[{{\"MappedGuid\":\"NotAGuid\"}}]}}")
 				.Send()
-				.IsSuccess()
+				.IsBadRequest()
 				.AssertJsonBody(str =>
 				{
-					str.Should().ContainAll("");
+					str.Should().Be("");
 				});
 
 		[Fact]
@@ -124,6 +124,34 @@ namespace Valigator.AspNetCore3.IntegrationTests
 				.AssertJsonBody(str =>
 				{
 					str.Should().Be("true");
+				});
+
+		[Fact]
+		public Task MappedGuidHeaderEndpointWorks()
+			=> CreateClient()
+				.BuildTest()
+				.Post("mappedGuid/mappedGuidHeader")
+				.WithHeader("TheHeader", "61f45cfd-6389-4380-a803-c23881e982af")
+				.WithJsonBody("")
+				.Send()
+				.IsBadRequest()
+				.AssertJsonBody(str =>
+				{
+					str.Should().Be("");
+				});
+
+		[Fact]
+		public Task MappedGuidHeaderEndpointReturnsProperError()
+			=> CreateClient()
+				.BuildTest()
+				.Post("mappedGuid/mappedGuidHeader")
+				.WithHeader("TheHeader", "NotAGuid")
+				.WithJsonBody("")
+				.Send()
+				.IsBadRequest()
+				.AssertJsonBody(str =>
+				{
+					str.Should().Be("");
 				});
 	}
 }

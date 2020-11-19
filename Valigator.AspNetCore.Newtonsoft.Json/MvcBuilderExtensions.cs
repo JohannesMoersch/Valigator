@@ -1,10 +1,14 @@
-﻿using System;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Valigator.AspNetCore;
+using Valigator.Core.ValueDescriptors;
 using Valigator.Newtonsoft.Json;
 
 namespace Valigator
@@ -44,6 +48,9 @@ namespace Valigator
 		{
 			builder
 				.Services
+#if NETCOREAPP3_0
+				.AddSingleton<IObjectModelValidator, NullObjectModelValidator>() //Disables ASP.NET Core validation because it skips over the ValigatorFilter and, as a result, the AddValigator Funcs will not be called.
+#endif
 				.AddSingleton<IModelBinderFactory, Factory>();
 
 			return builder
@@ -53,10 +60,22 @@ namespace Valigator
 					options.Filters.Add(new ValigatorResultFilter(resultErrorCreator));
 				})
 #if NETCOREAPP3_0
-				.AddNewtonsoftJson(o => o.SerializerSettings.Converters.Add(new ValigatorConverter()));
+				.AddNewtonsoftJson(o => o.SerializerSettings.Converters.Add(new ValigatorConverter()))
+				.ConfigureApiBehaviorOptions(opt => opt.InvalidModelStateResponseFactory = arg => CreateInvalidModelStateResponse(arg, errors => new JsonResult(errors) { StatusCode = 400 }));
 #else
 				.AddJsonOptions(o => o.SerializerSettings.Converters.Add(new ValigatorConverter()));
 #endif
+		}
+
+		private static IActionResult CreateInvalidModelStateResponse(ActionContext arg, Func<AspNetCore.ModelError[], IActionResult> resultErrorCreator)
+			=> resultErrorCreator.Invoke(GetModelErrors(arg).ToArray());
+
+		private static IEnumerable<AspNetCore.ModelError> GetModelErrors(ActionContext arg)
+			=> arg.ModelState.Select(kvp => new AspNetCore.ModelError(kvp.Key, ModelSource.Body, new ValidationError(kvp.Value.AttemptedValue, new MappingDescriptor(typeof(int), typeof(double)))));
+
+		private class NullObjectModelValidator : IObjectModelValidator
+		{
+			public void Validate(ActionContext actionContext, ValidationStateDictionary validationState, string prefix, object model) { }
 		}
 	}
 }

@@ -20,6 +20,10 @@ namespace Valigator.TestApi.Controllers
 		[HttpPost("mappedGuid")]
 		public JsonResult MappedGuidEndpoint([FromBody] MappedGuidCollection bodyValue)
 			=> new JsonResult(true);
+
+		[HttpPost("mappedGuidHeader")]
+		public JsonResult MappedGuidHeaderEndpoint([MappedGuidHelpers.ModelBindings.Required.Header] Data<MappedGuid> mappedGuid)
+			=> new JsonResult(true);
 	}
 
 	[ValigatorModel]
@@ -227,6 +231,12 @@ namespace Valigator.TestApi.Controllers
 				public class QueryAttribute : BaseAttribute
 				{
 					public override BindingSource BindingSource { get; } = BindingSource.Query;
+				}
+
+				public class HeaderAttribute : BaseAttribute
+				{
+					public override BindingSource BindingSource { get; } = BindingSource.Header;
+					public override string Name { get; set; } = "TheHeader";
 				}
 			}
 
