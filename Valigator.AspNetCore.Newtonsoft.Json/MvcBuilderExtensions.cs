@@ -4,11 +4,8 @@ using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Valigator.AspNetCore;
-using Valigator.Core.ValueDescriptors;
 using Valigator.Newtonsoft.Json;
 
 namespace Valigator
