@@ -1,7 +1,7 @@
 ﻿using System;
 using Functional;
 using Microsoft.AspNetCore.Mvc;
-using Valigator.TestApi.Core31;
+using Valigator.Core.Extensions;
 using Valigator.TestApi.Core31.MappedGuid;
 
 namespace Valigator.TestApi.Controllers

@@ -7,7 +7,7 @@ using Valigator.Core.DataSources;
 using Valigator.Core.StateValidators;
 using Valigator.Core.ValueValidators;
 
-namespace Valigator.TestApi.Core31
+namespace Valigator.Core.Extensions
 {
 	public static class DataExtensions
 	{
