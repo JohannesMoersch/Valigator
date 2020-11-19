@@ -60,18 +60,11 @@ namespace Valigator
 					options.Filters.Add(new ValigatorResultFilter(resultErrorCreator));
 				})
 #if NETCOREAPP3_0
-				.AddNewtonsoftJson(o => o.SerializerSettings.Converters.Add(new ValigatorConverter()))
-				.ConfigureApiBehaviorOptions(opt => opt.InvalidModelStateResponseFactory = arg => CreateInvalidModelStateResponse(arg, inputErrorCreater));
+				.AddNewtonsoftJson(o => o.SerializerSettings.Converters.Add(new ValigatorConverter()));
 #else
 				.AddJsonOptions(o => o.SerializerSettings.Converters.Add(new ValigatorConverter()));
 #endif
 		}
-
-		private static IActionResult CreateInvalidModelStateResponse(ActionContext arg, Func<AspNetCore.ModelError[], IActionResult> resultErrorCreator)
-			=> resultErrorCreator.Invoke(GetModelErrors(arg).ToArray());
-
-		private static IEnumerable<AspNetCore.ModelError> GetModelErrors(ActionContext arg)
-			=> arg.ModelState.Select(kvp => new AspNetCore.ModelError(kvp.Key, ModelSource.Body, new ValidationError(kvp.Value.AttemptedValue, new MappingDescriptor(typeof(int), typeof(double)))));
 
 		private class NullObjectModelValidator : IObjectModelValidator
 		{

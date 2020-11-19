@@ -6,6 +6,7 @@ using Functional;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Valigator.Core;
+using Valigator.Core.ValueDescriptors;
 
 namespace Valigator.Newtonsoft.Json
 {
@@ -48,8 +49,16 @@ namespace Valigator.Newtonsoft.Json
 			if (reader.TokenType == JsonToken.Null)
 				return SetValue(data, Option.None<TValue>());
 
-			if (serializer.Deserialize(reader, typeof(TValue)) is TValue value)
-				return SetValue(data, Option.Some(value));
+			try
+			{
+				if (serializer.Deserialize<TValue>(reader) is TValue value)
+					return SetValue(data, Option.Some(value));
+			}
+			catch (JsonSerializationException ex)
+			{
+				return data.WithErrors(new ValidationError(ex.Message, new MappingDescriptor(typeof(TValue), typeof(TDataValue))));
+			}
+
 
 			return SetNull(data);
 		}
