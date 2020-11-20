@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -10,35 +11,41 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Valigator.TestApi;
 using Valigator.TestApi.Controllers;
 using Xunit;
+using Microsoft.AspNetCore.Hosting;
 
 namespace Valigator.AspNetCore3.IntegrationTests
 {
 	public class IntegrationTests
 	{
 		private static HttpClient CreateNewtonsoftClient()
-			=> new WebApplicationFactory<Startup.NewtonsoftStartup>().CreateClient();
+			=> new WebApplicationFactory<NewtonsoftStartup>().WithWebHostBuilder(builder => builder.UseStartup<NewtonsoftStartup>()).CreateClient();
 
 		private static HttpClient CreateSystemTextClient()
-			=> new WebApplicationFactory<Startup.SystemTextStartup>().CreateClient();
+			=> new WebApplicationFactory<SystemTextStartup>().WithWebHostBuilder(builder => builder.UseStartup<SystemTextStartup>()).CreateClient();
 
-		public class HttpClientCreator : IEnumerable<object[]>
-		{
-			public virtual IEnumerator<object[]> GetEnumerator()
-			{
-				yield return new[] { CreateNewtonsoftClient() };
-				yield return new[] { CreateSystemTextClient() };
-			}
-
-			IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-		}
-
-		public class HttpClientCreatorWithAnonymousUrl : HttpClientCreator
+		public class HttpClientCreator : HttpClientCreatorWithAnonymousUrl
 		{
 			public override IEnumerator<object[]> GetEnumerator()
 			{
-				yield return new object[] { CreateNewtonsoftClient(), "test/newtonsoftAnonymousObjectOutput" };
+				var baseEnumerator = base.GetEnumerator();
+
+				while(baseEnumerator.MoveNext())
+				{
+					yield return new[] { baseEnumerator.Current[0] };
+				}
+			}
+
+		}
+
+		public class HttpClientCreatorWithAnonymousUrl : IEnumerable<object[]>
+		{
+			public virtual IEnumerator<object[]> GetEnumerator()
+			{
+				//yield return new object[] { CreateNewtonsoftClient(), "test/newtonsoftAnonymousObjectOutput" };
 				yield return new object[] { CreateSystemTextClient(), "test/systemTextAnonymousObjectOutput" };
 			}
+
+			IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 		}
 
 		[Theory]

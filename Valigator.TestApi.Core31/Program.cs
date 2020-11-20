@@ -12,6 +12,6 @@ namespace Valigator.TestApi
 
 		public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
 			WebHost.CreateDefaultBuilder(args)
-				.UseStartup<Startup.NewtonsoftStartup>();
+				.UseStartup<NewtonsoftStartup>();
 	}
 }
