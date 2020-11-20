@@ -45,7 +45,7 @@ namespace Valigator.Newtonsoft.Json
 			}
 			catch (JsonSerializationException ex)
 			{
-				throw new ValigatorJsonException(ex);
+				throw new ValigatorSerializationException(ex);
 			}
 		}
 
@@ -60,7 +60,7 @@ namespace Valigator.Newtonsoft.Json
 			}
 			catch (JsonSerializationException ex)
 			{
-				throw new ValigatorJsonException(ex);
+				throw new ValigatorSerializationException(ex);
 			}
 		}
 

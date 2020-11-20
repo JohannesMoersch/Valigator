@@ -4,15 +4,15 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System;
 using System.Threading.Tasks;
-using Valigator.Newtonsoft.Json;
+using Valigator.Core;
 
 namespace Valigator.AspNetCore.Newtonsoft.Json
 {
 	public class ValigatorJsonExceptionFilter : ExceptionFilterAttribute
 	{
-		private readonly Func<ValigatorJsonException, IActionResult> _errorCreator;
+		private readonly Func<ValigatorSerializationException, IActionResult> _errorCreator;
 
-		public ValigatorJsonExceptionFilter(Func<ValigatorJsonException, IActionResult> errorCreator)
+		public ValigatorJsonExceptionFilter(Func<ValigatorSerializationException, IActionResult> errorCreator)
 		{
 			_errorCreator = errorCreator;
 		}
@@ -25,7 +25,7 @@ namespace Valigator.AspNetCore.Newtonsoft.Json
 
 		public override void OnException(ExceptionContext context)
 		{
-			if (context.Exception is ValigatorJsonException valigatorJsonException)
+			if (context.Exception is ValigatorSerializationException valigatorJsonException)
 				context.Result = _errorCreator.Invoke(valigatorJsonException);
 		}
 	}

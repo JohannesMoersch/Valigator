@@ -13,6 +13,7 @@ using System.Reflection;
 using System.Linq;
 using Valigator.AspNetCore.Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Valigator.Core;
 
 namespace Valigator
 {
@@ -47,7 +48,7 @@ namespace Valigator
 
 	public static class MvcBuilderExtensions
 	{
-		public static IMvcBuilder AddValigatorJsonExceptionFilter(this IMvcBuilder builder, Func<ValigatorJsonException, IActionResult> errorCreater)
+		public static IMvcBuilder AddValigatorJsonExceptionFilter(this IMvcBuilder builder, Func<ValigatorSerializationException, IActionResult> errorCreater)
 			=> builder
 				.AddMvcOptions(options => options.AddValigatorJsonExceptionHandler(errorCreater));
 

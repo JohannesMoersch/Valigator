@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Runtime.Serialization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Valigator.Core;
 using Valigator.Core.Helpers;
 
 namespace Valigator.Text.Json
@@ -77,7 +78,7 @@ namespace Valigator.Text.Json
 			}
 			catch (JsonException ex)
 			{
-				throw new ValigatorJsonException(ex);
+				throw new ValigatorSerializationException(ex);
 			}
 		}
 
@@ -103,7 +104,7 @@ namespace Valigator.Text.Json
 			}
 			catch(JsonException ex)
 			{
-				throw new ValigatorJsonException(ex);
+				throw new ValigatorSerializationException(ex);
 			}
 		}
 	}

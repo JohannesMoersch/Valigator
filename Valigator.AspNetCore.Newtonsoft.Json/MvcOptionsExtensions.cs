@@ -2,13 +2,13 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System;
-using Valigator.Newtonsoft.Json;
+using Valigator.Core;
 
 namespace Valigator.AspNetCore.Newtonsoft.Json
 {
 	public static class MvcOptionsExtensions
 	{
-		public static void AddValigatorJsonExceptionHandler(this MvcOptions options, Func<ValigatorJsonException, IActionResult> errorCreator)
+		public static void AddValigatorJsonExceptionHandler(this MvcOptions options, Func<ValigatorSerializationException, IActionResult> errorCreator)
 			=> options.Filters.Add(new ValigatorJsonExceptionFilter(errorCreator));
 	}
 }

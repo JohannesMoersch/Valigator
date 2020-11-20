@@ -7,6 +7,7 @@ using System;
 using System.Threading.Tasks;
 using Valigator.AspNetCore;
 using Valigator.AspNetCore.Text.Json;
+using Valigator.Core;
 using Valigator.Text.Json;
 
 namespace Valigator
@@ -43,7 +44,7 @@ namespace Valigator
 	public static partial class MvcBuilderExtensions
 	{
 
-		public static IMvcBuilder AddValigatorJsonExceptionFilter(this IMvcBuilder builder, Func<ValigatorJsonException, IActionResult> errorCreater)
+		public static IMvcBuilder AddValigatorJsonExceptionFilter(this IMvcBuilder builder, Func<ValigatorSerializationException, IActionResult> errorCreater)
 			=> builder
 				.AddMvcOptions(options => options.AddValigatorJsonExceptionHandler(errorCreater));
 
