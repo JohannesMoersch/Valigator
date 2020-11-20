@@ -40,14 +40,10 @@ namespace Valigator.TestApi
 
 			services
 				/**** Newtonsoft ****/
-				.AddControllers(opt =>
-				{
-					//opt.AddValigatorJsonExceptionHandler(errors => new JsonResult(errors) { StatusCode = 444 });
-				})
+				.AddControllers()
 				.AddNewtonsoftJson(opt =>
 				{
 					opt.SerializerSettings.Converters.Add(NewtonsoftMappedGuidConverter.Instance);
-					//opt.AddValigatorJsonExceptionHandler();
 				})
 				.AddValigatorJsonExceptionFilter(valigatorJsonException => new JsonResult(valigatorJsonException.ErrorContext.Error.Message) { StatusCode = 444 })
 				.ConfigureApiBehaviorOptions(opt =>
