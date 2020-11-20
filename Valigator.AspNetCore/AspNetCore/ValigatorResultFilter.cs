@@ -19,31 +19,7 @@ namespace Valigator.AspNetCore
 			=> _resultErrorCreator = resultErrorCreator;
 
 		public void OnResultExecuting(ResultExecutingContext context)
-		{
-			object toValidate = null;
-			if (context.Result is ObjectResult objectResult && objectResult.Value != null)
-				toValidate = objectResult.Value;
-			else if (context.Result is ViewResult viewResult)
-				toValidate = viewResult.Model;
-			else if (context.Result is ViewComponentResult viewComponentResult)
-				toValidate = viewComponentResult.Model;
-			else if (context.Result is PartialViewResult partialViewResult)
-				toValidate = partialViewResult.Model;
-			else if (context.Result is JsonResult jsonResult)
-				toValidate = jsonResult.Value;
-
-			if (toValidate != null)
-			{
-				// Perform validation
-				Model
-					.Verify(toValidate)
-					.Match(_ => _, errors =>
-					{
-						context.Result = _resultErrorCreator?.Invoke(errors);
-						return Unit.Value;
-					});
-			}
-		}
+			=> context.Result = context.Result.GetVerifiedActionResult(_resultErrorCreator);
 
 		public void OnResultExecuted(ResultExecutedContext context)
 		{
