@@ -49,16 +49,8 @@ namespace Valigator.Newtonsoft.Json
 			if (reader.TokenType == JsonToken.Null)
 				return SetValue(data, Option.None<TValue>());
 
-			try
-			{
-				if (serializer.Deserialize<TValue>(reader) is TValue value)
-					return SetValue(data, Option.Some(value));
-			}
-			catch (JsonSerializationException ex)
-			{
-				return SetError<object, TValue, TDataValue>(data, ex.Message);
-			}
-
+			if (serializer.Deserialize<TValue>(reader) is TValue value)
+				return SetValue(data, Option.Some(value));
 
 			return SetNull(data);
 		}
@@ -96,5 +88,10 @@ namespace Valigator.Newtonsoft.Json
 
 		private static Data<TDataValue> SetError<TFrom, TTo, TDataValue>(Data<TDataValue> data, string message)
 			=> data.WithErrors(MappingError.Create<TFrom, TTo>(message));
+	}
+
+	public class ValigatorJsonSerializationException : Exception
+	{
+		public ValigatorJsonSerializationException(JsonSerializationException innerException) : base(innerException.Message, innerException) { }
 	}
 }

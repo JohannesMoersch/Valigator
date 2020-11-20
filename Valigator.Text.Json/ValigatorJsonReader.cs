@@ -47,15 +47,9 @@ namespace Valigator.Text.Json
 		{
 			if (reader.TokenType == JsonTokenType.Null)
 				return SetValue(data, Option.None<TValue>());
-			try
-			{
-				if (JsonSerializer.Deserialize<TValue>(ref reader, options) is TValue value)
-					return SetValue(data, Option.Some(value));
-			}
-			catch(JsonException ex)
-			{
-				return SetError<object, TValue, TDataValue>(data, ex.Message);
-			}
+
+			if (JsonSerializer.Deserialize<TValue>(ref reader, options) is TValue value)
+				return SetValue(data, Option.Some(value));
 
 			return SetNull(data);
 		}

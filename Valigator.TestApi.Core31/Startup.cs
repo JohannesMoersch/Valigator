@@ -1,7 +1,10 @@
 ﻿using Functional;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,6 +15,10 @@ using System;
 using System.Buffers;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
+using Valigator.AspNetCore;
+using Valigator.AspNetCore.Newtonsoft.Json;
+//using Valigator.Newtonsoft.Json;
 using Valigator.TestApi.Core31.MappedGuid;
 
 [assembly: ApiController]
@@ -32,12 +39,29 @@ namespace Valigator.TestApi
 		{
 
 			services
-				.AddControllers()
-				//.AddNewtonsoftJson(opt =>
+				/**** Newtonsoft ****/
+				.AddControllers(opt =>
+				{
+					//opt.AddValigatorJsonExceptionHandler(errors => new JsonResult(errors) { StatusCode = 444 });
+				})
+				.AddNewtonsoftJson(opt =>
+				{
+					opt.SerializerSettings.Converters.Add(NewtonsoftMappedGuidConverter.Instance);
+					//opt.AddValigatorJsonExceptionHandler();
+				})
+				.AddValigatorJsonExceptionFilter(errorContext => new JsonResult("here") { StatusCode = 444 })
+				.ConfigureApiBehaviorOptions(opt =>
+				{
+					opt.SuppressMapClientErrors = true;
+				})
+
+				/**** System.Text ****/
+				//.AddControllers()
+				//.AddJsonOptions(opt =>
 				//{
-				//	opt.SerializerSettings.Converters.Add(NewtonsoftMappedGuidConverter.Instance);
+				//	opt.JsonSerializerOptions.Converters.Add(SystemTextMappedGuidConverter.Instance);
 				//})
-				.AddJsonOptions(opt => opt.JsonSerializerOptions.Converters.Add(SystemTextMappedGuidConverter.Instance))
+
 				.SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
 				.AddValigator(errors => new JsonResult(errors) { StatusCode = 400 }, errors => new JsonResult(errors.Select(e => new { Path = e.Path.ToString(), Message = e.Message }).ToArray()) { StatusCode = 400 });
 		}
