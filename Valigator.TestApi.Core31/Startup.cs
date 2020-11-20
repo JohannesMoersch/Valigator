@@ -49,7 +49,7 @@ namespace Valigator.TestApi
 					opt.SerializerSettings.Converters.Add(NewtonsoftMappedGuidConverter.Instance);
 					//opt.AddValigatorJsonExceptionHandler();
 				})
-				.AddValigatorJsonExceptionFilter(errorContext => new JsonResult("here") { StatusCode = 444 })
+				.AddValigatorJsonExceptionFilter(valigatorJsonException => new JsonResult(valigatorJsonException.ErrorContext.Error.Message) { StatusCode = 444 })
 				.ConfigureApiBehaviorOptions(opt =>
 				{
 					opt.SuppressMapClientErrors = true;

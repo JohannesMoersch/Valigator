@@ -9,9 +9,9 @@ namespace Valigator.AspNetCore.Newtonsoft.Json
 {
 	public class ValigatorJsonExceptionFilter : ExceptionFilterAttribute
 	{
-		private readonly Func<ErrorContext, IActionResult> _errorCreator;
+		private readonly Func<ValigatorJsonException, IActionResult> _errorCreator;
 
-		public ValigatorJsonExceptionFilter(Func<ErrorContext, IActionResult> errorCreator)
+		public ValigatorJsonExceptionFilter(Func<ValigatorJsonException, IActionResult> errorCreator)
 		{
 			_errorCreator = errorCreator;
 		}
@@ -24,8 +24,8 @@ namespace Valigator.AspNetCore.Newtonsoft.Json
 
 		public override void OnException(ExceptionContext context)
 		{
-			if (context.Exception is Valigatorex jsonException)
-				context.Result = _errorCreator.Invoke(jsonException);
+			if (context.Exception is ValigatorJsonException valigatorJsonException)
+				context.Result = _errorCreator.Invoke(valigatorJsonException);
 		}
 	}
 }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System;
 
 namespace Valigator.AspNetCore.Newtonsoft.Json
@@ -13,7 +14,7 @@ namespace Valigator.AspNetCore.Newtonsoft.Json
 				if (args.ErrorContext.Error is JsonSerializationException)
 				{
 					args.ErrorContext.Handled = true;
-					throw args.ErrorContext.Error;
+					throw new ValigatorJsonException(args.ErrorContext);
 				}
 			};
 #endif

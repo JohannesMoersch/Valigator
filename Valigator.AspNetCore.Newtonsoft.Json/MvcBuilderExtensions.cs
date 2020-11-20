@@ -47,7 +47,7 @@ namespace Valigator
 
 	public static class MvcBuilderExtensions
 	{
-		public static IMvcBuilder AddValigatorJsonExceptionFilter(this IMvcBuilder builder, Func<ErrorContext, IActionResult> errorCreater)
+		public static IMvcBuilder AddValigatorJsonExceptionFilter(this IMvcBuilder builder, Func<ValigatorJsonException, IActionResult> errorCreater)
 			=> builder
 #if NETCOREAPP3_0
 				.AddNewtonsoftJson(options => options.AddValigatorJsonExceptionHandler())
