@@ -12,10 +12,10 @@ namespace Valigator.AspNetCore.Newtonsoft.Json
 		public static void AddValigatorJsonExceptionHandler(this MvcNewtonsoftJsonOptions options)
 			=> options.SerializerSettings.Error += (obj, args) =>
 			{
-				if (args.ErrorContext.Error is JsonSerializationException)
+				if (args.ErrorContext.Error is JsonSerializationException jsonSerializationException)
 				{
 					args.ErrorContext.Handled = true;
-					throw new ValigatorJsonException(args.ErrorContext);
+					throw new ValigatorJsonException(jsonSerializationException);
 				}
 			};
 #endif

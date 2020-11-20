@@ -44,7 +44,7 @@ namespace Valigator.TestApi
 						{
 							opt.SuppressMapClientErrors = true;
 						}),
-						valigatorJsonException => new JsonResult(valigatorJsonException.ErrorContext.Error.Message) { StatusCode = 400 }
+						error => new JsonResult(error.Message) { StatusCode = 400 }
 					)
 					.SetCompatibilityVersion(CompatibilityVersion.Version_3_0),
 				errors => new JsonResult(errors) { StatusCode = 400 },

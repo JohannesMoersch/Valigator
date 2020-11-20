@@ -1,15 +1,16 @@
-﻿using Newtonsoft.Json.Serialization;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System;
 
 namespace Valigator.Newtonsoft.Json
 {
 	public class ValigatorJsonException : Exception
 	{
-		public ValigatorJsonException(ErrorContext errorContext)
+		public ValigatorJsonException(JsonSerializationException jsonSerializationException) : base(jsonSerializationException.Message, jsonSerializationException)
 		{
-			ErrorContext = errorContext;
+			JsonSerializationException = jsonSerializationException;
 		}
 
-		public ErrorContext ErrorContext { get; }
+		public JsonSerializationException JsonSerializationException { get; }
 	}
 }

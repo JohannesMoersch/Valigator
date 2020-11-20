@@ -38,14 +38,30 @@ namespace Valigator.Newtonsoft.Json
 				);
 
 		public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
-			=> GetConverter(objectType).Read(reader, Serializer);
+		{
+			try
+			{
+				return GetConverter(objectType).Read(reader, Serializer);
+			}
+			catch (JsonSerializationException ex)
+			{
+				throw new ValigatorJsonException(ex);
+			}
+		}
 
 		public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
 		{
-			if (value == null)
-				writer.WriteNull();
-			else
-				GetConverter(value.GetType()).Write(writer, value, Serializer);
+			try
+			{
+				if (value == null)
+					writer.WriteNull();
+				else
+					GetConverter(value.GetType()).Write(writer, value, Serializer);
+			}
+			catch (JsonSerializationException ex)
+			{
+				throw new ValigatorJsonException(ex);
+			}
 		}
 
 		private IConverter CreateConverterInstance(Type type)
