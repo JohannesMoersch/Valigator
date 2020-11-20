@@ -1,4 +1,6 @@
-﻿using System;
+﻿extern alias NewtonsoftValigator;
+extern alias SystemTextValigator;
+using System;
 using Functional;
 using Microsoft.AspNetCore.Mvc;
 using Valigator.Core.Extensions;
@@ -18,7 +20,8 @@ namespace Valigator.TestApi.Controllers
 			=> new JsonResult(true);
 	}
 
-	[ValigatorModel]
+	[NewtonsoftValigator::Valigator.ValigatorModel]
+	[SystemTextValigator::Valigator.ValigatorModel]
 	public class MappedGuidCollection
 	{
 		public Data<MappedGuidClass[]> Items { get; set; } = Data
@@ -28,7 +31,8 @@ namespace Valigator.TestApi.Controllers
 			.ElementsUnique(p => p.MappedGuid.TryGetValue().Match(Option.Some, _ => Option.None<MappedGuid>()), $"The {nameof(MappedGuidClass.MappedGuid)} must be unique for each element of {nameof(MappedGuid)}");
 	}
 
-	[ValigatorModel]
+	[NewtonsoftValigator::Valigator.ValigatorModel]
+	[SystemTextValigator::Valigator.ValigatorModel]
 	public class MappedGuidClass
 	{
 		private static readonly Data<Guid> _data = Data.Required<Guid>().NotEmpty();

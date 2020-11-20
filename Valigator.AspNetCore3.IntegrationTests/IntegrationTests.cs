@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
@@ -14,14 +15,36 @@ namespace Valigator.AspNetCore3.IntegrationTests
 {
 	public class IntegrationTests
 	{
-		private static HttpClient _httpClient;
+		private static HttpClient CreateNewtonsoftClient()
+			=> new WebApplicationFactory<Startup.NewtonsoftStartup>().CreateClient();
 
-		private static HttpClient CreateClient()
-			=> _httpClient ??= new WebApplicationFactory<Startup>().CreateClient();
+		private static HttpClient CreateSystemTextClient()
+			=> new WebApplicationFactory<Startup.SystemTextStartup>().CreateClient();
 
-		[Fact]
-		public Task WithValue()
-			=> CreateClient()
+		public class HttpClientCreator : IEnumerable<object[]>
+		{
+			public virtual IEnumerator<object[]> GetEnumerator()
+			{
+				yield return new[] { CreateNewtonsoftClient() };
+				yield return new[] { CreateSystemTextClient() };
+			}
+
+			IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+		}
+
+		public class HttpClientCreatorWithAnonymousUrl : HttpClientCreator
+		{
+			public override IEnumerator<object[]> GetEnumerator()
+			{
+				yield return new object[] { CreateNewtonsoftClient(), "test/newtonsoftAnonymousObjectOutput" };
+				yield return new object[] { CreateSystemTextClient(), "test/systemTextAnonymousObjectOutput" };
+			}
+		}
+
+		[Theory]
+		[ClassData(typeof(HttpClientCreator))]
+		public Task WithValue(HttpClient client)
+			=> client
 				.BuildTest()
 				.Get("test/header")
 				.WithHeader("testheader", "Value")
@@ -29,9 +52,10 @@ namespace Valigator.AspNetCore3.IntegrationTests
 				.IsOk()
 				.AssertJsonBody(str => str.Should().Be(@"""Value"""));
 
-		[Fact]
-		public Task WithWhitespace()
-			=> CreateClient()
+		[Theory]
+		[ClassData(typeof(HttpClientCreator))]
+		public Task WithWhitespace(HttpClient client)
+			=> client
 				.BuildTest()
 				.Get("test/header")
 				.WithHeader("testheader", " ")
@@ -39,18 +63,20 @@ namespace Valigator.AspNetCore3.IntegrationTests
 				.IsOk()
 				.AssertJsonBody(str => str.Should().Be(@""" """));
 
-		[Fact]
-		public Task WithUnSet()
-			=> CreateClient()
+		[Theory]
+		[ClassData(typeof(HttpClientCreator))]
+		public Task WithUnSet(HttpClient client)
+			=> client
 				.BuildTest()
 				.Get("test/header")
 				.Send()
 				.IsOk()
 				.AssertJsonBody(str => str.Should().Be(@"""Default"""));
 
-		[Fact]
-		public Task PostWithIdentifiers()
-			=> CreateClient()
+		[Theory]
+		[ClassData(typeof(HttpClientCreator))]
+		public Task PostWithIdentifiers(HttpClient client)
+			=> client
 				.BuildTest()
 				.Post("test/post")
 				.WithJsonBody($"{{ \"{nameof(BodyClass.IdentifierCollection)}\": [ {{\"{nameof(InnerClass.TheIdentifier)}\" : \"61f45cfd-6389-4380-a803-c23881e982af\"}} ] }}")
@@ -61,9 +87,10 @@ namespace Valigator.AspNetCore3.IntegrationTests
 					str.Should().Be("[\"61f45cfd-6389-4380-a803-c23881e982af\"]");
 				});
 
-		[Fact]
-		public Task PostWithIdentifiersGuidVersion()
-			=> CreateClient()
+		[Theory]
+		[ClassData(typeof(HttpClientCreator))]
+		public Task PostWithIdentifiersGuidVersion(HttpClient client)
+			=> client
 				.BuildTest()
 				.Post("test/post2")
 				.WithJsonBody($"{{ \"{nameof(BodyClass.IdentifierCollection)}\": [ {{\"{nameof(InnerClass.TheIdentifier)}\" : \"61f45cfd-6389-4380-a803-c23881e982af\"}} ] }}")
@@ -74,11 +101,12 @@ namespace Valigator.AspNetCore3.IntegrationTests
 					str.Should().Be("[\"61f45cfd-6389-4380-a803-c23881e982af\"]");
 				});
 
-		[Fact]
-		public Task AnonymousObjectOutputTest()
-			=> CreateClient()
+		[Theory]
+		[ClassData(typeof(HttpClientCreatorWithAnonymousUrl))]
+		public Task AnonymousObjectOutputTest(HttpClient client, string url)
+			=> client
 				.BuildTest()
-				.Post("test/anonymousObjectOutput")
+				.Post(url)
 				.WithJsonBody($"{{ \"{nameof(BodyClass.IdentifierCollection)}\": [ {{\"{nameof(InnerClass.TheIdentifier)}\" : \"61f45cfd-6389-4380-a803-c23881e982af\"}} ] }}")
 				.Send()
 				.IsSuccess()
@@ -87,9 +115,10 @@ namespace Valigator.AspNetCore3.IntegrationTests
 					str.Should().Be("{\"TheOutputOfThePost\":[{\"TheIdentifier\":\"61f45cfd-6389-4380-a803-c23881e982af\"}],\"SecondValue\":1}");
 				});
 
-		[Fact]
-		public Task ObjectWithNonDataPropertyTest()
-			=> CreateClient()
+		[Theory]
+		[ClassData(typeof(HttpClientCreator))]
+		public Task ObjectWithNonDataPropertyTest(HttpClient client)
+			=> client
 				.BuildTest()
 				.Post("test/nonDataPropertyObject")
 				.WithJsonBody($"{{ \"{nameof(BodyClass.IdentifierCollection)}\": [ {{\"{nameof(InnerClass.TheIdentifier)}\" : \"61f45cfd-6389-4380-a803-c23881e982af\"}} ] }}")
@@ -100,9 +129,10 @@ namespace Valigator.AspNetCore3.IntegrationTests
 					str.Should().Be("{\"IdentifierCollection\":[{\"TheIdentifier\":\"61f45cfd-6389-4380-a803-c23881e982af\"}],\"SecondValue\":1}");
 				});
 
-		[Fact]
-		public Task MappedGuidEndpointReturnsProperError()
-			=> CreateClient()
+		[Theory]
+		[ClassData(typeof(HttpClientCreator))]
+		public Task MappedGuidEndpointReturnsProperError(HttpClient client)
+			=> client
 				.BuildTest()
 				.Post("mappedGuid/mappedGuid")
 				.WithJsonBody($"{{\"Items\":[{{\"MappedGuid\":\"NotAGuid\"}}]}}")
@@ -112,25 +142,21 @@ namespace Valigator.AspNetCore3.IntegrationTests
 				{
 					str
 						.Should()
-						.Match<string>(str =>
-							// Newtonsoft
-							str == "[{\"name\":\"bodyValue\",\"source\":0,\"validationError\":{\"message\":\"Error converting value \\\"NotAGuid\\\" to type 'System.Guid'. Path 'Items[0].MappedGuid', line 1, position 34.\",\"path\":{},\"valueDescriptor\":{\"fromType\":\"System.Object, System.Private.CoreLib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e\",\"toType\":\"Valigator.TestApi.Core31.MappedGuid.MappedGuid, Valigator.TestApi.Core31, Version=2.1.1.0, Culture=neutral, PublicKeyToken=null\"}}}]"
-						||
-							// System.Text
-							str == "[{\"name\":\"bodyValue\",\"source\":0,\"validationError\":{\"message\":\"The JSON value could not be converted to System.Guid. Path: $ | LineNumber: 0 | BytePositionInLine: 10.\",\"path\":{},\"valueDescriptor\":{}}}]"
-						);
+						.Be("\"Error converting value \\\"NotAGuid\\\" to type 'System.Guid'. Path 'Items[0].MappedGuid', line 1, position 34.\"");
 				});
 
-		[Fact]
-		public async Task MultipleMappedGuidEndpointCallsReturnsProperErrors()
+		[Theory]
+		[ClassData(typeof(HttpClientCreator))]
+		public async Task MultipleMappedGuidEndpointCallsReturnsProperErrors(HttpClient client)
 		{
-			await MappedGuidEndpointReturnsProperError();
-			await MappedGuidEndpointReturnsProperError();
+			await MappedGuidEndpointReturnsProperError(client);
+			await MappedGuidEndpointReturnsProperError(client);
 		}
 
-		[Fact]
-		public Task MappedGuidEndpointWorks()
-			=> CreateClient()
+		[Theory]
+		[ClassData(typeof(HttpClientCreator))]
+		public Task MappedGuidEndpointWorks(HttpClient client)
+			=> client
 				.BuildTest()
 				.Post("mappedGuid/mappedGuid")
 				.WithJsonBody($"{{\"Items\":[{{\"MappedGuid\":\"61f45cfd-6389-4380-a803-c23881e982af\"}}]}}")
@@ -141,9 +167,10 @@ namespace Valigator.AspNetCore3.IntegrationTests
 					str.Should().Be("true");
 				});
 
-		[Fact]
-		public Task MappedGuidHeaderEndpointWorks()
-			=> CreateClient()
+		[Theory]
+		[ClassData(typeof(HttpClientCreator))]
+		public Task MappedGuidHeaderEndpointWorks(HttpClient client)
+			=> client
 				.BuildTest()
 				.Post("mappedGuid/mappedGuidHeader")
 				.WithHeader("TheHeader", "61f45cfd-6389-4380-a803-c23881e982af")
@@ -163,9 +190,10 @@ namespace Valigator.AspNetCore3.IntegrationTests
 						);
 				});
 
-		[Fact]
-		public Task MappedGuidHeaderEndpointReturnsProperError()
-			=> CreateClient()
+		[Theory]
+		[ClassData(typeof(HttpClientCreator))]
+		public Task MappedGuidHeaderEndpointReturnsProperError(HttpClient client)
+			=> client
 				.BuildTest()
 				.Post("mappedGuid/mappedGuidHeader")
 				.WithHeader("TheHeader", "NotAGuid")
