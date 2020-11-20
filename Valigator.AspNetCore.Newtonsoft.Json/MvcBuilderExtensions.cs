@@ -49,9 +49,6 @@ namespace Valigator
 	{
 		public static IMvcBuilder AddValigatorJsonExceptionFilter(this IMvcBuilder builder, Func<ValigatorJsonException, IActionResult> errorCreater)
 			=> builder
-//#if NETCOREAPP3_0
-//				.AddNewtonsoftJson(options => options.AddValigatorJsonExceptionHandler())
-//#endif
 				.AddMvcOptions(options => options.AddValigatorJsonExceptionHandler(errorCreater));
 
 		public static IMvcBuilder AddValigator(this IMvcBuilder builder, Func<AspNetCore.ModelError[], IActionResult> inputErrorCreater, Func<ValidationError[], IActionResult> resultErrorCreator)
