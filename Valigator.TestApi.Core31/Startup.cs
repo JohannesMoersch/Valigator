@@ -6,11 +6,14 @@ using Functional;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Buffers;
 using System.Linq;
+using System.Threading.Tasks;
 using Valigator.TestApi.Core31.MappedGuid;
 
 [assembly: ApiController]
@@ -32,18 +35,17 @@ namespace Valigator.TestApi
 			NewtonsoftAspNetCoreValigator.Valigator.MvcBuilderExtensions.AddValigator(
 				NewtonsoftAspNetCoreValigator.Valigator.MvcBuilderExtensions.AddValigatorJsonExceptionFilter(
 					services
-						/**** Newtonsoft ****/
 						.AddControllers()
 						.AddNewtonsoftJson(opt =>
 						{
 							opt.SerializerSettings.Converters.Add(NewtonsoftMappedGuidConverter.Instance);
+						})
+						.ConfigureApiBehaviorOptions(opt =>
+						{
+							opt.SuppressMapClientErrors = true;
 						}),
 						valigatorJsonException => new JsonResult(valigatorJsonException.ErrorContext.Error.Message) { StatusCode = 400 }
 					)
-					.ConfigureApiBehaviorOptions(opt =>
-					{
-						opt.SuppressMapClientErrors = true;
-					})
 					.SetCompatibilityVersion(CompatibilityVersion.Version_3_0),
 				errors => new JsonResult(errors) { StatusCode = 400 },
 				errors => new JsonResult(errors.Select(e => new { Path = e.Path.ToString(), Message = e.Message }).ToArray()) { StatusCode = 400 }
@@ -78,12 +80,15 @@ namespace Valigator.TestApi
 		public void ConfigureServices(IServiceCollection services)
 		{
 			SystemTextAspNetCoreValigator.Valigator.MvcBuilderExtensions.AddValigator(
+				SystemTextAspNetCoreValigator.Valigator.MvcBuilderExtensions.AddValigatorJsonExceptionFilter(
 					services
 					.AddControllers()
 					.AddJsonOptions(opt =>
 					{
 						opt.JsonSerializerOptions.Converters.Add(SystemTextMappedGuidConverter.Instance);
-					})
+				
+					}),
+					valigatorJsonException => new JsonResult(valigatorJsonException.Message) { StatusCode = 400 })
 					.SetCompatibilityVersion(CompatibilityVersion.Version_3_0),
 				errors => new JsonResult(errors) { StatusCode = 400 },
 				errors => new JsonResult(errors.Select(e => new { Path = e.Path.ToString(), Message = e.Message }).ToArray()) { StatusCode = 400 }
@@ -102,6 +107,19 @@ namespace Valigator.TestApi
 			{
 				endpoints.MapControllers();
 			});
+		}
+
+		private class Filter : ExceptionFilterAttribute
+		{
+			public override void OnException(ExceptionContext context)
+			{
+				base.OnException(context);
+			}
+
+			public override Task OnExceptionAsync(ExceptionContext context)
+			{
+				return base.OnExceptionAsync(context);
+			}
 		}
 	}
 }

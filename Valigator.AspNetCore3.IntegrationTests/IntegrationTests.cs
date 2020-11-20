@@ -41,7 +41,7 @@ namespace Valigator.AspNetCore3.IntegrationTests
 		{
 			public virtual IEnumerator<object[]> GetEnumerator()
 			{
-				//yield return new object[] { CreateNewtonsoftClient(), "test/newtonsoftAnonymousObjectOutput" };
+				yield return new object[] { CreateNewtonsoftClient(), "test/newtonsoftAnonymousObjectOutput" };
 				yield return new object[] { CreateSystemTextClient(), "test/systemTextAnonymousObjectOutput" };
 			}
 
@@ -149,7 +149,11 @@ namespace Valigator.AspNetCore3.IntegrationTests
 				{
 					str
 						.Should()
-						.Be("\"Error converting value \\\"NotAGuid\\\" to type 'System.Guid'. Path 'Items[0].MappedGuid', line 1, position 34.\"");
+						.Match<string>(str =>
+							str == "\"Error converting value \\\"NotAGuid\\\" to type 'System.Guid'. Path 'Items[0].MappedGuid', line 1, position 34.\""
+							||
+							str == "\"The JSON value could not be converted to System.Guid. Path: $ | LineNumber: 0 | BytePositionInLine: 10.\""
+						);
 				});
 
 		[Theory]

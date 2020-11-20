@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json.Serialization;
 using System;
 
-namespace Valigator.AspNetCore.Newtonsoft.Json
+namespace Valigator.Newtonsoft.Json
 {
 	public class ValigatorJsonException : Exception
 	{

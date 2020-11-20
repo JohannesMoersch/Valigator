@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System;
+using Valigator.Newtonsoft.Json;
 
 namespace Valigator.AspNetCore.Newtonsoft.Json
 {

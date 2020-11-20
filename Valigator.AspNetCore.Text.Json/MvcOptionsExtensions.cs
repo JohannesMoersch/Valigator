@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using System;
-using Valigator.Newtonsoft.Json;
+using Valigator.Text.Json;
 
-namespace Valigator.AspNetCore.Newtonsoft.Json
+namespace Valigator.AspNetCore.Text.Json
 {
 	public static class MvcOptionsExtensions
 	{

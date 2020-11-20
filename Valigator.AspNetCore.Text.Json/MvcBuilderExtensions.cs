@@ -4,11 +4,9 @@ using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using Valigator.AspNetCore;
+using Valigator.AspNetCore.Text.Json;
 using Valigator.Text.Json;
 
 namespace Valigator
@@ -42,8 +40,13 @@ namespace Valigator
 			=> new Wrapper(_modelBinderFactory.CreateBinder(context));
 	}
 
-	public static class MvcBuilderExtensions
+	public static partial class MvcBuilderExtensions
 	{
+
+		public static IMvcBuilder AddValigatorJsonExceptionFilter(this IMvcBuilder builder, Func<ValigatorJsonException, IActionResult> errorCreater)
+			=> builder
+				.AddMvcOptions(options => options.AddValigatorJsonExceptionHandler(errorCreater));
+
 		public static IMvcBuilder AddValigator(this IMvcBuilder builder, Func<AspNetCore.ModelError[], IActionResult> inputErrorCreater, Func<ValidationError[], IActionResult> resultErrorCreator)
 		{
 			builder
@@ -61,65 +64,5 @@ namespace Valigator
 				})
 				.AddJsonOptions(o => o.JsonSerializerOptions.Converters.Add(new ValigatorConverterFactory()));
 		}
-
-#if NETCOREAPP3_0
-		private class ValigatorObjectModelValidator : IObjectModelValidator
-		{
-			private readonly IObjectModelValidator _defaultObjectValidator;
-			private static readonly IObjectModelValidator _nullObjectModelValidator = new NullObjectModelValidator();
-
-			public ValigatorObjectModelValidator(
-				IModelMetadataProvider modelMetadataProvider,
-				IOptions<MvcOptions> options)
-			{
-				_defaultObjectValidator = new DefaultObjectValidator(modelMetadataProvider, options.Value.ModelValidatorProviders, options.Value);
-			}
-			public void Validate(ActionContext actionContext, ValidationStateDictionary validationState, string prefix, object model)
-				=> (IsValigatorModel(model.GetType()) ? _nullObjectModelValidator : _defaultObjectValidator).Validate(actionContext, validationState, prefix, model);
-
-			private bool IsValigatorModel(Type type)
-				=> type.GetCustomAttributes().OfType<ValigatorModelAttribute>().Any();
-
-			private class NullObjectModelValidator : IObjectModelValidator
-			{
-				public void Validate(ActionContext actionContext, ValidationStateDictionary validationState, string prefix, object model) { }
-			}
-
-			private class DefaultObjectValidator : ObjectModelValidator
-			{
-				private readonly MvcOptions _mvcOptions;
-
-				public DefaultObjectValidator(
-					IModelMetadataProvider modelMetadataProvider,
-					IList<IModelValidatorProvider> validatorProviders,
-					MvcOptions mvcOptions)
-					: base(modelMetadataProvider, validatorProviders)
-				{
-					_mvcOptions = mvcOptions;
-				}
-
-				public override ValidationVisitor GetValidationVisitor(
-					ActionContext actionContext,
-					IModelValidatorProvider validatorProvider,
-					ValidatorCache validatorCache,
-					IModelMetadataProvider metadataProvider,
-					ValidationStateDictionary validationState)
-				{
-					var visitor = new ValidationVisitor(
-						actionContext,
-						validatorProvider,
-						validatorCache,
-						metadataProvider,
-						validationState)
-					{
-						MaxValidationDepth = _mvcOptions.MaxValidationDepth,
-						ValidateComplexTypesIfChildValidationFails = _mvcOptions.ValidateComplexTypesIfChildValidationFails,
-					};
-
-					return visitor;
-				}
-			}
-		}
-#endif
 	}
 }
