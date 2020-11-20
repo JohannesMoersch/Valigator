@@ -41,7 +41,7 @@ namespace Valigator
 			=> new Wrapper(_modelBinderFactory.CreateBinder(context));
 	}
 
-	public static partial class MvcBuilderExtensions
+	public static class MvcBuilderExtensions
 	{
 
 		public static IMvcBuilder AddValigatorJsonExceptionFilter(this IMvcBuilder builder, Func<ValigatorSerializationException, IActionResult> errorCreater)
