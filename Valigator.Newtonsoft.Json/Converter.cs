@@ -12,6 +12,7 @@ namespace Valigator.Newtonsoft.Json
 	public class Converter<TObject> : IConverter
 		where TObject : class
 	{
+
 		private static Dictionary<string, ValigatorJsonPropertyHandler<TObject>> CreatePropertyHandlers()
 		{
 			var result = new Dictionary<string, ValigatorJsonPropertyHandler<TObject>>();

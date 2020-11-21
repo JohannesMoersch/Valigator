@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Runtime.Serialization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Valigator.Core;
 using Valigator.Core.Helpers;
 
 namespace Valigator.Text.Json
@@ -45,33 +46,40 @@ namespace Valigator.Text.Json
 
 		public override TObject Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 		{
-			var obj = GetObjectInstance();
-
-			while (true)
+			try
 			{
-				if (!reader.Read())
-					throw new Exception();
+				var obj = GetObjectInstance();
 
-				if (reader.TokenType == JsonTokenType.EndObject)
-					break;
-
-				if (reader.TokenType != JsonTokenType.PropertyName)
-					throw new Exception();
-
-				var propertyName = reader.GetString();
-
-				if (PropertyHandlers.TryGetValue(propertyName, out var propertyHandler))
+				while (true)
 				{
 					if (!reader.Read())
 						throw new Exception();
 
-					propertyHandler.ReadProperty(ref reader, options, obj);
-				}
-				else
-					JsonSerializer.Deserialize(ref reader, typeof(object), options);
-			}
+					if (reader.TokenType == JsonTokenType.EndObject)
+						break;
 
-			return obj;
+					if (reader.TokenType != JsonTokenType.PropertyName)
+						throw new Exception();
+
+					var propertyName = reader.GetString();
+
+					if (PropertyHandlers.TryGetValue(propertyName, out var propertyHandler))
+					{
+						if (!reader.Read())
+							throw new Exception();
+
+						propertyHandler.ReadProperty(ref reader, options, obj);
+					}
+					else
+						JsonSerializer.Deserialize(ref reader, typeof(object), options);
+				}
+
+				return obj;
+			}
+			catch (JsonException ex)
+			{
+				throw new ValigatorSerializationException(ex);
+			}
 		}
 
 		private TObject GetObjectInstance()
@@ -81,16 +89,23 @@ namespace Valigator.Text.Json
 
 		public override void Write(Utf8JsonWriter writer, TObject value, JsonSerializerOptions options)
 		{
-			writer.WriteStartObject();
-			
-			foreach (var handler in PropertyHandlers)
+			try
 			{
-				writer.WritePropertyName(handler.Key);
+				writer.WriteStartObject();
 
-				handler.Value.WriteProperty(writer, options, value);
+				foreach (var handler in PropertyHandlers)
+				{
+					writer.WritePropertyName(handler.Key);
+
+					handler.Value.WriteProperty(writer, options, value);
+				}
+
+				writer.WriteEndObject();
 			}
-
-			writer.WriteEndObject();
+			catch(JsonException ex)
+			{
+				throw new ValigatorSerializationException(ex);
+			}
 		}
 	}
 }

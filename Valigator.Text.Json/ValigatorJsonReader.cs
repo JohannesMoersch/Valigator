@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Text.Json;
 using Functional;
 using Valigator.Core;
+using Valigator.Core.ValueDescriptors;
 
 namespace Valigator.Text.Json
 {
@@ -83,5 +84,8 @@ namespace Valigator.Text.Json
 
 		private static Data<TDataValue> SetNull<TDataValue>(Data<TDataValue> data)
 			=> (data.DataContainer as IAcceptValue<TDataValue>).WithNull(data);
+
+		private static Data<TDataValue> SetError<TFrom, TTo, TDataValue>(Data<TDataValue> data, string message)
+			=> data.WithErrors(MappingError.Create<TFrom, TTo>(message));
 	}
 }

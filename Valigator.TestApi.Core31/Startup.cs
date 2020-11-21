@@ -1,21 +1,28 @@
-﻿using System;
-using System.Linq;
+﻿extern alias NewtonsoftValigator;
+extern alias SystemTextValigator;
+extern alias SystemTextAspNetCoreValigator;
+extern alias NewtonsoftAspNetCoreValigator;
+using Functional;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Valigator.AspNetCore;
+using System.Buffers;
+using System.Linq;
+using System.Threading.Tasks;
+using Valigator.TestApi.Core31.MappedGuid;
 
 [assembly: ApiController]
 namespace Valigator.TestApi
 {
 
-	public class Startup
+	public class NewtonsoftStartup
 	{
-		public Startup(IConfiguration configuration)
+		public NewtonsoftStartup(IConfiguration configuration)
 		{
 			Configuration = configuration;
 		}
@@ -25,12 +32,24 @@ namespace Valigator.TestApi
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
-			
-			services
-				.AddSingleton<IObjectModelValidator, NullObjectModelValidator>() //Disables ASP.NET Core validation because it skips over the ValigatorFilter and, as a result, the AddValigator Funcs will not be called.
-				.AddControllers()
-				.SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
-				.AddValigator(errors => new JsonResult(errors) { StatusCode = 400 }, errors => new JsonResult(errors.Select(e => new { Path = e.Path.ToString(), Message = e.Message }).ToArray()) { StatusCode = 400 });
+			NewtonsoftAspNetCoreValigator.Valigator.MvcBuilderExtensions.AddValigator(
+				NewtonsoftAspNetCoreValigator.Valigator.MvcBuilderExtensions.AddValigatorJsonExceptionFilter(
+					services
+						.AddControllers()
+						.AddNewtonsoftJson(opt =>
+						{
+							opt.SerializerSettings.Converters.Add(NewtonsoftMappedGuidConverter.Instance);
+						})
+						.ConfigureApiBehaviorOptions(opt =>
+						{
+							opt.SuppressMapClientErrors = true;
+						}),
+						error => new JsonResult(error.Message) { StatusCode = 400 }
+					)
+					.SetCompatibilityVersion(CompatibilityVersion.Version_3_0),
+				errors => new JsonResult(errors) { StatusCode = 400 },
+				errors => new JsonResult(errors.Select(e => new { Path = e.Path.ToString(), Message = e.Message }).ToArray()) { StatusCode = 400 }
+			);
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -45,6 +64,62 @@ namespace Valigator.TestApi
 			{
 				endpoints.MapControllers();
 			});
+		}
+	}
+
+	public class SystemTextStartup
+	{
+		public SystemTextStartup(IConfiguration configuration)
+		{
+			Configuration = configuration;
+		}
+
+		public IConfiguration Configuration { get; }
+
+		// This method gets called by the runtime. Use this method to add services to the container.
+		public void ConfigureServices(IServiceCollection services)
+		{
+			SystemTextAspNetCoreValigator.Valigator.MvcBuilderExtensions.AddValigator(
+				SystemTextAspNetCoreValigator.Valigator.MvcBuilderExtensions.AddValigatorJsonExceptionFilter(
+					services
+					.AddControllers()
+					.AddJsonOptions(opt =>
+					{
+						opt.JsonSerializerOptions.Converters.Add(SystemTextMappedGuidConverter.Instance);
+				
+					}),
+					valigatorJsonException => new JsonResult(valigatorJsonException.Message) { StatusCode = 400 })
+					.SetCompatibilityVersion(CompatibilityVersion.Version_3_0),
+				errors => new JsonResult(errors) { StatusCode = 400 },
+				errors => new JsonResult(errors.Select(e => new { Path = e.Path.ToString(), Message = e.Message }).ToArray()) { StatusCode = 400 }
+			);
+		}
+
+		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+		{
+			if (env.IsDevelopment())
+				app.UseDeveloperExceptionPage();
+
+			app.UseStaticFiles();
+			app.UseRouting();
+			app.UseEndpoints(endpoints =>
+			{
+				endpoints.MapControllers();
+			});
+		}
+
+		private class Filter : ExceptionFilterAttribute
+		{
+			public override void OnException(ExceptionContext context)
+			{
+				base.OnException(context);
+			}
+
+			public override Task OnExceptionAsync(ExceptionContext context)
+			{
+				return base.OnExceptionAsync(context);
+			}
 		}
 	}
 }

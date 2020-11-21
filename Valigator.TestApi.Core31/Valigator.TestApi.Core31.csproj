@@ -7,10 +7,22 @@
 
   <ItemGroup>
     <PackageReference Include="Functional.All" Version="1.18.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.10" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Valigator.AspNetCore.Text.Json\Valigator.AspNetCore.Text.Json.csproj" />
+    <ProjectReference Include="..\Valigator.AspNetCore.Newtonsoft.Json\Valigator.AspNetCore.Newtonsoft.Json.csproj">
+      <Aliases>NewtonsoftAspNetCoreValigator</Aliases>
+    </ProjectReference>
+    <ProjectReference Include="..\Valigator.AspNetCore.Text.Json\Valigator.AspNetCore.Text.Json.csproj">
+      <Aliases>SystemTextAspNetCoreValigator</Aliases>
+    </ProjectReference>
+    <ProjectReference Include="..\Valigator.Newtonsoft.Json\Valigator.Newtonsoft.Json.csproj">
+      <Aliases>NewtonsoftValigator</Aliases>
+    </ProjectReference>
+    <ProjectReference Include="..\Valigator.Text.Json\Valigator.Text.Json.csproj">
+      <Aliases>SystemTextValigator</Aliases>
+    </ProjectReference>
   </ItemGroup>
 
 </Project>

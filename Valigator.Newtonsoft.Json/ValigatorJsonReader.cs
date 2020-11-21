@@ -6,6 +6,7 @@ using Functional;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Valigator.Core;
+using Valigator.Core.ValueDescriptors;
 
 namespace Valigator.Newtonsoft.Json
 {
@@ -84,5 +85,13 @@ namespace Valigator.Newtonsoft.Json
 
 		private static Data<TDataValue> SetNull<TDataValue>(Data<TDataValue> data)
 			=> (data.DataContainer as IAcceptValue<TDataValue>).WithNull(data);
+
+		private static Data<TDataValue> SetError<TFrom, TTo, TDataValue>(Data<TDataValue> data, string message)
+			=> data.WithErrors(MappingError.Create<TFrom, TTo>(message));
+	}
+
+	public class ValigatorJsonSerializationException : Exception
+	{
+		public ValigatorJsonSerializationException(JsonSerializationException innerException) : base(innerException.Message, innerException) { }
 	}
 }

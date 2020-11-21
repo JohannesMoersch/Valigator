@@ -1,4 +1,6 @@
-﻿using System;
+﻿extern alias NewtonsoftValigator;
+extern alias SystemTextValigator;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -24,16 +26,21 @@ namespace Valigator.TestApi.Controllers
 		public JsonResult Post([FromBody] GuidBodyClass bodyValue)
 			=> new JsonResult(bodyValue.IdentifierCollection.Value.Select(id => id.TheIdentifier.Value).ToArray());
 
-		[HttpPost("anonymousObjectOutput")]
-		public JsonResult PostReturnsAnonymousObject([FromBody] GuidBodyClass bodyValue)
-			=> new JsonResult(new { TheOutputOfThePost = bodyValue.IdentifierCollection, SecondValue = 1 }.ToValigatorModel());
+		[HttpPost("newtonsoftAnonymousObjectOutput")]
+		public JsonResult NewtonsoftPostReturnsAnonymousObject([FromBody] GuidBodyClass bodyValue)
+			=> new JsonResult(NewtonsoftValigator.Valigator.ValigatorModelHelpers.ToValigatorModel(new { TheOutputOfThePost = bodyValue.IdentifierCollection, SecondValue = 1 }));
+
+		[HttpPost("systemTextAnonymousObjectOutput")]
+		public JsonResult SystemTextPostReturnsAnonymousObject([FromBody] GuidBodyClass bodyValue)
+			=> new JsonResult(SystemTextValigator.Valigator.ValigatorModelHelpers.ToValigatorModel(new { TheOutputOfThePost = bodyValue.IdentifierCollection, SecondValue = 1 }));
 
 		[HttpPost("nonDataPropertyObject")]
 		public JsonResult PostWithNonDataPropertyObject([FromBody] GuidBodyClass bodyValue)
 			=> new JsonResult(new NonDataPropertyModel(bodyValue.IdentifierCollection.Value));
 	}
 
-	[ValigatorModel]
+	[NewtonsoftValigator::Valigator.ValigatorModel]
+	[SystemTextValigator::Valigator.ValigatorModel]
 	public class NonDataPropertyModel
 	{
 		public Data<GuidInnerClass[]> IdentifierCollection { get; set; } = Data.Collection<GuidInnerClass>().Required().ItemCount(1);
@@ -46,13 +53,15 @@ namespace Valigator.TestApi.Controllers
 		public int SecondValue { get; set; } = 1;
 	}
 
-	[ValigatorModel]
+	[NewtonsoftValigator::Valigator.ValigatorModel]
+	[SystemTextValigator::Valigator.ValigatorModel]
 	public class GuidBodyClass
 	{
 		public Data<GuidInnerClass[]> IdentifierCollection { get; set; } = Data.Collection<GuidInnerClass>().Required().ItemCount(1);
 	}
 
-	[ValigatorModel]
+	[NewtonsoftValigator::Valigator.ValigatorModel]
+	[SystemTextValigator::Valigator.ValigatorModel]
 	public class GuidInnerClass
 	{
 		public GuidInnerClass() { }
@@ -63,13 +72,15 @@ namespace Valigator.TestApi.Controllers
 		public Data<Guid> TheIdentifier { get; set; } = Data.Required<Guid>().NotEmpty();
 	}
 
-	[ValigatorModel]
+	[NewtonsoftValigator::Valigator.ValigatorModel]
+	[SystemTextValigator::Valigator.ValigatorModel]
 	public class BodyClass
 	{
 		public Data<InnerClass[]> IdentifierCollection { get; set; } = Data.Collection<InnerClass>().Required().ItemCount(1, 1);
 	}
 
-	[ValigatorModel]
+	[NewtonsoftValigator::Valigator.ValigatorModel]
+	[SystemTextValigator::Valigator.ValigatorModel]
 	public class InnerClass
 	{
 		public InnerClass() { }

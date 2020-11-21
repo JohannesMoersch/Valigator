@@ -14,6 +14,16 @@ namespace Valigator.Newtonsoft.Json
 	{
 		private ConcurrentDictionary<Type, IConverter> _converters = new ConcurrentDictionary<Type, IConverter>();
 
+		private readonly JsonSerializerSettings _jsonSerializerSettings;
+
+		private JsonSerializer _serializer;
+		public JsonSerializer Serializer => _serializer ?? (_serializer = JsonSerializer.Create(_jsonSerializerSettings));
+
+		public ValigatorConverter(JsonSerializerSettings jsonSerializerSettings)
+		{
+			_jsonSerializerSettings = jsonSerializerSettings;
+		}
+
 		public override bool CanConvert(Type typeToConvert)
 			=> typeToConvert.IsClass && GetConverter(typeToConvert) != null;
 
@@ -28,14 +38,30 @@ namespace Valigator.Newtonsoft.Json
 				);
 
 		public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
-			=> GetConverter(objectType).Read(reader, serializer);
+		{
+			try
+			{
+				return GetConverter(objectType).Read(reader, Serializer);
+			}
+			catch (JsonSerializationException ex)
+			{
+				throw new ValigatorSerializationException(ex);
+			}
+		}
 
 		public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
 		{
-			if (value == null)
-				writer.WriteNull();
-			else
-				GetConverter(value.GetType()).Write(writer, value, serializer);
+			try
+			{
+				if (value == null)
+					writer.WriteNull();
+				else
+					GetConverter(value.GetType()).Write(writer, value, Serializer);
+			}
+			catch (JsonSerializationException ex)
+			{
+				throw new ValigatorSerializationException(ex);
+			}
 		}
 
 		private IConverter CreateConverterInstance(Type type)
