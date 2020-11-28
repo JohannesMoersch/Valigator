@@ -11,9 +11,18 @@ namespace Valigator.Models.Tests
 
 		}
 
-		public class Test : ModelDefinition<Test>
+		public partial class TestModel
 		{
-			public IModelValidatorSet<Test, int[]> One => Data.Collection<int>().Required();
+			public class Definition : ModelDefinition<TestModel>
+			{
+				public IModelValidatorSet<TestModel, int[]> One => Data.Collection<int>().Required();
+
+				public IModelValidatorSet<TestModel, string> Two => Data.Value<string>().Required();
+			}
+		}
+
+		public partial class TestModel
+		{
 		}
 	}
 }

@@ -7,13 +7,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Valigator.Core", "Valigator
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{137279B6-5BCB-4DBE-BE57-027755F6EF90}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Valigator.Core.Tests", "Valigator.Core.Tests\Valigator.Core.Tests.csproj", "{9146D6BF-4ED4-4C29-BCA2-9A3A0CF8FBEE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Valigator.Core.Tests", "Valigator.Core.Tests\Valigator.Core.Tests.csproj", "{9146D6BF-4ED4-4C29-BCA2-9A3A0CF8FBEE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Valigator.Validators", "Valigator.Validators\Valigator.Validators.csproj", "{FB278D4E-CE89-4C81-A55B-427D466FC337}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Valigator.Validators", "Valigator.Validators\Valigator.Validators.csproj", "{FB278D4E-CE89-4C81-A55B-427D466FC337}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Valigator.Models", "Valigator.Models\Valigator.Models.csproj", "{225B97D6-532C-44AD-9D4B-86C8FD1EA51B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Valigator.Models", "Valigator.Models\Valigator.Models.csproj", "{225B97D6-532C-44AD-9D4B-86C8FD1EA51B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Valigator.Models.Tests", "Valigator.Models.Tests\Valigator.Models.Tests.csproj", "{CDCD2BE6-469A-46D3-AF44-D4B5EFA8093A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Valigator.Models.Tests", "Valigator.Models.Tests\Valigator.Models.Tests.csproj", "{CDCD2BE6-469A-46D3-AF44-D4B5EFA8093A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Valigator.Validators.Tests", "Valigator.Validators.Tests\Valigator.Validators.Tests.csproj", "{EE3B0D1A-F97F-431D-93E3-2A8AAA92B04B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,6 +43,10 @@ Global
 		{CDCD2BE6-469A-46D3-AF44-D4B5EFA8093A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CDCD2BE6-469A-46D3-AF44-D4B5EFA8093A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CDCD2BE6-469A-46D3-AF44-D4B5EFA8093A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE3B0D1A-F97F-431D-93E3-2A8AAA92B04B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE3B0D1A-F97F-431D-93E3-2A8AAA92B04B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE3B0D1A-F97F-431D-93E3-2A8AAA92B04B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE3B0D1A-F97F-431D-93E3-2A8AAA92B04B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -48,6 +54,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{9146D6BF-4ED4-4C29-BCA2-9A3A0CF8FBEE} = {137279B6-5BCB-4DBE-BE57-027755F6EF90}
 		{CDCD2BE6-469A-46D3-AF44-D4B5EFA8093A} = {137279B6-5BCB-4DBE-BE57-027755F6EF90}
+		{EE3B0D1A-F97F-431D-93E3-2A8AAA92B04B} = {137279B6-5BCB-4DBE-BE57-027755F6EF90}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A6C90724-4F3B-4764-8DD5-1C4CAD083884}

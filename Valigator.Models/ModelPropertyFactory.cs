@@ -12,24 +12,20 @@ namespace Valigator.Models
 
 		private ModelPropertyFactory() { }
 
-		public NonNullableModelValidatorSet<TModel, TValue> Required<TValue>()
-			=> NonNullableModelValidatorSet.Required<TModel, TValue>();
-
-		public NonNullableModelValidatorSet<TModel, Option<TValue>> Optional<TValue>()
-			=> NonNullableModelValidatorSet.Optional<TModel, Option<TValue>>();
-
-		public NonNullableModelValidatorSet<TModel, TValue> Defaulted<TValue>()
-			=> NonNullableModelValidatorSet.Defaulted<TModel, TValue>();
+		public ModelPropertyFactory<TModel, TValue> Value<TValue>()
+			=> ModelPropertyFactory<TModel, TValue>.Instance;
 
 		public ModelPropertyFactory<TModel, TValue[]> Collection<TValue>()
 			=> ModelPropertyFactory<TModel, TValue[]>.Instance;
 
-		public ModelPropertyFactory<TModel, TValue[]> Collection<TValue>(Func<IModelValidatorSet<TModel, TValue>, IModelValidatorSet<TModel, TValue>> valueValidations) { }
+		public ModelPropertyFactory<TModel, TValue[]> Collection<TValue>(Func<IModelValidatorSet<TModel, TValue>, IModelValidatorSet<TModel, TValue>> valueValidations)
+			=> throw new NotImplementedException();
 
 		public ModelPropertyFactory<TModel, Dictionary<string, TValue>> Dictionary<TValue>()
 			=> ModelPropertyFactory<TModel, Dictionary<string, TValue>>.Instance;
 
-		public ModelPropertyFactory<TModel, Dictionary<string, TValue>> Dictionary<TValue>(Func<IModelValidatorSet<TModel, TValue>, IModelValidatorSet<TModel, TValue>> valueValidations) { }
+		public ModelPropertyFactory<TModel, Dictionary<string, TValue>> Dictionary<TValue>(Func<IModelValidatorSet<TModel, TValue>, IModelValidatorSet<TModel, TValue>> valueValidations)
+			=> throw new NotImplementedException();
 	}
 
 	public class ModelPropertyFactory<TModel, TValue>
@@ -38,10 +34,13 @@ namespace Valigator.Models
 
 		private ModelPropertyFactory(IModelValidatorSet<TModel, TValue> modelValidatoions) { }
 
-		public NonNullableModelValidatorSet<TModel, TValue> Required() { }
+		public NonNullableModelValidatorSet<TModel, TValue> Required()
+			=> throw new NotImplementedException();
 
-		public NonNullableModelValidatorSet<TModel, TValue> Optional() { }
+		public NonNullableModelValidatorSet<TModel, TValue> Optional()
+			=> throw new NotImplementedException();
 
-		public NonNullableModelValidatorSet<TModel, TValue> Defaulted() { }
+		public NonNullableModelValidatorSet<TModel, TValue> Defaulted()
+			=> throw new NotImplementedException();
 	}
 }

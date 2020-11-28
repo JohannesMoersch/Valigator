@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Valigator.Core
 {
-	public interface IInvertableValidator<TValue> : IValidator
+	public interface IInvertableValidator<TValue> : IValidator<TValue>
 	{
 		Result<Unit, ValidationError> InverseValidate(TValue value);
 	}

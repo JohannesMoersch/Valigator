@@ -7,13 +7,13 @@ namespace Valigator.Core
 {
 	public static class ValidatorSet
 	{
-		public static IValidatorSet<TValue> Empty<TValue>()
+		public static ValidatorSet<TValue> Empty<TValue>()
 			=> ValidatorSet<TValue>.Empty;
 	}
 
-	public class ValidatorSet<TValue> : IValidatorSet<TValue>
+	public class ValidatorSet<TValue> : IValidatorSet<ValidatorSet<TValue>, TValue>
 	{
-		internal static IValidatorSet<TValue> Empty { get; } = new ValidatorSet<TValue>(Enumerable.Empty<IValidator<TValue>>());
+		internal static ValidatorSet<TValue> Empty { get; } = new ValidatorSet<TValue>(Enumerable.Empty<IValidator<TValue>>());
 
 		IReadOnlyList<IValidator> IValidatorSet.Validators => Validators;
 
@@ -22,7 +22,7 @@ namespace Valigator.Core
 		public ValidatorSet(IEnumerable<IValidator<TValue>> validators)
 			=> Validators = validators.ToArray();
 
-		public IValidatorSet<TValue> AddValidator(IValidator<TValue> value)
+		public ValidatorSet<TValue> AddValidator(IValidator<TValue> value)
 			=> new ValidatorSet<TValue>(Validators.Append(value));
 	}
 }

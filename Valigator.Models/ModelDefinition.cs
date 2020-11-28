@@ -6,6 +6,6 @@ namespace Valigator.Models
 {
 	public abstract class ModelDefinition<TModel>
 	{
-		public ModelPropertyFactory<TModel> Data { get; }
+		protected ModelPropertyFactory<TModel> Data => ModelPropertyFactory<TModel>.Instance;
 	}
 }

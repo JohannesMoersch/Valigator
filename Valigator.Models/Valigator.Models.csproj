@@ -2,6 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+		<Title>Valigator.Models</Title>
+		<Description>This package contains fluent validators for data.</Description>
+		<PackageTags>validation</PackageTags>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Functional;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -12,7 +13,11 @@ namespace Valigator.Core
 	public interface IValidatorSet<TValue> : IValidatorSet
 	{
 		new IReadOnlyList<IValidator<TValue>> Validators { get; }
+	}
 
-		IValidatorSet<TValue> AddValidator(IValidator<TValue> value);
+	public interface IValidatorSet<TValidatorSet, TValue> : IValidatorSet<TValue>
+		where TValidatorSet : IValidatorSet<TValidatorSet, TValue>
+	{
+		TValidatorSet AddValidator(IValidator<TValue> value);
 	}
 }
