@@ -11,6 +11,6 @@ namespace Valigator.Validators.Tests
 		{
 		}
 
-		public ValidatorSet<string> One => ValidatorSet.Empty<string>().Length(10);
+		public ValueValidatorSet<string> One => ValueValidatorSet.Empty<string>().Length(10);
 	}
 }

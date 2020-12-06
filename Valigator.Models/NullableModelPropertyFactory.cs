@@ -3,15 +3,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Valigator.Core;
 
 namespace Valigator.Models
 {
-	public class ModelPropertyFactory<TModel>
+	public class NullableModelPropertyFactory<TModel>
 	{
-		public static ModelPropertyFactory<TModel> Instance { get; } = new ModelPropertyFactory<TModel>();
+		public static NullableModelPropertyFactory<TModel> Instance { get; } = new NullableModelPropertyFactory<TModel>();
 
-		private ModelPropertyFactory() { }
+		private NullableModelPropertyFactory() { }
 
 		public ModelPropertyFactory<TModel, TValue> Value<TValue>()
 			=> ModelPropertyFactory<TModel, TValue>.Instance;
@@ -21,16 +20,13 @@ namespace Valigator.Models
 
 		public ModelPropertyFactory<TModel, Dictionary<string, TValue>> Dictionary<TValue>()
 			=> ModelPropertyFactory<TModel, Dictionary<string, TValue>>.Instance;
-
-		public NullableModelPropertyFactory<TModel> Nullable()
-			=> throw new NotImplementedException();
 	}
 
-	public class ModelPropertyFactory<TModel, TValue>
+	public class NullableModelPropertyFactory<TModel, TValue>
 	{
-		public static ModelPropertyFactory<TModel, TValue> Instance { get; } = new ModelPropertyFactory<TModel, TValue>();
+		public static NullableModelPropertyFactory<TModel, TValue> Instance { get; } = new NullableModelPropertyFactory<TModel, TValue>();
 
-		private ModelPropertyFactory() { }
+		private NullableModelPropertyFactory() { }
 
 		public NonNullableModelValidatorSet<TModel, TValue> Required()
 			=> throw new NotImplementedException();

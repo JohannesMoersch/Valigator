@@ -5,19 +5,15 @@ using System.Text;
 
 namespace Valigator.Core
 {
-	public interface IValidatorSet
-	{
-		IReadOnlyList<IValidator> Validators { get; }
-	}
-	
-	public interface IValidatorSet<TValue> : IValidatorSet
-	{
-		new IReadOnlyList<IValidator<TValue>> Validators { get; }
-	}
-
-	public interface IValidatorSet<TValidatorSet, TValue> : IValidatorSet<TValue>
+	public interface sIValidatorSet<TValidatorSet, TValue>
 		where TValidatorSet : IValidatorSet<TValidatorSet, TValue>
 	{
 		TValidatorSet AddValidator(IValidator<TValue> value);
+	}
+
+	public interface sIValidatorSet<TInput>
+		where TValidatorSet : IValidatorSet<TValidatorSet, TValue>
+	{
+		Result<TInput, ValidationError[]> Process(TInput value);
 	}
 }

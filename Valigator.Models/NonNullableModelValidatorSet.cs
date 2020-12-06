@@ -21,7 +21,7 @@ namespace Valigator.Models
 			=> NonNullableModelValidatorSet<TModel, TValue>.Defaulted;
 	}
 
-	public class NonNullableModelValidatorSet<TModel, TValue> : IModelValidatorSet<TModel, TValue>
+	public class NonNullableModelValidatorSet<TModel, TValue> : IModelValidatorSet<NonNullableModelValidatorSet<TModel, TValue>, TModel, TValue, TValue>
 	{
 		internal static NonNullableModelValidatorSet<TModel, TValue> Empty { get; }
 
@@ -31,17 +31,15 @@ namespace Valigator.Models
 
 		internal static NonNullableModelValidatorSet<TModel, TValue> Defaulted { get; }
 
-		IReadOnlyList<IValidator> IValidatorSet.Validators => Validators;
-
-		public IReadOnlyList<IValidator<TValue>> Validators { get; }
+		private readonly IReadOnlyList<IValidator<TValue>> _Validators;
 
 		public NonNullableModelValidatorSet(IEnumerable<IValidator<TValue>> validators)
-			=> Validators = validators.ToArray();
+			=> _validators = validators.ToArray();
 
 		public NullableModelValidatorSet<TModel, TValue> Nullable()
-			=> new NullableModelValidatorSet<TModel, TValue>(Validators);
+			=> new NullableModelValidatorSet<TModel, TValue>(_validators);
 
 		public IValidatorSet<TValue> AddValidator(IValidator<TValue> value)
-			=> new ValidatorSet<TValue>(Validators.Append(value));
+			=> new ValueValidatorSet<TValue>(Validators.Append(value));
 	}
 }

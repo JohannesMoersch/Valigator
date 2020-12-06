@@ -18,15 +18,15 @@ namespace Valigator.Validators
 			_maximumLength = maximumLength;
 		}
 
-		public Result<Unit, ValidationError> InverseValidate(string value)
+		public Result<Unit, ValidationError[]> InverseValidate(string value)
 			=> MeetsCondition(value)
-				? Result.Failure<Unit, ValidationError>(new ValidationError())
-				: Result.Unit<ValidationError>();
+				? Result.Failure<Unit, ValidationError[]>(new[] { new ValidationError() })
+				: Result.Unit<ValidationError[]>();
 
-		public Result<Unit, ValidationError> Validate(string value)
+		public Result<Unit, ValidationError[]> Validate(string value)
 			=> MeetsCondition(value)
-				? Result.Unit<ValidationError>()
-				: Result.Failure<Unit, ValidationError>(new ValidationError());
+				? Result.Unit<ValidationError[]>()
+				: Result.Failure<Unit, ValidationError[]>(new[] { new ValidationError() });
 
 		private bool MeetsCondition(string value)
 			=> value.Length >= _minimumLength && value.Length <= _maximumLength;

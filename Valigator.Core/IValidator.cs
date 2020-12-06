@@ -12,6 +12,6 @@ namespace Valigator.Core
 
 	public interface IValidator<TValue> : IValidator
 	{
-		Result<Unit, ValidationError> Validate(TValue value);
+		Result<Unit, ValidationError[]> Validate(TValue value);
 	}
 }

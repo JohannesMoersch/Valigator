@@ -17,6 +17,6 @@ namespace Valigator.Models
 			=> Validators = validators.ToArray();
 
 		public IValidatorSet<TValue> AddValidator(IValidator<TValue> value)
-			=> new ValidatorSet<TValue>(Validators.Append(value));
+			=> new ValueValidatorSet<TValue>(Validators.Append(value));
 	}
 }
