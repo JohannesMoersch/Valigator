@@ -8,7 +8,7 @@ namespace Valigator.Validators
 {
 	public static class ValidatorSetExtensions
 	{
-		public static TNext Length<TNext, TInput>(this IInvertableValidationData<TNext, TInput, string> data, int length)
+		public static TNext Length<TNext>(this IInvertableValidationData<TNext, string> data, int length)
 			=> data.WithValidator(new StringLengthValidator(length, length));
 	}
 }

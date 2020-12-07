@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Valigator.Models
 {
-	public interface IModelValidationData<TNext, TModel, TInput, TValue>
+	public interface IModelValidationData<TNext, TModel, TValue>
 	{
 		TNext WithValidator(IModelValidator<TModel, TValue> value);
 	}

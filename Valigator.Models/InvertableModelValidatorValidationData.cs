@@ -5,7 +5,7 @@ using Valigator.Core;
 
 namespace Valigator.Models
 {
-	public class InvertableModelValidatorValidationData<TModel, TInput, TValue> : IInvertableModelValidationData<IInvertableModelValidator<TModel, TValue>, TModel, TInput, TValue>, IInvertableValidationData<IInvertableValidator<TValue>, TInput, TValue>
+	public class InvertableModelValidatorValidationData<TModel, TValue> : IInvertableModelValidationData<IInvertableModelValidator<TModel, TValue>, TModel, TValue>, IInvertableValidationData<IInvertableValidator<TValue>, TValue>
 	{
 		public IInvertableValidator<TValue> WithValidator(IInvertableValidator<TValue> value) 
 			=> throw new NotImplementedException();
