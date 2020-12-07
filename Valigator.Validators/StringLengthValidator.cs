@@ -10,23 +10,21 @@ namespace Valigator.Validators
 
 		private readonly int _maximumLength;
 
-		public IValidatorDescriptor Descriptor => throw new NotImplementedException();
-
 		public StringLengthValidator(int minimumLength, int maximumLength)
 		{
 			_minimumLength = minimumLength;
 			_maximumLength = maximumLength;
 		}
 
-		public Result<Unit, ValidationError[]> InverseValidate(string value)
-			=> MeetsCondition(value)
-				? Result.Failure<Unit, ValidationError[]>(new[] { new ValidationError() })
-				: Result.Unit<ValidationError[]>();
-
 		public Result<Unit, ValidationError[]> Validate(string value)
 			=> MeetsCondition(value)
 				? Result.Unit<ValidationError[]>()
 				: Result.Failure<Unit, ValidationError[]>(new[] { new ValidationError() });
+
+		public Result<Unit, ValidationError[]> InverseValidate(string value)
+			=> MeetsCondition(value)
+				? Result.Failure<Unit, ValidationError[]>(new[] { new ValidationError() })
+				: Result.Unit<ValidationError[]>();
 
 		private bool MeetsCondition(string value)
 			=> value.Length >= _minimumLength && value.Length <= _maximumLength;

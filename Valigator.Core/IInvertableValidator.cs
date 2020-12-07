@@ -7,6 +7,6 @@ namespace Valigator.Core
 {
 	public interface IInvertableValidator<TValue> : IValidator<TValue>
 	{
-		Result<Unit, ValidationError> InverseValidate(TValue value);
+		Result<Unit, ValidationError[]> InverseValidate(TValue value);
 	}
 }

@@ -13,8 +13,8 @@ namespace Valigator.Models
 
 		private ModelPropertyFactory() { }
 
-		public ModelPropertyFactory<TModel, TValue> Value<TValue>()
-			=> ModelPropertyFactory<TModel, TValue>.Instance;
+		public ModelValuePropertyFactory<TModel, TValue> Value<TValue>()
+			=> ModelValuePropertyFactory<TModel, TValue>.Instance;
 
 		public ModelPropertyFactory<TModel, TValue[]> Collection<TValue>()
 			=> ModelPropertyFactory<TModel, TValue[]>.Instance;

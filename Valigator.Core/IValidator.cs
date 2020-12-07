@@ -5,12 +5,7 @@ using System.Text;
 
 namespace Valigator.Core
 {
-	public interface IValidator
-	{
-		IValidatorDescriptor Descriptor { get; }
-	}
-
-	public interface IValidator<TValue> : IValidator
+	public interface IValidator<TValue>
 	{
 		Result<Unit, ValidationError[]> Validate(TValue value);
 	}
