@@ -5,8 +5,7 @@ using Valigator.Core;
 
 namespace Valigator.Models
 {
-	public interface IInvertableModelValidator<TModel, TValue>
+	public class ModelValueValidatorSet<TValue, TOut> : IValidatorSet<TIn>
 	{
-		ValidatorResult InverseValidate(TModel model, TValue value);
 	}
 }

@@ -1,5 +1,4 @@
-﻿using Functional;
-using System;
+﻿using System;
 using Valigator.Core;
 
 namespace Valigator.Validators
@@ -16,15 +15,15 @@ namespace Valigator.Validators
 			_maximumLength = maximumLength;
 		}
 
-		public Result<Unit, ValidationError[]> Validate(string value)
+		public ValidatorResult Validate(string value)
 			=> MeetsCondition(value)
-				? Result.Unit<ValidationError[]>()
-				: Result.Failure<Unit, ValidationError[]>(new[] { new ValidationError() });
+				? ValidatorResult.Success()
+				: ValidatorResult.Failure(new[] { new ValidationError() });
 
-		public Result<Unit, ValidationError[]> InverseValidate(string value)
+		public ValidatorResult InverseValidate(string value)
 			=> MeetsCondition(value)
-				? Result.Failure<Unit, ValidationError[]>(new[] { new ValidationError() })
-				: Result.Unit<ValidationError[]>();
+				? ValidatorResult.Failure(new[] { new ValidationError() })
+				: ValidatorResult.Success();
 
 		private bool MeetsCondition(string value)
 			=> value.Length >= _minimumLength && value.Length <= _maximumLength;

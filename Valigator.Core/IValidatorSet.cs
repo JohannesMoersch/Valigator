@@ -4,8 +4,8 @@ using System.Text;
 
 namespace Valigator.Core
 {
-	public interface IValidator<TValue>
+	public interface IValidatorSet<TIn, TOut>
 	{
-		ValidatorResult Validate(TValue value);
+		public ValidatorSetResult<TOut> Process(TIn input);
 	}
 }

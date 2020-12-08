@@ -4,8 +4,7 @@ using System.Text;
 
 namespace Valigator.Core
 {
-	public interface IValidator<TValue>
+	public class ResultNotInitializedException : Exception
 	{
-		ValidatorResult Validate(TValue value);
 	}
 }
