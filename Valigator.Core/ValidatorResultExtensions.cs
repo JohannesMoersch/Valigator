@@ -12,7 +12,7 @@ namespace Valigator.Core
 		{
 			List<ValidationError>? errors = null;
 
-			for (int i = 0; i < validators.Length; ++i)
+			for (int i = 0; i < validators.Count; ++i)
 			{
 				var result = validators[i].Validate(value);
 

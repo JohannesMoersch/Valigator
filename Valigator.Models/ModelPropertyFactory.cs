@@ -15,8 +15,8 @@ namespace Valigator.Models
 		public ModelValuePropertyFactory<TModel, TValue> Value<TValue>()
 			=> ModelValuePropertyFactory<TModel, TValue>.Instance;
 
-		public ModelPropertyFactory<TModel, TValue[]> Collection<TValue>()
-			=> ModelPropertyFactory<TModel, TValue[]>.Instance;
+		public ModelPropertyFactory<TModel, IReadOnlyList<TValue>> Collection<TValue>()
+			=> ModelPropertyFactory<TModel, IReadOnlyList<TValue>>.Instance;
 
 		public ModelPropertyFactory<TModel, Dictionary<string, TValue>> Dictionary<TValue>()
 			=> ModelPropertyFactory<TModel, Dictionary<string, TValue>>.Instance;

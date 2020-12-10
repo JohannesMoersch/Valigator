@@ -5,18 +5,18 @@ using System.Text;
 
 namespace Valigator.Core
 {
-	public class ForEachValidator<TValue> : IValidator<TValue[]>
+	public class ForEachValidator<TValue> : IValidator<IReadOnlyList<TValue>>
 	{
 		private readonly IValidator<TValue> _validator;
 
 		public ForEachValidator(IValidator<TValue> validator) 
 			=> _validator = validator;
 
-		public ValidatorResult Validate(TValue[] value)
+		public ValidatorResult Validate(IReadOnlyList<TValue> value)
 		{
 			List<ValidationError>? errors = null;
 
-			for (int i = 0; i < value.Length; ++i)
+			for (int i = 0; i < value.Count; ++i)
 			{
 				var result = _validator.Validate(value[i]);
 

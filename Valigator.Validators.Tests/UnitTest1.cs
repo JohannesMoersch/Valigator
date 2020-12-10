@@ -1,4 +1,6 @@
+using Functional;
 using System;
+using System.Collections.Generic;
 using Valigator.Core;
 using Xunit;
 
@@ -11,6 +13,10 @@ namespace Valigator.Validators.Tests
 		{
 		}
 
-		public ValueValidatorSet<string> One => ValueValidatorSet.Empty<string>().Length(10);
+		public ValidationData<string> One => new ValidationData<string>().Length(10).Not(o => o.Length(10));
+
+		public ValidationData<IReadOnlyList<string>> Two => new ValidationData<IReadOnlyList<string>>().ForEach(o => o.Length(10)).ForEach(o => o.Not(x => x.Length(10)));
+
+		public ValidationData<IReadOnlyList<Option<string>>> Three => new ValidationData<IReadOnlyList<Option<string>>>().ForEach(o => o.Length(10)).ForEach(o => o.Not(x => x.Length(10)));
 	}
 }

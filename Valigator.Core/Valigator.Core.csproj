@@ -9,4 +9,8 @@
 		<Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Functional.Primitives" Version="2.0.0" />
+  </ItemGroup>
+
 </Project>
