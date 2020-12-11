@@ -13,7 +13,7 @@ namespace Valigator.Core
 		public NullableForEachValidator(IValidator<TValue> validator)
 			=> _validator = validator;
 
-		public ValidatorResult Validate(IReadOnlyList<Option<TValue>> value)
+		public Result<Unit, ValidationError[]> Validate(IReadOnlyList<Option<TValue>> value)
 		{
 			List<ValidationError>? errors = null;
 
@@ -29,9 +29,9 @@ namespace Valigator.Core
 			}
 
 			if (errors != null)
-				return ValidatorResult.Failure(errors.ToArray());
+				return Result.Failure<Unit, ValidationError[]>(errors.ToArray());
 
-			return ValidatorResult.Success();
+			return Result.Unit<ValidationError[]>();
 		}
 	}
 }

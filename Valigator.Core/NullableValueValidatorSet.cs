@@ -13,7 +13,7 @@ namespace Valigator.Core
 		public NullableValueValidatorSet(IEnumerable<IValidator<TValue>> validators)
 			=> _validators = validators.ToArray();
 
-		public ValidatorSetResult<Option<TValue>> Process(Option<TValue> input)
+		public Result<Option<TValue>, ValidationError[]> Process(Option<TValue> input)
 		{
 			if (input.Match<TValue?>(o => o, () => default) is TValue value)
 			{
@@ -21,12 +21,12 @@ namespace Valigator.Core
 					.Process(value)
 					.Match
 					(
-						o => ValidatorSetResult.Success(Option.Some(o)), 
-						ValidatorSetResult.Failure<Option<TValue>>
+						o => Result.Success<Option<TValue>, ValidationError[]>(Option.Some(o)), 
+						Result.Failure<Option<TValue>, ValidationError[]>
 					);
 			}
 
-			return ValidatorSetResult.Success(Option.None<TValue>());
+			return Result.Success<Option<TValue>, ValidationError[]>(Option.None<TValue>());
 		}
 	}
 }

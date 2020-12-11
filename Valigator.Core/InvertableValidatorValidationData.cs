@@ -4,9 +4,9 @@ using System.Text;
 
 namespace Valigator.Core
 {
-	public class InvertableValidatorValidationData<TValue> : IInvertableValidationData<IInvertableValidator<TValue>, TValue>
+	public class InvertableValidatorValidationData<TValue> : IInvertableValidationData<NotValidator<TValue>, TValue>
 	{
-		public IInvertableValidator<TValue> WithValidator(IInvertableValidator<TValue> value)
-			=> value;
+		public NotValidator<TValue> WithValidator(IInvertableValidator<TValue> value)
+			=> new NotValidator<TValue>(value);
 	}
 }

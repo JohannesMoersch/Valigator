@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Functional;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,7 +13,7 @@ namespace Valigator.Core
 		public ValueValidatorSet(IEnumerable<IValidator<TValue>> validators)
 			=> _validators = validators.ToArray();
 
-		public ValidatorSetResult<TValue> Process(TValue input)
+		public Result<TValue, ValidationError[]> Process(TValue input)
 			=> _validators.Process(input);
 	}
 }

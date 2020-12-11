@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Functional;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,7 +13,7 @@ namespace Valigator.Core
 		public ForEachValidator(IValidator<TValue> validator) 
 			=> _validator = validator;
 
-		public ValidatorResult Validate(IReadOnlyList<TValue> value)
+		public Result<Unit, ValidationError[]> Validate(IReadOnlyList<TValue> value)
 		{
 			List<ValidationError>? errors = null;
 
@@ -25,9 +26,9 @@ namespace Valigator.Core
 			}
 
 			if (errors != null)
-				return ValidatorResult.Failure(errors.ToArray());
+				return Result.Failure<Unit, ValidationError[]>(errors.ToArray());
 
-			return ValidatorResult.Success();
+			return Result.Unit<ValidationError[]>();
 		}
 	}
 }

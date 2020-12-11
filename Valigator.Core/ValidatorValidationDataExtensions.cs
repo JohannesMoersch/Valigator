@@ -6,7 +6,7 @@ namespace Valigator.Core
 {
 	public static class ValidatorValidationDataExtensions
 	{
-		public static IInvertableValidator<TValue> Not<TValue>(this ValidatorValidationData<TValue> data, Func<InvertableValidatorValidationData<TValue>, IInvertableValidator<TValue>> selector)
-			=> selector.Invoke(new InvertableValidatorValidationData<TValue>());
+		public static IValidator<TValue> Not<TValue>(this ValidatorValidationData<TValue> data, Func<InvertableValidatorValidationData<TValue>, NotValidator<TValue>> selector)
+			=> data.WithValidator(selector.Invoke(new InvertableValidatorValidationData<TValue>()));
 	}
 }

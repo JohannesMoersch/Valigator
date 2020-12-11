@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Functional;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
@@ -8,7 +9,7 @@ namespace Valigator.Core
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static class ValidatorResultExtensions
 	{
-		public static ValidatorSetResult<TValue> Process<TValue>(this IReadOnlyList<IValidator<TValue>> validators, TValue value)
+		public static Result<TValue, ValidationError[]> Process<TValue>(this IReadOnlyList<IValidator<TValue>> validators, TValue value)
 		{
 			List<ValidationError>? errors = null;
 
@@ -21,9 +22,9 @@ namespace Valigator.Core
 			}
 
 			if (errors != null)
-				return ValidatorSetResult.Failure<TValue>(errors.ToArray());
+				return Result.Failure<TValue, ValidationError[]>(errors.ToArray());
 
-			return ValidatorSetResult.Success(value);
+			return Result.Success<TValue, ValidationError[]>(value);
 		}
 	}
 }
