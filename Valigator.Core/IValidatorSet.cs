@@ -1,12 +1,11 @@
-﻿using Functional;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Valigator.Core
 {
-	public interface IValidatorSet<TIn, TOut>
+	public interface IValidatorSet<TValue>
 	{
-		public Result<TOut, ValidationError[]> Process(TIn input);
+		IReadOnlyList<IValidator<TValue>> Validators { get; }
 	}
 }
