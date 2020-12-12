@@ -6,20 +6,20 @@ using System.Text;
 
 namespace Valigator.Core
 {
-	public class ForEachValidator<TValue> : IValidator<IReadOnlyList<TValue>>
+	public class ForEachValidator<TValue> : IValidator<IEnumerable<TValue>>
 	{
 		private readonly IValidator<TValue> _validator;
 
 		public ForEachValidator(IValidator<TValue> validator) 
 			=> _validator = validator;
 
-		public Result<Unit, ValidationError[]> Validate(IReadOnlyList<TValue> value)
+		public Result<Unit, ValidationError[]> Validate(IEnumerable<TValue> value)
 		{
 			List<ValidationError>? errors = null;
 
-			for (int i = 0; i < value.Count; ++i)
+			foreach (var v in value)
 			{
-				var result = _validator.Validate(value[i]);
+				var result = _validator.Validate(v);
 
 				if (result.Match<ValidationError[]?>(static _ => null, static e => e) is ValidationError[] newErrors)
 					(errors ??= new List<ValidationError>()).AddRange(newErrors);

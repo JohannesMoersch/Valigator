@@ -19,6 +19,6 @@ namespace Valigator.Validators.Tests
 
 		public ValidationData<IReadOnlyList<Option<string>>> Three => new ValidationData<IReadOnlyList<Option<string>>>().ForEach(o => o.Length(10)).ForEach(o => o.Not(x => x.Length(10)));
 
-		public ValidationData<IReadOnlyDictionary<string, int>> Four => new ValidationData<IReadOnlyDictionary<string, int>>()
+		public ValidationData<IReadOnlyDictionary<string, Option<string>>> Four => new ValidationData<IReadOnlyDictionary<string, Option<string>>>().ForEachKey(o => o.Not(x => x.Length(10))).ForEachValue(o => o.Length(10));
 	}
 }

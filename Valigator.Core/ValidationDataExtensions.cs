@@ -18,6 +18,9 @@ namespace Valigator.Core
 		public static ValidationData<IReadOnlyList<Option<TValue>>> ForEach<TValue>(this ValidationData<IReadOnlyList<Option<TValue>>> data, Func<ValidatorValidationData<TValue>, IValidator<TValue>> selector)
 			=> data.WithValidator(new NullableForEachValidator<TValue>(selector.Invoke(new ValidatorValidationData<TValue>())));
 
+		public static ValidationData<IReadOnlyDictionary<TKey, TValue>> ForEach<TKey, TValue>(this ValidationData<IReadOnlyDictionary<TKey, TValue>> data, Func<ValidatorValidationData<KeyValuePair<TKey, TValue>>, IValidator<KeyValuePair<TKey, TValue>>> selector)
+			=> data.WithValidator(new ForEachValidator<KeyValuePair<TKey, TValue>>(selector.Invoke(new ValidatorValidationData<KeyValuePair<TKey, TValue>>())));
+
 		public static ValidationData<IReadOnlyDictionary<TKey, TValue>> ForEachKey<TKey, TValue>(this ValidationData<IReadOnlyDictionary<TKey, TValue>> data, Func<ValidatorValidationData<TKey>, IValidator<TKey>> selector)
 			=> data.WithValidator(new ForEachKeyValidator<TKey, TValue>(selector.Invoke(new ValidatorValidationData<TKey>())));
 
