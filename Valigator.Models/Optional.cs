@@ -4,12 +4,26 @@ using System.Text;
 
 namespace Valigator.Models
 {
+	public static class Optional
+	{
+		public static Optional<TValue> Set<TValue>(TValue value)
+			=> new Optional<TValue>(value);
+
+		public static Optional<TValue> Unset<TValue>()
+			=> new Optional<TValue>();
+	}
+
 	public struct Optional<TValue> : IEquatable<Optional<TValue>>
 	{
-		private readonly TValue? _value;
+		private readonly bool _hasValue;
 
-		internal Optional(TValue? value) 
-			=> _value = value;
+		private readonly TValue _value;
+
+		internal Optional(TValue value)
+		{
+			_hasValue = true;
+			_value = value;
+		}
 
 		public TResult Match<TResult>(Func<TValue, TResult> set, Func<TResult> unset)
 		{
@@ -19,23 +33,20 @@ namespace Valigator.Models
 			if (unset == null)
 				throw new ArgumentNullException(nameof(unset));
 
-			return _value is not null ? set.Invoke(_value) : unset.Invoke();
+			return _hasValue ? set.Invoke(_value) : unset.Invoke();
 		}	
-
-		public TValue? ToNullable()
-			=> _value;
 
 		public bool Equals(Optional<TValue> other)
 			=> EqualityComparer<TValue?>.Default.Equals(_value, other._value);
 
 		public override int GetHashCode()
-			=> _value is not null ? _value.GetHashCode() * 31 : 0;
+			=> _hasValue && _value != null ? _value.GetHashCode() * 31 : 0;
 
 		public override bool Equals(object obj)
 			=> obj is Optional<TValue> Nullable && Equals(Nullable);
 
 		public override string ToString()
-			=> _value is not null ? $"Set:{_value}" : "Unset";
+			=> _hasValue ? $"Set:{_value}" : "Unset";
 
 		public static bool operator ==(Optional<TValue> left, Optional<TValue> right)
 			=> left.Equals(right);

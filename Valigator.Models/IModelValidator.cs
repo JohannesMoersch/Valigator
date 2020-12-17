@@ -6,7 +6,7 @@ using Valigator.Core;
 
 namespace Valigator.Models
 {
-	public interface IModelValidator<TModel, TValue>
+	public interface IModelValidator<in TModel, in TValue>
 	{
 		Result<Unit, ValidationError[]> Validate(TModel model, TValue value);
 	}

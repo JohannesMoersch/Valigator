@@ -1,3 +1,4 @@
+using Functional;
 using System;
 using Xunit;
 
@@ -8,7 +9,6 @@ namespace Valigator.Core.Tests
 		[Fact]
 		public void Test1()
 		{
-
 		}
 	}
 }

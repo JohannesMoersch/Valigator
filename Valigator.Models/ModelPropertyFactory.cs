@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Valigator.Core;
+using Valigator.Models.PropertyFactories;
 
 namespace Valigator.Models
 {
@@ -15,29 +16,28 @@ namespace Valigator.Models
 		public ModelValuePropertyFactory<TModel, TValue> Value<TValue>()
 			=> ModelValuePropertyFactory<TModel, TValue>.Instance;
 
-		public ModelPropertyFactory<TModel, IReadOnlyList<TValue>> Collection<TValue>()
-			=> ModelPropertyFactory<TModel, IReadOnlyList<TValue>>.Instance;
+		public ModelValuePropertyFactory<TModel, TValue> Value<TValue>(Func<ModelValuePropertyFactoryOptions, ModelValuePropertyFactoryOptions> options)
+			=> ModelValuePropertyFactory<TModel, TValue>.Instance;
+
+		public ModelNullableValuePropertyFactory<TModel, TValue> Value<TValue>(Func<ModelValuePropertyFactoryOptions, ModelNullableValuePropertyFactoryOptions> options)
+			=> ModelNullableValuePropertyFactory<TModel, TValue>.Instance;
+
+		public ModelCollectionPropertyFactory<TModel, TValue> Collection<TValue>()
+			=> ModelCollectionPropertyFactory<TModel, TValue>.Instance;
+
+		public ModelCollectionPropertyFactory<TModel, TValue> Collection<TValue>(Func<ModelCollectionPropertyFactoryOptions, ModelCollectionPropertyFactoryOptions> options)
+			=> ModelCollectionPropertyFactory<TModel, TValue>.Instance;
+
+		public ModelNullableCollectionPropertyFactory<TModel, TValue> Collection<TValue>(Func<ModelCollectionPropertyFactoryOptions, ModelNullableCollectionPropertyFactoryOptions> options)
+			=> ModelNullableCollectionPropertyFactory<TModel, TValue>.Instance;
+
+		public ModelOptionCollectionPropertyFactory<TModel, TValue> Collection<TValue>(Func<ModelCollectionPropertyFactoryOptions, ModelOptionCollectionPropertyFactoryOptions> options)
+			=> ModelOptionCollectionPropertyFactory<TModel, TValue>.Instance;
+
+		public ModelNullableOptionCollectionPropertyFactory<TModel, TValue> Collection<TValue>(Func<ModelCollectionPropertyFactoryOptions, ModelNullableOptionCollectionPropertyFactoryOptions> NullableOptions)
+			=> ModelNullableOptionCollectionPropertyFactory<TModel, TValue>.Instance;
 
 		public ModelPropertyFactory<TModel, Dictionary<string, TValue>> Dictionary<TValue>()
 			=> ModelPropertyFactory<TModel, Dictionary<string, TValue>>.Instance;
-
-		public NullableModelPropertyFactory<TModel> Nullable()
-			=> throw new NotImplementedException();
-	}
-
-	public class ModelPropertyFactory<TModel, TValue>
-	{
-		public static ModelPropertyFactory<TModel, TValue> Instance { get; } = new ModelPropertyFactory<TModel, TValue>();
-
-		private ModelPropertyFactory() { }
-
-		public NonNullableModelValidatorSet<TModel, TValue> Required()
-			=> throw new NotImplementedException();
-
-		public NonNullableModelValidatorSet<TModel, TValue> Optional()
-			=> throw new NotImplementedException();
-
-		public NonNullableModelValidatorSet<TModel, TValue> Defaulted()
-			=> throw new NotImplementedException();
 	}
 }

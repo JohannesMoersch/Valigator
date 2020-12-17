@@ -20,7 +20,7 @@ namespace Valigator.Core
 			{
 				var result = _validator.Validate(kvp.Value);
 
-				if (result.Match<ValidationError[]?>(static _ => null, static e => e) is ValidationError[] newErrors)
+				if (!result.TryGetValue(out var _, out ValidationError[] newErrors))
 					(errors ??= new List<ValidationError>()).AddRange(newErrors);
 			}
 

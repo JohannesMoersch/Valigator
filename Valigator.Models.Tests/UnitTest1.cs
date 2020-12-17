@@ -1,4 +1,7 @@
 using System;
+using System.Collections.Generic;
+using Valigator.Models.ValidationData;
+using Valigator.Validators;
 using Xunit;
 
 namespace Valigator.Models.Tests
@@ -15,14 +18,14 @@ namespace Valigator.Models.Tests
 		{
 			public class Definition : ModelDefinition<TestModel>
 			{
-				public IModelValidatorSet<TestModel, int[]> One => Data.Collection<int>().Required();
+				public RequiredCollectionModelValidationData<TestModel, int> One => Data.Collection<int>().Required();
 
-				public IModelValidatorSet<TestModel, string> Two => Data.Value<string>().Required();
+				public RequiredValueModelValidationData<TestModel, string> Two => Data.Value<string>().Required();
+
+				public RequiredNullableValueModelValidationData<TestModel, string> Three => Data.Value<string>(o => o.Nullable()).Required().Length(5);
+
+				public object Four => Data.Collection<int>(o => o.ItemsNullable().Nullable()).Required();
 			}
-		}
-
-		public partial class TestModel
-		{
 		}
 	}
 }

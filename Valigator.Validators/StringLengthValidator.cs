@@ -19,11 +19,11 @@ namespace Valigator.Validators
 		public Result<Unit, ValidationError[]> Validate(string value)
 			=> MeetsCondition(value)
 				? Result.Unit<ValidationError[]>()
-				: Result.Failure<Unit, ValidationError[]>(new[] { new ValidationError() });
+				: Result.Failure<Unit, ValidationError[]>(new[] { new ValidationError($"Length must be between {_minimumLength} and {_maximumLength}.") });
 
 		public Result<Unit, ValidationError[]> InverseValidate(string value)
 			=> MeetsCondition(value)
-				? Result.Failure<Unit, ValidationError[]>(new[] { new ValidationError() })
+				? Result.Failure<Unit, ValidationError[]>(new[] { new ValidationError($"Length must not be between {_minimumLength} and {_maximumLength}.") })
 				: Result.Unit<ValidationError[]>();
 
 		private bool MeetsCondition(string value)

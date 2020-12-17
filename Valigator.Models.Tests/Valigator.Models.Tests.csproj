@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Valigator.Models\Valigator.Models.csproj" />
+    <ProjectReference Include="..\Valigator.Validators\Valigator.Validators.csproj" />
   </ItemGroup>
 
 </Project>
