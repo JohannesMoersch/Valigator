@@ -6,7 +6,7 @@ using Valigator.Core;
 
 namespace Valigator.Models.ValidationData
 {
-	public class DefaultedValueModelValidationData<TModel, TValue> : IValidationData<DefaultedValueModelValidationData<TModel, TValue>, TValue>, IInvertableValidationData<DefaultedValueModelValidationData<TModel, TValue>, TValue>, IModelValidationData<DefaultedValueModelValidationData<TModel, TValue>, TModel, TValue>, IInvertableModelValidationData<DefaultedValueModelValidationData<TModel, TValue>, TModel, TValue>
+	public class DefaultedValueModelValidationData<TModel, TValue> : IModelPropertyData<TModel, Optional<Option<TValue>>, TValue>, IValidationData<DefaultedValueModelValidationData<TModel, TValue>, TValue>, IInvertableValidationData<DefaultedValueModelValidationData<TModel, TValue>, TValue>, IModelValidationData<DefaultedValueModelValidationData<TModel, TValue>, TModel, TValue>, IInvertableModelValidationData<DefaultedValueModelValidationData<TModel, TValue>, TModel, TValue>
 	{
 		private readonly TValue _defaultValue;
 
@@ -30,22 +30,20 @@ namespace Valigator.Models.ValidationData
 		public DefaultedValueModelValidationData<TModel, TValue> WithValidator(IInvertableModelValidator<TModel, TValue> value)
 			=> new DefaultedValueModelValidationData<TModel, TValue>(_defaultValue, _validationData.WithValidator(value));
 
-		public Result<TValue, ValidationError[]> Process(TModel model, Optional<Option<TValue>> value)
+		public Result<TValue, ValidationError[]> Coerce(Optional<Option<TValue>> value)
 		{
 			if (value.TryGetValue(out var option))
 			{
 				if (option.TryGetValue(out var item))
-				{
-					if (_validationData.Process(ModelValue.Create(model, item)).TryGetValue(out var _, out var errors))
-						return Result.Success<TValue, ValidationError[]>(item);
-
-					return Result.Failure<TValue, ValidationError[]>(errors);
-				}
+					return Result.Success<TValue, ValidationError[]>(item);
 
 				return Result.Failure<TValue, ValidationError[]>(new[] { new ValidationError("Null values not allowed.") });
 			}
 
 			return Result.Success<TValue, ValidationError[]>(_defaultValue);
 		}
+
+		public Result<Unit, ValidationError[]> Validate(TModel model, TValue value)
+			=> _validationData.Process(ModelValue.Create(model, value));
 	}
 }

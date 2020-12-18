@@ -7,23 +7,23 @@ using Valigator.Core;
 
 namespace Valigator.Models.ValidationData
 {
-	public class RequiredNullableCollectionModelValidationData<TModel, TValue> : IValidationData<RequiredNullableCollectionModelValidationData<TModel, TValue>, Option<IReadOnlyList<TValue>>>, IInvertableValidationData<RequiredNullableCollectionModelValidationData<TModel, TValue>, Option<IReadOnlyList<TValue>>>, IModelValidationData<RequiredNullableCollectionModelValidationData<TModel, TValue>, TModel, Option<IReadOnlyList<TValue>>>, IInvertableModelValidationData<RequiredNullableCollectionModelValidationData<TModel, TValue>, TModel, Option<IReadOnlyList<TValue>>>
+	public class RequiredNullableCollectionModelValidationData<TModel, TValue> : IModelPropertyData<TModel, Optional<Option<IReadOnlyList<Option<TValue>>>>, Option<IReadOnlyList<TValue>>>, IValidationData<RequiredNullableCollectionModelValidationData<TModel, TValue>, IReadOnlyList<TValue>>, IInvertableValidationData<RequiredNullableCollectionModelValidationData<TModel, TValue>, IReadOnlyList<TValue>>, IModelValidationData<RequiredNullableCollectionModelValidationData<TModel, TValue>, TModel, IReadOnlyList<TValue>>, IInvertableModelValidationData<RequiredNullableCollectionModelValidationData<TModel, TValue>, TModel, IReadOnlyList<TValue>>
 	{
-		private readonly ValidationData<ModelValue<TModel, Option<IReadOnlyList<TValue>>>> _validationData;
+		private readonly ValidationData<ModelValue<TModel, IReadOnlyList<TValue>>> _validationData;
 
-		public RequiredNullableCollectionModelValidationData(ValidationData<ModelValue<TModel, Option<IReadOnlyList<TValue>>>> validationData)
+		public RequiredNullableCollectionModelValidationData(ValidationData<ModelValue<TModel, IReadOnlyList<TValue>>> validationData)
 			=> _validationData = validationData;
 
-		public RequiredNullableCollectionModelValidationData<TModel, TValue> WithValidator(IValidator<Option<IReadOnlyList<TValue>>> value)
+		public RequiredNullableCollectionModelValidationData<TModel, TValue> WithValidator(IValidator<IReadOnlyList<TValue>> value)
 			=> new RequiredNullableCollectionModelValidationData<TModel, TValue>(_validationData.WithValidator(value));
 
-		public RequiredNullableCollectionModelValidationData<TModel, TValue> WithValidator(IInvertableValidator<Option<IReadOnlyList<TValue>>> value)
+		public RequiredNullableCollectionModelValidationData<TModel, TValue> WithValidator(IInvertableValidator<IReadOnlyList<TValue>> value)
 			=> new RequiredNullableCollectionModelValidationData<TModel, TValue>(_validationData.WithValidator(value));
 
-		public RequiredNullableCollectionModelValidationData<TModel, TValue> WithValidator(IModelValidator<TModel, Option<IReadOnlyList<TValue>>> value)
+		public RequiredNullableCollectionModelValidationData<TModel, TValue> WithValidator(IModelValidator<TModel, IReadOnlyList<TValue>> value)
 			=> new RequiredNullableCollectionModelValidationData<TModel, TValue>(_validationData.WithValidator(value));
 
-		public RequiredNullableCollectionModelValidationData<TModel, TValue> WithValidator(IInvertableModelValidator<TModel, Option<IReadOnlyList<TValue>>> value)
+		public RequiredNullableCollectionModelValidationData<TModel, TValue> WithValidator(IInvertableModelValidator<TModel, IReadOnlyList<TValue>> value)
 			=> new RequiredNullableCollectionModelValidationData<TModel, TValue>(_validationData.WithValidator(value));
 
 		public Result<Option<IReadOnlyList<TValue>>, ValidationError[]> Coerce(Optional<Option<IReadOnlyList<Option<TValue>>>> value)
@@ -45,6 +45,11 @@ namespace Valigator.Models.ValidationData
 		}
 
 		public Result<Unit, ValidationError[]> Validate(TModel model, Option<IReadOnlyList<TValue>> value)
-			=> _validationData.Process(ModelValue.Create(model, value));
+		{
+			if (value.TryGetValue(out var item))
+				return _validationData.Process(ModelValue.Create(model, item));
+
+			return Result.Unit<ValidationError[]>();
+		}
 	}
 }

@@ -37,7 +37,7 @@ namespace Valigator.Models
 		public ModelNullableOptionCollectionPropertyFactory<TModel, TValue> Collection<TValue>(Func<ModelCollectionPropertyFactoryOptions, ModelNullableOptionCollectionPropertyFactoryOptions> NullableOptions)
 			=> ModelNullableOptionCollectionPropertyFactory<TModel, TValue>.Instance;
 
-		public ModelPropertyFactory<TModel, Dictionary<string, TValue>> Dictionary<TValue>()
-			=> ModelPropertyFactory<TModel, Dictionary<string, TValue>>.Instance;
+		//public ModelPropertyFactory<TModel, Dictionary<string, TValue>> Dictionary<TValue>()
+		//	=> ModelPropertyFactory<TModel, Dictionary<string, TValue>>.Instance;
 	}
 }
