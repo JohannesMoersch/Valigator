@@ -7,7 +7,7 @@ using Valigator.Core;
 
 namespace Valigator.Models.ValidationData
 {
-	public class DefaultedNullableDictionaryModelValidationData<TModel, TKey, TValue> : IModelPropertyData<TModel, Optional<Option<IReadOnlyDictionary<TKey, Option<TValue>>>>, Option<IReadOnlyDictionary<TKey, TValue>>>, IValidationData<DefaultedNullableDictionaryModelValidationData<TModel, TKey, TValue>, IReadOnlyDictionary<TKey, TValue>>, IInvertableValidationData<DefaultedNullableDictionaryModelValidationData<TModel, TKey, TValue>, IReadOnlyDictionary<TKey, TValue>>, IModelValidationData<DefaultedNullableDictionaryModelValidationData<TModel, TKey, TValue>, TModel, IReadOnlyDictionary<TKey, TValue>>, IInvertableModelValidationData<DefaultedNullableDictionaryModelValidationData<TModel, TKey, TValue>, TModel, IReadOnlyDictionary<TKey, TValue>>
+	public class DefaultedNullableDictionaryModelValidationData<TModel, TKey, TValue> : IModelPropertyData<TModel, Optional<Option<IReadOnlyDictionary<TKey, Option<TValue>>>>, Option<IReadOnlyDictionary<TKey, TValue>>>, IRootModelValidationData<DefaultedNullableDictionaryModelValidationData<TModel, TKey, TValue>, TModel, IReadOnlyDictionary<TKey, TValue>>
 	{
 		private readonly Option<IReadOnlyDictionary<TKey, TValue>> _defaultValue;
 

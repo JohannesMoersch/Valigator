@@ -6,7 +6,7 @@ using Valigator.Core;
 
 namespace Valigator.Models.ValidationData
 {
-	public class OptionalNullableValueModelValidationData<TModel, TValue> : IModelPropertyData<TModel, Optional<Option<TValue>>, Optional<Option<TValue>>>, IValidationData<OptionalNullableValueModelValidationData<TModel, TValue>, TValue>, IInvertableValidationData<OptionalNullableValueModelValidationData<TModel, TValue>, TValue>, IModelValidationData<OptionalNullableValueModelValidationData<TModel, TValue>, TModel, TValue>, IInvertableModelValidationData<OptionalNullableValueModelValidationData<TModel, TValue>, TModel, TValue>
+	public class OptionalNullableValueModelValidationData<TModel, TValue> : IModelPropertyData<TModel, Optional<Option<TValue>>, Optional<Option<TValue>>>, IRootModelValidationData<OptionalNullableValueModelValidationData<TModel, TValue>, TModel, TValue>
 	{
 		private readonly ValidationData<ModelValue<TModel, TValue>> _validationData;
 

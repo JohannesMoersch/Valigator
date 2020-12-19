@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Valigator.Core
 {
-	public class ValidationData<TValue> : IValidationData<ValidationData<TValue>, TValue>, IInvertableValidationData<ValidationData<TValue>, TValue>
+	public class ValidationData<TValue> : IRootValidationData<ValidationData<TValue>, TValue>
 	{
 		private IReadOnlyList<IValidator<TValue>> _validators;
 

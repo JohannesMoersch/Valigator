@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Valigator.Models.ValidationData;
 using Valigator.Validators;
+using Valigator.Core;
 using Xunit;
 
 namespace Valigator.Models.Tests
@@ -26,7 +27,7 @@ namespace Valigator.Models.Tests
 
 				public object Four => Data.Collection<int>(o => o.ItemsNullable().Nullable()).Required();
 
-				public object Five => Data.Dictionary<int>(o => o.ItemsNullable()).Required();
+				public object Five => Data.Dictionary<string>(o => o.ItemsNullable()).Required().Not(o => o.Count(10)).ForEachValue(o => o.Length(5));
 			}
 		}
 	}

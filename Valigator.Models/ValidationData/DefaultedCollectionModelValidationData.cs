@@ -7,7 +7,7 @@ using Valigator.Core;
 
 namespace Valigator.Models.ValidationData
 {
-	public class DefaultedCollectionModelValidationData<TModel, TValue> : IModelPropertyData<TModel, Optional<Option<IReadOnlyList<Option<TValue>>>>, IReadOnlyList<TValue>>, IValidationData<DefaultedCollectionModelValidationData<TModel, TValue>, IReadOnlyList<TValue>>, IInvertableValidationData<DefaultedCollectionModelValidationData<TModel, TValue>, IReadOnlyList<TValue>>, IModelValidationData<DefaultedCollectionModelValidationData<TModel, TValue>, TModel, IReadOnlyList<TValue>>, IInvertableModelValidationData<DefaultedCollectionModelValidationData<TModel, TValue>, TModel, IReadOnlyList<TValue>>
+	public class DefaultedCollectionModelValidationData<TModel, TValue> : IModelPropertyData<TModel, Optional<Option<IReadOnlyList<Option<TValue>>>>, IReadOnlyList<TValue>>, IRootModelValidationData<DefaultedCollectionModelValidationData<TModel, TValue>, TModel, IReadOnlyList<TValue>>
 	{
 		private readonly IReadOnlyList<TValue> _defaultValue;
 
