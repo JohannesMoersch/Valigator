@@ -17,23 +17,36 @@ namespace Valigator.Models
 		}
 #pragma warning restore CS8619 // Nullability of reference types in value doesn't match target type.
 
-		public static Result<TValue[], int[]> GetValuesOrNullIndices<TValue>(this IReadOnlyList<Option<TValue>> values)
+		public static Result<IReadOnlyList<TValue>, int[]> GetValuesOrNullIndices<TValue>(this IReadOnlyList<Option<TValue>> values)
 		{
-			var newValues = new TValue[values.Count];
 			var nullIndices = new List<int>();
 
 			for (int i = 0; i < values.Count; ++i)
 			{
-				if (values[i].TryGetValue(out var value))
-					newValues[i] = value;
-				else
+				if (values[i].Match(static _ => false, static () => true))
 					(nullIndices ??= new List<int>()).Add(i);
 			}
 
 			if (nullIndices != null)
-				return Result.Failure<TValue[], int[]>(nullIndices.ToArray());
+				return Result.Failure<IReadOnlyList<TValue>, int[]>(nullIndices.ToArray());
 
-			return Result.Success<TValue[], int[]>(newValues);
+			return Result.Success<IReadOnlyList<TValue>, int[]>(new OptionListWrapper<TValue>(values));
+		}
+
+		public static Result<IReadOnlyDictionary<TKey, TValue>, TKey[]> GetValuesOrNullIndices<TKey, TValue>(this IReadOnlyDictionary<TKey, Option<TValue>> values)
+		{
+			var nullIndices = new List<TKey>();
+
+			foreach (var kvp in values)
+			{
+				if (kvp.Value.Match(static _ => false, static () => true))
+					(nullIndices ??= new List<TKey>()).Add(kvp.Key);
+			}
+
+			if (nullIndices != null)
+				return Result.Failure<IReadOnlyDictionary<TKey, TValue>, TKey[]>(nullIndices.ToArray());
+
+			return Result.Success<IReadOnlyDictionary<TKey, TValue>, TKey[]>(new OptionDictionaryWrapper<TKey, TValue>(values));
 		}
 	}
 }

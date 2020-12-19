@@ -25,6 +25,8 @@ namespace Valigator.Models.Tests
 				public RequiredNullableValueModelValidationData<TestModel, string> Three => Data.Value<string>(o => o.Nullable()).Required().Length(5);
 
 				public object Four => Data.Collection<int>(o => o.ItemsNullable().Nullable()).Required();
+
+				public object Five => Data.Dictionary<int>(o => o.ItemsNullable()).Required();
 			}
 		}
 	}
