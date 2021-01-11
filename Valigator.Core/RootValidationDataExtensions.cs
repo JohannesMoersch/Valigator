@@ -3,8 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
+using Valigator.Core;
+using Valigator.Validators;
 
-namespace Valigator.Core
+namespace Valigator
 {
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static class RootValidationDataExtensions

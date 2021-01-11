@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Valigator.Models
+namespace Valigator
 {
 	public static class Optional
 	{

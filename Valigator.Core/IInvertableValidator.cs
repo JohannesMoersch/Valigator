@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Valigator.Core
+namespace Valigator
 {
 	public interface IInvertableValidator<in TValue> : IValidator<TValue>
 	{

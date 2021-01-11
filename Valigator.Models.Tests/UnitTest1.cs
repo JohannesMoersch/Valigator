@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using Valigator.Models.ValidationData;
 using Valigator.Validators;
 using Valigator.Core;
 using Xunit;
+using Valigator.ModelValidationData;
 
 namespace Valigator.Models.Tests
 {

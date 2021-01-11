@@ -2,8 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Valigator.Core;
 
-namespace Valigator.Models
+namespace Valigator
 {
 	internal static class OptionExtensions
 	{

@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Valigator.Models
+namespace Valigator
 {
 	internal static class ResultExtensions
 	{

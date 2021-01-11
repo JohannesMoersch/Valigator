@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Valigator.Core;
 
-namespace Valigator.Models
+namespace Valigator
 {
 	public abstract class ModelDefinition<TModel>
 	{

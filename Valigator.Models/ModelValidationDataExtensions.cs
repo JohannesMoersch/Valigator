@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
 using Valigator.Core;
-using Valigator.Models.ValidationData;
+using Valigator.ModelValidationData;
 
-namespace Valigator.Models
+namespace Valigator
 {
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static class ModelValidationDataExtensions
