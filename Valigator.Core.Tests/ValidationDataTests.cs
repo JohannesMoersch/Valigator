@@ -10,49 +10,49 @@ namespace Valigator.Core.Tests
 	{
 		[Fact]
 		public void ValidIsSuccess()
-			=> new ValidationData<string>()
+			=> new ValidationData<int>()
 				.WithValidator(TestValidator.Valid())
-				.Process(String.Empty)
+				.Process(0)
 				.AssertSuccess();
 
 		[Fact]
 		public void ValidAndInvalidIsFailure()
-			=> new ValidationData<string>()
+			=> new ValidationData<int>()
 				.WithValidator(TestValidator.Valid())
 				.WithValidator(TestValidator.Invalid())
-				.Process(String.Empty)
+				.Process(0)
 				.AssertFailure();
 
 		[Fact]
 		public void InvalidAndValidIsFailure()
-			=> new ValidationData<string>()
+			=> new ValidationData<int>()
 				.WithValidator(TestValidator.Invalid())
 				.WithValidator(TestValidator.Valid())
-				.Process(String.Empty)
+				.Process(0)
 				.AssertFailure();
 
 		[Fact]
 		public void InvalidIsFailure()
-			=> new ValidationData<string>()
+			=> new ValidationData<int>()
 				.WithValidator(TestValidator.Invalid())
-				.Process(String.Empty)
+				.Process(0)
 				.AssertFailure();
 
 		[Fact]
 		public void InvalidErrorsAreCorrect()
-			=> new ValidationData<string>()
+			=> new ValidationData<int>()
 				.WithValidator(TestValidator.Invalid(Errors.One, Errors.Two))
-				.Process(String.Empty)
+				.Process(0)
 				.AssertFailure()
 				.Should()
 				.BeEquivalentTo(Errors.One, Errors.Two);
 
 		[Fact]
 		public void InvalidAndInvalidErrorsAreCorrect()
-			=> new ValidationData<string>()
+			=> new ValidationData<int>()
 				.WithValidator(TestValidator.Invalid(Errors.One))
 				.WithValidator(TestValidator.Invalid(Errors.Two, Errors.Three))
-				.Process(String.Empty)
+				.Process(0)
 				.AssertFailure()
 				.Should()
 				.BeEquivalentTo(Errors.One, Errors.Two, Errors.Three);
