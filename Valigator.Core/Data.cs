@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Functional;
 using Valigator.Core;
 using Valigator.Core.DataContainers;
@@ -136,12 +137,10 @@ namespace Valigator
 		{
 			int hashCode = 943777100;
 			var typeParameter = typeof(TValue);
-			if (typeParameter.IsArray || typeParameter.IsEnum)
+
+			if (typeParameter.IsArray || (typeParameter.IsGenericType && typeParameter.GetInterfaces().Any(t => t.GetGenericTypeDefinition() == typeof(IEnumerable<>))))
 			{
-				foreach (var item in _value as IEnumerable)
-				{
-					hashCode = hashCode * -1521134295 + item.GetHashCode();
-				}
+				hashCode = hashCode * -1521134295 + (_value as IStructuralEquatable).GetHashCode((IEqualityComparer)typeof(EqualityComparer<>).MakeGenericType(typeParameter.GetElementType()).GetProperty(nameof(EqualityComparer<int>.Default)).GetValue(this));
 			}
 			else
 				hashCode = hashCode * -1521134295 + EqualityComparer<TValue>.Default.GetHashCode(_value);
