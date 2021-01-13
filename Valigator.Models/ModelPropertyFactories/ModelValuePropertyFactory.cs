@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Functional;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Valigator.Core;
@@ -34,7 +35,7 @@ namespace Valigator.ModelPropertyFactories
 		public OptionalNullableValueModelValidationData<TModel, TValue> Optional()
 			=> new OptionalNullableValueModelValidationData<TModel, TValue>(new ValidationData<ModelValue<TModel, TValue>>());
 
-		public DefaultedNullableValueModelValidationData<TModel, TValue> Defaulted(TValue defaultValue)
+		public DefaultedNullableValueModelValidationData<TModel, TValue> Defaulted(Option<TValue> defaultValue)
 			=> new DefaultedNullableValueModelValidationData<TModel, TValue>(defaultValue, new ValidationData<ModelValue<TModel, TValue>>());
 	}
 }

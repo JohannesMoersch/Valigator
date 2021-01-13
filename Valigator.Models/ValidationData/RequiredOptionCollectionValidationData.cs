@@ -7,7 +7,7 @@ using Valigator.Core;
 
 namespace Valigator.ValidationData
 {
-	public class RequiredOptionCollectionValidationData<TValue> : IPropertyData<Optional<Option<IReadOnlyList<Option<TValue>>>>, IReadOnlyList<Option<TValue>>>, IRootValidationData<RequiredOptionCollectionValidationData<TValue>, IReadOnlyList<Option<TValue>>>
+	public class RequiredOptionCollectionValidationData<TValue> : IPropertyData<IReadOnlyList<Option<TValue>>, IReadOnlyList<Option<TValue>>>, IRootValidationData<RequiredOptionCollectionValidationData<TValue>, IReadOnlyList<Option<TValue>>>
 	{
 		private readonly ValidationData<IReadOnlyList<Option<TValue>>> _validationData;
 
@@ -20,18 +20,14 @@ namespace Valigator.ValidationData
 		public RequiredOptionCollectionValidationData<TValue> WithValidator(IInvertableValidator<IReadOnlyList<Option<TValue>>> value)
 			=> new RequiredOptionCollectionValidationData<TValue>(_validationData.WithValidator(value));
 
-		public Result<IReadOnlyList<Option<TValue>>, ValidationError[]> Coerce(Optional<Option<IReadOnlyList<Option<TValue>>>> value)
-		{
-			if (value.TryGetValue(out var option))
-			{
-				if (option.TryGetValue(out var item))
-					return Result.Success<IReadOnlyList<Option<TValue>>, ValidationError[]>(item);
+		public Result<IReadOnlyList<Option<TValue>>, ValidationError[]> CoerceUnset()
+			=> Result.Failure<IReadOnlyList<Option<TValue>>, ValidationError[]>(new[] { new ValidationError("Unset values not allowed.") });
 
-				return Result.Failure<IReadOnlyList<Option<TValue>>, ValidationError[]>(new[] { new ValidationError("Null values not allowed.") });
-			}
+		public Result<IReadOnlyList<Option<TValue>>, ValidationError[]> CoerceNone()
+			=> Result.Failure<IReadOnlyList<Option<TValue>>, ValidationError[]>(new[] { new ValidationError("Null values not allowed.") });
 
-			return Result.Failure<IReadOnlyList<Option<TValue>>, ValidationError[]>(new[] { new ValidationError("Unset values not allowed.") });
-		}
+		public Result<IReadOnlyList<Option<TValue>>, ValidationError[]> CoerceValue(IReadOnlyList<Option<TValue>> value)
+			=> Result.Success<IReadOnlyList<Option<TValue>>, ValidationError[]>(value);
 
 		public Result<Unit, ValidationError[]> Validate(IReadOnlyList<Option<TValue>> value)
 			=> _validationData.Process(value);

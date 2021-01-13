@@ -6,7 +6,7 @@ using Valigator.Core;
 
 namespace Valigator.ValidationData
 {
-	public class RequiredNullableValueValidationData<TValue> : IPropertyData<Optional<Option<TValue>>, Option<TValue>>, IRootValidationData<RequiredNullableValueValidationData<TValue>, TValue>
+	public class RequiredNullableValueValidationData<TValue> : IPropertyData<TValue, Option<TValue>>, IRootValidationData<RequiredNullableValueValidationData<TValue>, TValue>
 	{
 		private readonly ValidationData<TValue> _validationData;
 
@@ -19,13 +19,14 @@ namespace Valigator.ValidationData
 		public RequiredNullableValueValidationData<TValue> WithValidator(IInvertableValidator<TValue> value)
 			=> new RequiredNullableValueValidationData<TValue>(_validationData.WithValidator(value));
 
-		public Result<Option<TValue>, ValidationError[]> Coerce(Optional<Option<TValue>> value)
-		{
-			if (value.TryGetValue(out var option))
-				return Result.Success<Option<TValue>, ValidationError[]>(option);
+		public Result<Option<TValue>, ValidationError[]> CoerceUnset()
+			=> Result.Failure<Option<TValue>, ValidationError[]>(new[] { new ValidationError("Unset values not allowed.") });
 
-			return Result.Failure<Option<TValue>, ValidationError[]>(new[] { new ValidationError("Unset values not allowed.") });
-		}
+		public Result<Option<TValue>, ValidationError[]> CoerceNone()
+			=> Result.Success<Option<TValue>, ValidationError[]>(Option.None<TValue>());
+
+		public Result<Option<TValue>, ValidationError[]> CoerceValue(TValue value)
+			=> Result.Success<Option<TValue>, ValidationError[]>(Option.Some(value));
 
 		public Result<Unit, ValidationError[]> Validate(Option<TValue> value)
 		{

@@ -6,13 +6,13 @@ using Valigator.Core;
 
 namespace Valigator.ValidationData
 {
-	public class DefaultedNullableValueValidationData<TValue> : IPropertyData<Optional<Option<TValue>>, Option<TValue>>, IRootValidationData<DefaultedNullableValueValidationData<TValue>, TValue>
+	public class DefaultedNullableValueValidationData<TValue> : IPropertyData<TValue, Option<TValue>>, IRootValidationData<DefaultedNullableValueValidationData<TValue>, TValue>
 	{
-		private readonly TValue _defaultValue;
+		private readonly Option<TValue> _defaultValue;
 
 		private readonly ValidationData<TValue> _validationData;
 
-		public DefaultedNullableValueValidationData(TValue defaultValue, ValidationData<TValue> validationData)
+		public DefaultedNullableValueValidationData(Option<TValue> defaultValue, ValidationData<TValue> validationData)
 		{
 			_defaultValue = defaultValue;
 			_validationData = validationData;
@@ -24,18 +24,14 @@ namespace Valigator.ValidationData
 		public DefaultedNullableValueValidationData<TValue> WithValidator(IInvertableValidator<TValue> value)
 			=> new DefaultedNullableValueValidationData<TValue>(_defaultValue, _validationData.WithValidator(value));
 
-		public Result<Option<TValue>, ValidationError[]> Coerce(Optional<Option<TValue>> value)
-		{
-			if (value.TryGetValue(out var option))
-			{
-				if (option.TryGetValue(out var item))
-					return Result.Success<Option<TValue>, ValidationError[]>(Option.Some(item));
+		public Result<Option<TValue>, ValidationError[]> CoerceUnset()
+			=> Result.Success<Option<TValue>, ValidationError[]>(_defaultValue);
 
-				return Result.Success<Option<TValue>, ValidationError[]>(Option.None<TValue>());
-			}
+		public Result<Option<TValue>, ValidationError[]> CoerceNone()
+			=> Result.Success<Option<TValue>, ValidationError[]>(Option.None<TValue>());
 
-			return Result.Success<Option<TValue>, ValidationError[]>(Option.Some(_defaultValue));
-		}
+		public Result<Option<TValue>, ValidationError[]> CoerceValue(TValue value)
+			=> Result.Success<Option<TValue>, ValidationError[]>(Option.Some(value));
 
 		public Result<Unit, ValidationError[]> Validate(Option<TValue> value)
 		{

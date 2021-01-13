@@ -7,7 +7,7 @@ using Valigator.Core;
 
 namespace Valigator.ValidationData
 {
-	public class RequiredNullableOptionCollectionValidationData<TValue> : IPropertyData<Optional<Option<IReadOnlyList<Option<TValue>>>>, Option<IReadOnlyList<Option<TValue>>>>, IRootValidationData<RequiredNullableOptionCollectionValidationData<TValue>, IReadOnlyList<Option<TValue>>>
+	public class RequiredNullableOptionCollectionValidationData<TValue> : IPropertyData<IReadOnlyList<Option<TValue>>, Option<IReadOnlyList<Option<TValue>>>>, IRootValidationData<RequiredNullableOptionCollectionValidationData<TValue>, IReadOnlyList<Option<TValue>>>
 	{
 		private readonly ValidationData<IReadOnlyList<Option<TValue>>> _validationData;
 
@@ -20,18 +20,14 @@ namespace Valigator.ValidationData
 		public RequiredNullableOptionCollectionValidationData<TValue> WithValidator(IInvertableValidator<IReadOnlyList<Option<TValue>>> value)
 			=> new RequiredNullableOptionCollectionValidationData<TValue>(_validationData.WithValidator(value));
 
-		public Result<Option<IReadOnlyList<Option<TValue>>>, ValidationError[]> Coerce(Optional<Option<IReadOnlyList<Option<TValue>>>> value)
-		{
-			if (value.TryGetValue(out var option))
-			{
-				if (option.TryGetValue(out var item))
-					return Result.Success<Option<IReadOnlyList<Option<TValue>>>, ValidationError[]>(Option.Some(item));
+		public Result<Option<IReadOnlyList<Option<TValue>>>, ValidationError[]> CoerceUnset()
+			=> Result.Failure<Option<IReadOnlyList<Option<TValue>>>, ValidationError[]>(new[] { new ValidationError("Unset values not allowed.") });
 
-				return Result.Success<Option<IReadOnlyList<Option<TValue>>>, ValidationError[]>(Option.None<IReadOnlyList<Option<TValue>>>());
-			}
+		public Result<Option<IReadOnlyList<Option<TValue>>>, ValidationError[]> CoerceNone()
+			=> Result.Success<Option<IReadOnlyList<Option<TValue>>>, ValidationError[]>(Option.None<IReadOnlyList<Option<TValue>>>());
 
-			return Result.Failure<Option<IReadOnlyList<Option<TValue>>>, ValidationError[]>(new[] { new ValidationError("Unset values not allowed.") });
-		}
+		public Result<Option<IReadOnlyList<Option<TValue>>>, ValidationError[]> CoerceValue(IReadOnlyList<Option<TValue>> value)
+			=> Result.Success<Option<IReadOnlyList<Option<TValue>>>, ValidationError[]>(Option.Some(value));
 
 		public Result<Unit, ValidationError[]> Validate(Option<IReadOnlyList<Option<TValue>>> value)
 		{

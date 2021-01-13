@@ -6,13 +6,13 @@ using Valigator.Core;
 
 namespace Valigator.ModelValidationData
 {
-	public class DefaultedNullableValueModelValidationData<TModel, TValue> : IModelPropertyData<TModel, Optional<Option<TValue>>, Option<TValue>>, IRootModelValidationData<DefaultedNullableValueModelValidationData<TModel, TValue>, TModel, TValue>
+	public class DefaultedNullableValueModelValidationData<TModel, TValue> : IModelPropertyData<TModel, TValue, Option<TValue>>, IRootModelValidationData<DefaultedNullableValueModelValidationData<TModel, TValue>, TModel, TValue>
 	{
-		private readonly TValue _defaultValue;
+		private readonly Option<TValue> _defaultValue;
 
 		private readonly ValidationData<ModelValue<TModel, TValue>> _validationData;
 
-		public DefaultedNullableValueModelValidationData(TValue defaultValue, ValidationData<ModelValue<TModel, TValue>> validationData)
+		public DefaultedNullableValueModelValidationData(Option<TValue> defaultValue, ValidationData<ModelValue<TModel, TValue>> validationData)
 		{
 			_defaultValue = defaultValue;
 			_validationData = validationData;
@@ -30,18 +30,14 @@ namespace Valigator.ModelValidationData
 		public DefaultedNullableValueModelValidationData<TModel, TValue> WithValidator(IInvertableModelValidator<TModel, TValue> value)
 			=> new DefaultedNullableValueModelValidationData<TModel, TValue>(_defaultValue, _validationData.WithValidator(value));
 
-		public Result<Option<TValue>, ValidationError[]> Coerce(Optional<Option<TValue>> value)
-		{
-			if (value.TryGetValue(out var option))
-			{
-				if (option.TryGetValue(out var item))
-					return Result.Success<Option<TValue>, ValidationError[]>(Option.Some(item));
+		public Result<Option<TValue>, ValidationError[]> CoerceUnset()
+			=> Result.Success<Option<TValue>, ValidationError[]>(_defaultValue);
 
-				return Result.Success<Option<TValue>, ValidationError[]>(Option.None<TValue>());
-			}
+		public Result<Option<TValue>, ValidationError[]> CoerceNone()
+			=> Result.Success<Option<TValue>, ValidationError[]>(Option.None<TValue>());
 
-			return Result.Success<Option<TValue>, ValidationError[]>(Option.Some(_defaultValue));
-		}
+		public Result<Option<TValue>, ValidationError[]> CoerceValue(TValue value)
+			=> Result.Success<Option<TValue>, ValidationError[]>(Option.Some(value));
 
 		public Result<Unit, ValidationError[]> Validate(TModel model, Option<TValue> value)
 		{

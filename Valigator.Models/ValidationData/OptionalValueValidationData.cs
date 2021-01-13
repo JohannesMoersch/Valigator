@@ -6,7 +6,7 @@ using Valigator.Core;
 
 namespace Valigator.ValidationData
 {
-	public class OptionalValueValidationData<TValue> : IPropertyData<Optional<Option<TValue>>, Optional<TValue>>, IRootValidationData<OptionalValueValidationData<TValue>, TValue>
+	public class OptionalValueValidationData<TValue> : IPropertyData<TValue, Optional<TValue>>, IRootValidationData<OptionalValueValidationData<TValue>, TValue>
 	{
 		private readonly ValidationData<TValue> _validationData;
 
@@ -19,18 +19,14 @@ namespace Valigator.ValidationData
 		public OptionalValueValidationData<TValue> WithValidator(IInvertableValidator<TValue> value)
 			=> new OptionalValueValidationData<TValue>(_validationData.WithValidator(value));
 
-		public Result<Optional<TValue>, ValidationError[]> Coerce(Optional<Option<TValue>> value)
-		{
-			if (value.TryGetValue(out var option))
-			{
-				if (option.TryGetValue(out var item))
-					return Result.Success<Optional<TValue>, ValidationError[]>(Optional.Set(item));
+		public Result<Optional<TValue>, ValidationError[]> CoerceUnset()
+			=> Result.Success<Optional<TValue>, ValidationError[]>(Optional.Unset<TValue>());
 
-				return Result.Failure<Optional<TValue>, ValidationError[]>(new[] { new ValidationError("Null values not allowed.") });
-			}
+		public Result<Optional<TValue>, ValidationError[]> CoerceNone()
+			=> Result.Failure<Optional<TValue>, ValidationError[]>(new[] { new ValidationError("Null values not allowed.") });
 
-			return Result.Success<Optional<TValue>, ValidationError[]>(Optional.Unset<TValue>());
-		}
+		public Result<Optional<TValue>, ValidationError[]> CoerceValue(TValue value)
+			=> Result.Success<Optional<TValue>, ValidationError[]>(Optional.Set(value));
 
 		public Result<Unit, ValidationError[]> Validate(Optional<TValue> value)
 		{

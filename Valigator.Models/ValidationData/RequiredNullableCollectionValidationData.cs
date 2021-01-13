@@ -7,7 +7,7 @@ using Valigator.Core;
 
 namespace Valigator.ValidationData
 {
-	public class RequiredNullableCollectionValidationData<TValue> : IPropertyData<Optional<Option<IReadOnlyList<Option<TValue>>>>, Option<IReadOnlyList<TValue>>>, IRootValidationData<RequiredNullableCollectionValidationData<TValue>, IReadOnlyList<TValue>>
+	public class RequiredNullableCollectionValidationData<TValue> : IPropertyData<IReadOnlyList<Option<TValue>>, Option<IReadOnlyList<TValue>>>, IRootValidationData<RequiredNullableCollectionValidationData<TValue>, IReadOnlyList<TValue>>
 	{
 		private readonly ValidationData<IReadOnlyList<TValue>> _validationData;
 
@@ -20,23 +20,16 @@ namespace Valigator.ValidationData
 		public RequiredNullableCollectionValidationData<TValue> WithValidator(IInvertableValidator<IReadOnlyList<TValue>> value)
 			=> new RequiredNullableCollectionValidationData<TValue>(_validationData.WithValidator(value));
 
-		public Result<Option<IReadOnlyList<TValue>>, ValidationError[]> Coerce(Optional<Option<IReadOnlyList<Option<TValue>>>> value)
-		{
-			if (value.TryGetValue(out var option))
-			{
-				if (option.TryGetValue(out var item))
-				{
-					if (item.GetValuesOrNullIndices().TryGetValue(out var values, out var nullIndices))
-						return Result.Success<Option<IReadOnlyList<TValue>>, ValidationError[]>(Option.Some<IReadOnlyList<TValue>>(values));
-					
-					return Result.Failure<Option<IReadOnlyList<TValue>>, ValidationError[]>(nullIndices.Select(i => new ValidationError($"Null value in index {i} is not allowed.")).ToArray());
-				}
+		public Result<Option<IReadOnlyList<TValue>>, ValidationError[]> CoerceUnset()
+			=> Result.Failure<Option<IReadOnlyList<TValue>>, ValidationError[]>(new[] { new ValidationError("Unset values not allowed.") });
 
-				return Result.Success<Option<IReadOnlyList<TValue>>, ValidationError[]>(Option.None<IReadOnlyList<TValue>>());
-			}
+		public Result<Option<IReadOnlyList<TValue>>, ValidationError[]> CoerceNone()
+			=> Result.Success<Option<IReadOnlyList<TValue>>, ValidationError[]>(Option.None<IReadOnlyList<TValue>>());
 
-			return Result.Failure<Option<IReadOnlyList<TValue>>, ValidationError[]>(new[] { new ValidationError("Unset values not allowed.") });
-		}
+		public Result<Option<IReadOnlyList<TValue>>, ValidationError[]> CoerceValue(IReadOnlyList<Option<TValue>> value)
+			=> value.GetValuesOrNullIndices().TryGetValue(out var values, out var nullIndices)
+				? Result.Success<Option<IReadOnlyList<TValue>>, ValidationError[]>(Option.Some(values))
+				: Result.Failure<Option<IReadOnlyList<TValue>>, ValidationError[]>(nullIndices.Select(i => new ValidationError($"Null value in index {i} is not allowed.")).ToArray());
 
 		public Result<Unit, ValidationError[]> Validate(Option<IReadOnlyList<TValue>> value)
 		{

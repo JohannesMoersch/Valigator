@@ -7,7 +7,7 @@ using Valigator.Core;
 
 namespace Valigator.ModelValidationData
 {
-	public class OptionalNullableDictionaryModelValidationData<TModel, TKey, TValue> : IModelPropertyData<TModel, Optional<Option<IReadOnlyDictionary<TKey, Option<TValue>>>>, Optional<Option<IReadOnlyDictionary<TKey, TValue>>>>, IRootModelValidationData<OptionalNullableDictionaryModelValidationData<TModel, TKey, TValue>, TModel, IReadOnlyDictionary<TKey, TValue>>
+	public class OptionalNullableDictionaryModelValidationData<TModel, TKey, TValue> : IModelPropertyData<TModel, IReadOnlyDictionary<TKey, Option<TValue>>, Optional<Option<IReadOnlyDictionary<TKey, TValue>>>>, IRootModelValidationData<OptionalNullableDictionaryModelValidationData<TModel, TKey, TValue>, TModel, IReadOnlyDictionary<TKey, TValue>>
 	{
 		private readonly ValidationData<ModelValue<TModel, IReadOnlyDictionary<TKey, TValue>>> _validationData;
 
@@ -26,23 +26,16 @@ namespace Valigator.ModelValidationData
 		public OptionalNullableDictionaryModelValidationData<TModel, TKey, TValue> WithValidator(IInvertableModelValidator<TModel, IReadOnlyDictionary<TKey, TValue>> value)
 			=> new OptionalNullableDictionaryModelValidationData<TModel, TKey, TValue>(_validationData.WithValidator(value));
 
-		public Result<Optional<Option<IReadOnlyDictionary<TKey, TValue>>>, ValidationError[]> Coerce(Optional<Option<IReadOnlyDictionary<TKey, Option<TValue>>>> value)
-		{
-			if (value.TryGetValue(out var option))
-			{
-				if (option.TryGetValue(out var item))
-				{
-					if (item.GetValuesOrNullIndices().TryGetValue(out var values, out var nullIndices))
-						return Result.Success<Optional<Option<IReadOnlyDictionary<TKey, TValue>>>, ValidationError[]>(Optional.Set(Option.Some<IReadOnlyDictionary<TKey, TValue>>(values)));
-					
-					return Result.Failure<Optional<Option<IReadOnlyDictionary<TKey, TValue>>>, ValidationError[]>(nullIndices.Select(i => new ValidationError($"Null value in index {i} is not allowed.")).ToArray());
-				}
+		public Result<Optional<Option<IReadOnlyDictionary<TKey, TValue>>>, ValidationError[]> CoerceUnset()
+			=> Result.Success<Optional<Option<IReadOnlyDictionary<TKey, TValue>>>, ValidationError[]>(Optional.Unset<Option<IReadOnlyDictionary<TKey, TValue>>>());
 
-				return Result.Success<Optional<Option<IReadOnlyDictionary<TKey, TValue>>>, ValidationError[]>(Optional.Set(Option.None<IReadOnlyDictionary<TKey, TValue>>()));
-			}
+		public Result<Optional<Option<IReadOnlyDictionary<TKey, TValue>>>, ValidationError[]> CoerceNone()
+			=> Result.Success<Optional<Option<IReadOnlyDictionary<TKey, TValue>>>, ValidationError[]>(Optional.Set(Option.None<IReadOnlyDictionary<TKey, TValue>>()));
 
-			return Result.Failure<Optional<Option<IReadOnlyDictionary<TKey, TValue>>>, ValidationError[]>(new[] { new ValidationError("Unset values not allowed.") });
-		}
+		public Result<Optional<Option<IReadOnlyDictionary<TKey, TValue>>>, ValidationError[]> CoerceValue(IReadOnlyDictionary<TKey, Option<TValue>> value)
+			=> value.GetValuesOrNullIndices().TryGetValue(out var values, out var nullIndices)
+				? Result.Success<Optional<Option<IReadOnlyDictionary<TKey, TValue>>>, ValidationError[]>(Optional.Set(Option.Some(values)))
+				: Result.Failure<Optional<Option<IReadOnlyDictionary<TKey, TValue>>>, ValidationError[]>(nullIndices.Select(i => new ValidationError($"Null value in index {i} is not allowed.")).ToArray());
 
 		public Result<Unit, ValidationError[]> Validate(TModel model, Optional<Option<IReadOnlyDictionary<TKey, TValue>>> value)
 		{

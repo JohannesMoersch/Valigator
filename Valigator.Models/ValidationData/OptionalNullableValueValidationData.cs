@@ -6,7 +6,7 @@ using Valigator.Core;
 
 namespace Valigator.ValidationData
 {
-	public class OptionalNullableValueValidationData<TValue> : IPropertyData<Optional<Option<TValue>>, Optional<Option<TValue>>>, IRootValidationData<OptionalNullableValueValidationData<TValue>, TValue>
+	public class OptionalNullableValueValidationData<TValue> : IPropertyData<TValue, Optional<Option<TValue>>>, IRootValidationData<OptionalNullableValueValidationData<TValue>, TValue>
 	{
 		private readonly ValidationData<TValue> _validationData;
 
@@ -19,18 +19,14 @@ namespace Valigator.ValidationData
 		public OptionalNullableValueValidationData<TValue> WithValidator(IInvertableValidator<TValue> value)
 			=> new OptionalNullableValueValidationData<TValue>(_validationData.WithValidator(value));
 
-		public Result<Optional<Option<TValue>>, ValidationError[]> Coerce(Optional<Option<TValue>> value)
-		{
-			if (value.TryGetValue(out var option))
-			{
-				if (option.TryGetValue(out var item))
-					return Result.Success<Optional<Option<TValue>>, ValidationError[]>(Optional.Set(Option.Some(item)));
+		public Result<Optional<Option<TValue>>, ValidationError[]> CoerceUnset()
+			=> Result.Success<Optional<Option<TValue>>, ValidationError[]>(Optional.Unset<Option<TValue>>());
 
-				return Result.Success<Optional<Option<TValue>>, ValidationError[]>(Optional.Set(Option.None<TValue>()));
-			}
+		public Result<Optional<Option<TValue>>, ValidationError[]> CoerceNone()
+			=> Result.Success<Optional<Option<TValue>>, ValidationError[]>(Optional.Set(Option.None<TValue>()));
 
-			return Result.Success<Optional<Option<TValue>>, ValidationError[]>(Optional.Unset<Option<TValue>>());
-		}
+		public Result<Optional<Option<TValue>>, ValidationError[]> CoerceValue(TValue value)
+			=> Result.Success<Optional<Option<TValue>>, ValidationError[]>(Optional.Set(Option.Some(value)));
 
 		public Result<Unit, ValidationError[]> Validate(Optional<Option<TValue>> value)
 		{
