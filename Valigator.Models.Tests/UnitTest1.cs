@@ -12,7 +12,6 @@ namespace Valigator.Models.Tests
 		[Fact]
 		public void Test1()
 		{
-
 		}
 
 		public partial class TestModel
