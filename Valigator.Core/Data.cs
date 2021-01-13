@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using Functional;
 using Valigator.Core;
 using Valigator.Core.DataContainers;
@@ -117,5 +119,37 @@ namespace Valigator
 
 		public static implicit operator TValue(Data<TValue> data)
 			=> data.Value;
+
+		public override bool Equals(object obj) 
+			=> obj is Data<TValue> data 
+				&& this == data;//if (obj is Data<TValue> data)//	return this == data;//else//	return false;
+
+		public static bool operator ==(Data<TValue> x, Data<TValue> y) 
+			=> x.DataDescriptor.Equals(y.DataDescriptor)
+				&& (x._value.Equals(y._value) 
+					|| (typeof(TValue).IsArray && StructuralComparisons.StructuralEqualityComparer.Equals(x._value, y._value)));	
+
+		public static bool operator !=(Data<TValue> x, Data<TValue> y)
+			=> !x._value.Equals(y._value);
+
+		public override int GetHashCode()
+		{
+			int hashCode = 943777100;
+			var typeParameter = typeof(TValue);
+			if (typeParameter.IsArray || typeParameter.IsEnum)
+			{
+				foreach (var item in _value as IEnumerable)
+				{
+					hashCode = hashCode * -1521134295 + item.GetHashCode();
+				}
+			}
+			else
+				hashCode = hashCode * -1521134295 + EqualityComparer<TValue>.Default.GetHashCode(_value);
+
+			hashCode = hashCode * -1521134295 + State.GetHashCode();
+			hashCode = hashCode * -1521134295 + DataDescriptor.GetHashCode();
+			return hashCode;
+		}
+
 	}
 }
