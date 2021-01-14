@@ -61,17 +61,6 @@ namespace Valigator.Tests
 		}
 
 		[Fact]
-		public void CheckHashCode()
-		{
-			var guid = Guid.NewGuid();
-			var uniqueGuids = new[] { Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid() };
-
-			var item1 = TestRecord.CreateTestRecord(guid, uniqueGuids);
-
-			item1.ArrayOfUniqueGuid.GetHashCode();
-		}
-
-		[Fact]
 		public void CompareDataArrayHashCode()
 		{
 			var guid = Guid.NewGuid();
@@ -137,7 +126,7 @@ namespace Valigator.Tests
 			public Data<PrimitiveLikeType[]> ArrayOfUniqueGuid = Data.Collection<PrimitiveLikeType>().Required().ItemCount(minimumItems: 1, maximumItems: 4);
 		}
 
-		public readonly struct PrimitiveLikeType : IEquatable<PrimitiveLikeType> //, IComparable<PrimitiveLikeType>
+		public readonly struct PrimitiveLikeType : IEquatable<PrimitiveLikeType>
 		{
 			private readonly Option<Guid> _value;
 			internal readonly Guid Value => _value.Match(s => s, () => throw new ValueTypeNotInitializedException(typeof(PrimitiveLikeType)));
