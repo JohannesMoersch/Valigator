@@ -138,7 +138,7 @@ namespace Valigator
 			int hashCode = 943777100;
 			var typeParameter = typeof(TValue);
 
-			if (typeParameter.IsArray || typeParameter.IsEnum)
+			if (typeParameter.IsArray || (typeParameter.IsGenericType && typeParameter.GetInterfaces().Any(t => t.GetGenericTypeDefinition() == typeof(IEnumerable<>))))
 			{
 				hashCode = hashCode * -1521134295 + (_value as IStructuralEquatable).GetHashCode((IEqualityComparer)typeof(EqualityComparer<>).MakeGenericType(typeParameter.GetElementType()).GetProperty(nameof(EqualityComparer<int>.Default)).GetValue(this));
 			}
