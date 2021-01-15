@@ -13,7 +13,7 @@ namespace Valigator.Tests
 		{
 			var guid = Guid.NewGuid();
 			var uniqueGuids = new[] { Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid() };
-			var item1 = TestRecord.CreateTestRecord(guid, uniqueGuids);
+			var item1 = TestRecord.CreateTestRecord(guid, uniqueGuids, new string[] { "1", "2", "3" });
 			item1.Equals(item1).Should().BeTrue();
 			item1.ID.Equals(item1.ID).Should().BeTrue();
 			item1.UniqueGuid.Equals(item1.UniqueGuid).Should().BeTrue();
@@ -27,13 +27,12 @@ namespace Valigator.Tests
 			var guid = Guid.NewGuid();
 			var uniqueGuids = new[] { Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid() };
 
-			var item1 = TestRecord.CreateTestRecord(guid, uniqueGuids);
-			var item2 = TestRecord.CreateTestRecord(guid, uniqueGuids);
+			var item1 = TestRecord.CreateTestRecord(guid, uniqueGuids, new string[] { "1", "2", "3" });
+			var item2 = TestRecord.CreateTestRecord(guid, uniqueGuids, new string[] { "1", "2", "3" });
 
 			item1.Equals(item2).Should().BeTrue();
 			(item1 == item2).Should().BeTrue();
 			item1.Should().Be(item2);
-
 		}
 
 		[Fact]
@@ -42,8 +41,8 @@ namespace Valigator.Tests
 			var guid = Guid.NewGuid();
 			var uniqueGuids = new[] { Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid() };
 
-			var item1 = TestRecord.CreateTestRecord(guid, uniqueGuids);
-			var item2 = TestRecord.CreateTestRecord(Guid.NewGuid(), uniqueGuids);
+			var item1 = TestRecord.CreateTestRecord(guid, uniqueGuids, new string[] { "1", "2", "3" });
+			var item2 = TestRecord.CreateTestRecord(Guid.NewGuid(), uniqueGuids, new string[] { "1", "2", "3" });
 
 			(item1.Equals(item2)).Should().BeFalse();
 			(item1 == item2).Should().BeFalse();
@@ -55,9 +54,21 @@ namespace Valigator.Tests
 			var guid = Guid.NewGuid();
 			var uniqueGuids = new[] { Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid() };
 
-			var item1 = TestRecord.CreateTestRecord(guid, uniqueGuids);
+			var item1 = TestRecord.CreateTestRecord(guid, uniqueGuids, new string[] { "1", "2", "3" });
 
 			item1.UniqueName.Equals(item1.UniqueNameWithDifferentDataDescriptors).Should().BeFalse();
+		}
+
+		[Fact]
+		public void CompareDataStringArrayEquality()
+		{
+			var guid = Guid.NewGuid();
+			var uniqueGuids = new[] { Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid() };
+
+			var item1 = TestRecord.CreateTestRecord(guid, uniqueGuids, new string[] { "1", "2", "3" });
+			var item2 = TestRecord.CreateTestRecord(guid, uniqueGuids, new string[] { "1", "2", "3" });
+
+			item1.ArrayOfString.Equals(item2.ArrayOfString).Should().BeTrue();
 		}
 
 		[Fact]
@@ -66,8 +77,8 @@ namespace Valigator.Tests
 			var guid = Guid.NewGuid();
 			var uniqueGuids = new[] { Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid() };
 
-			var item1 = TestRecord.CreateTestRecord(guid, uniqueGuids);
-			var item2 = TestRecord.CreateTestRecord(guid, uniqueGuids);
+			var item1 = TestRecord.CreateTestRecord(guid, uniqueGuids, new string[] { "1", "2", "3" });
+			var item2 = TestRecord.CreateTestRecord(guid, uniqueGuids, new string[] { "1", "2", "3" });
 
 			item1.ArrayOfUniqueGuid.GetHashCode().Equals(item2.ArrayOfUniqueGuid.GetHashCode()).Should().BeTrue();
 		}
@@ -78,8 +89,8 @@ namespace Valigator.Tests
 			var guid = Guid.NewGuid();
 			var uniqueGuids = new[] { Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid() };
 
-			var item1 = TestRecord.CreateTestRecord(guid, uniqueGuids);
-			var item2 = TestRecord.CreateTestRecord(guid, uniqueGuids);
+			var item1 = TestRecord.CreateTestRecord(guid, uniqueGuids, new string[] { "1", "2", "3" });
+			var item2 = TestRecord.CreateTestRecord(guid, uniqueGuids, new string[] { "1", "2", "3" });
 
 			item1.GetHashCode().Equals(item2.GetHashCode()).Should().BeTrue();
 		}
@@ -89,8 +100,8 @@ namespace Valigator.Tests
 		{
 			var uniqueGuids = new[] { Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid() };
 
-			var item1 = TestRecord.CreateTestRecord(Guid.NewGuid(), uniqueGuids);
-			var item2 = TestRecord.CreateTestRecord(Guid.NewGuid(), uniqueGuids);
+			var item1 = TestRecord.CreateTestRecord(Guid.NewGuid(), uniqueGuids, new string[] { "1", "2", "3" });
+			var item2 = TestRecord.CreateTestRecord(Guid.NewGuid(), uniqueGuids, new string[] { "1", "2", "3" });
 
 			item1.UniqueGuid.Equals(item2.UniqueGuid).Should().BeFalse();
 		}
@@ -101,18 +112,19 @@ namespace Valigator.Tests
 		{
 
 
-			public static TestRecord CreateTestRecord(Guid liiGuid, Guid[] uniqueGuids)
+			public static TestRecord CreateTestRecord(Guid liiGuid, Guid[] uniqueGuids, string[] stringArray)
 			{
-				return new TestRecord(1, PrimitiveLikeTypeHelpers.CreateNew(liiGuid), "***", uniqueGuids.Select(guid => PrimitiveLikeTypeHelpers.CreateNew(guid)).ToArray());
+				return new TestRecord(1, PrimitiveLikeTypeHelpers.CreateNew(liiGuid), "***", uniqueGuids.Select(guid => PrimitiveLikeTypeHelpers.CreateNew(guid)).ToArray(), stringArray);
 			}
 
-			public TestRecord(int id, PrimitiveLikeType lineItemID, string taxName, PrimitiveLikeType[] uniquePrimitives)
+			public TestRecord(int id, PrimitiveLikeType lineItemID, string taxName, PrimitiveLikeType[] uniquePrimitives, string[] stringArray)
 			{
 				ID = ID.WithValue(id).Verify();
 				UniqueGuid = UniqueGuid.WithUncheckedValue(lineItemID).Verify();
 				UniqueName = UniqueName.WithValue(taxName).Verify();
 				UniqueNameWithDifferentDataDescriptors = UniqueNameWithDifferentDataDescriptors.WithValue(taxName).Verify();
 				ArrayOfUniqueGuid = ArrayOfUniqueGuid.WithValue(uniquePrimitives).Verify();
+				ArrayOfString = ArrayOfString.WithValue(stringArray).Verify();
 			}
 
 			public Data<int> ID { get; private set; } = Data.Required<int>();
@@ -124,6 +136,8 @@ namespace Valigator.Tests
 			public Data<string> UniqueNameWithDifferentDataDescriptors { get; private set; } = Data.Required<string>().Length(minimumLength: 3, maximumLength: 255);
 
 			public Data<PrimitiveLikeType[]> ArrayOfUniqueGuid = Data.Collection<PrimitiveLikeType>().Required().ItemCount(minimumItems: 1, maximumItems: 4);
+
+			public Data<string[]> ArrayOfString = Data.Collection<string>().Required().ItemCount(minimumItems: 1, maximumItems: 3);
 		}
 
 		public readonly struct PrimitiveLikeType : IEquatable<PrimitiveLikeType>

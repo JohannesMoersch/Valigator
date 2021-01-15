@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using Functional;
 using Valigator.Core;
 using Valigator.Core.DataContainers;
@@ -125,10 +124,45 @@ namespace Valigator
 			=> obj is Data<TValue> data 
 				&& this == data;
 
-		public static bool operator ==(Data<TValue> x, Data<TValue> y) 
+		public static bool operator ==(Data<TValue> x, Data<TValue> y)
 			=> x.DataDescriptor.Equals(y.DataDescriptor)
-				&& (x._value.Equals(y._value) 
-					|| (typeof(TValue).IsArray && StructuralComparisons.StructuralEqualityComparer.Equals(x._value, y._value)));	
+					&& (x._value.Equals(y._value)
+						|| (IsCollection(x) && IsCollection(y) && IsSequenceEqual(x._value as ICollection, y._value as ICollection)));
+
+
+
+		private static bool IsSequenceEqual(ICollection a, ICollection b)
+		{
+			if (a.Count == b.Count)
+			{
+				var firstEnumerator = a.GetEnumerator();
+				var secondEnumerator = b.GetEnumerator();
+				for (int i = 0; i < a.Count; i++)
+				{
+					firstEnumerator.MoveNext();
+					secondEnumerator.MoveNext();
+					if (!(IsCollection(firstEnumerator.Current) && IsCollection(secondEnumerator.Current) ?
+						IsSequenceEqual(firstEnumerator.Current as ICollection, secondEnumerator.Current as ICollection)
+						: AreObjectsEqual(firstEnumerator.Current, secondEnumerator.Current)))
+						return false;
+				}
+				return true;
+			}
+			return false;		
+		}
+
+		private static bool AreObjectsEqual(object a, object b)
+		{
+			if (a.GetType() == b.GetType())
+				return a.Equals(b);
+			else
+				return false;
+		}
+		private static bool IsCollection(object a) 
+			=> a.GetType().GetInterface(nameof(ICollection)) != null;
+
+		private static bool IsCollection<T>(Data<T> a)
+			=> typeof(T).GetInterface(nameof(ICollection)) != null;
 
 		public static bool operator !=(Data<TValue> x, Data<TValue> y)
 			=> !x._value.Equals(y._value);
@@ -138,9 +172,12 @@ namespace Valigator
 			int hashCode = 943777100;
 			var typeParameter = typeof(TValue);
 
-			if (typeParameter.IsArray || (typeParameter.IsGenericType && typeParameter.GetInterfaces().Any(t => t.GetGenericTypeDefinition() == typeof(IEnumerable<>))))
+			if (typeParameter.IsArray || _value is IEnumerable)
 			{
-				hashCode = hashCode * -1521134295 + (_value as IStructuralEquatable).GetHashCode((IEqualityComparer)typeof(EqualityComparer<>).MakeGenericType(typeParameter.GetElementType()).GetProperty(nameof(EqualityComparer<int>.Default)).GetValue(this));
+				foreach (var item in _value as IEnumerable)
+				{
+					hashCode = hashCode * -1521134295 + item.GetHashCode();
+				}
 			}
 			else
 				hashCode = hashCode * -1521134295 + EqualityComparer<TValue>.Default.GetHashCode(_value);
@@ -149,6 +186,5 @@ namespace Valigator
 			hashCode = hashCode * -1521134295 + DataDescriptor.GetHashCode();
 			return hashCode;
 		}
-
 	}
 }
