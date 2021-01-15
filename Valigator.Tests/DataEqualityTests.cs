@@ -135,6 +135,17 @@ namespace Valigator.Tests
 			item1.UniqueGuid.Equals(item2.UniqueGuid).Should().BeFalse();
 		}
 
+		[Fact]
+		public void IEnumerablesDifferentNumberOfElements()
+		{
+			var collection = TestIEnumerableRecord.CreateTestIEnumerableRecord(new ReadOnlyCollection<string>(new List<string>() { "123", "234", "456", "456" }));
+			var collection2 = TestIEnumerableRecord.CreateTestIEnumerableRecord(new ReadOnlyCollection<string>(new List<string>() { "123", "234", "456" }));
+			(collection == collection2).Should().BeFalse();
+			(collection.ReadOnlyCollection == collection2.ReadOnlyCollection).Should().BeFalse();
+			(collection != collection2).Should().BeTrue();
+			(collection.ReadOnlyCollection != collection2.ReadOnlyCollection).Should().BeTrue();
+		}
+
 
 
 		public record TestRecord

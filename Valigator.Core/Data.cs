@@ -121,37 +121,38 @@ namespace Valigator
 			=> data.Value;
 
 		public override bool Equals(object obj) 
-			=> obj is Data<TValue> data 
-				&& this == data;
+			=> obj is Data<TValue> data
+		 && _dataContainer.DataDescriptor.Equals(data.DataDescriptor)
+					&& (_value.Equals(data._value)
+						|| (IsEnumerable<TValue>() && IsSequenceEqual(_value as IEnumerable, data._value as IEnumerable)));
 
 		public static bool operator ==(Data<TValue> x, Data<TValue> y)
-			=> x.DataDescriptor.Equals(y.DataDescriptor)
-					&& (x._value.Equals(y._value)
-						|| (IsEnumerable<TValue>() && IsSequenceEqual(x._value as IEnumerable, y._value as IEnumerable)));
+			=> x.Equals(y);
 
 
 		private static bool IsSequenceEqual(IEnumerable a, IEnumerable b)
 		{
-				var firstEnumerator = a.GetEnumerator();
-				var secondEnumerator = b.GetEnumerator();
-
-			while(firstEnumerator.MoveNext() && secondEnumerator.MoveNext())
-			{
-				if (!(IsEnumerable(firstEnumerator.Current) && IsEnumerable(secondEnumerator.Current) ?
-					IsSequenceEqual(firstEnumerator.Current as IEnumerable, secondEnumerator.Current as IEnumerable)
-					: AreObjectsEqual(firstEnumerator.Current, secondEnumerator.Current)))
-					return false;
-			}
-				return firstEnumerator.MoveNext() == secondEnumerator.MoveNext();	
-		}
-		
-		private static bool AreObjectsEqual(object a, object b)
-		{
-			if (a.GetType() == b.GetType())
-				return a.Equals(b);
-			else
+			if (a == null || b == null)
 				return false;
+
+			var e1 = a.GetEnumerator();
+			var e2 = b.GetEnumerator();
+			bool e1Val = e1.MoveNext();
+			bool e2Val = e2.MoveNext();
+			while (e1Val && e2Val)
+			{
+				if (!CheckEquality(e1.Current, e2.Current)) return false;
+				e1Val = e1.MoveNext();
+				e2Val = e2.MoveNext();
+			}
+			return e1Val == e2Val;
 		}
+
+
+		private static bool CheckEquality(object a, object b)
+		=> a is IEnumerable<object> aEnumerable && b is IEnumerable<object> bEnumerable && !(a is string) ?
+			IsSequenceEqual(aEnumerable, bEnumerable) :
+			Equals(a, b);
 
 		private static bool IsEnumerable<T>()
 			=> typeof(T).GetInterface(nameof(IEnumerable)) != null;
@@ -160,7 +161,7 @@ namespace Valigator
 			=> a.GetType().GetInterface(nameof(IEnumerable)) != null;
 
 		public static bool operator !=(Data<TValue> x, Data<TValue> y)
-			=> !x._value.Equals(y._value);
+			=> !(x==y);
 
 		public override int GetHashCode()
 		{
