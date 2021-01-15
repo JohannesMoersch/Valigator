@@ -138,7 +138,7 @@ namespace Valigator
 			while(firstEnumerator.MoveNext() && secondEnumerator.MoveNext())
 			{
 				if (!(IsEnumerable(firstEnumerator.Current) && IsEnumerable(secondEnumerator.Current) ?
-					IsSequenceEqual(firstEnumerator.Current as ICollection, secondEnumerator.Current as ICollection)
+					IsSequenceEqual(firstEnumerator.Current as IEnumerable, secondEnumerator.Current as IEnumerable)
 					: AreObjectsEqual(firstEnumerator.Current, secondEnumerator.Current)))
 					return false;
 			}
@@ -155,6 +155,7 @@ namespace Valigator
 
 		private static bool IsEnumerable<T>(Data<T> a)
 			=> typeof(T).GetInterface(nameof(IEnumerable)) != null;
+
 		private static bool IsEnumerable(object a)
 			=> a.GetType().GetInterface(nameof(IEnumerable)) != null;
 
