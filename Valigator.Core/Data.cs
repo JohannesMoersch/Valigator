@@ -124,11 +124,10 @@ namespace Valigator
 			=> obj is Data<TValue> data
 		 && _dataContainer.DataDescriptor.Equals(data.DataDescriptor)
 					&& (_value.Equals(data._value)
-						|| (IsEnumerable<TValue>() && IsSequenceEqual(_value as IEnumerable, data._value as IEnumerable)));
+						|| (IsEnumerable<TValue>() && CheckEquality(_value as IEnumerable, data._value as IEnumerable)));
 
 		public static bool operator ==(Data<TValue> x, Data<TValue> y)
 			=> x.Equals(y);
-
 
 		private static bool IsSequenceEqual(IEnumerable a, IEnumerable b)
 		{
@@ -148,9 +147,8 @@ namespace Valigator
 			return e1Val == e2Val;
 		}
 
-
 		private static bool CheckEquality(object a, object b)
-		=> a is IEnumerable<object> aEnumerable && b is IEnumerable<object> bEnumerable && !(a is string) ?
+		=> a is IEnumerable aEnumerable && b is IEnumerable bEnumerable && !(a is string) ?
 			IsSequenceEqual(aEnumerable, bEnumerable) :
 			Equals(a, b);
 
