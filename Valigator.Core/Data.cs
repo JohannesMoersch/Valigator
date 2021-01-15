@@ -127,7 +127,7 @@ namespace Valigator
 		public static bool operator ==(Data<TValue> x, Data<TValue> y)
 			=> x.DataDescriptor.Equals(y.DataDescriptor)
 					&& (x._value.Equals(y._value)
-						|| (IsEnumerable(x) && IsEnumerable(y) && IsSequenceEqual(x._value as IEnumerable, y._value as IEnumerable)));
+						|| (IsEnumerable<TValue>() && IsSequenceEqual(x._value as IEnumerable, y._value as IEnumerable)));
 
 
 		private static bool IsSequenceEqual(IEnumerable a, IEnumerable b)
@@ -144,7 +144,7 @@ namespace Valigator
 			}
 				return firstEnumerator.MoveNext() == secondEnumerator.MoveNext();	
 		}
-
+		
 		private static bool AreObjectsEqual(object a, object b)
 		{
 			if (a.GetType() == b.GetType())
@@ -153,7 +153,7 @@ namespace Valigator
 				return false;
 		}
 
-		private static bool IsEnumerable<T>(Data<T> a)
+		private static bool IsEnumerable<T>()
 			=> typeof(T).GetInterface(nameof(IEnumerable)) != null;
 
 		private static bool IsEnumerable(object a)
@@ -165,7 +165,7 @@ namespace Valigator
 		public override int GetHashCode()
 		{
 			int hashCode = 943777100;
-			if (IsEnumerable(this))
+			if (IsEnumerable<TValue>())
 			{
 				foreach (var item in _value as IEnumerable)
 				{
