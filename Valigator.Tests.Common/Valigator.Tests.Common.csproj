@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Valigator.Core\Valigator.Core.csproj" />
+    <ProjectReference Include="..\Valigator.Models\Valigator.Models.csproj" />
   </ItemGroup>
 
 </Project>

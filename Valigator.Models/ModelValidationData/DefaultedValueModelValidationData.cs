@@ -34,7 +34,7 @@ namespace Valigator.ModelValidationData
 			=> Result.Success<TValue, ValidationError[]>(_defaultValue);
 
 		public Result<TValue, ValidationError[]> CoerceNone()
-			=> Result.Failure<TValue, ValidationError[]>(new[] { new ValidationError("Null values not allowed.") });
+			=> Result.Failure<TValue, ValidationError[]>(new[] { ValidationErrors.NullValuesNotAllowed() });
 
 		public Result<TValue, ValidationError[]> CoerceValue(TValue value)
 			=> Result.Success<TValue, ValidationError[]>(value);

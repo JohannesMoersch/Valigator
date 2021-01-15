@@ -26,10 +26,10 @@ namespace Valigator.ModelValidationData
 			=> new RequiredValueModelValidationData<TModel, TValue>(_validationData.WithValidator(value));
 
 		public Result<TValue, ValidationError[]> CoerceUnset()
-			=> Result.Failure<TValue, ValidationError[]>(new[] { new ValidationError("Unset values not allowed.") });
+			=> Result.Failure<TValue, ValidationError[]>(new[] { ValidationErrors.UnsetValuesNotAllowed() });
 
 		public Result<TValue, ValidationError[]> CoerceNone()
-			=> Result.Failure<TValue, ValidationError[]>(new[] { new ValidationError("Null values not allowed.") });
+			=> Result.Failure<TValue, ValidationError[]>(new[] { ValidationErrors.NullValuesNotAllowed() });
 
 		public Result<TValue, ValidationError[]> CoerceValue(TValue value)
 			=> Result.Success<TValue, ValidationError[]>(value);

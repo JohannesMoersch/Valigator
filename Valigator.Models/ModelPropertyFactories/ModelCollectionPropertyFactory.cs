@@ -64,7 +64,7 @@ namespace Valigator.ModelPropertyFactories
 		public RequiredNullableOptionCollectionModelValidationData<TModel, TValue> Required()
 			=> new RequiredNullableOptionCollectionModelValidationData<TModel, TValue>(new ValidationData<ModelValue<TModel, IReadOnlyList<Option<TValue>>>>());
 
-		public OptionalNullableOptionCollectionModelValidationData<TModel, TValue> NullableOptional()
+		public OptionalNullableOptionCollectionModelValidationData<TModel, TValue> Optional()
 			=> new OptionalNullableOptionCollectionModelValidationData<TModel, TValue>(new ValidationData<ModelValue<TModel, IReadOnlyList<Option<TValue>>>>());
 
 		public DefaultedNullableOptionCollectionModelValidationData<TModel, TValue> Defaulted(Option<IReadOnlyList<Option<TValue>>> defaultValue)

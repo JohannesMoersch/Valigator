@@ -20,7 +20,7 @@ namespace Valigator
 
 		public static Result<IReadOnlyList<TValue>, int[]> GetValuesOrNullIndices<TValue>(this IReadOnlyList<Option<TValue>> values)
 		{
-			var nullIndices = new List<int>();
+			List<int> nullIndices = null;
 
 			for (int i = 0; i < values.Count; ++i)
 			{
@@ -36,7 +36,7 @@ namespace Valigator
 
 		public static Result<IReadOnlyDictionary<TKey, TValue>, TKey[]> GetValuesOrNullIndices<TKey, TValue>(this IReadOnlyDictionary<TKey, Option<TValue>> values)
 		{
-			var nullIndices = new List<TKey>();
+			List<TKey> nullIndices = null;
 
 			foreach (var kvp in values)
 			{

@@ -29,7 +29,7 @@ namespace Valigator.ModelValidationData
 			=> Result.Success<Optional<TValue>, ValidationError[]>(Optional.Unset<TValue>());
 
 		public Result<Optional<TValue>, ValidationError[]> CoerceNone()
-			=> Result.Failure<Optional<TValue>, ValidationError[]>(new[] { new ValidationError("Null values not allowed.") });
+			=> Result.Failure<Optional<TValue>, ValidationError[]>(new[] { ValidationErrors.NullValuesNotAllowed() });
 
 		public Result<Optional<TValue>, ValidationError[]> CoerceValue(TValue value)
 			=> Result.Success<Optional<TValue>, ValidationError[]>(Optional.Set(value));
