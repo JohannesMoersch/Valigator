@@ -170,11 +170,9 @@ namespace Valigator
 		public override int GetHashCode()
 		{
 			int hashCode = 943777100;
-			var typeParameter = typeof(TValue);
-
-			if (typeParameter.IsArray || _value is IEnumerable)
+			if (IsCollection(this))
 			{
-				foreach (var item in _value as IEnumerable)
+				foreach (var item in _value as ICollection)
 				{
 					hashCode = hashCode * -1521134295 + item.GetHashCode();
 				}
