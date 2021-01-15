@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Valigator;
 using Valigator.Core;
-using Valigator.Core.Tests;
 
-namespace Valigator.Models.Tests
+namespace Valigator
 {
 	public static class RootValidationDataExtensions
 	{

@@ -5,7 +5,6 @@ using Valigator.Core;
 using Xunit;
 using Valigator.ModelValidationData;
 using FluentAssertions;
-using Valigator.Core.Tests;
 using Functional;
 
 namespace Valigator.Models.Tests
