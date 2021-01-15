@@ -127,28 +127,22 @@ namespace Valigator
 		public static bool operator ==(Data<TValue> x, Data<TValue> y)
 			=> x.DataDescriptor.Equals(y.DataDescriptor)
 					&& (x._value.Equals(y._value)
-						|| (IsCollection(x) && IsCollection(y) && IsSequenceEqual(x._value as ICollection, y._value as ICollection)));
+						|| (IsEnumerable(x) && IsEnumerable(y) && IsSequenceEqual(x._value as IEnumerable, y._value as IEnumerable)));
 
 
-
-		private static bool IsSequenceEqual(ICollection a, ICollection b)
+		private static bool IsSequenceEqual(IEnumerable a, IEnumerable b)
 		{
-			if (a.Count == b.Count)
-			{
 				var firstEnumerator = a.GetEnumerator();
 				var secondEnumerator = b.GetEnumerator();
-				for (int i = 0; i < a.Count; i++)
-				{
-					firstEnumerator.MoveNext();
-					secondEnumerator.MoveNext();
-					if (!(IsCollection(firstEnumerator.Current) && IsCollection(secondEnumerator.Current) ?
-						IsSequenceEqual(firstEnumerator.Current as ICollection, secondEnumerator.Current as ICollection)
-						: AreObjectsEqual(firstEnumerator.Current, secondEnumerator.Current)))
-						return false;
-				}
-				return true;
+
+			while(firstEnumerator.MoveNext() && secondEnumerator.MoveNext())
+			{
+				if (!(IsCollection(firstEnumerator.Current) && IsCollection(secondEnumerator.Current) ?
+					IsSequenceEqual(firstEnumerator.Current as ICollection, secondEnumerator.Current as ICollection)
+					: AreObjectsEqual(firstEnumerator.Current, secondEnumerator.Current)))
+					return false;
 			}
-			return false;		
+				return firstEnumerator.MoveNext() == secondEnumerator.MoveNext();	
 		}
 
 		private static bool AreObjectsEqual(object a, object b)
@@ -161,8 +155,8 @@ namespace Valigator
 		private static bool IsCollection(object a) 
 			=> a.GetType().GetInterface(nameof(ICollection)) != null;
 
-		private static bool IsCollection<T>(Data<T> a)
-			=> typeof(T).GetInterface(nameof(ICollection)) != null;
+		private static bool IsEnumerable<T>(Data<T> a)
+			=> typeof(T).GetInterface(nameof(IEnumerable)) != null;
 
 		public static bool operator !=(Data<TValue> x, Data<TValue> y)
 			=> !x._value.Equals(y._value);
@@ -170,9 +164,9 @@ namespace Valigator
 		public override int GetHashCode()
 		{
 			int hashCode = 943777100;
-			if (IsCollection(this))
+			if (IsEnumerable(this))
 			{
-				foreach (var item in _value as ICollection)
+				foreach (var item in _value as IEnumerable)
 				{
 					hashCode = hashCode * -1521134295 + item.GetHashCode();
 				}

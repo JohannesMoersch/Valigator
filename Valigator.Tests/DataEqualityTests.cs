@@ -1,6 +1,8 @@
 ﻿using FluentAssertions;
 using Functional;
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Xunit;
 
@@ -33,6 +35,7 @@ namespace Valigator.Tests
 			item1.Equals(item2).Should().BeTrue();
 			(item1 == item2).Should().BeTrue();
 			item1.Should().Be(item2);
+			(item1 != item2).Should().BeFalse();
 		}
 
 		[Fact]
@@ -46,7 +49,33 @@ namespace Valigator.Tests
 
 			(item1.Equals(item2)).Should().BeFalse();
 			(item1 == item2).Should().BeFalse();
+			(item1 != item2).Should().BeTrue();
 		}
+
+		[Fact]
+		public void IEnumerablesOtherThanArrayEqual()
+		{
+			var test = new ReadOnlyCollection<string>(new List<string>() { "123", "234", "456" });
+			var collection = TestIEnumerableRecord.CreateTestIEnumerableRecord(test);
+			var collection2 = TestIEnumerableRecord.CreateTestIEnumerableRecord(test);
+			(collection == collection2).Should().BeTrue();
+			(collection.ReadOnlyCollection == collection2.ReadOnlyCollection).Should().BeTrue();
+			(collection != collection2).Should().BeFalse();
+			(collection.ReadOnlyCollection != collection2.ReadOnlyCollection).Should().BeFalse();
+
+		}
+
+		[Fact]
+		public void IEnumerablesOtherThanArrayDoNotEqual()
+		{
+			var collection = TestIEnumerableRecord.CreateTestIEnumerableRecord(new ReadOnlyCollection<string>(new List<string>() { "123", "234", "456" }));
+			var collection2 = TestIEnumerableRecord.CreateTestIEnumerableRecord(new ReadOnlyCollection<string>(new List<string>() {"234", "456", "123" }));
+			(collection == collection2).Should().BeFalse();
+			(collection.ReadOnlyCollection == collection2.ReadOnlyCollection).Should().BeFalse();
+			(collection != collection2).Should().BeTrue();
+			(collection.ReadOnlyCollection != collection2.ReadOnlyCollection).Should().BeTrue();
+		}
+
 
 		[Fact]
 		public void RemoveDescriptors()
@@ -117,7 +146,7 @@ namespace Valigator.Tests
 				return new TestRecord(1, PrimitiveLikeTypeHelpers.CreateNew(liiGuid), "***", uniqueGuids.Select(guid => PrimitiveLikeTypeHelpers.CreateNew(guid)).ToArray(), stringArray);
 			}
 
-			public TestRecord(int id, PrimitiveLikeType lineItemID, string taxName, PrimitiveLikeType[] uniquePrimitives, string[] stringArray)
+			private TestRecord(int id, PrimitiveLikeType lineItemID, string taxName, PrimitiveLikeType[] uniquePrimitives, string[] stringArray)
 			{
 				ID = ID.WithValue(id).Verify();
 				UniqueGuid = UniqueGuid.WithUncheckedValue(lineItemID).Verify();
@@ -140,6 +169,17 @@ namespace Valigator.Tests
 			public Data<string[]> ArrayOfString = Data.Collection<string>().Required().ItemCount(minimumItems: 1, maximumItems: 3);
 		}
 
+		public record TestIEnumerableRecord
+		{
+
+			public Data<ReadOnlyCollection<string>> ReadOnlyCollection = Data.Required<ReadOnlyCollection<string>>();
+
+			public static TestIEnumerableRecord CreateTestIEnumerableRecord(ReadOnlyCollection<string> readOnlyCollection) 
+				=> new TestIEnumerableRecord(readOnlyCollection);
+
+			private TestIEnumerableRecord(ReadOnlyCollection<string> readOnlyCollection) 
+				=> ReadOnlyCollection = ReadOnlyCollection.WithValue(readOnlyCollection).Verify();
+		}
 		public readonly struct PrimitiveLikeType : IEquatable<PrimitiveLikeType>
 		{
 			private readonly Option<Guid> _value;
