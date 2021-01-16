@@ -59,14 +59,14 @@ namespace Valigator
 			return Result.Success<TValue, ValidationError[]>(success);
 		}
 
-		public Data<TValue> WithValue<T>(Optional<Option<T>> input)
+		public Data<TValue> WithValue<T>(Option<T> input)
 		{
 			if (_propertyData is IPropertyData<T, TValue> propertyData)
 			{
-				if (propertyData.Coerce(input).TryGetValue(out var success, out var failure))
-					return new Data<TValue>(success, propertyData);
+				if (propertyData.Coerce(Optional.Set(input)).TryGetValue(out var value, out var errors) && propertyData.Validate(value).TryGetValue(out var success, out errors))
+					return new Data<TValue>(value, propertyData);
 
-				return new Data<TValue>(failure, propertyData);
+				return new Data<TValue>(errors, propertyData);
 			}
 
 			throw new ArgumentException($"Type \"{nameof(T)}\" must match interior type of \"{nameof(TValue)}\".", nameof(T));
