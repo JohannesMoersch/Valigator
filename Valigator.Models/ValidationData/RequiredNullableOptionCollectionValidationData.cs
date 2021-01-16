@@ -36,5 +36,11 @@ namespace Valigator.ValidationData
 
 			return Result.Unit<ValidationError[]>();
 		}
+
+		public Data<Option<IReadOnlyList<Option<TValue>>>> ToData()
+			=> new Data<Option<IReadOnlyList<Option<TValue>>>>(this);
+
+		public static implicit operator Data<Option<IReadOnlyList<Option<TValue>>>>(RequiredNullableOptionCollectionValidationData<TValue> propertyData)
+			=> propertyData.ToData();
 	}
 }

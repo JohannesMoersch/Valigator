@@ -36,5 +36,11 @@ namespace Valigator.ValidationData
 
 		public Result<Unit, ValidationError[]> Validate(TValue value)
 			=> _validationData.Process(value);
+
+		public Data<TValue> ToData()
+			=> new Data<TValue>(this);
+
+		public static implicit operator Data<TValue>(DefaultedValueValidationData<TValue> propertyData)
+			=> propertyData.ToData();
 	}
 }

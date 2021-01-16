@@ -35,5 +35,11 @@ namespace Valigator.ValidationData
 
 			return Result.Unit<ValidationError[]>();
 		}
+
+		public Data<Optional<TValue>> ToData()
+			=> new Data<Optional<TValue>>(this);
+
+		public static implicit operator Data<Optional<TValue>>(OptionalValueValidationData<TValue> propertyData)
+			=> propertyData.ToData();
 	}
 }

@@ -38,5 +38,11 @@ namespace Valigator.ValidationData
 
 			return Result.Unit<ValidationError[]>();
 		}
+
+		public Data<Optional<Option<IReadOnlyDictionary<TKey, TValue>>>> ToData()
+			=> new Data<Optional<Option<IReadOnlyDictionary<TKey, TValue>>>>(this);
+
+		public static implicit operator Data<Optional<Option<IReadOnlyDictionary<TKey, TValue>>>>(OptionalNullableDictionaryValidationData<TKey, TValue> propertyData)
+			=> propertyData.ToData();
 	}
 }
