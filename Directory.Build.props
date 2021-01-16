@@ -6,7 +6,7 @@
     <Authors>Johannes Moersch</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Copyright>Copyright © 2020 Johannes Moersch</Copyright>
-    <Version>2.1.2</Version>
+    <Version>2.1.3</Version>
 		<Product>Valigator</Product>
   </PropertyGroup>
 
