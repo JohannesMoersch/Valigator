@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using Functional;
 using Valigator.Core;
 using Valigator.Core.DataContainers;
@@ -117,5 +119,64 @@ namespace Valigator
 
 		public static implicit operator TValue(Data<TValue> data)
 			=> data.Value;
+
+		public override bool Equals(object obj) 
+			=> obj is Data<TValue> data
+		 && _dataContainer.DataDescriptor.Equals(data.DataDescriptor)
+					&& (_value.Equals(data._value)
+						|| (IsEnumerable<TValue>() && CheckEquality(_value as IEnumerable, data._value as IEnumerable)));
+
+		public static bool operator ==(Data<TValue> x, Data<TValue> y)
+			=> x.Equals(y);
+
+		private static bool IsSequenceEqual(IEnumerable a, IEnumerable b)
+		{
+			if (a == null || b == null)
+				return false;
+
+			var e1 = a.GetEnumerator();
+			var e2 = b.GetEnumerator();
+			bool e1Val = e1.MoveNext();
+			bool e2Val = e2.MoveNext();
+			while (e1Val && e2Val)
+			{
+				if (!CheckEquality(e1.Current, e2.Current)) return false;
+				e1Val = e1.MoveNext();
+				e2Val = e2.MoveNext();
+			}
+			return e1Val == e2Val;
+		}
+
+		private static bool CheckEquality(object a, object b)
+		=> a is IEnumerable aEnumerable && b is IEnumerable bEnumerable && !(a is string) ?
+			IsSequenceEqual(aEnumerable, bEnumerable) :
+			Equals(a, b);
+
+		private static bool IsEnumerable<T>()
+			=> typeof(T).GetInterface(nameof(IEnumerable)) != null;
+
+		private static bool IsEnumerable(object a)
+			=> a.GetType().GetInterface(nameof(IEnumerable)) != null;
+
+		public static bool operator !=(Data<TValue> x, Data<TValue> y)
+			=> !(x==y);
+
+		public override int GetHashCode()
+		{
+			int hashCode = 943777100;
+			if (IsEnumerable<TValue>())
+			{
+				foreach (var item in _value as IEnumerable)
+				{
+					hashCode = hashCode * -1521134295 + item.GetHashCode();
+				}
+			}
+			else
+				hashCode = hashCode * -1521134295 + EqualityComparer<TValue>.Default.GetHashCode(_value);
+
+			hashCode = hashCode * -1521134295 + State.GetHashCode();
+			hashCode = hashCode * -1521134295 + DataDescriptor.GetHashCode();
+			return hashCode;
+		}
 	}
 }
