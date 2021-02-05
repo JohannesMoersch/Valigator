@@ -30,6 +30,16 @@ namespace Valigator.Tests.Text.Json
 			}
 
 			[Fact]
+			public void WithUnmappedValue()
+			=> Deserialize<TestClass>(@"{ ""Value"":10, ""NotAValue"":20 }")
+				.Value
+				.Verify()
+				.TryGetValue()
+				.AssertSuccess()
+				.Should()
+				.Be(10);
+
+			[Fact]
 			public void WithValue()
 				=> Deserialize<TestClass>(@"{""Value"":10}")
 					.Value
