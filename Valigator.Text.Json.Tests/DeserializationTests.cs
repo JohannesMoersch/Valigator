@@ -24,6 +24,13 @@ namespace Valigator.Tests.Text.Json
 			}
 
 			[ValigatorModel]
+			public class TestClass2
+			{
+				public Data<int> Value { get; set; } = Data.Required<int>();
+				public Data<int> Value2 { get; set; } = Data.Required<int>();
+			}
+
+			[ValigatorModel]
 			public class TestGuidClass
 			{
 				public Data<Guid> Value { get; set; } = Data.Required<Guid>();
@@ -38,6 +45,28 @@ namespace Valigator.Tests.Text.Json
 				.AssertSuccess()
 				.Should()
 				.Be(10);
+
+			[Fact]
+			public void WithUnmappedValueInMultiPropertyClass()
+			{
+				var result = Deserialize<TestClass2>(@"{ ""Value"":10, ""NotAValue"":20, ""Value2"":20 }");
+
+				result
+					.Value
+					.Verify()
+					.TryGetValue()
+					.AssertSuccess()
+					.Should()
+					.Be(10);
+
+				result
+					.Value2
+					.Verify()
+					.TryGetValue()
+					.AssertSuccess()
+					.Should()
+					.Be(20);
+			}
 
 			[Fact]
 			public void WithValue()
