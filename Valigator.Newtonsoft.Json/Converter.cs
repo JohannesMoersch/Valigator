@@ -68,7 +68,12 @@ namespace Valigator.Newtonsoft.Json
 					propertyHandler.ReadProperty(reader, serializer, obj);
 				}
 				else
+				{
+					if (!reader.Read())
+						throw new Exception();
+
 					serializer.Deserialize(reader, typeof(object));
+				}
 			}
 
 			return obj;
