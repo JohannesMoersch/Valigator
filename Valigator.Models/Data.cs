@@ -8,68 +8,209 @@ namespace Valigator
 {
 	public struct Data<TValue>
 	{
-		private Result<TValue, ValidationError[]> _value;
-
-		private IPropertyData<TValue> _propertyData;
-
+		private TValue _value;
 		public TValue Value
 		{
 			get
 			{
-				if (_propertyData == null)
+				if (_data == null)
 					throw new DataNotInitializedException();
 
-				if (!_value.TryGetValue(out var success, out var failure))
-					throw new DataInvalidException(failure);
+				if (_data is IInvalidData failure)
+					throw new DataInvalidException(failure.Errors);
 
-				return success;
+				return _value;
 			}
 		}
+		
+		private IData _data;
 
+#pragma warning disable CS8601, CS8618 // Possible null reference assignment. Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 		public Data(IPropertyData<TValue> propertyData)
 		{
-			_propertyData = propertyData;
-
-			if (_propertyData.CoerceUnset().TryGetValue(out var success, out var failure) && _propertyData.Validate(success).TryGetValue(out var _, out failure))
-				_value = Result.Success<TValue, ValidationError[]>(success);
-			else
-				_value = Result.Failure<TValue, ValidationError[]>(failure);
+			_value = default;
+			_data = new Unset(new SharedData(propertyData));
 		}
+#pragma warning restore CS8601, CS8618 // Possible null reference assignment. Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
-		private Data(TValue value, IPropertyData<TValue> propertyData)
+		private Data(TValue value, IData data)
 		{
-			_value = Result.Success<TValue, ValidationError[]>(value);
-			_propertyData = propertyData;
-		}
-
-		private Data(ValidationError[] errors, IPropertyData<TValue> propertyData)
-		{
-			_value = Result.Failure<TValue, ValidationError[]>(errors);
-			_propertyData = propertyData;
+			_value = value;
+			_data = data;
 		}
 
 		public Result<TValue, ValidationError[]> TryGetValue()
 		{
-			if (_propertyData == null)
+			if (_data == null)
 				throw new DataNotInitializedException();
 
-			if (!_value.TryGetValue(out var success, out var failure))
-				return Result.Failure<TValue, ValidationError[]>(failure);
+			if (_data is IValidData)
+				return Result.Success<TValue, ValidationError[]>(_value);
 
-			return Result.Success<TValue, ValidationError[]>(success);
+			if (_data is Unset unset)
+			{
+				if (_data.Data.CoerceUnset().TryGetValue(out var value, out var errors))
+				{
+					_value = value;
+					_data = unset.ToCoercedValid();
+				}
+				else
+					_data = unset.ToCoercedInvalid(errors);
+			}
+
+			if (_data is IInvalidData failure)
+				return Result.Failure<TValue, ValidationError[]>(failure.Errors);
+
+			return Result.Success<TValue, ValidationError[]>(_value);
 		}
 
+#pragma warning disable CS8604 // Possible null reference argument.
 		public Data<TValue> WithValue<T>(Option<T> input)
 		{
-			if (_propertyData is IPropertyData<T, TValue> propertyData)
+			if (_data.Data is IPropertyData<T, TValue> propertyData)
 			{
 				if (propertyData.Coerce(Optional.Set(input)).TryGetValue(out var value, out var errors) && propertyData.Validate(value).TryGetValue(out var success, out errors))
-					return new Data<TValue>(value, propertyData);
+					return new Data<TValue>(value, _data.ToSetValid());
 
-				return new Data<TValue>(errors, propertyData);
+				return new Data<TValue>(default, _data.ToSetInvalid(errors));
 			}
 
 			throw new ArgumentException($"Type \"{nameof(T)}\" must match interior type of \"{nameof(TValue)}\".", nameof(T));
+		}
+#pragma warning restore CS8604 // Possible null reference argument.
+
+		private class SharedData
+		{
+			public IPropertyData<TValue> Data { get; }
+
+			public Unset Unset { get; }
+
+			public CoercedValid CoercedValid { get; }
+
+			public SetValid SetValid { get; }
+
+			public SharedData(IPropertyData<TValue> data)
+			{
+				Data = data;
+
+				Unset = new Unset(this);
+				CoercedValid = new CoercedValid(this);
+				SetValid = new SetValid(this);
+			}
+		}
+
+		private interface IData 
+		{
+			IPropertyData<TValue> Data { get; }
+
+			IData ToSetValid();
+
+			IData ToSetInvalid(ValidationError[] errors);
+		}
+
+		private interface IInvalidData : IData 
+		{
+			ValidationError[] Errors { get; }
+		}
+
+		private interface IValidData : IData 
+		{
+		}
+
+		private class Unset : IData
+		{
+			private readonly Data<TValue>.SharedData _data;
+
+			public IPropertyData<TValue> Data => _data.Data;
+
+			public Unset(SharedData data) 
+				=> _data = data;
+
+			public IData ToCoercedValid()
+				=> _data.CoercedValid;
+
+			public IData ToCoercedInvalid(ValidationError[] errors)
+				=> new CoercedInvalid(_data, errors);
+
+			public IData ToSetValid()
+				=> _data.SetValid;
+
+			public IData ToSetInvalid(ValidationError[] errors)
+				=> new SetInvalid(_data, errors);
+		}
+
+		private class CoercedValid : IValidData
+		{
+			private readonly Data<TValue>.SharedData _data;
+
+			public IPropertyData<TValue> Data => _data.Data;
+
+			public CoercedValid(SharedData data)
+				=> _data = data;
+
+			public IData ToSetValid()
+				=> _data.SetValid;
+
+			public IData ToSetInvalid(ValidationError[] errors)
+				=> new SetInvalid(_data, errors);
+		}
+
+		private class CoercedInvalid : IInvalidData
+		{
+			private readonly Data<TValue>.SharedData _data;
+
+			public IPropertyData<TValue> Data => _data.Data;
+
+			public ValidationError[] Errors { get; }
+
+			public CoercedInvalid(SharedData data, ValidationError[] errors)
+			{
+				_data = data;
+				Errors = errors;
+			}
+
+			public IData ToSetValid()
+				=> _data.SetValid;
+
+			public IData ToSetInvalid(ValidationError[] errors)
+				=> new SetInvalid(_data, errors);
+		}
+
+		private class SetValid : IValidData
+		{
+			private readonly Data<TValue>.SharedData _data;
+
+			public IPropertyData<TValue> Data => _data.Data;
+
+			public SetValid(SharedData data)
+				=> _data = data;
+
+			public IData ToSetValid()
+				=> _data.SetValid;
+
+			public IData ToSetInvalid(ValidationError[] errors)
+				=> new SetInvalid(_data, errors);
+		}
+
+		private class SetInvalid : IInvalidData
+		{
+			private readonly Data<TValue>.SharedData _data;
+
+			public IPropertyData<TValue> Data => _data.Data;
+
+			public ValidationError[] Errors { get; }
+
+			public SetInvalid(SharedData data, ValidationError[] errors)
+			{
+				_data = data;
+				Errors = errors;
+			}
+
+			public IData ToSetValid()
+				=> _data.SetValid;
+
+			public IData ToSetInvalid(ValidationError[] errors)
+				=> new SetInvalid(_data, errors);
 		}
 	}
 }
