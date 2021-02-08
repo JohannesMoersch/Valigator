@@ -89,9 +89,4 @@ namespace Valigator.Newtonsoft.Json
 		private static Data<TDataValue> SetError<TFrom, TTo, TDataValue>(Data<TDataValue> data, string message)
 			=> data.WithErrors(MappingError.Create<TFrom, TTo>(message));
 	}
-
-	public class ValigatorJsonSerializationException : Exception
-	{
-		public ValigatorJsonSerializationException(JsonSerializationException innerException) : base(innerException.Message, innerException) { }
-	}
 }
