@@ -7,7 +7,7 @@ using Valigator.Core;
 
 namespace Valigator.ValidationData
 {
-	public class RequiredCollectionValidationData<TValue> : IPropertyData<IReadOnlyList<Option<TValue>>, IReadOnlyList<TValue>>, IRootValidationData<RequiredCollectionValidationData<TValue>, IReadOnlyList<TValue>>
+	public class RequiredCollectionValidationData<TValue> : ValidationDataBase<IReadOnlyList<TValue>>, IPropertyData<IReadOnlyList<Option<TValue>>, IReadOnlyList<TValue>>, IRootValidationData<RequiredCollectionValidationData<TValue>, IReadOnlyList<TValue>>
 	{
 		private readonly ValidationData<IReadOnlyList<TValue>> _validationData;
 
@@ -20,10 +20,10 @@ namespace Valigator.ValidationData
 		public RequiredCollectionValidationData<TValue> WithValidator(IInvertableValidator<IReadOnlyList<TValue>> value)
 			=> new RequiredCollectionValidationData<TValue>(_validationData.WithValidator(value));
 
-		public Result<IReadOnlyList<TValue>, ValidationError[]> CoerceUnset()
+		public override Result<IReadOnlyList<TValue>, ValidationError[]> CoerceUnset()
 			=> Result.Failure<IReadOnlyList<TValue>, ValidationError[]>(new[] { ValidationErrors.UnsetValuesNotAllowed() });
 
-		public Result<IReadOnlyList<TValue>, ValidationError[]> CoerceNone()
+		public override Result<IReadOnlyList<TValue>, ValidationError[]> CoerceNone()
 			=> Result.Failure<IReadOnlyList<TValue>, ValidationError[]>(new[] { ValidationErrors.NullValuesNotAllowed() });
 
 		public Result<IReadOnlyList<TValue>, ValidationError[]> CoerceValue(IReadOnlyList<Option<TValue>> value)
@@ -31,13 +31,7 @@ namespace Valigator.ValidationData
 				? Result.Success<IReadOnlyList<TValue>, ValidationError[]>(values)
 				: Result.Failure<IReadOnlyList<TValue>, ValidationError[]>(nullIndices.Select(i => ValidationErrors.NullValueAtIndexIsNotAllowed(i)).ToArray());
 
-		public Result<Unit, ValidationError[]> Validate(IReadOnlyList<TValue> value)
+		public override Result<Unit, ValidationError[]> Validate(IReadOnlyList<TValue> value)
 			=> _validationData.Process(value);
-
-		public Data<IReadOnlyList<TValue>> ToData()
-			=> new Data<IReadOnlyList<TValue>>(this);
-
-		public static implicit operator Data<IReadOnlyList<TValue>>(RequiredCollectionValidationData<TValue> propertyData)
-			=> propertyData.ToData();
 	}
 }

@@ -7,7 +7,7 @@ using Valigator.Core;
 
 namespace Valigator.ValidationData
 {
-	public class OptionalNullableOptionCollectionValidationData<TValue> : IPropertyData<IReadOnlyList<Option<TValue>>, Optional<Option<IReadOnlyList<Option<TValue>>>>>, IRootValidationData<OptionalNullableOptionCollectionValidationData<TValue>, IReadOnlyList<Option<TValue>>>
+	public class OptionalNullableOptionCollectionValidationData<TValue> : ValidationDataBase<Optional<Option<IReadOnlyList<Option<TValue>>>>>, IPropertyData<IReadOnlyList<Option<TValue>>, Optional<Option<IReadOnlyList<Option<TValue>>>>>, IRootValidationData<OptionalNullableOptionCollectionValidationData<TValue>, IReadOnlyList<Option<TValue>>>
 	{
 		private readonly ValidationData<IReadOnlyList<Option<TValue>>> _validationData;
 
@@ -20,27 +20,21 @@ namespace Valigator.ValidationData
 		public OptionalNullableOptionCollectionValidationData<TValue> WithValidator(IInvertableValidator<IReadOnlyList<Option<TValue>>> value)
 			=> new OptionalNullableOptionCollectionValidationData<TValue>(_validationData.WithValidator(value));
 
-		public Result<Optional<Option<IReadOnlyList<Option<TValue>>>>, ValidationError[]> CoerceUnset()
+		public override Result<Optional<Option<IReadOnlyList<Option<TValue>>>>, ValidationError[]> CoerceUnset()
 			=> Result.Success<Optional<Option<IReadOnlyList<Option<TValue>>>>, ValidationError[]>(Optional.Unset<Option<IReadOnlyList<Option<TValue>>>>());
 
-		public Result<Optional<Option<IReadOnlyList<Option<TValue>>>>, ValidationError[]> CoerceNone()
+		public override Result<Optional<Option<IReadOnlyList<Option<TValue>>>>, ValidationError[]> CoerceNone()
 			=> Result.Success<Optional<Option<IReadOnlyList<Option<TValue>>>>, ValidationError[]>(Optional.Set(Option.None<IReadOnlyList<Option<TValue>>>()));
 
 		public Result<Optional<Option<IReadOnlyList<Option<TValue>>>>, ValidationError[]> CoerceValue(IReadOnlyList<Option<TValue>> value)
 			=> Result.Success<Optional<Option<IReadOnlyList<Option<TValue>>>>, ValidationError[]>(Optional.Set(Option.Some(value)));
 
-		public Result<Unit, ValidationError[]> Validate(Optional<Option<IReadOnlyList<Option<TValue>>>> value)
+		public override Result<Unit, ValidationError[]> Validate(Optional<Option<IReadOnlyList<Option<TValue>>>> value)
 		{
 			if (value.TryGetValue(out var option) && option.TryGetValue(out var item))
 				return _validationData.Process(item);
 
 			return Result.Unit<ValidationError[]>();
 		}
-
-		public Data<Optional<Option<IReadOnlyList<Option<TValue>>>>> ToData()
-			=> new Data<Optional<Option<IReadOnlyList<Option<TValue>>>>>(this);
-
-		public static implicit operator Data<Optional<Option<IReadOnlyList<Option<TValue>>>>>(OptionalNullableOptionCollectionValidationData<TValue> propertyData)
-			=> propertyData.ToData();
 	}
 }

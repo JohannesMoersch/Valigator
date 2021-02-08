@@ -6,7 +6,7 @@ using Valigator.Core;
 
 namespace Valigator.ValidationData
 {
-	public class DefaultedNullableValueValidationData<TValue> : IPropertyData<TValue, Option<TValue>>, IRootValidationData<DefaultedNullableValueValidationData<TValue>, TValue>
+	public class DefaultedNullableValueValidationData<TValue> : ValidationDataBase<Option<TValue>>, IPropertyData<TValue, Option<TValue>>, IRootValidationData<DefaultedNullableValueValidationData<TValue>, TValue>
 	{
 		private readonly Option<TValue> _defaultValue;
 
@@ -24,27 +24,21 @@ namespace Valigator.ValidationData
 		public DefaultedNullableValueValidationData<TValue> WithValidator(IInvertableValidator<TValue> value)
 			=> new DefaultedNullableValueValidationData<TValue>(_defaultValue, _validationData.WithValidator(value));
 
-		public Result<Option<TValue>, ValidationError[]> CoerceUnset()
+		public override Result<Option<TValue>, ValidationError[]> CoerceUnset()
 			=> Result.Success<Option<TValue>, ValidationError[]>(_defaultValue);
 
-		public Result<Option<TValue>, ValidationError[]> CoerceNone()
+		public override Result<Option<TValue>, ValidationError[]> CoerceNone()
 			=> Result.Success<Option<TValue>, ValidationError[]>(Option.None<TValue>());
 
 		public Result<Option<TValue>, ValidationError[]> CoerceValue(TValue value)
 			=> Result.Success<Option<TValue>, ValidationError[]>(Option.Some(value));
 
-		public Result<Unit, ValidationError[]> Validate(Option<TValue> value)
+		public override Result<Unit, ValidationError[]> Validate(Option<TValue> value)
 		{
 			if (value.TryGetValue(out var item))
 				return _validationData.Process(item);
 
 			return Result.Unit<ValidationError[]>();
 		}
-
-		public Data<Option<TValue>> ToData()
-			=> new Data<Option<TValue>>(this);
-
-		public static implicit operator Data<Option<TValue>>(DefaultedNullableValueValidationData<TValue> propertyData)
-			=> propertyData.ToData();
 	}
 }

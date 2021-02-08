@@ -7,7 +7,7 @@ using Valigator.Core;
 
 namespace Valigator.ValidationData
 {
-	public class DefaultedOptionDictionaryValidationData<TKey, TValue> : IPropertyData<IReadOnlyDictionary<TKey, Option<TValue>>, IReadOnlyDictionary<TKey, Option<TValue>>>, IRootValidationData<DefaultedOptionDictionaryValidationData<TKey, TValue>, IReadOnlyDictionary<TKey, Option<TValue>>>
+	public class DefaultedOptionDictionaryValidationData<TKey, TValue> : ValidationDataBase<IReadOnlyDictionary<TKey, Option<TValue>>>, IPropertyData<IReadOnlyDictionary<TKey, Option<TValue>>, IReadOnlyDictionary<TKey, Option<TValue>>>, IRootValidationData<DefaultedOptionDictionaryValidationData<TKey, TValue>, IReadOnlyDictionary<TKey, Option<TValue>>>
 	{
 		private readonly IReadOnlyDictionary<TKey, Option<TValue>> _defaultValue;
 
@@ -25,22 +25,16 @@ namespace Valigator.ValidationData
 		public DefaultedOptionDictionaryValidationData<TKey, TValue> WithValidator(IInvertableValidator<IReadOnlyDictionary<TKey, Option<TValue>>> value)
 			=> new DefaultedOptionDictionaryValidationData<TKey, TValue>(_defaultValue, _validationData.WithValidator(value));
 
-		public Result<IReadOnlyDictionary<TKey, Option<TValue>>, ValidationError[]> CoerceUnset()
+		public override Result<IReadOnlyDictionary<TKey, Option<TValue>>, ValidationError[]> CoerceUnset()
 			=> Result.Success<IReadOnlyDictionary<TKey, Option<TValue>>, ValidationError[]>(_defaultValue);
 
-		public Result<IReadOnlyDictionary<TKey, Option<TValue>>, ValidationError[]> CoerceNone()
+		public override Result<IReadOnlyDictionary<TKey, Option<TValue>>, ValidationError[]> CoerceNone()
 			=> Result.Failure<IReadOnlyDictionary<TKey, Option<TValue>>, ValidationError[]>(new[] { ValidationErrors.NullValuesNotAllowed() });
 
 		public Result<IReadOnlyDictionary<TKey, Option<TValue>>, ValidationError[]> CoerceValue(IReadOnlyDictionary<TKey, Option<TValue>> value)
 			=> Result.Success<IReadOnlyDictionary<TKey, Option<TValue>>, ValidationError[]>(value);
 
-		public Result<Unit, ValidationError[]> Validate(IReadOnlyDictionary<TKey, Option<TValue>> value)
+		public override Result<Unit, ValidationError[]> Validate(IReadOnlyDictionary<TKey, Option<TValue>> value)
 			=> _validationData.Process(value);
-
-		public Data<IReadOnlyDictionary<TKey, Option<TValue>>> ToData()
-			=> new Data<IReadOnlyDictionary<TKey, Option<TValue>>>(this);
-
-		public static implicit operator Data<IReadOnlyDictionary<TKey, Option<TValue>>>(DefaultedOptionDictionaryValidationData<TKey, TValue> propertyData)
-			=> propertyData.ToData();
 	}
 }

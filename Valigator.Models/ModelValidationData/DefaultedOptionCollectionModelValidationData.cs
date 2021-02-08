@@ -42,11 +42,5 @@ namespace Valigator.ModelValidationData
 
 		public Result<Unit, ValidationError[]> Validate(TModel model, IReadOnlyList<Option<TValue>> value)
 			=> _validationData.Process(ModelValue.Create(model, value));
-
-		public static ModelDefinition<TModel>.Property<IReadOnlyList<Option<TValue>>> ToProperty(DefaultedOptionCollectionModelValidationData<TModel, TValue> data)
-			=> new ModelDefinition<TModel>.Property<IReadOnlyList<Option<TValue>>>(data);
-
-		public static implicit operator ModelDefinition<TModel>.Property<IReadOnlyList<Option<TValue>>>(DefaultedOptionCollectionModelValidationData<TModel, TValue> data)
-			=> ToProperty(data);
 	}
 }

@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
 
     <IsPackable>false</IsPackable>
   </PropertyGroup>
@@ -23,10 +23,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Valigator.Core\Valigator.Core.csproj" />
+    <ProjectReference Include="..\Valigator.Models.Generator\Valigator.Models.Generator.csproj" />
     <ProjectReference Include="..\Valigator.Models\Valigator.Models.csproj" />
-    <ProjectReference Include="..\Valigator.Tests.Common\Valigator.Tests.Common.csproj" />
-    <ProjectReference Include="..\Valigator.Text.Json\Valigator.Text.Json.csproj" />
-    <ProjectReference Include="..\Valigator.Validators\Valigator.Validators.csproj" />
   </ItemGroup>
 
 </Project>

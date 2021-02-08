@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Valigator.Core;
+using Valigator.ValidationData;
 
 namespace Valigator
 {
@@ -78,6 +79,9 @@ namespace Valigator
 			throw new ArgumentException($"Type \"{nameof(T)}\" must match interior type of \"{nameof(TValue)}\".", nameof(T));
 		}
 #pragma warning restore CS8604 // Possible null reference argument.
+
+		public static implicit operator Data<TValue>(ValidationDataBase<TValue> propertyData)
+			=> new Data<TValue>(propertyData);
 
 		private class SharedData
 		{

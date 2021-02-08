@@ -7,7 +7,7 @@ using Valigator.Core;
 
 namespace Valigator.ValidationData
 {
-	public class RequiredDictionaryValidationData<TKey, TValue> : IPropertyData<IReadOnlyDictionary<TKey, Option<TValue>>, IReadOnlyDictionary<TKey, TValue>>, IRootValidationData<RequiredDictionaryValidationData<TKey, TValue>, IReadOnlyDictionary<TKey, TValue>>
+	public class RequiredDictionaryValidationData<TKey, TValue> : ValidationDataBase<IReadOnlyDictionary<TKey, TValue>>, IPropertyData<IReadOnlyDictionary<TKey, Option<TValue>>, IReadOnlyDictionary<TKey, TValue>>, IRootValidationData<RequiredDictionaryValidationData<TKey, TValue>, IReadOnlyDictionary<TKey, TValue>>
 	{
 		private readonly ValidationData<IReadOnlyDictionary<TKey, TValue>> _validationData;
 
@@ -20,10 +20,10 @@ namespace Valigator.ValidationData
 		public RequiredDictionaryValidationData<TKey, TValue> WithValidator(IInvertableValidator<IReadOnlyDictionary<TKey, TValue>> value)
 			=> new RequiredDictionaryValidationData<TKey, TValue>(_validationData.WithValidator(value));
 
-		public Result<IReadOnlyDictionary<TKey, TValue>, ValidationError[]> CoerceUnset()
+		public override Result<IReadOnlyDictionary<TKey, TValue>, ValidationError[]> CoerceUnset()
 			=> Result.Failure<IReadOnlyDictionary<TKey, TValue>, ValidationError[]>(new[] { ValidationErrors.UnsetValuesNotAllowed() });
 
-		public Result<IReadOnlyDictionary<TKey, TValue>, ValidationError[]> CoerceNone()
+		public override Result<IReadOnlyDictionary<TKey, TValue>, ValidationError[]> CoerceNone()
 			=> Result.Failure<IReadOnlyDictionary<TKey, TValue>, ValidationError[]>(new[] { ValidationErrors.NullValuesNotAllowed() });
 
 		public Result<IReadOnlyDictionary<TKey, TValue>, ValidationError[]> CoerceValue(IReadOnlyDictionary<TKey, Option<TValue>> value)
@@ -31,13 +31,7 @@ namespace Valigator.ValidationData
 				? Result.Success<IReadOnlyDictionary<TKey, TValue>, ValidationError[]>(values)
 				: Result.Failure<IReadOnlyDictionary<TKey, TValue>, ValidationError[]>(nullIndices.Select(i => ValidationErrors.NullValueAtKeyIsNotAllowed(i)).ToArray());
 
-		public Result<Unit, ValidationError[]> Validate(IReadOnlyDictionary<TKey, TValue> value)
+		public override Result<Unit, ValidationError[]> Validate(IReadOnlyDictionary<TKey, TValue> value)
 			=> _validationData.Process(value);
-
-		public Data<IReadOnlyDictionary<TKey, TValue>> ToData()
-			=> new Data<IReadOnlyDictionary<TKey, TValue>>(this);
-
-		public static implicit operator Data<IReadOnlyDictionary<TKey, TValue>>(RequiredDictionaryValidationData<TKey, TValue> propertyData)
-			=> propertyData.ToData();
 	}
 }

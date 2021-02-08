@@ -7,7 +7,7 @@ using Valigator.Core;
 
 namespace Valigator.ValidationData
 {
-	public class OptionalNullableCollectionValidationData<TValue> : IPropertyData<IReadOnlyList<Option<TValue>>, Optional<Option<IReadOnlyList<TValue>>>>, IRootValidationData<OptionalNullableCollectionValidationData<TValue>, IReadOnlyList<TValue>>
+	public class OptionalNullableCollectionValidationData<TValue> : ValidationDataBase<Optional<Option<IReadOnlyList<TValue>>>>, IPropertyData<IReadOnlyList<Option<TValue>>, Optional<Option<IReadOnlyList<TValue>>>>, IRootValidationData<OptionalNullableCollectionValidationData<TValue>, IReadOnlyList<TValue>>
 	{
 		private readonly ValidationData<IReadOnlyList<TValue>> _validationData;
 
@@ -20,10 +20,10 @@ namespace Valigator.ValidationData
 		public OptionalNullableCollectionValidationData<TValue> WithValidator(IInvertableValidator<IReadOnlyList<TValue>> value)
 			=> new OptionalNullableCollectionValidationData<TValue>(_validationData.WithValidator(value));
 
-		public Result<Optional<Option<IReadOnlyList<TValue>>>, ValidationError[]> CoerceUnset()
+		public override Result<Optional<Option<IReadOnlyList<TValue>>>, ValidationError[]> CoerceUnset()
 			=> Result.Success<Optional<Option<IReadOnlyList<TValue>>>, ValidationError[]>(Optional.Unset<Option<IReadOnlyList<TValue>>>());
 
-		public Result<Optional<Option<IReadOnlyList<TValue>>>, ValidationError[]> CoerceNone()
+		public override Result<Optional<Option<IReadOnlyList<TValue>>>, ValidationError[]> CoerceNone()
 			=> Result.Success<Optional<Option<IReadOnlyList<TValue>>>, ValidationError[]>(Optional.Set(Option.None<IReadOnlyList<TValue>>()));
 
 		public Result<Optional<Option<IReadOnlyList<TValue>>>, ValidationError[]> CoerceValue(IReadOnlyList<Option<TValue>> value)
@@ -31,18 +31,12 @@ namespace Valigator.ValidationData
 				? Result.Success<Optional<Option<IReadOnlyList<TValue>>>, ValidationError[]>(Optional.Set(Option.Some(values)))
 				: Result.Failure<Optional<Option<IReadOnlyList<TValue>>>, ValidationError[]>(nullIndices.Select(i => ValidationErrors.NullValueAtIndexIsNotAllowed(i)).ToArray());
 
-		public Result<Unit, ValidationError[]> Validate(Optional<Option<IReadOnlyList<TValue>>> value)
+		public override Result<Unit, ValidationError[]> Validate(Optional<Option<IReadOnlyList<TValue>>> value)
 		{
 			if (value.TryGetValue(out var option) && option.TryGetValue(out var item))
 				return _validationData.Process(item);
 
 			return Result.Unit<ValidationError[]>();
 		}
-
-		public Data<Optional<Option<IReadOnlyList<TValue>>>> ToData()
-			=> new Data<Optional<Option<IReadOnlyList<TValue>>>>(this);
-
-		public static implicit operator Data<Optional<Option<IReadOnlyList<TValue>>>>(OptionalNullableCollectionValidationData<TValue> propertyData)
-			=> propertyData.ToData();
 	}
 }

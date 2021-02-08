@@ -6,7 +6,7 @@ using Valigator.Core;
 
 namespace Valigator.ValidationData
 {
-	public class OptionalNullableValueValidationData<TValue> : IPropertyData<TValue, Optional<Option<TValue>>>, IRootValidationData<OptionalNullableValueValidationData<TValue>, TValue>
+	public class OptionalNullableValueValidationData<TValue> : ValidationDataBase<Optional<Option<TValue>>>, IPropertyData<TValue, Optional<Option<TValue>>>, IRootValidationData<OptionalNullableValueValidationData<TValue>, TValue>
 	{
 		private readonly ValidationData<TValue> _validationData;
 
@@ -19,16 +19,16 @@ namespace Valigator.ValidationData
 		public OptionalNullableValueValidationData<TValue> WithValidator(IInvertableValidator<TValue> value)
 			=> new OptionalNullableValueValidationData<TValue>(_validationData.WithValidator(value));
 
-		public Result<Optional<Option<TValue>>, ValidationError[]> CoerceUnset()
+		public override Result<Optional<Option<TValue>>, ValidationError[]> CoerceUnset()
 			=> Result.Success<Optional<Option<TValue>>, ValidationError[]>(Optional.Unset<Option<TValue>>());
 
-		public Result<Optional<Option<TValue>>, ValidationError[]> CoerceNone()
+		public override Result<Optional<Option<TValue>>, ValidationError[]> CoerceNone()
 			=> Result.Success<Optional<Option<TValue>>, ValidationError[]>(Optional.Set(Option.None<TValue>()));
 
 		public Result<Optional<Option<TValue>>, ValidationError[]> CoerceValue(TValue value)
 			=> Result.Success<Optional<Option<TValue>>, ValidationError[]>(Optional.Set(Option.Some(value)));
 
-		public Result<Unit, ValidationError[]> Validate(Optional<Option<TValue>> value)
+		public override Result<Unit, ValidationError[]> Validate(Optional<Option<TValue>> value)
 		{
 			if (value.TryGetValue(out var option))
 			{
@@ -38,11 +38,5 @@ namespace Valigator.ValidationData
 
 			return Result.Unit<ValidationError[]>();
 		}
-
-		public Data<Optional<Option<TValue>>> ToData()
-			=> new Data<Optional<Option<TValue>>>(this);
-
-		public static implicit operator Data<Optional<Option<TValue>>>(OptionalNullableValueValidationData<TValue> propertyData)
-			=> propertyData.ToData();
 	}
 }

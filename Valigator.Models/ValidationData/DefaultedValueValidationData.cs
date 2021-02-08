@@ -7,7 +7,7 @@ using Valigator.Core;
 
 namespace Valigator.ValidationData
 {
-	public class DefaultedValueValidationData<TValue> : IPropertyData<TValue, TValue>, IRootValidationData<DefaultedValueValidationData<TValue>, TValue>
+	public class DefaultedValueValidationData<TValue> : ValidationDataBase<TValue>, IPropertyData<TValue, TValue>, IRootValidationData<DefaultedValueValidationData<TValue>, TValue>
 	{
 		private readonly TValue _defaultValue;
 
@@ -25,22 +25,16 @@ namespace Valigator.ValidationData
 		public DefaultedValueValidationData<TValue> WithValidator(IInvertableValidator<TValue> value)
 			=> new DefaultedValueValidationData<TValue>(_defaultValue, _validationData.WithValidator(value));
 
-		public Result<TValue, ValidationError[]> CoerceUnset()
+		public override Result<TValue, ValidationError[]> CoerceUnset()
 			=> Result.Success<TValue, ValidationError[]>(_defaultValue);
 
-		public Result<TValue, ValidationError[]> CoerceNone()
+		public override Result<TValue, ValidationError[]> CoerceNone()
 			=> Result.Failure<TValue, ValidationError[]>(new[] { ValidationErrors.NullValuesNotAllowed() });
 
 		public Result<TValue, ValidationError[]> CoerceValue(TValue value)
 			=> Result.Success<TValue, ValidationError[]>(value);
 
-		public Result<Unit, ValidationError[]> Validate(TValue value)
+		public override Result<Unit, ValidationError[]> Validate(TValue value)
 			=> _validationData.Process(value);
-
-		public Data<TValue> ToData()
-			=> new Data<TValue>(this);
-
-		public static implicit operator Data<TValue>(DefaultedValueValidationData<TValue> propertyData)
-			=> propertyData.ToData();
 	}
 }
