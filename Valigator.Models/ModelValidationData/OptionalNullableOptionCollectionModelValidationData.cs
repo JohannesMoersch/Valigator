@@ -42,5 +42,11 @@ namespace Valigator.ModelValidationData
 
 			return Result.Unit<ValidationError[]>();
 		}
+
+		public static ModelDefinition<TModel>.Property<Optional<Option<IReadOnlyList<Option<TValue>>>>> ToProperty(OptionalNullableOptionCollectionModelValidationData<TModel, TValue> data)
+			=> new ModelDefinition<TModel>.Property<Optional<Option<IReadOnlyList<Option<TValue>>>>>(data);
+
+		public static implicit operator ModelDefinition<TModel>.Property<Optional<Option<IReadOnlyList<Option<TValue>>>>>(OptionalNullableOptionCollectionModelValidationData<TModel, TValue> data)
+			=> ToProperty(data);
 	}
 }

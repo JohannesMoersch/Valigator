@@ -36,5 +36,11 @@ namespace Valigator.ModelValidationData
 
 		public Result<Unit, ValidationError[]> Validate(TModel model, TValue value)
 			=> _validationData.Process(ModelValue.Create(model, value));
+
+		public static ModelDefinition<TModel>.Property<TValue> ToProperty(RequiredValueModelValidationData<TModel, TValue> data)
+			=> new ModelDefinition<TModel>.Property<TValue>(data);
+
+		public static implicit operator ModelDefinition<TModel>.Property<TValue>(RequiredValueModelValidationData<TModel, TValue> data)
+			=> ToProperty(data);
 	}
 }
