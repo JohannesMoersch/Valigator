@@ -50,7 +50,7 @@ namespace Valigator.Newtonsoft.Json
 			while (true)
 			{
 				if (!reader.Read())
-					throw new Exception();
+					throw new ValigatorJsonSerializationException(new JsonSerializationException($"Error reading JSON Property. Token Type: '{reader.TokenType}', Value: '{reader.Value}', Path: '{reader.Path}'"));
 
 				if (reader.TokenType == JsonToken.EndObject)
 					break;
@@ -70,7 +70,7 @@ namespace Valigator.Newtonsoft.Json
 				else
 				{
 					if (!reader.Read())
-						throw new Exception();
+						throw new ValigatorJsonSerializationException(new JsonSerializationException($"Error reading JSON Property. Token Type: '{reader.TokenType}', Value: '{reader.Value}', Path: '{reader.Path}'"));
 
 					serializer.Deserialize(reader, typeof(object));
 				}
