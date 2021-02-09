@@ -7,7 +7,7 @@ using Valigator.Core;
 
 namespace Valigator.ModelValidationData
 {
-	public class DefaultedOptionCollectionModelValidationData<TModel, TValue> : IModelPropertyData<TModel, IReadOnlyList<Option<TValue>>, IReadOnlyList<Option<TValue>>>, IRootModelValidationData<DefaultedOptionCollectionModelValidationData<TModel, TValue>, TModel, IReadOnlyList<Option<TValue>>>
+	public class DefaultedOptionCollectionModelValidationData<TModel, TValue> : ModelValidationDataBase<TModel, IReadOnlyList<Option<TValue>>>, IModelPropertyData<TModel, IReadOnlyList<Option<TValue>>, IReadOnlyList<Option<TValue>>>, IRootModelValidationData<DefaultedOptionCollectionModelValidationData<TModel, TValue>, TModel, IReadOnlyList<Option<TValue>>>
 	{
 		private readonly IReadOnlyList<Option<TValue>> _defaultValue;
 
@@ -31,16 +31,16 @@ namespace Valigator.ModelValidationData
 		public DefaultedOptionCollectionModelValidationData<TModel, TValue> WithValidator(IInvertableModelValidator<TModel, IReadOnlyList<Option<TValue>>> value)
 			=> new DefaultedOptionCollectionModelValidationData<TModel, TValue>(_defaultValue, _validationData.WithValidator(value));
 
-		public Result<IReadOnlyList<Option<TValue>>, ValidationError[]> CoerceUnset()
+		public override Result<IReadOnlyList<Option<TValue>>, ValidationError[]> CoerceUnset()
 			=> Result.Success<IReadOnlyList<Option<TValue>>, ValidationError[]>(_defaultValue);
 
-		public Result<IReadOnlyList<Option<TValue>>, ValidationError[]> CoerceNone()
+		public override Result<IReadOnlyList<Option<TValue>>, ValidationError[]> CoerceNone()
 			=> Result.Failure<IReadOnlyList<Option<TValue>>, ValidationError[]>(new[] { ValidationErrors.NullValuesNotAllowed() });
 
 		public Result<IReadOnlyList<Option<TValue>>, ValidationError[]> CoerceValue(IReadOnlyList<Option<TValue>> value)
 			=> Result.Success<IReadOnlyList<Option<TValue>>, ValidationError[]>(value);
 
-		public Result<Unit, ValidationError[]> Validate(TModel model, IReadOnlyList<Option<TValue>> value)
+		public override Result<Unit, ValidationError[]> Validate(TModel model, IReadOnlyList<Option<TValue>> value)
 			=> _validationData.Process(ModelValue.Create(model, value));
 	}
 }

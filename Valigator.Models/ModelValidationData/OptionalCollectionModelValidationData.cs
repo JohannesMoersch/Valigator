@@ -7,7 +7,7 @@ using Valigator.Core;
 
 namespace Valigator.ModelValidationData
 {
-	public class OptionalCollectionModelValidationData<TModel, TValue> : IModelPropertyData<TModel, IReadOnlyList<Option<TValue>>, Optional<IReadOnlyList<TValue>>>, IRootModelValidationData<OptionalCollectionModelValidationData<TModel, TValue>, TModel, IReadOnlyList<TValue>>
+	public class OptionalCollectionModelValidationData<TModel, TValue> : ModelValidationDataBase<TModel, Optional<IReadOnlyList<TValue>>>, IModelPropertyData<TModel, IReadOnlyList<Option<TValue>>, Optional<IReadOnlyList<TValue>>>, IRootModelValidationData<OptionalCollectionModelValidationData<TModel, TValue>, TModel, IReadOnlyList<TValue>>
 	{
 		private readonly ValidationData<ModelValue<TModel, IReadOnlyList<TValue>>> _validationData;
 
@@ -26,10 +26,10 @@ namespace Valigator.ModelValidationData
 		public OptionalCollectionModelValidationData<TModel, TValue> WithValidator(IInvertableModelValidator<TModel, IReadOnlyList<TValue>> value)
 			=> new OptionalCollectionModelValidationData<TModel, TValue>(_validationData.WithValidator(value));
 
-		public Result<Optional<IReadOnlyList<TValue>>, ValidationError[]> CoerceUnset()
+		public override Result<Optional<IReadOnlyList<TValue>>, ValidationError[]> CoerceUnset()
 			=> Result.Success<Optional<IReadOnlyList<TValue>>, ValidationError[]>(Optional.Unset<IReadOnlyList<TValue>>());
 
-		public Result<Optional<IReadOnlyList<TValue>>, ValidationError[]> CoerceNone()
+		public override Result<Optional<IReadOnlyList<TValue>>, ValidationError[]> CoerceNone()
 			=> Result.Failure<Optional<IReadOnlyList<TValue>>, ValidationError[]>(new[] { ValidationErrors.NullValuesNotAllowed() });
 
 		public Result<Optional<IReadOnlyList<TValue>>, ValidationError[]> CoerceValue(IReadOnlyList<Option<TValue>> value)
@@ -37,7 +37,7 @@ namespace Valigator.ModelValidationData
 				? Result.Success<Optional<IReadOnlyList<TValue>>, ValidationError[]>(Optional.Set(values))
 				: Result.Failure<Optional<IReadOnlyList<TValue>>, ValidationError[]>(nullIndices.Select(i => ValidationErrors.NullValueAtIndexIsNotAllowed(i)).ToArray());
 
-		public Result<Unit, ValidationError[]> Validate(TModel model, Optional<IReadOnlyList<TValue>> value)
+		public override Result<Unit, ValidationError[]> Validate(TModel model, Optional<IReadOnlyList<TValue>> value)
 		{
 			if (value.TryGetValue(out var item))
 				return _validationData.Process(ModelValue.Create(model, item));

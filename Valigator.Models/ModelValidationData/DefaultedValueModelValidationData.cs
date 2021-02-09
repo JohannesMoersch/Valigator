@@ -6,7 +6,7 @@ using Valigator.Core;
 
 namespace Valigator.ModelValidationData
 {
-	public class DefaultedValueModelValidationData<TModel, TValue> : IModelPropertyData<TModel, TValue, TValue>, IRootModelValidationData<DefaultedValueModelValidationData<TModel, TValue>, TModel, TValue>
+	public class DefaultedValueModelValidationData<TModel, TValue> : ModelValidationDataBase<TModel, TValue>, IModelPropertyData<TModel, TValue, TValue>, IRootModelValidationData<DefaultedValueModelValidationData<TModel, TValue>, TModel, TValue>
 	{
 		private readonly TValue _defaultValue;
 
@@ -30,16 +30,16 @@ namespace Valigator.ModelValidationData
 		public DefaultedValueModelValidationData<TModel, TValue> WithValidator(IInvertableModelValidator<TModel, TValue> value)
 			=> new DefaultedValueModelValidationData<TModel, TValue>(_defaultValue, _validationData.WithValidator(value));
 
-		public Result<TValue, ValidationError[]> CoerceUnset()
+		public override Result<TValue, ValidationError[]> CoerceUnset()
 			=> Result.Success<TValue, ValidationError[]>(_defaultValue);
 
-		public Result<TValue, ValidationError[]> CoerceNone()
+		public override Result<TValue, ValidationError[]> CoerceNone()
 			=> Result.Failure<TValue, ValidationError[]>(new[] { ValidationErrors.NullValuesNotAllowed() });
 
 		public Result<TValue, ValidationError[]> CoerceValue(TValue value)
 			=> Result.Success<TValue, ValidationError[]>(value);
 
-		public Result<Unit, ValidationError[]> Validate(TModel model, TValue value)
+		public override Result<Unit, ValidationError[]> Validate(TModel model, TValue value)
 			=> _validationData.Process(ModelValue.Create(model, value));
 	}
 }

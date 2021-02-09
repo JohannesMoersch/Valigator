@@ -15,6 +15,9 @@ namespace Valigator
 			public Property(IModelPropertyData<TModel, TValue> data)
 			{
 			}
+
+			public static implicit operator Property<TValue>(ModelValidationDataBase<TModel, TValue> propertyData)
+				=> new Property<TValue>(propertyData);
 		}
 	}
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Xunit;
 
 namespace Valigator.Models.Generator.Tests
@@ -9,9 +10,9 @@ namespace Valigator.Models.Generator.Tests
 		{
 			public class TestModelDefinition : ModelDefinition<TestModel>
 			{
-				//public Property<int> A { get; } = Data.Value<int>().Defaulted(5);
+				public Property<int> A { get; } = Data.Value<int>().Defaulted(5);
 
-				//public Property<IReadOnlyList<int>> B { get; } = Data.Collection<int>().Required();
+				public Property<IReadOnlyList<int>> B { get; } = Data.Collection<int>().Required();
 			}
 		}
 

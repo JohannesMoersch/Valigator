@@ -6,7 +6,7 @@ using Valigator.Core;
 
 namespace Valigator.ModelValidationData
 {
-	public class OptionalValueModelValidationData<TModel, TValue> : IModelPropertyData<TModel, TValue, Optional<TValue>>, IRootModelValidationData<OptionalValueModelValidationData<TModel, TValue>, TModel, TValue>
+	public class OptionalValueModelValidationData<TModel, TValue> : ModelValidationDataBase<TModel, Optional<TValue>>, IModelPropertyData<TModel, TValue, Optional<TValue>>, IRootModelValidationData<OptionalValueModelValidationData<TModel, TValue>, TModel, TValue>
 	{
 		private readonly ValidationData<ModelValue<TModel, TValue>> _validationData;
 
@@ -25,16 +25,16 @@ namespace Valigator.ModelValidationData
 		public OptionalValueModelValidationData<TModel, TValue> WithValidator(IInvertableModelValidator<TModel, TValue> value)
 			=> new OptionalValueModelValidationData<TModel, TValue>(_validationData.WithValidator(value));
 
-		public Result<Optional<TValue>, ValidationError[]> CoerceUnset()
+		public override Result<Optional<TValue>, ValidationError[]> CoerceUnset()
 			=> Result.Success<Optional<TValue>, ValidationError[]>(Optional.Unset<TValue>());
 
-		public Result<Optional<TValue>, ValidationError[]> CoerceNone()
+		public override Result<Optional<TValue>, ValidationError[]> CoerceNone()
 			=> Result.Failure<Optional<TValue>, ValidationError[]>(new[] { ValidationErrors.NullValuesNotAllowed() });
 
 		public Result<Optional<TValue>, ValidationError[]> CoerceValue(TValue value)
 			=> Result.Success<Optional<TValue>, ValidationError[]>(Optional.Set(value));
 
-		public Result<Unit, ValidationError[]> Validate(TModel model, Optional<TValue> value)
+		public override Result<Unit, ValidationError[]> Validate(TModel model, Optional<TValue> value)
 		{
 			if (value.TryGetValue(out var item))
 				return _validationData.Process(ModelValue.Create(model, item));

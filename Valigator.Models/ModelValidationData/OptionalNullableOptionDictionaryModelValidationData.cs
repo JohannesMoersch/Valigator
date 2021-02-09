@@ -7,7 +7,7 @@ using Valigator.Core;
 
 namespace Valigator.ModelValidationData
 {
-	public class OptionalNullableOptionDictionaryModelValidationData<TModel, TKey, TValue> : IModelPropertyData<TModel, IReadOnlyDictionary<TKey, Option<TValue>>, Optional<Option<IReadOnlyDictionary<TKey, Option<TValue>>>>>, IRootModelValidationData<OptionalNullableOptionDictionaryModelValidationData<TModel, TKey, TValue>, TModel, IReadOnlyDictionary<TKey, Option<TValue>>>
+	public class OptionalNullableOptionDictionaryModelValidationData<TModel, TKey, TValue> : ModelValidationDataBase<TModel, Optional<Option<IReadOnlyDictionary<TKey, Option<TValue>>>>>, IModelPropertyData<TModel, IReadOnlyDictionary<TKey, Option<TValue>>, Optional<Option<IReadOnlyDictionary<TKey, Option<TValue>>>>>, IRootModelValidationData<OptionalNullableOptionDictionaryModelValidationData<TModel, TKey, TValue>, TModel, IReadOnlyDictionary<TKey, Option<TValue>>>
 	{
 		private readonly ValidationData<ModelValue<TModel, IReadOnlyDictionary<TKey, Option<TValue>>>> _validationData;
 
@@ -26,16 +26,16 @@ namespace Valigator.ModelValidationData
 		public OptionalNullableOptionDictionaryModelValidationData<TModel, TKey, TValue> WithValidator(IInvertableModelValidator<TModel, IReadOnlyDictionary<TKey, Option<TValue>>> value)
 			=> new OptionalNullableOptionDictionaryModelValidationData<TModel, TKey, TValue>(_validationData.WithValidator(value));
 
-		public Result<Optional<Option<IReadOnlyDictionary<TKey, Option<TValue>>>>, ValidationError[]> CoerceUnset()
+		public override Result<Optional<Option<IReadOnlyDictionary<TKey, Option<TValue>>>>, ValidationError[]> CoerceUnset()
 			=> Result.Success<Optional<Option<IReadOnlyDictionary<TKey, Option<TValue>>>>, ValidationError[]>(Optional.Unset<Option<IReadOnlyDictionary<TKey, Option<TValue>>>>());
 
-		public Result<Optional<Option<IReadOnlyDictionary<TKey, Option<TValue>>>>, ValidationError[]> CoerceNone()
+		public override Result<Optional<Option<IReadOnlyDictionary<TKey, Option<TValue>>>>, ValidationError[]> CoerceNone()
 			=> Result.Success<Optional<Option<IReadOnlyDictionary<TKey, Option<TValue>>>>, ValidationError[]>(Optional.Set(Option.None<IReadOnlyDictionary<TKey, Option<TValue>>>()));
 
 		public Result<Optional<Option<IReadOnlyDictionary<TKey, Option<TValue>>>>, ValidationError[]> CoerceValue(IReadOnlyDictionary<TKey, Option<TValue>> value)
 			=> Result.Success<Optional<Option<IReadOnlyDictionary<TKey, Option<TValue>>>>, ValidationError[]>(Optional.Set(Option.Some(value)));
 
-		public Result<Unit, ValidationError[]> Validate(TModel model, Optional<Option<IReadOnlyDictionary<TKey, Option<TValue>>>> value)
+		public override Result<Unit, ValidationError[]> Validate(TModel model, Optional<Option<IReadOnlyDictionary<TKey, Option<TValue>>>> value)
 		{
 			if (value.TryGetValue(out var option) && option.TryGetValue(out var item))
 				return _validationData.Process(ModelValue.Create(model, item));
