@@ -9,11 +9,11 @@ namespace Valigator.ValidationData
 {
 	public class DefaultedValueValidationData<TValue> : ValidationDataBase<TValue>, IPropertyData<TValue, TValue>, IRootValidationData<DefaultedValueValidationData<TValue>, TValue>
 	{
-		private readonly TValue _defaultValue;
+		private readonly Func<TValue> _defaultValue;
 
 		private readonly ValidationData<TValue> _validationData;
 
-		public DefaultedValueValidationData(TValue defaultValue, ValidationData<TValue> validationData)
+		public DefaultedValueValidationData(Func<TValue> defaultValue, ValidationData<TValue> validationData)
 		{
 			_defaultValue = defaultValue;
 			_validationData = validationData;
@@ -26,7 +26,7 @@ namespace Valigator.ValidationData
 			=> new DefaultedValueValidationData<TValue>(_defaultValue, _validationData.WithValidator(value));
 
 		public override Result<TValue, ValidationError[]> CoerceUnset()
-			=> Result.Success<TValue, ValidationError[]>(_defaultValue);
+			=> Result.Success<TValue, ValidationError[]>(_defaultValue.Invoke());
 
 		public override Result<TValue, ValidationError[]> CoerceNone()
 			=> Result.Failure<TValue, ValidationError[]>(new[] { ValidationErrors.NullValuesNotAllowed() });

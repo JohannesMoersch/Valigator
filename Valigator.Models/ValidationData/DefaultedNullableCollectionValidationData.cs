@@ -9,11 +9,11 @@ namespace Valigator.ValidationData
 {
 	public class DefaultedNullableCollectionValidationData<TValue> : ValidationDataBase<Option<IReadOnlyList<TValue>>>, IPropertyData<IReadOnlyList<Option<TValue>>, Option<IReadOnlyList<TValue>>>, IRootValidationData<DefaultedNullableCollectionValidationData<TValue>, IReadOnlyList<TValue>>
 	{
-		private readonly Option<IReadOnlyList<TValue>> _defaultValue;
+		private readonly Func<Option<IReadOnlyList<TValue>>> _defaultValue;
 
 		private readonly ValidationData<IReadOnlyList<TValue>> _validationData;
 
-		public DefaultedNullableCollectionValidationData(Option<IReadOnlyList<TValue>> defaultValue, ValidationData<IReadOnlyList<TValue>> validationData)
+		public DefaultedNullableCollectionValidationData(Func<Option<IReadOnlyList<TValue>>> defaultValue, ValidationData<IReadOnlyList<TValue>> validationData)
 		{
 			_defaultValue = defaultValue;
 			_validationData = validationData;
@@ -26,7 +26,7 @@ namespace Valigator.ValidationData
 			=> new DefaultedNullableCollectionValidationData<TValue>(_defaultValue, _validationData.WithValidator(value));
 
 		public override Result<Option<IReadOnlyList<TValue>>, ValidationError[]> CoerceUnset()
-			=> Result.Success<Option<IReadOnlyList<TValue>>, ValidationError[]>(_defaultValue);
+			=> Result.Success<Option<IReadOnlyList<TValue>>, ValidationError[]>(_defaultValue.Invoke());
 
 		public override Result<Option<IReadOnlyList<TValue>>, ValidationError[]> CoerceNone()
 			=> Result.Success<Option<IReadOnlyList<TValue>>, ValidationError[]>(Option.None<IReadOnlyList<TValue>>());

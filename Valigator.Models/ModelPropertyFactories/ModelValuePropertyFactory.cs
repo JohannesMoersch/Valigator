@@ -20,6 +20,9 @@ namespace Valigator.ModelPropertyFactories
 			=> new OptionalValueModelValidationData<TModel, TValue>(new ValidationData<ModelValue<TModel, TValue>>());
 
 		public DefaultedValueModelValidationData<TModel, TValue> Defaulted(TValue defaultValue)
+			=> new DefaultedValueModelValidationData<TModel, TValue>(() => defaultValue, new ValidationData<ModelValue<TModel, TValue>>());
+
+		public DefaultedValueModelValidationData<TModel, TValue> Defaulted(Func<TValue> defaultValue)
 			=> new DefaultedValueModelValidationData<TModel, TValue>(defaultValue, new ValidationData<ModelValue<TModel, TValue>>());
 	}
 
@@ -36,6 +39,9 @@ namespace Valigator.ModelPropertyFactories
 			=> new OptionalNullableValueModelValidationData<TModel, TValue>(new ValidationData<ModelValue<TModel, TValue>>());
 
 		public DefaultedNullableValueModelValidationData<TModel, TValue> Defaulted(Option<TValue> defaultValue)
+			=> new DefaultedNullableValueModelValidationData<TModel, TValue>(() => defaultValue, new ValidationData<ModelValue<TModel, TValue>>());
+
+		public DefaultedNullableValueModelValidationData<TModel, TValue> Defaulted(Func<Option<TValue>> defaultValue)
 			=> new DefaultedNullableValueModelValidationData<TModel, TValue>(defaultValue, new ValidationData<ModelValue<TModel, TValue>>());
 	}
 }

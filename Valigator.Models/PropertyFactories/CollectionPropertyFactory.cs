@@ -20,6 +20,9 @@ namespace Valigator.PropertyFactories
 			=> new OptionalCollectionValidationData<TValue>(new ValidationData<IReadOnlyList<TValue>>());
 
 		public DefaultedCollectionValidationData<TValue> Defaulted(IReadOnlyList<TValue> defaultValue)
+			=> new DefaultedCollectionValidationData<TValue>(() => defaultValue, new ValidationData<IReadOnlyList<TValue>>());
+
+		public DefaultedCollectionValidationData<TValue> Defaulted(Func<IReadOnlyList<TValue>> defaultValue)
 			=> new DefaultedCollectionValidationData<TValue>(defaultValue, new ValidationData<IReadOnlyList<TValue>>());
 	}
 
@@ -36,6 +39,9 @@ namespace Valigator.PropertyFactories
 			=> new OptionalNullableCollectionValidationData<TValue>(new ValidationData<IReadOnlyList<TValue>>());
 
 		public DefaultedNullableCollectionValidationData<TValue> Defaulted(Option<IReadOnlyList<TValue>> defaultValue)
+			=> new DefaultedNullableCollectionValidationData<TValue>(() => defaultValue, new ValidationData<IReadOnlyList<TValue>>());
+
+		public DefaultedNullableCollectionValidationData<TValue> Defaulted(Func<Option<IReadOnlyList<TValue>>> defaultValue)
 			=> new DefaultedNullableCollectionValidationData<TValue>(defaultValue, new ValidationData<IReadOnlyList<TValue>>());
 	}
 
@@ -52,6 +58,9 @@ namespace Valigator.PropertyFactories
 			=> new OptionalOptionCollectionValidationData<TValue>(new ValidationData<IReadOnlyList<Option<TValue>>>());
 
 		public DefaultedOptionCollectionValidationData<TValue> Defaulted(IReadOnlyList<Option<TValue>> defaultValue)
+			=> new DefaultedOptionCollectionValidationData<TValue>(() => defaultValue, new ValidationData<IReadOnlyList<Option<TValue>>>());
+
+		public DefaultedOptionCollectionValidationData<TValue> Defaulted(Func<IReadOnlyList<Option<TValue>>> defaultValue)
 			=> new DefaultedOptionCollectionValidationData<TValue>(defaultValue, new ValidationData<IReadOnlyList<Option<TValue>>>());
 	}
 
@@ -68,6 +77,9 @@ namespace Valigator.PropertyFactories
 			=> new OptionalNullableOptionCollectionValidationData<TValue>(new ValidationData<IReadOnlyList<Option<TValue>>>());
 
 		public DefaultedNullableOptionCollectionValidationData<TValue> Defaulted(Option<IReadOnlyList<Option<TValue>>> defaultValue)
+			=> new DefaultedNullableOptionCollectionValidationData<TValue>(() => defaultValue, new ValidationData<IReadOnlyList<Option<TValue>>>());
+
+		public DefaultedNullableOptionCollectionValidationData<TValue> Defaulted(Func<Option<IReadOnlyList<Option<TValue>>>> defaultValue)
 			=> new DefaultedNullableOptionCollectionValidationData<TValue>(defaultValue, new ValidationData<IReadOnlyList<Option<TValue>>>());
 	}
 }

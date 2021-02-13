@@ -9,11 +9,11 @@ namespace Valigator.ValidationData
 {
 	public class DefaultedNullableDictionaryValidationData<TKey, TValue> : ValidationDataBase<Option<IReadOnlyDictionary<TKey, TValue>>>, IPropertyData<IReadOnlyDictionary<TKey, Option<TValue>>, Option<IReadOnlyDictionary<TKey, TValue>>>, IRootValidationData<DefaultedNullableDictionaryValidationData<TKey, TValue>, IReadOnlyDictionary<TKey, TValue>>
 	{
-		private readonly Option<IReadOnlyDictionary<TKey, TValue>> _defaultValue;
+		private readonly Func<Option<IReadOnlyDictionary<TKey, TValue>>> _defaultValue;
 
 		private readonly ValidationData<IReadOnlyDictionary<TKey, TValue>> _validationData;
 
-		public DefaultedNullableDictionaryValidationData(Option<IReadOnlyDictionary<TKey, TValue>> defaultValue, ValidationData<IReadOnlyDictionary<TKey, TValue>> validationData)
+		public DefaultedNullableDictionaryValidationData(Func<Option<IReadOnlyDictionary<TKey, TValue>>> defaultValue, ValidationData<IReadOnlyDictionary<TKey, TValue>> validationData)
 		{
 			_defaultValue = defaultValue;
 			_validationData = validationData;
@@ -26,7 +26,7 @@ namespace Valigator.ValidationData
 			=> new DefaultedNullableDictionaryValidationData<TKey, TValue>(_defaultValue, _validationData.WithValidator(value));
 
 		public override Result<Option<IReadOnlyDictionary<TKey, TValue>>, ValidationError[]> CoerceUnset()
-			=> Result.Success<Option<IReadOnlyDictionary<TKey, TValue>>, ValidationError[]>(_defaultValue);
+			=> Result.Success<Option<IReadOnlyDictionary<TKey, TValue>>, ValidationError[]>(_defaultValue.Invoke());
 
 		public override Result<Option<IReadOnlyDictionary<TKey, TValue>>, ValidationError[]> CoerceNone()
 			=> Result.Success<Option<IReadOnlyDictionary<TKey, TValue>>, ValidationError[]>(Option.None<IReadOnlyDictionary<TKey, TValue>>());

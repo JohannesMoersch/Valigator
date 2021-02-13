@@ -20,6 +20,9 @@ namespace Valigator.ModelPropertyFactories
 			=> new OptionalCollectionModelValidationData<TModel, TValue>(new ValidationData<ModelValue<TModel, IReadOnlyList<TValue>>>());
 
 		public DefaultedCollectionModelValidationData<TModel, TValue> Defaulted(IReadOnlyList<TValue> defaultValue)
+			=> new DefaultedCollectionModelValidationData<TModel, TValue>(() => defaultValue, new ValidationData<ModelValue<TModel, IReadOnlyList<TValue>>>());
+
+		public DefaultedCollectionModelValidationData<TModel, TValue> Defaulted(Func<IReadOnlyList<TValue>> defaultValue)
 			=> new DefaultedCollectionModelValidationData<TModel, TValue>(defaultValue, new ValidationData<ModelValue<TModel, IReadOnlyList<TValue>>>());
 	}
 
@@ -36,7 +39,10 @@ namespace Valigator.ModelPropertyFactories
 			=> new OptionalNullableCollectionModelValidationData<TModel, TValue>(new ValidationData<ModelValue<TModel, IReadOnlyList<TValue>>>());
 
 		public DefaultedNullableCollectionModelValidationData<TModel, TValue> Defaulted(Option<IReadOnlyList<TValue>> defaultValue)
-			=> new DefaultedNullableCollectionModelValidationData<TModel, TValue>(defaultValue, new ValidationData<ModelValue<TModel, IReadOnlyList<TValue>>>());
+			=> new DefaultedNullableCollectionModelValidationData<TModel, TValue>(() => defaultValue, new ValidationData<ModelValue<TModel, IReadOnlyList<TValue>>>());
+
+		public DefaultedNullableCollectionModelValidationData<TModel, TValue> Defaulted(Func<Option<IReadOnlyList<TValue>>> defaultValue)
+		=> new DefaultedNullableCollectionModelValidationData<TModel, TValue>(defaultValue, new ValidationData<ModelValue<TModel, IReadOnlyList<TValue>>>());
 	}
 
 	public class ModelOptionCollectionPropertyFactory<TModel, TValue>
@@ -52,6 +58,9 @@ namespace Valigator.ModelPropertyFactories
 			=> new OptionalOptionCollectionModelValidationData<TModel, TValue>(new ValidationData<ModelValue<TModel, IReadOnlyList<Option<TValue>>>>());
 
 		public DefaultedOptionCollectionModelValidationData<TModel, TValue> Defaulted(IReadOnlyList<Option<TValue>> defaultValue)
+			=> new DefaultedOptionCollectionModelValidationData<TModel, TValue>(() => defaultValue, new ValidationData<ModelValue<TModel, IReadOnlyList<Option<TValue>>>>());
+
+		public DefaultedOptionCollectionModelValidationData<TModel, TValue> Defaulted(Func<IReadOnlyList<Option<TValue>>> defaultValue)
 			=> new DefaultedOptionCollectionModelValidationData<TModel, TValue>(defaultValue, new ValidationData<ModelValue<TModel, IReadOnlyList<Option<TValue>>>>());
 	}
 
@@ -68,6 +77,9 @@ namespace Valigator.ModelPropertyFactories
 			=> new OptionalNullableOptionCollectionModelValidationData<TModel, TValue>(new ValidationData<ModelValue<TModel, IReadOnlyList<Option<TValue>>>>());
 
 		public DefaultedNullableOptionCollectionModelValidationData<TModel, TValue> Defaulted(Option<IReadOnlyList<Option<TValue>>> defaultValue)
+			=> new DefaultedNullableOptionCollectionModelValidationData<TModel, TValue>(() => defaultValue, new ValidationData<ModelValue<TModel, IReadOnlyList<Option<TValue>>>>());
+
+		public DefaultedNullableOptionCollectionModelValidationData<TModel, TValue> Defaulted(Func<Option<IReadOnlyList<Option<TValue>>>> defaultValue)
 			=> new DefaultedNullableOptionCollectionModelValidationData<TModel, TValue>(defaultValue, new ValidationData<ModelValue<TModel, IReadOnlyList<Option<TValue>>>>());
 	}
 }

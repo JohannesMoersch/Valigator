@@ -20,6 +20,9 @@ namespace Valigator.PropertyFactories
 			=> new OptionalValueValidationData<TValue>(new ValidationData<TValue>());
 
 		public DefaultedValueValidationData<TValue> Defaulted(TValue defaultValue)
+			=> new DefaultedValueValidationData<TValue>(() => defaultValue, new ValidationData<TValue>());
+
+		public DefaultedValueValidationData<TValue> Defaulted(Func<TValue> defaultValue)
 			=> new DefaultedValueValidationData<TValue>(defaultValue, new ValidationData<TValue>());
 	}
 
@@ -36,6 +39,9 @@ namespace Valigator.PropertyFactories
 			=> new OptionalNullableValueValidationData<TValue>(new ValidationData<TValue>());
 
 		public DefaultedNullableValueValidationData<TValue> Defaulted(Option<TValue> defaultValue)
+			=> new DefaultedNullableValueValidationData<TValue>(() => defaultValue, new ValidationData<TValue>());
+
+		public DefaultedNullableValueValidationData<TValue> Defaulted(Func<Option<TValue>> defaultValue)
 			=> new DefaultedNullableValueValidationData<TValue>(defaultValue, new ValidationData<TValue>());
 	}
 }

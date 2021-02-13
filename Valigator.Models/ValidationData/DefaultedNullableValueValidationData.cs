@@ -8,11 +8,11 @@ namespace Valigator.ValidationData
 {
 	public class DefaultedNullableValueValidationData<TValue> : ValidationDataBase<Option<TValue>>, IPropertyData<TValue, Option<TValue>>, IRootValidationData<DefaultedNullableValueValidationData<TValue>, TValue>
 	{
-		private readonly Option<TValue> _defaultValue;
+		private readonly Func<Option<TValue>> _defaultValue;
 
 		private readonly ValidationData<TValue> _validationData;
 
-		public DefaultedNullableValueValidationData(Option<TValue> defaultValue, ValidationData<TValue> validationData)
+		public DefaultedNullableValueValidationData(Func<Option<TValue>> defaultValue, ValidationData<TValue> validationData)
 		{
 			_defaultValue = defaultValue;
 			_validationData = validationData;
@@ -25,7 +25,7 @@ namespace Valigator.ValidationData
 			=> new DefaultedNullableValueValidationData<TValue>(_defaultValue, _validationData.WithValidator(value));
 
 		public override Result<Option<TValue>, ValidationError[]> CoerceUnset()
-			=> Result.Success<Option<TValue>, ValidationError[]>(_defaultValue);
+			=> Result.Success<Option<TValue>, ValidationError[]>(_defaultValue.Invoke());
 
 		public override Result<Option<TValue>, ValidationError[]> CoerceNone()
 			=> Result.Success<Option<TValue>, ValidationError[]>(Option.None<TValue>());

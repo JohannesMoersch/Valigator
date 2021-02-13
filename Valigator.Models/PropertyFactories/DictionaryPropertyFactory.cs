@@ -20,6 +20,9 @@ namespace Valigator.PropertyFactories
 			=> new OptionalDictionaryValidationData<TKey, TValue>(new ValidationData<IReadOnlyDictionary<TKey, TValue>>());
 
 		public DefaultedDictionaryValidationData<TKey, TValue> Defaulted(IReadOnlyDictionary<TKey, TValue> defaultValue)
+			=> new DefaultedDictionaryValidationData<TKey, TValue>(() => defaultValue, new ValidationData<IReadOnlyDictionary<TKey, TValue>>());
+
+		public DefaultedDictionaryValidationData<TKey, TValue> Defaulted(Func<IReadOnlyDictionary<TKey, TValue>> defaultValue)
 			=> new DefaultedDictionaryValidationData<TKey, TValue>(defaultValue, new ValidationData<IReadOnlyDictionary<TKey, TValue>>());
 	}
 
@@ -36,6 +39,9 @@ namespace Valigator.PropertyFactories
 			=> new OptionalNullableDictionaryValidationData<TKey, TValue>(new ValidationData<IReadOnlyDictionary<TKey, TValue>>());
 
 		public DefaultedNullableDictionaryValidationData<TKey, TValue> Defaulted(Option<IReadOnlyDictionary<TKey, TValue>> defaultValue)
+			=> new DefaultedNullableDictionaryValidationData<TKey, TValue>(() => defaultValue, new ValidationData<IReadOnlyDictionary<TKey, TValue>>());
+
+		public DefaultedNullableDictionaryValidationData<TKey, TValue> Defaulted(Func<Option<IReadOnlyDictionary<TKey, TValue>>> defaultValue)
 			=> new DefaultedNullableDictionaryValidationData<TKey, TValue>(defaultValue, new ValidationData<IReadOnlyDictionary<TKey, TValue>>());
 	}
 
@@ -52,6 +58,9 @@ namespace Valigator.PropertyFactories
 			=> new OptionalOptionDictionaryValidationData<TKey, TValue>(new ValidationData<IReadOnlyDictionary<TKey, Option<TValue>>>());
 
 		public DefaultedOptionDictionaryValidationData<TKey, TValue> Defaulted(IReadOnlyDictionary<TKey, Option<TValue>> defaultValue)
+			=> new DefaultedOptionDictionaryValidationData<TKey, TValue>(() => defaultValue, new ValidationData<IReadOnlyDictionary<TKey, Option<TValue>>>());
+
+		public DefaultedOptionDictionaryValidationData<TKey, TValue> Defaulted(Func<IReadOnlyDictionary<TKey, Option<TValue>>> defaultValue)
 			=> new DefaultedOptionDictionaryValidationData<TKey, TValue>(defaultValue, new ValidationData<IReadOnlyDictionary<TKey, Option<TValue>>>());
 	}
 
@@ -68,6 +77,9 @@ namespace Valigator.PropertyFactories
 			=> new OptionalNullableOptionDictionaryValidationData<TKey, TValue>(new ValidationData<IReadOnlyDictionary<TKey, Option<TValue>>>());
 
 		public DefaultedNullableOptionDictionaryValidationData<TKey, TValue> Defaulted(Option<IReadOnlyDictionary<TKey, Option<TValue>>> defaultValue)
+			=> new DefaultedNullableOptionDictionaryValidationData<TKey, TValue>(() => defaultValue, new ValidationData<IReadOnlyDictionary<TKey, Option<TValue>>>());
+
+		public DefaultedNullableOptionDictionaryValidationData<TKey, TValue> Defaulted(Func<Option<IReadOnlyDictionary<TKey, Option<TValue>>>> defaultValue)
 			=> new DefaultedNullableOptionDictionaryValidationData<TKey, TValue>(defaultValue, new ValidationData<IReadOnlyDictionary<TKey, Option<TValue>>>());
 	}
 }

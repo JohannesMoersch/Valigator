@@ -9,11 +9,11 @@ namespace Valigator.ValidationData
 {
 	public class DefaultedCollectionValidationData<TValue> : ValidationDataBase<IReadOnlyList<TValue>>, IPropertyData<IReadOnlyList<Option<TValue>>, IReadOnlyList<TValue>>, IRootValidationData<DefaultedCollectionValidationData<TValue>, IReadOnlyList<TValue>>
 	{
-		private readonly IReadOnlyList<TValue> _defaultValue;
+		private readonly Func<IReadOnlyList<TValue>> _defaultValue;
 
 		private readonly ValidationData<IReadOnlyList<TValue>> _validationData;
 
-		public DefaultedCollectionValidationData(IReadOnlyList<TValue> defaultValue, ValidationData<IReadOnlyList<TValue>> validationData)
+		public DefaultedCollectionValidationData(Func<IReadOnlyList<TValue>> defaultValue, ValidationData<IReadOnlyList<TValue>> validationData)
 		{
 			_defaultValue = defaultValue;
 			_validationData = validationData;
@@ -26,7 +26,7 @@ namespace Valigator.ValidationData
 			=> new DefaultedCollectionValidationData<TValue>(_defaultValue, _validationData.WithValidator(value));
 
 		public override Result<IReadOnlyList<TValue>, ValidationError[]> CoerceUnset()
-			=> Result.Success<IReadOnlyList<TValue>, ValidationError[]>(_defaultValue);
+			=> Result.Success<IReadOnlyList<TValue>, ValidationError[]>(_defaultValue.Invoke());
 
 		public override Result<IReadOnlyList<TValue>, ValidationError[]> CoerceNone()
 			=> Result.Failure<IReadOnlyList<TValue>, ValidationError[]>(new[] { ValidationErrors.NullValuesNotAllowed() });
