@@ -12,16 +12,10 @@ namespace Valigator
 		private TValue _value;
 		public TValue Value
 		{
-			get
-			{
-				if (_data == null)
-					throw new DataNotInitializedException();
-
-				if (_data is IInvalidData failure)
-					throw new DataInvalidException(failure.Errors);
-
-				return _value;
-			}
+			get => TryGetValue()
+				.TryGetValue(out var success, out var failure)
+				? success
+				: throw new DataInvalidException(failure);
 		}
 		
 		private IData _data;
@@ -42,10 +36,10 @@ namespace Valigator
 
 		public Result<TValue, ValidationError[]> TryGetValue()
 		{
-			if (_data == null)
+			if (_data is null)
 				throw new DataNotInitializedException();
 
-			if (_data is IValidData)
+			if (_data is Valid)
 				return Result.Success<TValue, ValidationError[]>(_value);
 
 			if (_data is Unset unset)
@@ -53,14 +47,14 @@ namespace Valigator
 				if (_data.Data.CoerceUnset().TryGetValue(out var value, out var errors))
 				{
 					_value = value;
-					_data = unset.ToCoercedValid();
+					_data = unset.ToValid();
 				}
 				else
-					_data = unset.ToCoercedInvalid(errors);
+					_data = unset.ToInvalid(errors);
 			}
 
-			if (_data is IInvalidData failure)
-				return Result.Failure<TValue, ValidationError[]>(failure.Errors);
+			if (_data is Invalid invalid)
+				return Result.Failure<TValue, ValidationError[]>(invalid.Errors);
 
 			return Result.Success<TValue, ValidationError[]>(_value);
 		}
@@ -68,12 +62,15 @@ namespace Valigator
 #pragma warning disable CS8604 // Possible null reference argument.
 		public Data<TValue> WithValue<T>(Option<T> input)
 		{
+			if (_data is null)
+				throw new DataNotInitializedException();
+
 			if (_data.Data is IPropertyData<T, TValue> propertyData)
 			{
 				if (propertyData.Coerce(Optional.Set(input)).TryGetValue(out var value, out var errors) && propertyData.Validate(value).TryGetValue(out var success, out errors))
-					return new Data<TValue>(value, _data.ToSetValid());
+					return new Data<TValue>(value, _data.ToValid());
 
-				return new Data<TValue>(default, _data.ToSetInvalid(errors));
+				return new Data<TValue>(default, _data.ToInvalid(errors));
 			}
 
 			throw new ArgumentException($"Type \"{nameof(T)}\" must match interior type of \"{nameof(TValue)}\".", nameof(T));
@@ -89,17 +86,14 @@ namespace Valigator
 
 			public Unset Unset { get; }
 
-			public CoercedValid CoercedValid { get; }
-
-			public SetValid SetValid { get; }
+			public Valid Valid { get; }
 
 			public SharedData(IPropertyData<TValue> data)
 			{
 				Data = data;
 
 				Unset = new Unset(this);
-				CoercedValid = new CoercedValid(this);
-				SetValid = new SetValid(this);
+				Valid = new Valid(this);
 			}
 		}
 
@@ -107,18 +101,9 @@ namespace Valigator
 		{
 			IPropertyData<TValue> Data { get; }
 
-			IData ToSetValid();
+			IData ToValid();
 
-			IData ToSetInvalid(ValidationError[] errors);
-		}
-
-		private interface IInvalidData : IData 
-		{
-			ValidationError[] Errors { get; }
-		}
-
-		private interface IValidData : IData 
-		{
+			IData ToInvalid(ValidationError[] errors);
 		}
 
 		private class Unset : IData
@@ -130,36 +115,30 @@ namespace Valigator
 			public Unset(SharedData data) 
 				=> _data = data;
 
-			public IData ToCoercedValid()
-				=> _data.CoercedValid;
+			public IData ToValid()
+				=> _data.Valid;
 
-			public IData ToCoercedInvalid(ValidationError[] errors)
-				=> new CoercedInvalid(_data, errors);
-
-			public IData ToSetValid()
-				=> _data.SetValid;
-
-			public IData ToSetInvalid(ValidationError[] errors)
-				=> new SetInvalid(_data, errors);
+			public IData ToInvalid(ValidationError[] errors)
+				=> new Invalid(_data, errors);
 		}
 
-		private class CoercedValid : IValidData
+		private class Valid : IData
 		{
 			private readonly Data<TValue>.SharedData _data;
 
 			public IPropertyData<TValue> Data => _data.Data;
 
-			public CoercedValid(SharedData data)
+			public Valid(SharedData data)
 				=> _data = data;
 
-			public IData ToSetValid()
-				=> _data.SetValid;
+			public IData ToValid()
+				=> _data.Valid;
 
-			public IData ToSetInvalid(ValidationError[] errors)
-				=> new SetInvalid(_data, errors);
+			public IData ToInvalid(ValidationError[] errors)
+				=> new Invalid(_data, errors);
 		}
 
-		private class CoercedInvalid : IInvalidData
+		private class Invalid : IData
 		{
 			private readonly Data<TValue>.SharedData _data;
 
@@ -167,54 +146,17 @@ namespace Valigator
 
 			public ValidationError[] Errors { get; }
 
-			public CoercedInvalid(SharedData data, ValidationError[] errors)
+			public Invalid(SharedData data, ValidationError[] errors)
 			{
 				_data = data;
 				Errors = errors;
 			}
 
-			public IData ToSetValid()
-				=> _data.SetValid;
+			public IData ToValid()
+				=> _data.Valid;
 
-			public IData ToSetInvalid(ValidationError[] errors)
-				=> new SetInvalid(_data, errors);
-		}
-
-		private class SetValid : IValidData
-		{
-			private readonly Data<TValue>.SharedData _data;
-
-			public IPropertyData<TValue> Data => _data.Data;
-
-			public SetValid(SharedData data)
-				=> _data = data;
-
-			public IData ToSetValid()
-				=> _data.SetValid;
-
-			public IData ToSetInvalid(ValidationError[] errors)
-				=> new SetInvalid(_data, errors);
-		}
-
-		private class SetInvalid : IInvalidData
-		{
-			private readonly Data<TValue>.SharedData _data;
-
-			public IPropertyData<TValue> Data => _data.Data;
-
-			public ValidationError[] Errors { get; }
-
-			public SetInvalid(SharedData data, ValidationError[] errors)
-			{
-				_data = data;
-				Errors = errors;
-			}
-
-			public IData ToSetValid()
-				=> _data.SetValid;
-
-			public IData ToSetInvalid(ValidationError[] errors)
-				=> new SetInvalid(_data, errors);
+			public IData ToInvalid(ValidationError[] errors)
+				=> new Invalid(_data, errors);
 		}
 	}
 }

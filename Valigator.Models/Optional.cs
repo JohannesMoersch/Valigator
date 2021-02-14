@@ -27,10 +27,10 @@ namespace Valigator
 
 		public TResult Match<TResult>(Func<TValue, TResult> set, Func<TResult> unset)
 		{
-			if (set == null)
+			if (set is null)
 				throw new ArgumentNullException(nameof(set));
 
-			if (unset == null)
+			if (unset is null)
 				throw new ArgumentNullException(nameof(unset));
 
 			return _hasValue ? set.Invoke(_value) : unset.Invoke();
