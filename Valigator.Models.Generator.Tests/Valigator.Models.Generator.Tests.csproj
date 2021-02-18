@@ -25,6 +25,7 @@
     <ProjectReference Include="..\Valigator.Core\Valigator.Core.csproj" />
     <ProjectReference Include="..\Valigator.Models.Generator\Valigator.Models.Generator.csproj" />
     <ProjectReference Include="..\Valigator.Models\Valigator.Models.csproj" />
+    <ProjectReference Include="..\Valigator.Tests.Common\Valigator.Tests.Common.csproj" />
   </ItemGroup>
 
 </Project>

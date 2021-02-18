@@ -9,7 +9,8 @@ namespace Valigator
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static class ModelValidationDataExtensions
 	{
-		public static ModelDefinition<TModel>.Property<TValue> ToProperty<TModel, TValue>(this ModelValidationDataBase<TModel, TValue> data)
+		public static ModelDefinition<TModel, TModelView>.Property<TValue> ToProperty<TModel, TModelView, TValue>(this ModelValidationDataBase<TModel, TValue> data)
+			where TModel : IModel<TModelView>
 			=> data;
 	}
 }
