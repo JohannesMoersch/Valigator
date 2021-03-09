@@ -1,7 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
 		<Title>Valigator.Models.Generator</Title>
 		<Description>This package contains fluent validators for data.</Description>
 		<PackageTags>validation</PackageTags>
@@ -12,6 +12,8 @@
 
 	<ItemGroup>
 		<PackageReference Include="Functional.Primitives" Version="2.0.0" />
+		<PackageReference Include="Microsoft.CodeAnalysis.Common" Version="3.8.0" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.8.0" />
 	</ItemGroup>
 
 	<ItemGroup>

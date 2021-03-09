@@ -36,7 +36,8 @@ namespace Valigator
 		public bool ContainsKey(string key)
 			=> _errors?.ContainsKey(key) ?? false;
 
-		public bool TryGetValue(string key, [MaybeNullWhen(false)] out ValidationError[] value)
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+		public bool TryGetValue(string key, out ValidationError[] value)
 		{
 			if (_errors == null)
 			{
@@ -46,6 +47,7 @@ namespace Valigator
 
 			return _errors.TryGetValue(key, out value);
 		}
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
 
 		public void Add(string key, ValidationError[] value)
 		{

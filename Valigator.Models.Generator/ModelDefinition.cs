@@ -7,16 +7,15 @@ using Valigator.ModelValidationData;
 
 namespace Valigator
 {
-	public abstract class ModelDefinition<TModel, TModelView>
-		where TModel : IModel<TModelView>
+	public abstract class ModelDefinition<TModelView>
 	{
-		protected static ModelPropertyFactory<TModel> Data => ModelPropertyFactory<TModel>.Instance;
+		protected static ModelPropertyFactory<TModelView> Data => ModelPropertyFactory<TModelView>.Instance;
 
 		public class Property<TValue>
 		{
-			private readonly IModelPropertyData<TModel, TValue> _data;
+			private readonly IModelPropertyData<TModelView, TValue> _data;
 
-			public Property(IModelPropertyData<TModel, TValue> data) 
+			public Property(IModelPropertyData<TModelView, TValue> data) 
 				=> _data = data;
 
 			public Result<TValue, ValidationError[]> CoerceNone()
@@ -26,12 +25,12 @@ namespace Valigator
 				=> _data.CoerceUnset();
 
 			public Result<TValue, ValidationError[]> CoerceValue<TInput>(TInput input)
-				=> (_data as IModelPropertyData<TModel, TInput, TValue> ?? throw new Exception()).CoerceValue(input);
+				=> (_data as IModelPropertyData<TModelView, TInput, TValue> ?? throw new Exception()).CoerceValue(input);
 
-			public Result<Unit, ValidationError[]> Validate(TModel model, TValue value)
+			public Result<Unit, ValidationError[]> Validate(TModelView model, TValue value)
 				=> _data.Validate(model, value);
 
-			public static implicit operator Property<TValue>(ModelValidationDataBase<TModel, TValue> propertyData)
+			public static implicit operator Property<TValue>(ModelValidationDataBase<TModelView, TValue> propertyData)
 				=> new Property<TValue>(propertyData);
 		}
 	}

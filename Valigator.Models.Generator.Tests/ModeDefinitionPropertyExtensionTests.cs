@@ -5,11 +5,17 @@ using Xunit;
 
 namespace Valigator.Models.Generator.Tests
 {
+	[GenerateModel]
+	public class OtherDefinition
+	{
+		//public Property<int> A => Data.Value<int>().Required();
+	}
+	
 	public class ModeDefinitionPropertyExtensionTests
 	{
-		public partial class TestModel : IModel<TestModel.TestModelView>
+		public partial class TestModel : IModel
 		{
-			public partial class Definition : ModelDefinition<TestModel, TestModelView>
+			public partial class Definition : ModelDefinition<TestModelView>
 			{
 				public Property<int> A { get; } = Data.Value<int>().Defaulted(5);
 
@@ -29,7 +35,7 @@ namespace Valigator.Models.Generator.Tests
 
 			private ModelState _modelState = ModelState.Unset;
 
-			private static ModelDefinition<TestModel, TestModelView>.Property<int> _a_Property;
+			private static ModelDefinition<TestModelView>.Property<int> _a_Property;
 			private ModelPropertyState _a_State;
 			private int _a;
 			public int A
@@ -38,7 +44,7 @@ namespace Valigator.Models.Generator.Tests
 				set => Set(value, ref _a, ref _a_State);
 			}
 
-			private static ModelDefinition<TestModel, TestModelView>.Property<IReadOnlyList<int>> _b_Property;
+			private static ModelDefinition<TestModelView>.Property<IReadOnlyList<int>> _b_Property;
 			private ModelPropertyState _b_State;
 			private IReadOnlyList<int> _b;
 			public IReadOnlyList<int> B
@@ -86,17 +92,16 @@ namespace Valigator.Models.Generator.Tests
 
 			private void Validate()
 			{
+				var view = new TestModelView(this);
+
 				if (_a_State != ModelPropertyState.CoerceFailed)
-					_a_Property.Validate(this, nameof(A), _a, ref _a_State, ref _errorDictionary);
+					_a_Property.Validate(view, nameof(A), _a, ref _a_State, ref _errorDictionary);
 
 				if (_b_State != ModelPropertyState.CoerceFailed)
-					_b_Property.Validate(this, nameof(B), _b, ref _b_State, ref _errorDictionary);
+					_b_Property.Validate(view, nameof(B), _b, ref _b_State, ref _errorDictionary);
 
 				_modelState = ModelState.Validated;
 			}
-
-			TestModelView IModel<TestModelView>.ToView()
-				=> new TestModelView(this);
 
 			public struct TestModelView
 			{

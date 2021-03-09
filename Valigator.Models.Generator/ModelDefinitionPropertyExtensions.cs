@@ -8,8 +8,7 @@ namespace Valigator
 {
 	public static class ModelDefinitionPropertyExtensions
 	{
-		public static void Validate<TModel, TModelView, TValue>(this ModelDefinition<TModel, TModelView>.Property<TValue> property, TModel model, string propertyName, TValue value, ref ModelPropertyState state, ref ModelErrorDictionary errorDictionary)
-			where TModel : IModel<TModelView>
+		public static void Validate<TModelView, TValue>(this ModelDefinition<TModelView>.Property<TValue> property, TModelView model, string propertyName, TValue value, ref ModelPropertyState state, ref ModelErrorDictionary errorDictionary)
 		{
 			if (property.Validate(model, value).TryGetValue(out _, out var failure))
 				state = ModelPropertyState.Valid;
@@ -20,8 +19,7 @@ namespace Valigator
 			}
 		}
 
-		public static void CoerceUnset<TModel, TModelView, TValue>(this ModelDefinition<TModel, TModelView>.Property<TValue> property, string propertyName, ref TValue value, ref ModelPropertyState state, ref ModelErrorDictionary errorDictionary)
-			where TModel : IModel<TModelView>
+		public static void CoerceUnset<TModelView, TValue>(this ModelDefinition<TModelView>.Property<TValue> property, string propertyName, ref TValue value, ref ModelPropertyState state, ref ModelErrorDictionary errorDictionary)
 		{
 			if (property.CoerceUnset().TryGetValue(out var success, out var failure))
 			{
