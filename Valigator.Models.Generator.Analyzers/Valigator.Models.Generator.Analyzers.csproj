@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+		<Title>Valigator.Models.Generator.Analyzer</Title>
+		<Description>This package contains fluent validators for data.</Description>
+		<PackageTags>validation</PackageTags>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<Nullable>enable</Nullable>
+		<RootNamespace>Valigator</RootNamespace>
+		<IncludeBuildOutput>false</IncludeBuildOutput>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.9.0" />
+	</ItemGroup>
+
+</Project>

@@ -41,7 +41,7 @@ namespace Valigator.SourceGeneration
 					{
 						var generatedModelAttributeType = context
 							.Compilation
-							.GetTypeByMetadataName(typeof(GenerateModelAttribute).FullName);
+							.GetTypeByMetadataName("typeof(GenerateModelAttribute).FullName");
 
 						var classDeclaration = (ClassDeclarationSyntax)context.Node;
 

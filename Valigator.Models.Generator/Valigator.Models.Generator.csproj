@@ -12,13 +12,19 @@
 
 	<ItemGroup>
 		<PackageReference Include="Functional.Primitives" Version="2.0.0" />
-		<PackageReference Include="Microsoft.CodeAnalysis.Common" Version="3.8.0" />
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.8.0" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <ProjectReference Include="..\Valigator.Core\Valigator.Core.csproj" />
 	  <ProjectReference Include="..\Valigator.Models\Valigator.Models.csproj" />
+	</ItemGroup>
+
+	<ItemGroup Condition=" '$(Configuration)'=='Release' ">
+		<ProjectReference Include="..\Valigator.Models.Generator.Analyzers\Valigator.Models.Generator.Analyzers.csproj" OutputItemType="Analyzer" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="SourceGeneration\" />
 	</ItemGroup>
 
 </Project>
