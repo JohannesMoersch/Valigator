@@ -19,8 +19,8 @@ namespace Valigator.SourceGeneration
 			{
 				var generateModelAttributes = classDeclarationSyntax
 					.AttributeLists
-					.SelectMany(list => list.Attributes);
-					//.Where(att => att.Name.ToString() == nameof(GenerateModelAttribute) || att.Name.ToString() == nameof(GenerateModelAttribute).Substring(0, nameof(GenerateModelAttribute).Length - "Attribute".Length));
+					.SelectMany(list => list.Attributes)
+					.Where(att => att.Name.ToString() == "GenerateModel" || att.Name.ToString() == "GenerateModelAttribute");
 
 				if (generateModelAttributes.Any())
 					_candidates.Add(classDeclarationSyntax);

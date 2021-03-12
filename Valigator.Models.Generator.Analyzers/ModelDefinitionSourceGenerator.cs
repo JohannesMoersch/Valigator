@@ -23,7 +23,7 @@ namespace Valigator.SourceGeneration
 			{
 				var generatedModelAttributeType = context
 					.Compilation
-					.GetTypeByMetadataName("typeof(GenerateModelAttribute).FullName");
+					.GetTypeByMetadataName("Valigator.GenerateModelAttribute");
 
 				foreach (var candidate in receiver.Candidates)
 				{
@@ -70,11 +70,11 @@ namespace Valigator.SourceGeneration
 
 			StringBuilder builder = new StringBuilder();
 
-			//builder.AppendLine($"using {typeof(ModelDefinition<>).Namespace};");
+			builder.AppendLine($"using Valigator;");
 			builder.AppendLine($"");
 			builder.AppendLine($"namespace {definitionNamespace}");
 			builder.AppendLine($"{{");
-			//builder.AppendLine($"	public partial class {definitionType.Name} : {typeof(ModelDefinition<>).Name.Split('`')[0]}<{modelNamespaceToUse}{modelName}.ModelView>");
+			builder.AppendLine($"	public partial class {definitionType.Name} : ModelDefinition<{modelNamespaceToUse}{modelName}.ModelView>");
 			builder.AppendLine($"	{{");
 			builder.AppendLine($"	}}");
 			builder.AppendLine($"}}");

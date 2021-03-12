@@ -19,4 +19,8 @@
 	  <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.9.0" />
 	</ItemGroup>
 
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+	  <Exec Command="xcopy &quot;$(ProjectDir)bin\$(Configuration)\*.nupkg&quot; &quot;$(SolutionDir)\packages\&quot;" />
+	</Target>
+
 </Project>

@@ -26,8 +26,11 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Valigator.Models.Generator", "Valigator.Models.Generator\Valigator.Models.Generator.csproj", "{54917157-EE88-494A-97C0-195D81CD7070}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Valigator.Models.Generator.Tests", "Valigator.Models.Generator.Tests\Valigator.Models.Generator.Tests.csproj", "{A86BCA52-AC6F-41FB-8978-2062A04C3250}"
+	ProjectSection(ProjectDependencies) = postProject
+		{503D3176-EE37-4CFE-93F2-B508BBA9CF08} = {503D3176-EE37-4CFE-93F2-B508BBA9CF08}
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Valigator.Models.Generator.Analyzers", "Valigator.Models.Generator.Analyzers\Valigator.Models.Generator.Analyzers.csproj", "{503D3176-EE37-4CFE-93F2-B508BBA9CF08}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Valigator.Models.Generator.Analyzers", "Valigator.Models.Generator.Analyzers\Valigator.Models.Generator.Analyzers.csproj", "{503D3176-EE37-4CFE-93F2-B508BBA9CF08}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
