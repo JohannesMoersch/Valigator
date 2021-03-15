@@ -12,7 +12,7 @@
   </PropertyGroup>
 
 	<PropertyGroup Condition=" '$(Configuration)'=='Debug' ">
-		<Version>$([System.DateTime]::Now.ToString(&quot;yyyy&quot;)).$([System.DateTime]::Now.ToString(&quot;MMdd&quot;)).0</Version>
+		<Version>$([System.DateTime]::Now.Year).$([System.DateTime]::Now.DayOfYear).$([System.Math]::Floor($([MSBuild]::Divide($([System.DateTime]::Now.TimeOfDay.TotalSeconds),2))))</Version>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -22,9 +22,15 @@
 	<ItemGroup>
 	  <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.9.0" />
 	</ItemGroup>
-		
-	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-	  <Exec Command="xcopy &quot;$(ProjectDir)bin\$(Configuration)\*.nupkg&quot; &quot;$(SolutionDir)packages\&quot; /Y" />
+	
+	<Target Name="CopyPackage" AfterTargets="Pack" Condition=" '$(Configuration)'=='Debug' ">
+		<ItemGroup>
+			<FilesToDelete Include="$(SolutionDir)packages\$(PackageId).*.nupkg" />
+			<UpdatedProjectContents Include="$([System.Text.RegularExpressions.Regex]::Replace($([System.IO.File]::ReadAllText(&quot;$(SolutionDir)Valigator.Models.Generator.Tests\Valigator.Models.Generator.Tests.csproj&quot;)),(&lt;\s*PackageReference\s+Include\s*=\s*&quot;Valigator.Models.Generator.Analyzers&quot;\s+Version\s*=\s*)&quot;\d+\.\d+\.\d+&quot;(\s*\/>),&quot;$1%22$(PackageVersion)%22$2&quot;))" />
+		</ItemGroup>   
+		<Delete Files="@(FilesToDelete)" />  
+		<Copy SourceFiles="$(OutputPath)..\$(PackageId).$(PackageVersion).nupkg" DestinationFolder="$(SolutionDir)packages\" />
+		<WriteLinesToFile File="$(SolutionDir)Valigator.Models.Generator.Tests\Valigator.Models.Generator.Tests.csproj" Lines="@(UpdatedProjectContents)" Overwrite="true" />
 	</Target>
 
 </Project>
