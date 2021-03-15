@@ -5,10 +5,11 @@
 		<Title>Valigator.Models.Generator.Analyzer</Title>
 		<Description>This package contains fluent validators for data.</Description>
 		<PackageTags>validation</PackageTags>
-		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<Nullable>enable</Nullable>
 		<RootNamespace>Valigator</RootNamespace>
 		<IncludeBuildOutput>false</IncludeBuildOutput>
+		<SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
 	<PropertyGroup Condition=" '$(Configuration)'=='Debug' ">
