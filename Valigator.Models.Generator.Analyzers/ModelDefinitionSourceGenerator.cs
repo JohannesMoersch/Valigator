@@ -32,6 +32,8 @@ namespace Valigator.SourceGeneration
 						.GetSemanticModel(candidate.SyntaxTree)
 						.GetDeclaredSymbol(candidate);
 
+					System.IO.File.AppendAllLines("C:\\Users\\johan\\Desktop\\Stuff.txt", new[] { typeSymbol.Name });
+
 					if (typeSymbol is ITypeSymbol type)
 					{
 						var containsAttribute = type
