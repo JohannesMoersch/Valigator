@@ -8,7 +8,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 
-namespace Valigator.SourceGeneration
+namespace Valigator
 {
 	[DiagnosticAnalyzer(LanguageNames.CSharp)]
 	public class GenerateModelPartialClassAnalyzer : DiagnosticAnalyzer
@@ -23,16 +23,13 @@ namespace Valigator.SourceGeneration
 			isEnabledByDefault: true
 		);
 
-		public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
-			=> new ImmutableArray<DiagnosticDescriptor>().Add(_partialClassDiagnosticDescriptor);
+		public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(_partialClassDiagnosticDescriptor);
 
 		public override void Initialize(AnalysisContext context)
 		{
 			context.EnableConcurrentExecution();
 
 			context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
-
-			System.IO.File.AppendAllLines(@"C:\Users\johan\Desktop\Test.cs", new[] { DateTime.Now.ToString() });
 
 			context
 				.RegisterSyntaxNodeAction
@@ -68,13 +65,12 @@ namespace Valigator.SourceGeneration
 												(
 													id: "VL0001",
 													title: "Model Definition Not Partial",
-													messageFormat: "Model definition \"{0}\" must be declared as partial.",
+													messageFormat: "Model definition must be declared as partial.",
 													category: "Generator",
 													DiagnosticSeverity.Error,
 													isEnabledByDefault: true
 												),
-												Location.Create(classDeclaration.SyntaxTree, classDeclaration.Span),
-												typeSymbol.Name
+												Location.Create(classDeclaration.SyntaxTree, classDeclaration.Identifier.Span)
 											)
 										);
 								}

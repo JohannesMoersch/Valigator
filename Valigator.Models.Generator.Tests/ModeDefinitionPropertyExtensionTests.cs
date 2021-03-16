@@ -6,11 +6,11 @@ using Xunit;
 namespace Valigator.Models.Generator.Tests
 {
 	[GenerateModel]
-	public class OtherDefinition
+	public partial class OtherDefinition
 	{
-		//public Property<int> A => Data.Value<int>().Required();
+		public Property<int> A => Data.Value<int>().Required();
 	}
-	
+
 	public class ModeDefinitionPropertyExtensionTests
 	{
 		public partial class TestModel : IModel

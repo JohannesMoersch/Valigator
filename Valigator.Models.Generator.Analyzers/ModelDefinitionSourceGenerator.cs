@@ -9,7 +9,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Valigator.SourceGeneration
+namespace Valigator
 {
 	[Generator]
 	public sealed class ModelDefinitionSourceGenerator : ISourceGenerator

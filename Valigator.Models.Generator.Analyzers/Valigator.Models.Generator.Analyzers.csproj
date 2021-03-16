@@ -5,7 +5,6 @@
 		<Title>Valigator.Models.Generator.Analyzer</Title>
 		<Description>This package contains fluent validators for data.</Description>
 		<PackageTags>validation</PackageTags>
-		<Nullable>enable</Nullable>
 		<RootNamespace>Valigator</RootNamespace>
 		<IncludeBuildOutput>false</IncludeBuildOutput>
 		<SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
@@ -25,13 +24,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.9.0" />
+	  <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="3.9.0" />
 	</ItemGroup>
 	
 	<Target Name="CopyPackage" AfterTargets="Pack" Condition=" '$(Configuration)'=='Debug' ">
 		<ItemGroup>
 			<FilesToDelete Include="$(SolutionDir)packages\$(PackageId).*.nupkg" />
-			<UpdatedProjectContents Include="$([System.Text.RegularExpressions.Regex]::Replace($([System.IO.File]::ReadAllText(&quot;$(SolutionDir)Valigator.Models.Generator.Tests\Valigator.Models.Generator.Tests.csproj&quot;)),(&lt;\s*PackageReference\s+Include\s*=\s*&quot;Valigator.Models.Generator.Analyzers&quot;\s+Version\s*=\s*)&quot;\d+\.\d+\.\d+&quot;(\s*\/>),&quot;$1%22$(PackageVersion)%22$2&quot;))" />
+			<UpdatedProjectContents Include="$([System.Text.RegularExpressions.Regex]::Replace($([System.IO.File]::ReadAllText(&quot;$(SolutionDir)Valigator.Models.Generator.Tests\Valigator.Models.Generator.Tests.csproj&quot;)),(&lt;\s*PackageReference\s+Include\s*=\s*&quot;Valigator.Models.Generator.Analyzers&quot;\s+Version\s*=\s*)&quot;\d+\.\d+\.\d+&quot;(\s*\/&gt;),&quot;$1%22$(PackageVersion)%22$2&quot;))" />
 		</ItemGroup>   
 		<Delete Files="@(FilesToDelete)" />  
 		<Copy SourceFiles="$(OutputPath)..\$(PackageId).$(PackageVersion).nupkg" DestinationFolder="$(SolutionDir)packages\" />
