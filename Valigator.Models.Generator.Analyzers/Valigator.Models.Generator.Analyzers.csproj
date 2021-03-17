@@ -12,6 +12,7 @@
   </PropertyGroup>
 
 	<PropertyGroup Condition=" '$(Configuration)'=='Debug' ">
+		<AssemblyVersion>$([System.DateTime]::Now.Year).$([System.DateTime]::Now.DayOfYear).$([System.Math]::Floor($([MSBuild]::Divide($([System.DateTime]::Now.TimeOfDay.TotalSeconds),2))))</AssemblyVersion>
 		<Version>$([System.DateTime]::Now.Year).$([System.DateTime]::Now.DayOfYear).$([System.Math]::Floor($([MSBuild]::Divide($([System.DateTime]::Now.TimeOfDay.TotalSeconds),2))))</Version>
 	</PropertyGroup>
 

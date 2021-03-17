@@ -17,7 +17,7 @@ namespace Valigator
 		(
 			id: "VL0001",
 			title: "Model Definition Not Partial",
-			messageFormat: "Model definition \"{0}\" must be declared as partial.",
+			messageFormat: "Model definition must be declared as partial.",
 			category: "Generator",
 			DiagnosticSeverity.Error,
 			isEnabledByDefault: true
@@ -38,43 +38,25 @@ namespace Valigator
 					{
 						var generatedModelAttributeType = context
 							.Compilation
-							.GetTypeByMetadataName("Valigator.GenerateModelAttribute");
+							.GetTypeByMetadataName(TypeNames.GenerateModelAttribute);
 
 						var classDeclaration = (ClassDeclarationSyntax)context.Node;
 
-						if (context.SemanticModel.GetDeclaredSymbol(classDeclaration) is ITypeSymbol typeSymbol)
+						var typeSymbol = context
+							.SemanticModel
+							.GetDeclaredSymbol(classDeclaration);
+
+						if (typeSymbol.HasAttribute(generatedModelAttributeType) && !classDeclaration.IsPartial())
 						{
-							var containsAttribute = typeSymbol
-								.GetAttributes()
-								.Any(att => att.AttributeClass?.Equals(generatedModelAttributeType, SymbolEqualityComparer.Default) ?? false);
-
-							if (containsAttribute)
-							{
-								var isPartial = classDeclaration
-									.Modifiers
-									.Any(o => o.Text == "partial");
-
-								if (!isPartial)
-								{
-									context
-										.ReportDiagnostic
-										(
-											Diagnostic.Create
-											(
-												new DiagnosticDescriptor
-												(
-													id: "VL0001",
-													title: "Model Definition Not Partial",
-													messageFormat: "Model definition must be declared as partial.",
-													category: "Generator",
-													DiagnosticSeverity.Error,
-													isEnabledByDefault: true
-												),
-												Location.Create(classDeclaration.SyntaxTree, classDeclaration.Identifier.Span)
-											)
-										);
-								}
-							}
+							context
+								.ReportDiagnostic
+								(
+									Diagnostic.Create
+									(
+										_partialClassDiagnosticDescriptor,
+										Location.Create(classDeclaration.SyntaxTree, classDeclaration.Identifier.Span)
+									)
+								);
 						}
 					},
 					SyntaxKind.ClassDeclaration

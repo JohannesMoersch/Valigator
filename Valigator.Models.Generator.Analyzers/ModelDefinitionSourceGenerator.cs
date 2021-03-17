@@ -23,7 +23,7 @@ namespace Valigator
 			{
 				var generatedModelAttributeType = context
 					.Compilation
-					.GetTypeByMetadataName("Valigator.GenerateModelAttribute");
+					.GetTypeByMetadataName(TypeNames.GenerateModelAttribute);
 
 				foreach (var candidate in receiver.Candidates)
 				{
@@ -32,32 +32,16 @@ namespace Valigator
 						.GetSemanticModel(candidate.SyntaxTree)
 						.GetDeclaredSymbol(candidate);
 
-					System.IO.File.AppendAllLines("C:\\Users\\johan\\Desktop\\Stuff.txt", new[] { typeSymbol.Name });
-
-					if (typeSymbol is ITypeSymbol type)
+					if (typeSymbol != null && typeSymbol.HasAttribute(generatedModelAttributeType) && candidate.IsPartial())
 					{
-						var containsAttribute = type
-							.GetAttributes()
-							.Any(att => att.AttributeClass?.Equals(generatedModelAttributeType, SymbolEqualityComparer.Default) ?? false);
+						var modelNamespace = typeSymbol.GetFullContainingNamespace();
+						var modelName = typeSymbol.Name.Replace("Definition", String.Empty);
 
-						if (containsAttribute)
-						{
-							var isPartial = candidate
-								.Modifiers
-								.Any(o => o.Text == "partial");
+						System.IO.File.WriteAllText($"C:\\Users\\johan\\Desktop\\{typeSymbol.Name}.cs", GenerateDefinition(typeSymbol, modelNamespace, modelName));
+						System.IO.File.WriteAllText($"C:\\Users\\johan\\Desktop\\{modelName}.cs", GenerateModel(typeSymbol, modelNamespace, modelName));
 
-							if (isPartial)
-							{
-								var modelNamespace = type.GetFullContainingNamespace();
-								var modelName = type.Name.Replace("Definition", String.Empty);
-
-								System.IO.File.WriteAllText($"C:\\Users\\johan\\Desktop\\{type.Name}.cs", GenerateDefinition(type, modelNamespace, modelName));
-								System.IO.File.WriteAllText($"C:\\Users\\johan\\Desktop\\{modelName}.cs", GenerateModel(type, modelNamespace, modelName));
-
-								context.AddSource($"a{type.Name}.cs", GenerateDefinition(type, modelNamespace, modelName));
-								context.AddSource($"a{modelName}.cs", GenerateModel(type, modelNamespace, modelName));
-							}
-						}
+						context.AddSource($"a{typeSymbol.Name}.cs", GenerateDefinition(typeSymbol, modelNamespace, modelName));
+						context.AddSource($"a{modelName}.cs", GenerateModel(typeSymbol, modelNamespace, modelName));
 					}
 				}
 			}
