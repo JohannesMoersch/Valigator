@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Valigator
+namespace Valigator.Models
 {
 	public struct ModelPropertyNotSet
 	{

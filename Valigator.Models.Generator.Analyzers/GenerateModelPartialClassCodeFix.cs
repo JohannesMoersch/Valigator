@@ -19,6 +19,9 @@ namespace Valigator
 	{
 		public override ImmutableArray<string> FixableDiagnosticIds => ImmutableArray.Create("VL0001");
 
+		public override FixAllProvider GetFixAllProvider()
+			=> null;
+
 		public override async Task RegisterCodeFixesAsync(CodeFixContext context)
 		{
 			var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken);
@@ -43,7 +46,8 @@ namespace Valigator
 						.Create
 						(
 							title: "Make partial",
-							createChangedSolution: c => MakeClassPartial(context.Document, classDeclaration, c)
+							createChangedSolution: c => MakeClassPartial(context.Document, classDeclaration, c),
+							equivalenceKey: "Make partial"
 						),
 					diagnostic
 				);

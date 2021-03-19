@@ -5,7 +5,7 @@ using System.Text;
 using Valigator.Core;
 using Valigator.ModelValidationData;
 
-namespace Valigator
+namespace Valigator.Models
 {
 	public abstract class ModelDefinition<TModelView>
 	{

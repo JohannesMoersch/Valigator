@@ -23,8 +23,4 @@
 		<ProjectReference Include="..\Valigator.Models.Generator.Analyzers\Valigator.Models.Generator.Analyzers.csproj" OutputItemType="Analyzer" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Folder Include="SourceGeneration\" />
-	</ItemGroup>
-
 </Project>

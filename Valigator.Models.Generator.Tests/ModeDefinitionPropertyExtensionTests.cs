@@ -24,6 +24,8 @@ namespace Valigator.Models.Generator.Tests
 
 			static TestModel()
 			{
+				Other a;
+
 				ModelDefinition = new Definition();
 				_a_Property = ModelDefinition.A;
 				_b_Property = ModelDefinition.B;
@@ -110,17 +112,9 @@ namespace Valigator.Models.Generator.Tests
 				public TestModelView(TestModel model)
 					=> _model = model;
 
-				public int A => Get(_model._a);
+				public Result<int, ModelPropertyNotSet> A => Get(_model._a, _model._a_State);
 
 				public Result<IReadOnlyList<int>, ModelPropertyNotSet> B => Get(_model._b, _model._b_State);
-
-				private TValue Get<TValue>(TValue value)
-				{
-					if (_model._modelState == ModelState.Unset)
-						_model.Coerce();
-
-					return value;
-				}
 
 				private Result<TValue, ModelPropertyNotSet> Get<TValue>(TValue value, ModelPropertyState state)
 				{

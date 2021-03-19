@@ -4,14 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Valigator
+namespace Valigator.Models
 {
-	public enum ModelPropertyState : byte
+	public enum ModelState : byte
 	{
-		Unset = default,
-		CoerceFailed,
+		Unset,
 		Unvalidated,
-		Invalid,
-		Valid
+		Validated
 	}
 }

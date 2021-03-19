@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Valigator
+namespace Valigator.Models
 {
+	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static class ModelDefinitionPropertyExtensions
 	{
 		public static void Validate<TModelView, TValue>(this ModelDefinition<TModelView>.Property<TValue> property, TModelView model, string propertyName, TValue value, ref ModelPropertyState state, ref ModelErrorDictionary errorDictionary)
