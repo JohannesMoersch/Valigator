@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Valigator
+namespace Valigator.Models.Generator.Analyzers
 {
 	public static class TypeDeclarationSyntaxExtensions
 	{

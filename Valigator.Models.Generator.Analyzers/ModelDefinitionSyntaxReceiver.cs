@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Valigator
+namespace Valigator.Models.Generator.Analyzers
 {
 	public sealed class ModelDefinitionSyntaxReceiver : ISyntaxReceiver
 	{

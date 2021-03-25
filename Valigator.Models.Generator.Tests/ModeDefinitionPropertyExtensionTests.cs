@@ -5,10 +5,27 @@ using Xunit;
 
 namespace Valigator.Models.Generator.Tests
 {
-	[GenerateModel]
+	public static class Stuff
+	{
+		public static void Things()
+		{
+			Other a = default;
+			a.A = 1;
+		}
+	}
+
+	public class TestValidator : IModelValidator<Other.ModelView, int>
+	{
+		public Result<Unit, ValidationError[]> Validate(Other.ModelView model, int value)
+		{
+			return Result.Unit<ValidationError[]>();
+		}
+	}
+
+	[GenerateModel(DefaultPropertyAccessors = PropertyAccessors.GetAndSet)]
 	public partial class OtherDefinition
 	{
-		public Property<int> A => Data.Value<int>().Required();
+		public Property<int> A => Data.Value<int>().Required().WithValidator(new TestValidator());
 	}
 
 	public class ModeDefinitionPropertyExtensionTests

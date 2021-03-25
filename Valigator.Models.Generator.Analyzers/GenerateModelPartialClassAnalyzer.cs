@@ -8,7 +8,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 
-namespace Valigator
+namespace Valigator.Models.Generator.Analyzers
 {
 	[DiagnosticAnalyzer(LanguageNames.CSharp)]
 	public class GenerateModelPartialClassAnalyzer : DiagnosticAnalyzer
@@ -47,7 +47,6 @@ namespace Valigator
 							.GetDeclaredSymbol(classDeclaration);
 
 						if (typeSymbol.HasAttribute(generatedModelAttributeType) && !classDeclaration.IsPartial())
-						{
 							context
 								.ReportDiagnostic
 								(
@@ -57,7 +56,6 @@ namespace Valigator
 										Location.Create(classDeclaration.SyntaxTree, classDeclaration.Identifier.Span)
 									)
 								);
-						}
 					},
 					SyntaxKind.ClassDeclaration
 				);

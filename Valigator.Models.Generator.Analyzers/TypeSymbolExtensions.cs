@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Valigator
+namespace Valigator.Models.Generator.Analyzers
 {
 	internal static class TypeSymbolExtensions
 	{
@@ -34,11 +34,9 @@ namespace Valigator
 
 			var length = Math.Min(typeList.Length, targetList.Length);
 
-			for (int i = 0; i < length; ++i)
-			{
+			for (var i = 0; i < length; ++i)
 				if (typeList[i] != targetList[i])
 					return String.Join(".", typeList.Skip(i));
-			}
 
 			return String.Join(".", typeList.Skip(length));
 		}
@@ -50,11 +48,9 @@ namespace Valigator
 
 			var length = Math.Min(typeList.Length, targetList.Length);
 
-			for (int i = 0; i < length; ++i)
-			{
+			for (var i = 0; i < length; ++i)
 				if (typeList[i] != targetList[i])
 					return String.Join(".", typeList.Skip(i));
-			}
 
 			return String.Join(".", typeList.Skip(length));
 		}
@@ -62,23 +58,16 @@ namespace Valigator
 		private static IEnumerable<ITypeSymbol> GetTypeHierarchy(this ITypeSymbol type)
 		{
 			if (type.ContainingType != null)
-			{
 				foreach (var t in type.ContainingType.GetTypeHierarchy())
 					yield return t;
-			}
 			yield return type;
 		}
-
-		public static bool HasAttribute(this ITypeSymbol typeSymbol, INamedTypeSymbol attributeTypeSymbol)
-			=> typeSymbol
-				.GetAttributes()
-				.Any(att => att.AttributeClass?.Equals(attributeTypeSymbol, SymbolEqualityComparer.Default) ?? false);
 
 		public static string GetFullNameWithNamespace(this ITypeSymbol typeSymbol)
 		{
 			var ns = typeSymbol.GetFullNamespace();
 			var typeName = String.Join(".", typeSymbol.GetTypeHierarchy().Select(t => t.Name));
-			
+
 			if (String.IsNullOrEmpty(ns))
 				return typeName;
 

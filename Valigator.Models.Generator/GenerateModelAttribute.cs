@@ -9,5 +9,6 @@ namespace Valigator
 	[AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
 	public class GenerateModelAttribute : Attribute
 	{
+		public PropertyAccessors DefaultPropertyAccessors { get; set; } = PropertyAccessors.Get;
 	}
 }

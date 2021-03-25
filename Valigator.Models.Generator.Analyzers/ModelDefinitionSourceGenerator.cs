@@ -9,7 +9,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Valigator
+namespace Valigator.Models.Generator.Analyzers
 {
 	[Generator]
 	public sealed class ModelDefinitionSourceGenerator : ISourceGenerator
@@ -25,6 +25,10 @@ namespace Valigator
 					.Compilation
 					.GetTypeByMetadataName(TypeNames.GenerateModelAttribute);
 
+				var propertyAttributeType = context
+					.Compilation
+					.GetTypeByMetadataName(TypeNames.PropertyAttribute);
+
 				foreach (var candidate in receiver.Candidates)
 				{
 					var typeSymbol = context
@@ -32,16 +36,13 @@ namespace Valigator
 						.GetSemanticModel(candidate.SyntaxTree)
 						.GetDeclaredSymbol(candidate);
 
-					if (typeSymbol != null && typeSymbol.HasAttribute(generatedModelAttributeType) && candidate.IsPartial())
+					if (typeSymbol != null && typeSymbol.TryGetAttribute(generatedModelAttributeType, out var generatedModelAttribute) && candidate.IsPartial())
 					{
 						var modelNamespace = typeSymbol.GetFullNamespace();
 						var modelName = typeSymbol.Name.Replace("Definition", String.Empty);
 
-						System.IO.File.WriteAllText($"C:\\Users\\johan\\Desktop\\{typeSymbol.Name}.cs", GenerateDefinition(typeSymbol, modelNamespace, modelName));
-						System.IO.File.WriteAllText($"C:\\Users\\johan\\Desktop\\{modelName}.cs", GenerateModel(typeSymbol, modelNamespace, modelName));
-
-						context.AddSource($"a{typeSymbol.Name}.cs", GenerateDefinition(typeSymbol, modelNamespace, modelName));
-						context.AddSource($"a{modelName}.cs", GenerateModel(typeSymbol, modelNamespace, modelName));
+						context.AddSource($"{typeSymbol.Name}.g.cs", GenerateDefinition(typeSymbol, modelNamespace, modelName));
+						context.AddSource($"{modelName}.g.cs", GenerateModel(typeSymbol, generatedModelAttribute, propertyAttributeType, modelNamespace, modelName));
 					}
 				}
 			}
@@ -54,7 +55,7 @@ namespace Valigator
 				? String.Empty
 				: $"{modelNamespace}.";
 
-			StringBuilder builder = new StringBuilder();
+			var builder = new StringBuilder();
 
 			builder.AppendLine($"using Valigator;");
 			builder.AppendLine($"");
@@ -68,14 +69,16 @@ namespace Valigator
 			return builder.ToString();
 		}
 
-		private string GenerateModel(ITypeSymbol definitionType, string modelNamespace, string modelName)
+		private string GenerateModel(ITypeSymbol definitionType, AttributeData generatedModelAttribute, INamedTypeSymbol propertyAttributeType, string modelNamespace, string modelName)
 		{
-			bool hasNamespace = !String.IsNullOrEmpty(modelNamespace);
-			string indentation = hasNamespace ? "\t" : "";
+			var defaultPropertyAccessors = (PropertyAccessors)generatedModelAttribute.GetProperty<int>(PropertyNames.GeneratedModelAttribute_DefaultPropertyAccessors);
 
-			string definitionName = definitionType.GetTypeNameRelativeTo(hasNamespace ? $"{modelNamespace}.{modelName}" : modelName);
+			var hasNamespace = !String.IsNullOrEmpty(modelNamespace);
+			var indentation = hasNamespace ? "\t" : "";
 
-			StringBuilder builder = new StringBuilder();
+			var definitionName = definitionType.GetTypeNameRelativeTo(hasNamespace ? $"{modelNamespace}.{modelName}" : modelName);
+
+			var builder = new StringBuilder();
 
 			builder.AppendLine($"using System;");
 			builder.AppendLine($"using Functional;");
@@ -94,14 +97,14 @@ namespace Valigator
 			builder.AppendLine($"{indentation}	static {modelName}()");
 			builder.AppendLine($"{indentation}	{{");
 			builder.AppendLine($"{indentation}		ModelDefinition = new {definitionName}();");
-			
+
 			foreach (var property in definitionType.GetMembers().OfType<IPropertySymbol>().Where(property => !property.IsStatic))
 			{
 				var lowercaseName = $"_{Char.ToLower(property.Name[0])}{property.Name.Substring(1)}";
 
 				builder.AppendLine($"{indentation}		{lowercaseName}_Property = ModelDefinition.{property.Name};");
 			}
-			
+
 			builder.AppendLine($"{indentation}	}}");
 			builder.AppendLine($"{indentation}	");
 			builder.AppendLine($"{indentation}	public static {definitionType.GetTypeNameRelativeTo(hasNamespace ? $"{modelNamespace}.{modelName}" : modelName)} ModelDefinition {{ get; }}");
@@ -112,6 +115,11 @@ namespace Valigator
 
 			foreach (var property in definitionType.GetMembers().OfType<IPropertySymbol>().Where(property => !property.IsStatic))
 			{
+				var propertyAccessors = defaultPropertyAccessors;
+
+				if (property.TryGetAttribute(propertyAttributeType, out var propertyAttribute))
+					propertyAccessors = (PropertyAccessors)propertyAttribute.GetProperty<int>(PropertyNames.PropertyAttribute_Accessors);
+
 				var lowercaseName = $"_{Char.ToLower(property.Name[0])}{property.Name.Substring(1)}";
 
 				var propertyTypeName = (property.Type as INamedTypeSymbol).TypeArguments[0].GetTypeNameRelativeTo("System");
@@ -122,8 +130,10 @@ namespace Valigator
 				builder.AppendLine($"{indentation}	private {propertyTypeName} {lowercaseName};");
 				builder.AppendLine($"{indentation}	public {propertyTypeName} {property.Name}");
 				builder.AppendLine($"{indentation}	{{");
-				builder.AppendLine($"{indentation}		get => Get(nameof({property.Name}), {lowercaseName}, {lowercaseName}_State);");
-				builder.AppendLine($"{indentation}		set => Set(value, ref {lowercaseName}, ref {lowercaseName}_State);");
+				if (propertyAccessors.HasFlag(PropertyAccessors.Get))
+					builder.AppendLine($"{indentation}		get => Get(nameof({property.Name}), {lowercaseName}, {lowercaseName}_State);");
+				if (propertyAccessors.HasFlag(PropertyAccessors.GetAndSet))
+					builder.AppendLine($"{indentation}		set => Set(value, ref {lowercaseName}, ref {lowercaseName}_State);");
 				builder.AppendLine($"{indentation}	}}");
 			}
 
@@ -219,7 +229,7 @@ namespace Valigator
 			builder.AppendLine($"{indentation}		}}");
 			builder.AppendLine($"{indentation}	}}");
 			builder.AppendLine($"{indentation}}}");
-			
+
 			if (hasNamespace)
 				builder.AppendLine($"}}");
 

@@ -12,7 +12,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Valigator
+namespace Valigator.Models.Generator.Analyzers
 {
 	[ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(GenerateModelPartialClassCodeFix)), Shared]
 	public class GenerateModelPartialClassCodeFix : CodeFixProvider
