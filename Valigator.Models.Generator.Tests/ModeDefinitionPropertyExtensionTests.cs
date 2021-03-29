@@ -14,6 +14,18 @@ namespace Valigator.Models.Generator.Tests
 		}
 	}
 
+	public class OtherValidator : IModelValidator<Blah.ModelView, int>
+	{
+		public Result<Unit, ValidationError[]> Validate(Blah.ModelView model, int value) => throw new NotImplementedException();
+	}
+
+
+	[GenerateModel]
+	public partial class BlahDefinition
+	{
+		public Property<int> Stuff { get set; } = Data.Value<int>().Required().WithValidator(new OtherValidator());
+	}
+
 	public class TestValidator : IModelValidator<Other.ModelView, int>
 	{
 		public Result<Unit, ValidationError[]> Validate(Other.ModelView model, int value)

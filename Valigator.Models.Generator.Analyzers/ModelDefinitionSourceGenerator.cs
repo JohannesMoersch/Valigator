@@ -23,11 +23,11 @@ namespace Valigator.Models.Generator.Analyzers
 			{
 				var generatedModelAttributeType = context
 					.Compilation
-					.GetTypeByMetadataName(TypeNames.GenerateModelAttribute);
+					.GetTypeByMetadataName(ExternalConstants.GenerateModelAttribute_TypeName);
 
 				var propertyAttributeType = context
 					.Compilation
-					.GetTypeByMetadataName(TypeNames.PropertyAttribute);
+					.GetTypeByMetadataName(ExternalConstants.PropertyAttribute_TypeName);
 
 				foreach (var candidate in receiver.Candidates)
 				{
@@ -40,7 +40,7 @@ namespace Valigator.Models.Generator.Analyzers
 					{
 						var modelNamespace = typeSymbol.GetFullNamespace();
 						var modelName = typeSymbol.Name.Replace("Definition", String.Empty);
-
+						
 						context.AddSource($"{typeSymbol.Name}.g.cs", GenerateDefinition(typeSymbol, modelNamespace, modelName));
 						context.AddSource($"{modelName}.g.cs", GenerateModel(typeSymbol, generatedModelAttribute, propertyAttributeType, modelNamespace, modelName));
 					}
@@ -71,7 +71,10 @@ namespace Valigator.Models.Generator.Analyzers
 
 		private string GenerateModel(ITypeSymbol definitionType, AttributeData generatedModelAttribute, INamedTypeSymbol propertyAttributeType, string modelNamespace, string modelName)
 		{
-			var defaultPropertyAccessors = (PropertyAccessors)generatedModelAttribute.GetProperty<int>(PropertyNames.GeneratedModelAttribute_DefaultPropertyAccessors);
+			var defaultPropertyAccessors = generatedModelAttribute
+				.TryGetProperty<ExternalConstants.PropertyAccessors>(ExternalConstants.GenerateModelAttribute_DefaultPropertyAccessors_PropertyName, out var accessorValue)
+				? accessorValue
+				: ExternalConstants.GenerateModelAttribute_DefaultPropertyAccessors_DefaultValue;
 
 			var hasNamespace = !String.IsNullOrEmpty(modelNamespace);
 			var indentation = hasNamespace ? "\t" : "";
@@ -117,8 +120,8 @@ namespace Valigator.Models.Generator.Analyzers
 			{
 				var propertyAccessors = defaultPropertyAccessors;
 
-				if (property.TryGetAttribute(propertyAttributeType, out var propertyAttribute))
-					propertyAccessors = (PropertyAccessors)propertyAttribute.GetProperty<int>(PropertyNames.PropertyAttribute_Accessors);
+				if (property.TryGetAttribute(propertyAttributeType, out var propertyAttribute) && propertyAttribute.TryGetProperty<ExternalConstants.PropertyAccessors>(ExternalConstants.PropertyAttribute_Accessors_PropertyName, out var propertyAccessor))
+					propertyAccessors = propertyAccessor;
 
 				var lowercaseName = $"_{Char.ToLower(property.Name[0])}{property.Name.Substring(1)}";
 
@@ -130,9 +133,9 @@ namespace Valigator.Models.Generator.Analyzers
 				builder.AppendLine($"{indentation}	private {propertyTypeName} {lowercaseName};");
 				builder.AppendLine($"{indentation}	public {propertyTypeName} {property.Name}");
 				builder.AppendLine($"{indentation}	{{");
-				if (propertyAccessors.HasFlag(PropertyAccessors.Get))
+				if (propertyAccessors.HasFlag(ExternalConstants.PropertyAccessors.Get))
 					builder.AppendLine($"{indentation}		get => Get(nameof({property.Name}), {lowercaseName}, {lowercaseName}_State);");
-				if (propertyAccessors.HasFlag(PropertyAccessors.GetAndSet))
+				if (propertyAccessors.HasFlag(ExternalConstants.PropertyAccessors.GetAndSet))
 					builder.AppendLine($"{indentation}		set => Set(value, ref {lowercaseName}, ref {lowercaseName}_State);");
 				builder.AppendLine($"{indentation}	}}");
 			}

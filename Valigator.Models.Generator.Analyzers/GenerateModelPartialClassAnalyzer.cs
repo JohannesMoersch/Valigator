@@ -38,7 +38,7 @@ namespace Valigator.Models.Generator.Analyzers
 					{
 						var generatedModelAttributeType = context
 							.Compilation
-							.GetTypeByMetadataName(TypeNames.GenerateModelAttribute);
+							.GetTypeByMetadataName(ExternalConstants.GenerateModelAttribute_TypeName);
 
 						var classDeclaration = (ClassDeclarationSyntax)context.Node;
 
