@@ -15,11 +15,11 @@ namespace Valigator.Models.Generator.Analyzers
 	public sealed class ModelDefinitionSourceGenerator : ISourceGenerator
 	{
 		public void Initialize(GeneratorInitializationContext context)
-			=> context.RegisterForSyntaxNotifications(() => new ModelDefinitionSyntaxReceiver());
+			=> context.RegisterForSyntaxNotifications(() => new GenerateModelSyntaxReceiver());
 
 		public void Execute(GeneratorExecutionContext context)
 		{
-			if (context.SyntaxReceiver is ModelDefinitionSyntaxReceiver receiver)
+			if (context.SyntaxReceiver is GenerateModelSyntaxReceiver receiver)
 			{
 				var generatedModelAttributeType = context
 					.Compilation
@@ -174,8 +174,8 @@ namespace Valigator.Models.Generator.Analyzers
 			{
 				var lowercaseName = $"_{Char.ToLower(property.Name[0])}{property.Name.Substring(1)}";
 
-				builder.AppendLine($"{indentation}		if (_a_State == ModelPropertyState.Unset)");
-				builder.AppendLine($"{indentation}			_a_Property.CoerceUnset(nameof({property.Name}), ref {lowercaseName}, ref {lowercaseName}_State, ref _errorDictionary);");
+				builder.AppendLine($"{indentation}		if ({lowercaseName}_State == ModelPropertyState.Unset)");
+				builder.AppendLine($"{indentation}			{lowercaseName}_Property.CoerceUnset(nameof({property.Name}), ref {lowercaseName}, ref {lowercaseName}_State, ref _errorDictionary);");
 				builder.AppendLine($"{indentation}		");
 			}
 
@@ -191,8 +191,8 @@ namespace Valigator.Models.Generator.Analyzers
 			{
 				var lowercaseName = $"_{Char.ToLower(property.Name[0])}{property.Name.Substring(1)}";
 
-				builder.AppendLine($"{indentation}		if (_a_State != ModelPropertyState.CoerceFailed)");
-				builder.AppendLine($"{indentation}			_a_Property.Validate(view, nameof({property.Name}), {lowercaseName}, ref {lowercaseName}_State, ref _errorDictionary);");
+				builder.AppendLine($"{indentation}		if ({lowercaseName}_State != ModelPropertyState.CoerceFailed)");
+				builder.AppendLine($"{indentation}			{lowercaseName}_Property.Validate(view, nameof({property.Name}), {lowercaseName}, ref {lowercaseName}_State, ref _errorDictionary);");
 				builder.AppendLine($"{indentation}		");
 			}
 

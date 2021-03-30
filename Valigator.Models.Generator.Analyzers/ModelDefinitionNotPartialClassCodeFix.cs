@@ -14,8 +14,8 @@ using System.Threading.Tasks;
 
 namespace Valigator.Models.Generator.Analyzers
 {
-	[ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(GenerateModelPartialClassCodeFix)), Shared]
-	public class GenerateModelPartialClassCodeFix : CodeFixProvider
+	[ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(ModelDefinitionNotPartialClassCodeFix)), Shared]
+	public class ModelDefinitionNotPartialClassCodeFix : CodeFixProvider
 	{
 		public override ImmutableArray<string> FixableDiagnosticIds => ImmutableArray.Create("VL0001");
 

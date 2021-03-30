@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Valigator.Models.Generator.Analyzers
 {
-	public sealed class ModelDefinitionSyntaxReceiver : ISyntaxReceiver
+	public sealed class GenerateModelSyntaxReceiver : ISyntaxReceiver
 	{
 		private List<ClassDeclarationSyntax> _candidates = new List<ClassDeclarationSyntax>();
 		public IReadOnlyList<ClassDeclarationSyntax> Candidates => _candidates;
