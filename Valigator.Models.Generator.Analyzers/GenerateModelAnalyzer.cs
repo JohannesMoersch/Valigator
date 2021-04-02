@@ -51,17 +51,20 @@ namespace Valigator.Models.Generator.Analyzers
 									);
 							}
 
-							foreach (var propertySyntax in GetPublicPropertiesWithSetters(typeSymbol))
+							foreach (var propertySyntax in GetPubliInstancecPropertiesWithSetters(typeSymbol))
 							{
-								context
-									.ReportDiagnostic
-									(
-										Diagnostic.Create
+								if (propertySyntax.TryGetSetAccessor(out var setAccessor) && !setAccessor.IsPrivate())
+								{
+									context
+										.ReportDiagnostic
 										(
-											AnalyzerDiagnosticDescriptors.ModelDefinitionPropertyHasSetter,
-											Location.Create(propertySyntax.SyntaxTree, propertySyntax.Identifier.Span)
-										)
-									);
+											Diagnostic.Create
+											(
+												AnalyzerDiagnosticDescriptors.ModelDefinitionPropertyHasSetter,
+												Location.Create(propertySyntax.SyntaxTree, setAccessor.Keyword.Span)
+											)
+										);
+								}
 							}
 						}
 					},
@@ -69,7 +72,7 @@ namespace Valigator.Models.Generator.Analyzers
 				);
 		}
 
-		private IEnumerable<PropertyDeclarationSyntax> GetPublicPropertiesWithSetters(ITypeSymbol typeSymbol)
+		private IEnumerable<PropertyDeclarationSyntax> GetPubliInstancecPropertiesWithSetters(ITypeSymbol typeSymbol)
 			=> typeSymbol
 				.GetMembers()
 				.OfType<IPropertySymbol>()
@@ -77,6 +80,7 @@ namespace Valigator.Models.Generator.Analyzers
 				.SelectMany(property => property.DeclaringSyntaxReferences)
 				.Select(syntax => syntax.GetSyntax())
 				.OfType<PropertyDeclarationSyntax>()
-				.Where(property => property.AccessorList?.Accessors.FirstOrDefault(accessor => accessor.Keyword.Text == "set")?.Modifiers.All(modifier => modifier.Text != "private") ?? false);
+				.Where(property => property.IsPublic());
+
 	}
 }

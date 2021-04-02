@@ -23,7 +23,7 @@ namespace Valigator.Models.Generator.Tests
 	[GenerateModel]
 	public partial class BlahDefinition
 	{
-		public Property<int> Stuff { get; private set; } = Data.Value<int>().Required().WithValidator(new OtherValidator());
+		public Property<int> Stuff { get => Data.Value<int>().Required().WithValidator(new OtherValidator()); set { } } 
 	}
 
 	public class TestValidator : IModelValidator<Other.ModelView, int>

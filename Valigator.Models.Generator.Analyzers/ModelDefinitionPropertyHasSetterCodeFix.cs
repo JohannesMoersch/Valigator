@@ -15,9 +15,9 @@ using System.Threading.Tasks;
 namespace Valigator.Models.Generator.Analyzers
 {
 	[ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(ModelDefinitionNotPartialClassCodeFix)), Shared]
-	public class ModelDefinitionNotPartialClassCodeFix : CodeFixProvider
+	public class ModelDefinitionPropertyHasSetterCodeFix : CodeFixProvider
 	{
-		public override ImmutableArray<string> FixableDiagnosticIds => ImmutableArray.Create(AnalyzerDiagnosticDescriptors.ModelDefinitionNotPartialClass.Id);
+		public override ImmutableArray<string> FixableDiagnosticIds => ImmutableArray.Create(AnalyzerDiagnosticDescriptors.ModelDefinitionPropertyHasSetter.Id);
 
 		public override FixAllProvider GetFixAllProvider()
 			=> WellKnownFixAllProviders.BatchFixer;
@@ -29,14 +29,14 @@ namespace Valigator.Models.Generator.Analyzers
 			var diagnostic = context.Diagnostics.First();
 			var diagnosticSpan = diagnostic.Location.SourceSpan;
 
-			var classDeclaration = root
+			var propertyDeclaration = root
 				?.FindToken(diagnosticSpan.Start)
 				.Parent
 				?.AncestorsAndSelf()
-				.OfType<ClassDeclarationSyntax>()
+				.OfType<PropertyDeclarationSyntax>()
 				.First();
 
-			if (classDeclaration == null)
+			if (propertyDeclaration == null)
 				return;
 
 			context
@@ -45,21 +45,23 @@ namespace Valigator.Models.Generator.Analyzers
 					CodeAction
 						.Create
 						(
-							title: "Make partial",
-							createChangedSolution: c => MakeClassPartial(context.Document, classDeclaration, c),
-							equivalenceKey: "Make partial"
+							title: "Remove setter",
+							createChangedSolution: c => MakeClassPartial(context.Document, propertyDeclaration, c),
+							equivalenceKey: "Remove setter"
 						),
 					diagnostic
 				);
 		}
 
-		private async Task<Solution> MakeClassPartial(Document document, ClassDeclarationSyntax classDeclaration, CancellationToken cancellationToken)
+		private async Task<Solution> MakeClassPartial(Document document, PropertyDeclarationSyntax propertyDeclaration, CancellationToken cancellationToken)
 		{
-			var newClassDeclaration = classDeclaration.WithModifiers(classDeclaration.Modifiers.Add(SyntaxFactory.Token(SyntaxKind.PartialKeyword)));
+			var newSyntaxList = new SyntaxList<AccessorDeclarationSyntax>(propertyDeclaration.AccessorList?.Accessors.Where(accessor => accessor.Keyword.Text != "set"));
+
+			var newPropertyDeclaration = propertyDeclaration.WithAccessorList(SyntaxFactory.AccessorList(newSyntaxList));
 
 			var syntaxRoot = await document.GetSyntaxRootAsync(cancellationToken);
 
-			var newSyntaxRoot = syntaxRoot.ReplaceNode(classDeclaration, newClassDeclaration);
+			var newSyntaxRoot = syntaxRoot.ReplaceNode(propertyDeclaration, newPropertyDeclaration);
 
 			return document.Project.Solution.WithDocumentSyntaxRoot(document.Id, newSyntaxRoot);
 		}
