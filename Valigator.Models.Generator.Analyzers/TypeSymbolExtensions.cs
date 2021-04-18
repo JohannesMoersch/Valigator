@@ -86,5 +86,10 @@ namespace Valigator.Models.Generator.Analyzers
 			=> namespaceSymbol.ContainingNamespace != null && !namespaceSymbol.ContainingNamespace.IsGlobalNamespace
 				? $"{namespaceSymbol.ContainingNamespace.GetFullNamespace()}.{namespaceSymbol.Name}"
 				: namespaceSymbol.Name;
+
+		public static IEnumerable<IPropertySymbol> GetProperties(this ITypeSymbol typeSymbol)
+			=> typeSymbol
+				.GetMembers()
+				.OfType<IPropertySymbol>();
 	}
 }

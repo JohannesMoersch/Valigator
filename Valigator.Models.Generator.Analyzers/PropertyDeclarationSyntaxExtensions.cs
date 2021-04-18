@@ -26,5 +26,40 @@ namespace Valigator.Models.Generator.Analyzers
 
 			return setAccessor != null;
 		}
+
+		public static bool IsModelDefinitionProperty(this TypeSyntax type)
+		{
+			if (type.IsPropertyNameSyntax())
+				return true;
+
+			if (type is QualifiedNameSyntax propertyNameSyntax && propertyNameSyntax.Right.IsPropertyNameSyntax())
+			{
+				if (propertyNameSyntax.Left.IsModelDefinitionNameSyntax())
+					return true;
+
+				if (propertyNameSyntax.Left is QualifiedNameSyntax modelNameSyntax && modelNameSyntax.Right.IsModelDefinitionNameSyntax())
+				{
+					if (modelNameSyntax.Left.IsNamespaceSyntax("Models"))
+						return true;
+
+					if (modelNameSyntax.Left is QualifiedNameSyntax namespaceSyntax && namespaceSyntax.Right.IsNamespaceSyntax("Models"))
+					{
+						if (namespaceSyntax.Left.IsNamespaceSyntax("Valigator"))
+							return true;
+					}
+				}
+			}
+
+			return false;
+		}
+
+		private static bool IsPropertyNameSyntax(this TypeSyntax type)
+			=> type is GenericNameSyntax genericName && genericName.Identifier.Text == "Property" && genericName.TypeArgumentList.Arguments.Count == 1;
+
+		private static bool IsModelDefinitionNameSyntax(this TypeSyntax type)
+			=> type is GenericNameSyntax genericName && genericName.Identifier.Text == "ModelDefinition" && genericName.TypeArgumentList.Arguments.Count == 1;
+
+		private static bool IsNamespaceSyntax(this TypeSyntax type, string ns)
+			=> type is IdentifierNameSyntax identifierName && identifierName.Identifier.Text == ns;
 	}
 }

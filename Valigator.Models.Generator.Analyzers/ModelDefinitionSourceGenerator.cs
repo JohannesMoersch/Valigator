@@ -71,6 +71,14 @@ namespace Valigator.Models.Generator.Analyzers
 
 		private string GenerateModel(ITypeSymbol definitionType, AttributeData generatedModelAttribute, INamedTypeSymbol propertyAttributeType, string modelNamespace, string modelName)
 		{
+			var properties = definitionType
+				.GetMembers()
+				.OfType<IPropertySymbol>()
+				.Where(property => !property.IsStatic)
+				.Where(property => property.GetDeclarationSyntax().IsPublic())
+				.Where(property => property.GetDeclarationSyntax().TryGetGetAccessor(out var getAccessor) && !getAccessor.IsPrivate())
+				.Where(property => property.GetDeclarationSyntax().Type.IsModelDefinitionProperty());
+
 			var defaultPropertyAccessors = generatedModelAttribute
 				.TryGetProperty<ExternalConstants.PropertyAccessors>(ExternalConstants.GenerateModelAttribute_DefaultPropertyAccessors_PropertyName, out var accessorValue)
 				? accessorValue
@@ -101,7 +109,7 @@ namespace Valigator.Models.Generator.Analyzers
 			builder.AppendLine($"{indentation}	{{");
 			builder.AppendLine($"{indentation}		ModelDefinition = new {definitionName}();");
 
-			foreach (var property in definitionType.GetMembers().OfType<IPropertySymbol>().Where(property => !property.IsStatic))
+			foreach (var property in properties)
 			{
 				var lowercaseName = $"_{Char.ToLower(property.Name[0])}{property.Name.Substring(1)}";
 
@@ -116,7 +124,7 @@ namespace Valigator.Models.Generator.Analyzers
 			builder.AppendLine($"{indentation}	");
 			builder.AppendLine($"{indentation}	private ModelState _modelState = ModelState.Unset;");
 
-			foreach (var property in definitionType.GetMembers().OfType<IPropertySymbol>().Where(property => !property.IsStatic))
+			foreach (var property in properties)
 			{
 				var propertyAccessors = defaultPropertyAccessors;
 
@@ -170,7 +178,7 @@ namespace Valigator.Models.Generator.Analyzers
 			builder.AppendLine($"{indentation}	private void Coerce()");
 			builder.AppendLine($"{indentation}	{{");
 
-			foreach (var property in definitionType.GetMembers().OfType<IPropertySymbol>().Where(property => !property.IsStatic))
+			foreach (var property in properties)
 			{
 				var lowercaseName = $"_{Char.ToLower(property.Name[0])}{property.Name.Substring(1)}";
 
@@ -187,7 +195,7 @@ namespace Valigator.Models.Generator.Analyzers
 			builder.AppendLine($"{indentation}		var view = new ModelView(this);");
 			builder.AppendLine($"{indentation}		");
 
-			foreach (var property in definitionType.GetMembers().OfType<IPropertySymbol>().Where(property => !property.IsStatic))
+			foreach (var property in properties)
 			{
 				var lowercaseName = $"_{Char.ToLower(property.Name[0])}{property.Name.Substring(1)}";
 
@@ -206,7 +214,7 @@ namespace Valigator.Models.Generator.Analyzers
 			builder.AppendLine($"{indentation}		public ModelView({modelName} model)");
 			builder.AppendLine($"{indentation}			=> _model = model;");
 
-			foreach (var property in definitionType.GetMembers().OfType<IPropertySymbol>().Where(property => !property.IsStatic))
+			foreach (var property in properties)
 			{
 				var lowercaseName = $"_{Char.ToLower(property.Name[0])}{property.Name.Substring(1)}";
 

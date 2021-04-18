@@ -10,7 +10,7 @@ namespace Valigator.Models.Generator.Tests
 		public static void Things()
 		{
 			Other a = default;
-			a.A = 1;
+			Blah b = default;
 		}
 	}
 
@@ -23,7 +23,15 @@ namespace Valigator.Models.Generator.Tests
 	[GenerateModel]
 	public partial class BlahDefinition
 	{
-		public Property<int> Stuff { get => Data.Value<int>().Required().WithValidator(new OtherValidator()); set { } } 
+		public int StuffZ { get => 1; set { } }
+
+		public Property<int> StuffA { get => Data.Value<int>().Required().WithValidator(new OtherValidator()); set { } }
+
+		public ModelDefinition<Blah.ModelView>.Property<int> StuffB { get => Data.Value<int>().Required().WithValidator(new OtherValidator()); set { } }
+
+		public Models.ModelDefinition<Blah.ModelView>.Property<int> StuffC { get => Data.Value<int>().Required().WithValidator(new OtherValidator()); set { } }
+
+		public Valigator.Models.ModelDefinition<Blah.ModelView>.Property<int> StuffD { get => Data.Value<int>().Required().WithValidator(new OtherValidator()); set { } }
 	}
 
 	public class TestValidator : IModelValidator<Other.ModelView, int>

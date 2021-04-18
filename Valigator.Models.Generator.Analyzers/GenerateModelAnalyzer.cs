@@ -30,6 +30,10 @@ namespace Valigator.Models.Generator.Analyzers
 							.Compilation
 							.GetTypeByMetadataName(ExternalConstants.GenerateModelAttribute_TypeName);
 
+						var modelDefinitionPropertyType = context
+							.Compilation
+							.GetTypeByMetadataName(ExternalConstants.ModelDefinition_Property_TypeName);
+
 						var classDeclaration = (ClassDeclarationSyntax)context.Node;
 
 						var typeSymbol = context
@@ -51,8 +55,29 @@ namespace Valigator.Models.Generator.Analyzers
 									);
 							}
 
-							foreach (var propertySyntax in GetPubliInstancecPropertiesWithSetters(typeSymbol))
+							var properties = typeSymbol
+								.GetProperties()
+								.Where(property => !property.IsStatic && !property.IsImplicitlyDeclared)
+								.Select(symbol => symbol.GetDeclarationSyntax())
+								.Where(property => property.IsPublic())
+								.Where(property => property.TryGetGetAccessor(out var getAccessor) && !getAccessor.IsPrivate())
+								.Where(property => property.Type.IsModelDefinitionProperty());
+
+							foreach (var propertySyntax in properties)
 							{
+								if (!propertySyntax.TryGetGetAccessor(out var getAccessor) || getAccessor.IsPrivate())
+								{
+									context
+										.ReportDiagnostic
+										(
+											Diagnostic.Create
+											(
+												AnalyzerDiagnosticDescriptors.ModelDefinitionPropertyHasSetter,
+												Location.Create(propertySyntax.SyntaxTree, getAccessor.Modifiers.First(modifier => modifier.Text == "private").Span)
+											)
+										);
+								}
+
 								if (propertySyntax.TryGetSetAccessor(out var setAccessor) && !setAccessor.IsPrivate())
 								{
 									context
@@ -71,16 +96,5 @@ namespace Valigator.Models.Generator.Analyzers
 					SyntaxKind.ClassDeclaration
 				);
 		}
-
-		private IEnumerable<PropertyDeclarationSyntax> GetPubliInstancecPropertiesWithSetters(ITypeSymbol typeSymbol)
-			=> typeSymbol
-				.GetMembers()
-				.OfType<IPropertySymbol>()
-				.Where(property => !property.IsStatic && !property.IsImplicitlyDeclared && property.SetMethod != null)
-				.SelectMany(property => property.DeclaringSyntaxReferences)
-				.Select(syntax => syntax.GetSyntax())
-				.OfType<PropertyDeclarationSyntax>()
-				.Where(property => property.IsPublic());
-
 	}
 }
