@@ -29,7 +29,7 @@ namespace Valigator.Models.Generator.Analyzers
 
 		public static DiagnosticDescriptor ModelDefinitionPropertyHasSetter { get; } = new DiagnosticDescriptor
 		(
-			id: "VL0002",
+			id: "VL0003",
 			title: "Model Definition Property Has Setter",
 			messageFormat: "Model definition public property has a public setter.",
 			category: "Generator",

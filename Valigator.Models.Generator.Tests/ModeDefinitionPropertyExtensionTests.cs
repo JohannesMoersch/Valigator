@@ -25,9 +25,11 @@ namespace Valigator.Models.Generator.Tests
 	{
 		public int StuffZ { get => 1; set { } }
 
+		public Property<int> Things { set { } }
+
 		public Property<int> StuffA { get => Data.Value<int>().Required().WithValidator(new OtherValidator()); set { } }
 
-		public ModelDefinition<Blah.ModelView>.Property<int> StuffB { get => Data.Value<int>().Required().WithValidator(new OtherValidator()); set { } }
+		public ModelDefinition<Blah.ModelView>.Property<int> StuffB { private get => Data.Value<int>().Required().WithValidator(new OtherValidator()); set { } }
 
 		public Models.ModelDefinition<Blah.ModelView>.Property<int> StuffC { get => Data.Value<int>().Required().WithValidator(new OtherValidator()); set { } }
 

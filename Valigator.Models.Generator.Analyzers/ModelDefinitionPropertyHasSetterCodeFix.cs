@@ -46,14 +46,14 @@ namespace Valigator.Models.Generator.Analyzers
 						.Create
 						(
 							title: "Remove setter",
-							createChangedSolution: c => MakeClassPartial(context.Document, propertyDeclaration, c),
+							createChangedSolution: c => RemoveSetter(context.Document, propertyDeclaration, c),
 							equivalenceKey: "Remove setter"
 						),
 					diagnostic
 				);
 		}
 
-		private async Task<Solution> MakeClassPartial(Document document, PropertyDeclarationSyntax propertyDeclaration, CancellationToken cancellationToken)
+		private async Task<Solution> RemoveSetter(Document document, PropertyDeclarationSyntax propertyDeclaration, CancellationToken cancellationToken)
 		{
 			var newSyntaxList = new SyntaxList<AccessorDeclarationSyntax>(propertyDeclaration.AccessorList?.Accessors.Where(accessor => accessor.Keyword.Text != "set"));
 

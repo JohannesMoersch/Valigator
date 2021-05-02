@@ -76,7 +76,7 @@ namespace Valigator.Models.Generator.Analyzers
 				.OfType<IPropertySymbol>()
 				.Where(property => !property.IsStatic)
 				.Where(property => property.GetDeclarationSyntax().IsPublic())
-				.Where(property => property.GetDeclarationSyntax().TryGetGetAccessor(out var getAccessor) && !getAccessor.IsPrivate())
+				.Where(property => (property.GetDeclarationSyntax().TryGetGetAccessor(out var getAccessor) && !getAccessor.IsPrivate()) || property.GetDeclarationSyntax().ExpressionBody != null)
 				.Where(property => property.GetDeclarationSyntax().Type.IsModelDefinitionProperty());
 
 			var defaultPropertyAccessors = generatedModelAttribute

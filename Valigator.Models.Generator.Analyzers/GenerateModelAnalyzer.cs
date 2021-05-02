@@ -13,7 +13,7 @@ namespace Valigator.Models.Generator.Analyzers
 	[DiagnosticAnalyzer(LanguageNames.CSharp)]
 	public class GenerateModelAnalyzer : DiagnosticAnalyzer
 	{
-		public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(AnalyzerDiagnosticDescriptors.ModelDefinitionNotPartialClass, AnalyzerDiagnosticDescriptors.ModelDefinitionPropertyHasSetter);
+		public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(AnalyzerDiagnosticDescriptors.ModelDefinitionNotPartialClass, AnalyzerDiagnosticDescriptors.ModelDefinitionPropertyDoesNotHaveGetter, AnalyzerDiagnosticDescriptors.ModelDefinitionPropertyHasSetter);
 
 		public override void Initialize(AnalysisContext context)
 		{
@@ -60,20 +60,19 @@ namespace Valigator.Models.Generator.Analyzers
 								.Where(property => !property.IsStatic && !property.IsImplicitlyDeclared)
 								.Select(symbol => symbol.GetDeclarationSyntax())
 								.Where(property => property.IsPublic())
-								.Where(property => property.TryGetGetAccessor(out var getAccessor) && !getAccessor.IsPrivate())
 								.Where(property => property.Type.IsModelDefinitionProperty());
 
 							foreach (var propertySyntax in properties)
 							{
-								if (!propertySyntax.TryGetGetAccessor(out var getAccessor) || getAccessor.IsPrivate())
+								if (propertySyntax.ExpressionBody == null && (!propertySyntax.TryGetGetAccessor(out var getAccessor) || getAccessor.IsPrivate()))
 								{
 									context
 										.ReportDiagnostic
 										(
 											Diagnostic.Create
 											(
-												AnalyzerDiagnosticDescriptors.ModelDefinitionPropertyHasSetter,
-												Location.Create(propertySyntax.SyntaxTree, getAccessor.Modifiers.First(modifier => modifier.Text == "private").Span)
+												AnalyzerDiagnosticDescriptors.ModelDefinitionPropertyDoesNotHaveGetter,
+												Location.Create(propertySyntax.SyntaxTree, getAccessor?.Modifiers.First(modifier => modifier.Text == "private").Span ?? propertySyntax.Identifier.Span)
 											)
 										);
 								}
