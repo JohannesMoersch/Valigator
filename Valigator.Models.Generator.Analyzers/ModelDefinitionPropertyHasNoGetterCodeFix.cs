@@ -83,7 +83,7 @@ namespace Valigator.Models.Generator.Analyzers
 
 			var newSyntaxList = new SyntaxList<AccessorDeclarationSyntax>(newAccessors);
 
-			var newPropertyDeclaration = propertyDeclaration.WithAccessorList(SyntaxFactory.AccessorList(newSyntaxList));
+			var newPropertyDeclaration = propertyDeclaration.WithAccessorList(propertyDeclaration.AccessorList?.WithAccessors(newSyntaxList) ?? SyntaxFactory.AccessorList(newSyntaxList));
 
 			var syntaxRoot = await document.GetSyntaxRootAsync(cancellationToken);
 
@@ -98,7 +98,7 @@ namespace Valigator.Models.Generator.Analyzers
 
 			var newSyntaxList = (propertyDeclaration.AccessorList?.Accessors ?? new SyntaxList<AccessorDeclarationSyntax>()).Insert(0, newAccessor);
 
-			var newPropertyDeclaration = propertyDeclaration.WithAccessorList(SyntaxFactory.AccessorList(newSyntaxList));
+			var newPropertyDeclaration = propertyDeclaration.WithAccessorList(propertyDeclaration.AccessorList?.WithAccessors(newSyntaxList) ?? SyntaxFactory.AccessorList(newSyntaxList));
 
 			var syntaxRoot = await document.GetSyntaxRootAsync(cancellationToken);
 

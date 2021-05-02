@@ -57,7 +57,7 @@ namespace Valigator.Models.Generator.Analyzers
 		{
 			var newSyntaxList = new SyntaxList<AccessorDeclarationSyntax>(propertyDeclaration.AccessorList?.Accessors.Where(accessor => accessor.Keyword.Text != "set"));
 
-			var newPropertyDeclaration = propertyDeclaration.WithAccessorList(SyntaxFactory.AccessorList(newSyntaxList));
+			var newPropertyDeclaration = propertyDeclaration.WithAccessorList(propertyDeclaration.AccessorList?.WithAccessors(newSyntaxList) ?? SyntaxFactory.AccessorList(newSyntaxList));
 
 			var syntaxRoot = await document.GetSyntaxRootAsync(cancellationToken);
 
