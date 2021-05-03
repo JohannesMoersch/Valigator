@@ -5,6 +5,11 @@ using Xunit;
 
 namespace Valigator.Models.Generator.Tests
 {
+	public class CustomGenerateAttribute : GenerateModelAttribute
+	{
+		public override PropertyAccessors DefaultPropertyAccessors { get; set; } = PropertyAccessors.GetAndSet;
+	}
+
 	public static class Stuff
 	{
 		public static void Things()
@@ -49,10 +54,16 @@ namespace Valigator.Models.Generator.Tests
 		}
 	}
 
-	[GenerateModel(DefaultPropertyAccessors = PropertyAccessors.GetAndSet)]
+	[CustomGenerate(DefaultPropertyAccessors = PropertyAccessors.GetAndSet)]
 	public partial class OtherDefinition
 	{
 		public Property<int> A => Data.Value<int>().Required().WithValidator(new TestValidator());
+	}
+
+	[CustomGenerate]
+	public partial class OtherStuffDefinition
+	{
+		public Property<int> A => Data.Value<int>().Required();
 	}
 
 	public class ModeDefinitionPropertyExtensionTests
@@ -68,6 +79,8 @@ namespace Valigator.Models.Generator.Tests
 
 			static TestModel()
 			{
+				OtherStuff b;
+
 				Other a;
 
 				ModelDefinition = new Definition();

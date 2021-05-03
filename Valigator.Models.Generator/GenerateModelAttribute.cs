@@ -10,5 +10,11 @@ namespace Valigator
 	public class GenerateModelAttribute : Attribute
 	{
 		public PropertyAccessors DefaultPropertyAccessors { get; set; } = PropertyAccessors.Get;
+
+		public string ModelName { get; set; } = "$0";
+
+		public string ModelSourceCaptureRegex { get; set; } = "(.*)Definition";
+
+		public Type ModelType { get; set; }
 	}
 }

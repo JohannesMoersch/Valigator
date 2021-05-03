@@ -19,8 +19,7 @@ namespace Valigator.Models.Generator.Analyzers
 			{
 				var generateModelAttributes = classDeclarationSyntax
 					.AttributeLists
-					.SelectMany(list => list.Attributes)
-					.Where(att => att.Name.ToString() == "GenerateModel" || att.Name.ToString() == "GenerateModelAttribute");
+					.SelectMany(list => list.Attributes);
 
 				if (generateModelAttributes.Any())
 					_candidates.Add(classDeclarationSyntax);
