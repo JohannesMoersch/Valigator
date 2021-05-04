@@ -18,7 +18,7 @@ namespace Valigator.Models.Generator.Analyzers
 
 		public const string GenerateModelAttribute_ModelNamespace_PropertyName = "ModelNamespace";
 
-		public const string GenerateModelAttribute_ParentClasses_PropertyName = "ParentClasses";
+		public const string GenerateModelAttribute_ModelParentClasses_PropertyName = "ModelParentClasses";
 
 		public const string GenerateModelAttribute_ModelName_PropertyName = "ModelName";
 

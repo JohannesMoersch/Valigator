@@ -2,15 +2,20 @@
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
+using Microsoft.CSharp;
 using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Valigator.Models.Generator.Analyzers
 {
+	// TODO - Deal with generics. At least allow generics on model definition?
+
 	[Generator]
 	public sealed class ModelDefinitionSourceGenerator : ISourceGenerator
 	{
@@ -33,6 +38,8 @@ namespace Valigator.Models.Generator.Analyzers
 					.Compilation
 					.GetTypeByMetadataName(ExternalConstants.PropertyAttribute_TypeName);
 
+				var codeProvider = CSharpCodeProvider.CreateProvider("csharp");
+
 				foreach (var candidate in receiver.Candidates)
 				{
 					var typeSymbol = context
@@ -42,11 +49,27 @@ namespace Valigator.Models.Generator.Analyzers
 
 					if (typeSymbol != null && typeSymbol.TryGetAttribute(generateModelAttributeType, out var generatedModelAttribute) && candidate.IsPartial())
 					{
-						var modelNamespace = typeSymbol.GetFullNamespace();
-						var modelName = typeSymbol.Name.Replace("Definition", String.Empty);
-						
-						context.AddSource($"{typeSymbol.Name}.g.cs", GenerateDefinition(typeSymbol, modelNamespace, modelName));
-						context.AddSource($"{modelName}.g.cs", GenerateModel(typeSymbol, generatedModelAttribute, generateModelDefaultsAttributeType, propertyAttributeType, modelNamespace, modelName));
+						var sourceCaptureRegex = generatedModelAttribute.GetGenerateModelPropertyValue<string>(ExternalConstants.GenerateModelAttribute_SourceCaptureRegex_PropertyName, generateModelDefaultsAttributeType);
+						if (!sourceCaptureRegex.StartsWith("^"))
+							sourceCaptureRegex = "^" + sourceCaptureRegex;
+						if (!sourceCaptureRegex.EndsWith("$"))
+							sourceCaptureRegex += "$";
+
+						var modelNamespacePattern = generatedModelAttribute.GetGenerateModelPropertyValue<string>(ExternalConstants.GenerateModelAttribute_ModelNamespace_PropertyName, generateModelDefaultsAttributeType);
+						var modelParentClassesPattern = generatedModelAttribute.GetGenerateModelPropertyValue<string>(ExternalConstants.GenerateModelAttribute_ModelParentClasses_PropertyName, generateModelDefaultsAttributeType);
+						var modelNamePattern = generatedModelAttribute.GetGenerateModelPropertyValue<string>(ExternalConstants.GenerateModelAttribute_ModelName_PropertyName, generateModelDefaultsAttributeType);
+
+						var match = Regex.Match(typeSymbol.GetFullNameWithNamespace(), sourceCaptureRegex);
+
+						var modelNamespace = match.ApplyToPattern(modelNamespacePattern);
+						var modelParentClasss = match.ApplyToPattern(modelParentClassesPattern);
+						var modelName = match.ApplyToPattern(modelNamePattern);
+
+						if (codeProvider.IsValidIdentifier(modelName))
+						{
+							context.AddSource($"{typeSymbol.Name}.g.cs", GenerateDefinition(typeSymbol, modelNamespace, modelName));
+							context.AddSource($"{modelName}.g.cs", GenerateModel(typeSymbol, generatedModelAttribute, generateModelDefaultsAttributeType, propertyAttributeType, modelNamespace, modelName));
+						}
 					}
 				}
 			}

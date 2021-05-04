@@ -10,10 +10,18 @@ namespace Valigator.Models.Generator.Tests
 	{
 	}
 
+	[GenerateModel(ModelName = "NewTestModel")]
+	public partial class ThingsAndStuffDefinition
+	{
+		public Property<int> Test { get; } = Data.Value<int>().Required();
+	}
+
 	public static class Stuff
 	{
 		public static void Things()
 		{
+			NewTestModel c;
+
 			Other a = default;
 			Blah b = default;
 		}

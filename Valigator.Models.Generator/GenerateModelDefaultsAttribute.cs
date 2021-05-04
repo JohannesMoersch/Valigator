@@ -11,7 +11,7 @@ namespace Valigator
 
 		public string? ModelNamespace { get; set; }
 
-		public string? ParentClasses { get; set; }
+		public string? ModelParentClasses { get; set; }
 
 		public string? ModelName { get; set; }
 

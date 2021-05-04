@@ -32,8 +32,7 @@ namespace Valigator.Models.Generator.Analyzers
 
 			while (attributeClass != null)
 			{
-				var defaults = attributeData
-					.AttributeClass
+				var defaults = attributeClass
 					.GetAttributes()
 					.FirstOrDefault(att => att.AttributeClass.Equals(generateModelDefaultsAttributeType, SymbolEqualityComparer.Default));
 

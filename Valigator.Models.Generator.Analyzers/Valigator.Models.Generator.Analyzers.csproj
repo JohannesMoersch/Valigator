@@ -6,7 +6,6 @@
 		<Description>This package contains fluent validators for data.</Description>
 		<PackageTags>validation</PackageTags>
 		<IncludeBuildOutput>false</IncludeBuildOutput>
-		<SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
@@ -16,15 +15,17 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+	  <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="3.9.0" PrivateAssets="all" />
+	  <PackageReference Include="System.CodeDom" Version="5.0.0" PrivateAssets="all" GeneratePathProperty="true" />
 	</ItemGroup>
-	
+		
+	<ItemGroup>
+    <None Include="$(PKGSystem_CodeDom)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+  </ItemGroup>
+		
 	<ItemGroup Condition=" '$(Configuration)'=='Debug' ">
 		<None Include="$(OutputPath)\$(AssemblyName).pdb" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="3.9.0" />
 	</ItemGroup>
 	
 	<Target Name="CopyPackage" AfterTargets="Pack" Condition=" '$(Configuration)'=='Debug' ">
