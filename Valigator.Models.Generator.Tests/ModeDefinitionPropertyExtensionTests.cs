@@ -5,9 +5,9 @@ using Xunit;
 
 namespace Valigator.Models.Generator.Tests
 {
+	[GenerateModelDefaults(DefaultPropertyAccessors = PropertyAccessors.GetAndSet)]
 	public class CustomGenerateAttribute : GenerateModelAttribute
 	{
-		public override PropertyAccessors DefaultPropertyAccessors { get; set; } = PropertyAccessors.GetAndSet;
 	}
 
 	public static class Stuff

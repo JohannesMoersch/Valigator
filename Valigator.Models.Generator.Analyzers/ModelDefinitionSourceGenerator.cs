@@ -21,9 +21,13 @@ namespace Valigator.Models.Generator.Analyzers
 		{
 			if (context.SyntaxReceiver is GenerateModelSyntaxReceiver receiver)
 			{
-				var generatedModelAttributeType = context
+				var generateModelAttributeType = context
 					.Compilation
 					.GetTypeByMetadataName(ExternalConstants.GenerateModelAttribute_TypeName);
+
+				var generateModelDefaultsAttributeType = context
+					.Compilation
+					.GetTypeByMetadataName(ExternalConstants.GenerateModelDefaultsAttribute_TypeName);
 
 				var propertyAttributeType = context
 					.Compilation
@@ -36,13 +40,13 @@ namespace Valigator.Models.Generator.Analyzers
 						.GetSemanticModel(candidate.SyntaxTree)
 						.GetDeclaredSymbol(candidate);
 
-					if (typeSymbol != null && typeSymbol.TryGetAttribute(generatedModelAttributeType, out var generatedModelAttribute) && candidate.IsPartial())
+					if (typeSymbol != null && typeSymbol.TryGetAttribute(generateModelAttributeType, out var generatedModelAttribute) && candidate.IsPartial())
 					{
 						var modelNamespace = typeSymbol.GetFullNamespace();
 						var modelName = typeSymbol.Name.Replace("Definition", String.Empty);
 						
 						context.AddSource($"{typeSymbol.Name}.g.cs", GenerateDefinition(typeSymbol, modelNamespace, modelName));
-						context.AddSource($"{modelName}.g.cs", GenerateModel(typeSymbol, generatedModelAttribute, propertyAttributeType, modelNamespace, modelName));
+						context.AddSource($"{modelName}.g.cs", GenerateModel(typeSymbol, generatedModelAttribute, generateModelDefaultsAttributeType, propertyAttributeType, modelNamespace, modelName));
 					}
 				}
 			}
@@ -69,7 +73,7 @@ namespace Valigator.Models.Generator.Analyzers
 			return builder.ToString();
 		}
 
-		private string GenerateModel(ITypeSymbol definitionType, AttributeData generatedModelAttribute, INamedTypeSymbol propertyAttributeType, string modelNamespace, string modelName)
+		private string GenerateModel(ITypeSymbol definitionType, AttributeData generatedModelAttribute, INamedTypeSymbol generateModelDefaultsAttributeType, INamedTypeSymbol propertyAttributeType, string modelNamespace, string modelName)
 		{
 			var properties = definitionType
 				.GetMembers()
@@ -79,10 +83,7 @@ namespace Valigator.Models.Generator.Analyzers
 				.Where(property => (property.GetDeclarationSyntax().TryGetGetAccessor(out var getAccessor) && !getAccessor.IsPrivate()) || property.GetDeclarationSyntax().ExpressionBody != null)
 				.Where(property => property.GetDeclarationSyntax().Type.IsModelDefinitionProperty());
 
-			var defaultPropertyAccessors = generatedModelAttribute
-				.TryGetProperty<ExternalConstants.PropertyAccessors>(ExternalConstants.GenerateModelAttribute_DefaultPropertyAccessors_PropertyName, out var accessorValue)
-				? accessorValue
-				: ExternalConstants.GenerateModelAttribute_DefaultPropertyAccessors_DefaultValue;
+			var defaultPropertyAccessors = generatedModelAttribute.GetGenerateModelPropertyValue<ExternalConstants.PropertyAccessors>(ExternalConstants.GenerateModelAttribute_DefaultPropertyAccessors_PropertyName, generateModelDefaultsAttributeType);
 
 			var hasNamespace = !String.IsNullOrEmpty(modelNamespace);
 			var indentation = hasNamespace ? "\t" : "";
