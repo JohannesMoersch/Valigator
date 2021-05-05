@@ -1,16 +1,11 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Text;
-using Microsoft.CSharp;
 using System;
-using System.CodeDom;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace Valigator.Models.Generator.Analyzers
 {
@@ -38,8 +33,8 @@ namespace Valigator.Models.Generator.Analyzers
 					.Compilation
 					.GetTypeByMetadataName(ExternalConstants.PropertyAttribute_TypeName);
 
-				var codeProvider = CSharpCodeProvider.CreateProvider("csharp");
-
+				var codeProvider = CodeDomProvider.CreateProvider("csharp");
+				
 				foreach (var candidate in receiver.Candidates)
 				{
 					var typeSymbol = context
@@ -49,27 +44,45 @@ namespace Valigator.Models.Generator.Analyzers
 
 					if (typeSymbol != null && typeSymbol.TryGetAttribute(generateModelAttributeType, out var generatedModelAttribute) && candidate.IsPartial())
 					{
-						var sourceCaptureRegex = generatedModelAttribute.GetGenerateModelPropertyValue<string>(ExternalConstants.GenerateModelAttribute_SourceCaptureRegex_PropertyName, generateModelDefaultsAttributeType);
-						if (!sourceCaptureRegex.StartsWith("^"))
-							sourceCaptureRegex = "^" + sourceCaptureRegex;
-						if (!sourceCaptureRegex.EndsWith("$"))
-							sourceCaptureRegex += "$";
+						var fullTypeName = typeSymbol.GetFullNameWithNamespace();
 
 						var modelNamespacePattern = generatedModelAttribute.GetGenerateModelPropertyValue<string>(ExternalConstants.GenerateModelAttribute_ModelNamespace_PropertyName, generateModelDefaultsAttributeType);
 						var modelParentClassesPattern = generatedModelAttribute.GetGenerateModelPropertyValue<string>(ExternalConstants.GenerateModelAttribute_ModelParentClasses_PropertyName, generateModelDefaultsAttributeType);
 						var modelNamePattern = generatedModelAttribute.GetGenerateModelPropertyValue<string>(ExternalConstants.GenerateModelAttribute_ModelName_PropertyName, generateModelDefaultsAttributeType);
 
-						var match = Regex.Match(typeSymbol.GetFullNameWithNamespace(), sourceCaptureRegex);
+						var modelNamespaceCaptureRegex = generatedModelAttribute.GetGenerateModelPropertyValue<string>(ExternalConstants.GenerateModelAttribute_ModelNamespaceCaptureRegex_PropertyName, generateModelDefaultsAttributeType).EnsureRegexMatchesFullInput();
+						var modelParentClassesCaptureRegex = generatedModelAttribute.GetGenerateModelPropertyValue<string>(ExternalConstants.GenerateModelAttribute_ModelParentClassesCaptureRegex_PropertyName, generateModelDefaultsAttributeType).EnsureRegexMatchesFullInput();
+						var modelNameCaptureRegex = generatedModelAttribute.GetGenerateModelPropertyValue<string>(ExternalConstants.GenerateModelAttribute_ModelNameCaptureRegex_PropertyName, generateModelDefaultsAttributeType).EnsureRegexMatchesFullInput();
 
-						var modelNamespace = match.ApplyToPattern(modelNamespacePattern);
-						var modelParentClasss = match.ApplyToPattern(modelParentClassesPattern);
-						var modelName = match.ApplyToPattern(modelNamePattern);
+						var modelNamespaceMatch = Regex.Match(fullTypeName, modelNamespaceCaptureRegex);
+						var modelParentClassesMatch = Regex.Match(fullTypeName, modelParentClassesCaptureRegex);
+						var modelNameMatch = Regex.Match(fullTypeName, modelNameCaptureRegex);
 
-						if (codeProvider.IsValidIdentifier(modelName))
+						if 
+						(
+							modelNamespaceMatch.TryApplyToPattern(modelNamespacePattern, out var modelNamespace, out _) &&
+							modelParentClassesMatch.TryApplyToPattern(modelParentClassesPattern, out var modelParentClasses, out _) &&
+							modelNameMatch.TryApplyToPattern(modelNamePattern, out var modelName, out _)
+						)
 						{
-							context.AddSource($"{typeSymbol.Name}.g.cs", GenerateDefinition(typeSymbol, modelNamespace, modelName));
-							context.AddSource($"{modelName}.g.cs", GenerateModel(typeSymbol, generatedModelAttribute, generateModelDefaultsAttributeType, propertyAttributeType, modelNamespace, modelName));
+							var modelNamespaceParts = String.IsNullOrEmpty(modelNamespace) ? Array.Empty<string>() : modelNamespace.Split('.');
+							var modelParentClassesParts = String.IsNullOrEmpty(modelParentClasses) ? Array.Empty<string>() : modelParentClasses.Split('+');
+
+							if 
+							(
+								modelNamespaceParts.All(codeProvider.IsValidIdentifier) && 
+								modelParentClassesParts.All(codeProvider.IsValidIdentifier) && 
+								codeProvider.IsValidIdentifier(modelName)
+							)
+							{
+								context.AddSource($"{typeSymbol.Name}.g.cs", GenerateDefinition(typeSymbol, modelNamespace, $"{modelName}.ModelView"));
+								context.AddSource($"{modelName}.g.cs", GenerateModel(typeSymbol, generatedModelAttribute, generateModelDefaultsAttributeType, propertyAttributeType, modelNamespace, modelName));
+							}
+							else
+								context.AddSource($"{typeSymbol.Name}.g.cs", GenerateDefinition(typeSymbol, String.Empty, "object"));
 						}
+						else
+							context.AddSource($"{typeSymbol.Name}.g.cs", GenerateDefinition(typeSymbol, String.Empty, "object"));
 					}
 				}
 			}
@@ -78,7 +91,7 @@ namespace Valigator.Models.Generator.Analyzers
 		private string GenerateDefinition(ITypeSymbol definitionType, string modelNamespace, string modelName)
 		{
 			var definitionNamespace = definitionType.GetFullNamespace();
-			var modelNamespaceToUse = definitionNamespace == modelNamespace
+			var modelNamespaceToUse = String.IsNullOrEmpty(modelNamespace) || definitionNamespace == modelNamespace
 				? String.Empty
 				: $"{modelNamespace}.";
 
@@ -88,7 +101,7 @@ namespace Valigator.Models.Generator.Analyzers
 			builder.AppendLine($"");
 			builder.AppendLine($"namespace {definitionNamespace}");
 			builder.AppendLine($"{{");
-			builder.AppendLine($"	public partial class {definitionType.Name} : ModelDefinition<{modelNamespaceToUse}{modelName}.ModelView>");
+			builder.AppendLine($"	public partial class {definitionType.Name} : ModelDefinition<{modelNamespaceToUse}{modelName}>");
 			builder.AppendLine($"	{{");
 			builder.AppendLine($"	}}");
 			builder.AppendLine($"}}");

@@ -7,15 +7,22 @@ namespace Valigator.Models.Generator.Analyzers
 {
 	public static class MatchExtensions
 	{
-		public static string ApplyToPattern(this Match match, string pattern)
+		public static bool TryApplyToPattern(this Match match, string pattern, out string value, out string errorMessage)
 		{
+			value = String.Empty;
+
 			var builder = new StringBuilder();
 
 			for (int i = 0; i < pattern.Length; ++i)
 			{
-				if (i < pattern.Length - 3 && pattern[i] == '$' && pattern[i + 1] == '{' && Char.IsDigit(pattern[i + 2]))
+				if (pattern[i] == '$')
 				{
-					var start = i;
+					if (i >= pattern.Length - 3 || pattern[i + 1] != '{' || !Char.IsDigit(pattern[i + 2]))
+					{
+						errorMessage = "Invalid pattern.";
+						return false;
+					}
+
 					int num = 0;
 					i += 2;
 
@@ -26,19 +33,27 @@ namespace Valigator.Models.Generator.Analyzers
 						++i;
 					}
 
-					if (i < pattern.Length && pattern[i] == '}' && match.Groups.Count >= num)
+					if (i >= pattern.Length || pattern[i] != '}')
 					{
-						builder.Append(match.Groups[num].Value);
-						continue;
+						errorMessage = "Invalid pattern.";
+						return false;
 					}
-					else
-						i = start;
+
+					if (num >= match.Groups.Count)
+					{
+						errorMessage = $"No group captured for ${{{num}}}";
+						return false;
+					}
+
+					builder.Append(match.Groups[num].Value);
 				}
-				
-				builder.Append(pattern[i]);
+				else
+					builder.Append(pattern[i]);
 			}
 
-			return builder.ToString();
+			value = builder.ToString();
+			errorMessage = String.Empty;
+			return true;
 		}
 	}
 }

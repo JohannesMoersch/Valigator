@@ -15,6 +15,10 @@ namespace Valigator
 
 		public string? ModelName { get; set; }
 
-		public string? SourceCaptureRegex { get; set; }
+		public string? ModelNamespaceCaptureRegex { get; set; }
+
+		public string? ModelParentClassesCaptureRegex { get; set; }
+
+		public string? ModelNameCaptureRegex { get; set; }
 	}
 }

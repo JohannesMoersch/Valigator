@@ -22,7 +22,11 @@ namespace Valigator.Models.Generator.Analyzers
 
 		public const string GenerateModelAttribute_ModelName_PropertyName = "ModelName";
 
-		public const string GenerateModelAttribute_SourceCaptureRegex_PropertyName = "SourceCaptureRegex";
+		public const string GenerateModelAttribute_ModelNamespaceCaptureRegex_PropertyName = "ModelNamespaceCaptureRegex";
+
+		public const string GenerateModelAttribute_ModelParentClassesCaptureRegex_PropertyName = "ModelParentClassesCaptureRegex";
+
+		public const string GenerateModelAttribute_ModelNameCaptureRegex_PropertyName = "ModelNameCaptureRegex";
 
 		public const string GenerateModelAttribute_ModelType_PropertyName = "ModelType";
 

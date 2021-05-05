@@ -9,9 +9,11 @@ namespace Valigator
 	[GenerateModelDefaults(
 		DefaultPropertyAccessors = PropertyAccessors.Get,
 		ModelNamespace = "${2}",
-		ModelParentClasses = "${5}",
-		ModelName = "${7}",
-		SourceCaptureRegex = "^((([^\\.\\+]+\\.)*[^\\.\\+]+)\\.)?((([^\\.\\+]+\\+)*[^\\.\\+]+)\\+)?([^\\.\\+]+)Definition$"
+		ModelNamespaceCaptureRegex = "((.*)[\\.])?([^\\.]+)",
+		ModelParentClasses = "${3}",
+		ModelParentClassesCaptureRegex = "(.+[\\.])?(([^\\.]+)\\+)?[^\\+]+",
+		ModelName = "${2}",
+		ModelNameCaptureRegex = "(.*[\\.\\+])?([^\\.\\+]+)Definition"
 	)]
 	[AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
 	public class GenerateModelAttribute : Attribute
@@ -24,7 +26,11 @@ namespace Valigator
 
 		public string? ModelName { get; set; }
 		
-		public string? SourceCaptureRegex { get; set; }
+		public string? ModelNamespaceCaptureRegex { get; set; }
+
+		public string? ModelParentClassesCaptureRegex { get; set; }
+
+		public string? ModelNameCaptureRegex { get; set; }
 
 		public Type? ModelType { get; set; }
 	}
