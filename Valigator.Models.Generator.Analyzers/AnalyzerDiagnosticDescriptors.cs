@@ -36,5 +36,25 @@ namespace Valigator.Models.Generator.Analyzers
 			DiagnosticSeverity.Warning,
 			isEnabledByDefault: true
 		);
+
+		public static DiagnosticDescriptor ModelDefinitionModelIdentifierMatchFailed { get; } = new DiagnosticDescriptor
+		(
+			id: "VL0004",
+			title: "Model Definition Model Identifier Match Failed",
+			messageFormat: "Model definition {0} match on \"{1}\" using \"{2}\" failed. {3}",
+			category: "Generator",
+			DiagnosticSeverity.Error,
+			isEnabledByDefault: true
+		);
+
+		public static DiagnosticDescriptor ModelDefinitionModelIdentifierInvalid { get; } = new DiagnosticDescriptor
+		(
+			id: "VL0005",
+			title: "Model Definition Model Identifier Invalid",
+			messageFormat: "Model definition {0} identifier \"{1}\" is invalid.",
+			category: "Generator",
+			DiagnosticSeverity.Error,
+			isEnabledByDefault: true
+		);
 	}
 }

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Valigator.Models.Generator.Analyzers
 {
@@ -43,6 +44,66 @@ namespace Valigator.Models.Generator.Analyzers
 			}
 
 			return default;
+		}
+
+		public static bool TryGetGeneratedModelNamespace(this AttributeData attributeData, string fullTypeName, INamedTypeSymbol generateModelDefaultsAttributeType, out string[] modelNamespace, out string captureRegex, out string errorMessage)
+		{
+			var success = TryApplyGenerateModelPropertyPattern
+			(
+				attributeData,
+				fullTypeName,
+				ExternalConstants.GenerateModelAttribute_ModelNamespace_PropertyName,
+				ExternalConstants.GenerateModelAttribute_ModelNamespaceCaptureRegex_PropertyName,
+				generateModelDefaultsAttributeType,
+				out var modelNamespaceString,
+				out captureRegex,
+				out errorMessage
+			);
+
+			modelNamespace = success && !String.IsNullOrEmpty(modelNamespaceString) ? modelNamespaceString.Split('.') : Array.Empty<string>();
+			return success;
+		}
+
+		public static bool TryGetGeneratedModelParentClasses(this AttributeData attributeData, string fullTypeName, INamedTypeSymbol generateModelDefaultsAttributeType, out string[] modelParentClasses, out string captureRegex, out string errorMessage)
+		{
+			var success = TryApplyGenerateModelPropertyPattern
+			(
+				attributeData,
+				fullTypeName,
+				ExternalConstants.GenerateModelAttribute_ModelParentClasses_PropertyName,
+				ExternalConstants.GenerateModelAttribute_ModelParentClassesCaptureRegex_PropertyName,
+				generateModelDefaultsAttributeType,
+				out var modelParentClassesString,
+				out captureRegex,
+				out errorMessage
+			);
+
+			modelParentClasses = success && !String.IsNullOrEmpty(modelParentClassesString) ? modelParentClassesString.Split('+') : Array.Empty<string>();
+			return success;
+		}
+
+		public static bool TryGetGeneratedModelName(this AttributeData attributeData, string fullTypeName, INamedTypeSymbol generateModelDefaultsAttributeType, out string modelName, out string captureRegex, out string errorMessage)
+			=> TryApplyGenerateModelPropertyPattern
+			(
+				attributeData,
+				fullTypeName,
+				ExternalConstants.GenerateModelAttribute_ModelName_PropertyName,
+				ExternalConstants.GenerateModelAttribute_ModelNameCaptureRegex_PropertyName,
+				generateModelDefaultsAttributeType,
+				out modelName,
+				out captureRegex,
+				out errorMessage
+			);
+
+		private static bool TryApplyGenerateModelPropertyPattern(this AttributeData attributeData, string fullTypeName, string patternPropertyName, string captureRegexPropertyName, INamedTypeSymbol generateModelDefaultsAttributeType, out string value, out string captureRegex, out string errorMessage)
+		{
+			captureRegex = attributeData.GetGenerateModelPropertyValue<string>(captureRegexPropertyName, generateModelDefaultsAttributeType).EnsureRegexMatchesFullInput();
+
+			var pattern = attributeData.GetGenerateModelPropertyValue<string>(patternPropertyName, generateModelDefaultsAttributeType);
+
+			var match = Regex.Match(fullTypeName, captureRegex);
+
+			return match.TryApplyToPattern(pattern, out value, out errorMessage);
 		}
 	}
 }

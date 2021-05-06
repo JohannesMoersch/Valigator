@@ -21,17 +21,7 @@ namespace Valigator.Models.Generator.Analyzers
 		{
 			if (context.SyntaxReceiver is GenerateModelSyntaxReceiver receiver)
 			{
-				var generateModelAttributeType = context
-					.Compilation
-					.GetTypeByMetadataName(ExternalConstants.GenerateModelAttribute_TypeName);
-
-				var generateModelDefaultsAttributeType = context
-					.Compilation
-					.GetTypeByMetadataName(ExternalConstants.GenerateModelDefaultsAttribute_TypeName);
-
-				var propertyAttributeType = context
-					.Compilation
-					.GetTypeByMetadataName(ExternalConstants.PropertyAttribute_TypeName);
+				GetAttributes(context, out var generateModelAttributeType, out var generateModelDefaultsAttributeType, out var propertyAttributeType);
 
 				var codeProvider = CodeDomProvider.CreateProvider("csharp");
 				
@@ -42,246 +32,68 @@ namespace Valigator.Models.Generator.Analyzers
 						.GetSemanticModel(candidate.SyntaxTree)
 						.GetDeclaredSymbol(candidate);
 
-					if (typeSymbol != null && typeSymbol.TryGetAttribute(generateModelAttributeType, out var generatedModelAttribute) && candidate.IsPartial())
+					if (typeSymbol != null && typeSymbol.TryGetAttribute(generateModelAttributeType, out var generateModelAttribute) && candidate.IsPartial())
 					{
-						var fullTypeName = typeSymbol.GetFullNameWithNamespace();
-
-						var modelNamespacePattern = generatedModelAttribute.GetGenerateModelPropertyValue<string>(ExternalConstants.GenerateModelAttribute_ModelNamespace_PropertyName, generateModelDefaultsAttributeType);
-						var modelParentClassesPattern = generatedModelAttribute.GetGenerateModelPropertyValue<string>(ExternalConstants.GenerateModelAttribute_ModelParentClasses_PropertyName, generateModelDefaultsAttributeType);
-						var modelNamePattern = generatedModelAttribute.GetGenerateModelPropertyValue<string>(ExternalConstants.GenerateModelAttribute_ModelName_PropertyName, generateModelDefaultsAttributeType);
-
-						var modelNamespaceCaptureRegex = generatedModelAttribute.GetGenerateModelPropertyValue<string>(ExternalConstants.GenerateModelAttribute_ModelNamespaceCaptureRegex_PropertyName, generateModelDefaultsAttributeType).EnsureRegexMatchesFullInput();
-						var modelParentClassesCaptureRegex = generatedModelAttribute.GetGenerateModelPropertyValue<string>(ExternalConstants.GenerateModelAttribute_ModelParentClassesCaptureRegex_PropertyName, generateModelDefaultsAttributeType).EnsureRegexMatchesFullInput();
-						var modelNameCaptureRegex = generatedModelAttribute.GetGenerateModelPropertyValue<string>(ExternalConstants.GenerateModelAttribute_ModelNameCaptureRegex_PropertyName, generateModelDefaultsAttributeType).EnsureRegexMatchesFullInput();
-
-						var modelNamespaceMatch = Regex.Match(fullTypeName, modelNamespaceCaptureRegex);
-						var modelParentClassesMatch = Regex.Match(fullTypeName, modelParentClassesCaptureRegex);
-						var modelNameMatch = Regex.Match(fullTypeName, modelNameCaptureRegex);
-
-						if 
+						if
 						(
-							modelNamespaceMatch.TryApplyToPattern(modelNamespacePattern, out var modelNamespace, out _) &&
-							modelParentClassesMatch.TryApplyToPattern(modelParentClassesPattern, out var modelParentClasses, out _) &&
-							modelNameMatch.TryApplyToPattern(modelNamePattern, out var modelName, out _)
+							TryGetModelIdentifiers(typeSymbol, generateModelAttribute, generateModelDefaultsAttributeType, out var modelNamespace, out var modelParentClasses, out var modelName) &&
+							modelNamespace.All(codeProvider.IsValidIdentifier) &&
+							modelParentClasses.All(codeProvider.IsValidIdentifier) &&
+							codeProvider.IsValidIdentifier(modelName)
 						)
 						{
-							var modelNamespaceParts = String.IsNullOrEmpty(modelNamespace) ? Array.Empty<string>() : modelNamespace.Split('.');
-							var modelParentClassesParts = String.IsNullOrEmpty(modelParentClasses) ? Array.Empty<string>() : modelParentClasses.Split('+');
-
-							if 
-							(
-								modelNamespaceParts.All(codeProvider.IsValidIdentifier) && 
-								modelParentClassesParts.All(codeProvider.IsValidIdentifier) && 
-								codeProvider.IsValidIdentifier(modelName)
-							)
-							{
-								context.AddSource($"{typeSymbol.Name}.g.cs", GenerateDefinition(typeSymbol, modelNamespace, $"{modelName}.ModelView"));
-								context.AddSource($"{modelName}.g.cs", GenerateModel(typeSymbol, generatedModelAttribute, generateModelDefaultsAttributeType, propertyAttributeType, modelNamespace, modelName));
-							}
-							else
-								context.AddSource($"{typeSymbol.Name}.g.cs", GenerateDefinition(typeSymbol, String.Empty, "object"));
+							context.AddSource($"{typeSymbol.Name}.g.cs", CodeGenerator.GenerateDefinition(typeSymbol, String.Join(".", modelNamespace), $"{modelName}.ModelView"));
+							context.AddSource($"{modelName}.g.cs", CodeGenerator.GenerateModel(typeSymbol, generateModelAttribute, generateModelDefaultsAttributeType, propertyAttributeType, String.Join(".", modelNamespace), modelName));
 						}
 						else
-							context.AddSource($"{typeSymbol.Name}.g.cs", GenerateDefinition(typeSymbol, String.Empty, "object"));
+							context.AddSource($"{typeSymbol.Name}.g.cs", CodeGenerator.GenerateDefinition(typeSymbol, String.Empty, "object"));
 					}
 				}
 			}
 		}
 
-		private string GenerateDefinition(ITypeSymbol definitionType, string modelNamespace, string modelName)
+		private static void GetAttributes(GeneratorExecutionContext context, out INamedTypeSymbol generateModelAttributeType, out INamedTypeSymbol generateModelDefaultsAttributeType, out INamedTypeSymbol propertyAttributeType)
 		{
-			var definitionNamespace = definitionType.GetFullNamespace();
-			var modelNamespaceToUse = String.IsNullOrEmpty(modelNamespace) || definitionNamespace == modelNamespace
-				? String.Empty
-				: $"{modelNamespace}.";
-
-			var builder = new StringBuilder();
-
-			builder.AppendLine($"using Valigator;");
-			builder.AppendLine($"");
-			builder.AppendLine($"namespace {definitionNamespace}");
-			builder.AppendLine($"{{");
-			builder.AppendLine($"	public partial class {definitionType.Name} : ModelDefinition<{modelNamespaceToUse}{modelName}>");
-			builder.AppendLine($"	{{");
-			builder.AppendLine($"	}}");
-			builder.AppendLine($"}}");
-
-			return builder.ToString();
+			generateModelAttributeType = context.Compilation.GetTypeByMetadataName(ExternalConstants.GenerateModelAttribute_TypeName);
+			generateModelDefaultsAttributeType = context.Compilation.GetTypeByMetadataName(ExternalConstants.GenerateModelDefaultsAttribute_TypeName);
+			propertyAttributeType = context.Compilation.GetTypeByMetadataName(ExternalConstants.PropertyAttribute_TypeName);
 		}
 
-		private string GenerateModel(ITypeSymbol definitionType, AttributeData generatedModelAttribute, INamedTypeSymbol generateModelDefaultsAttributeType, INamedTypeSymbol propertyAttributeType, string modelNamespace, string modelName)
+		private static bool TryGetModelIdentifiers(INamedTypeSymbol typeSymbol, AttributeData generateModelAttribute, INamedTypeSymbol generateModelDefaultsAttributeType, out string[] modelNamespace, out string[] modelParentClasses, out string modelName)
 		{
-			var properties = definitionType
-				.GetMembers()
-				.OfType<IPropertySymbol>()
-				.Where(property => !property.IsStatic)
-				.Where(property => property.GetDeclarationSyntax().IsPublic())
-				.Where(property => (property.GetDeclarationSyntax().TryGetGetAccessor(out var getAccessor) && !getAccessor.IsPrivate()) || property.GetDeclarationSyntax().ExpressionBody != null)
-				.Where(property => property.GetDeclarationSyntax().Type.IsModelDefinitionProperty());
+			var fullTypeName = typeSymbol.GetFullNameWithNamespace();
 
-			var defaultPropertyAccessors = generatedModelAttribute.GetGenerateModelPropertyValue<ExternalConstants.PropertyAccessors>(ExternalConstants.GenerateModelAttribute_DefaultPropertyAccessors_PropertyName, generateModelDefaultsAttributeType);
+			var modelNamespaceSuccess = generateModelAttribute
+				.TryGetGeneratedModelNamespace
+				(
+					fullTypeName,
+					generateModelDefaultsAttributeType,
+					out modelNamespace,
+					out _,
+					out _
+				);
 
-			var hasNamespace = !String.IsNullOrEmpty(modelNamespace);
-			var indentation = hasNamespace ? "\t" : "";
+			var modelParentClassesSuccess = generateModelAttribute
+				.TryGetGeneratedModelParentClasses
+				(
+					fullTypeName,
+					generateModelDefaultsAttributeType,
+					out modelParentClasses,
+					out _,
+					out _
+				);
 
-			var definitionName = definitionType.GetTypeNameRelativeTo(hasNamespace ? $"{modelNamespace}.{modelName}" : modelName);
+			var modelNameSuccess = generateModelAttribute
+				.TryGetGeneratedModelName
+				(
+					fullTypeName,
+					generateModelDefaultsAttributeType,
+					out modelName,
+					out _,
+					out _
+				);
 
-			var builder = new StringBuilder();
-
-			builder.AppendLine($"using System;");
-			builder.AppendLine($"using Functional;");
-			builder.AppendLine($"using Valigator;");
-			builder.AppendLine($"using Valigator.Models;");
-			builder.AppendLine($"");
-
-			if (hasNamespace)
-			{
-				builder.AppendLine($"namespace {modelNamespace}");
-				builder.AppendLine($"{{");
-			}
-
-			builder.AppendLine($"{indentation}public partial class {modelName}");
-			builder.AppendLine($"{indentation}{{");
-			builder.AppendLine($"{indentation}	static {modelName}()");
-			builder.AppendLine($"{indentation}	{{");
-			builder.AppendLine($"{indentation}		ModelDefinition = new {definitionName}();");
-
-			foreach (var property in properties)
-			{
-				var lowercaseName = $"_{Char.ToLower(property.Name[0])}{property.Name.Substring(1)}";
-
-				builder.AppendLine($"{indentation}		{lowercaseName}_Property = ModelDefinition.{property.Name};");
-			}
-
-			builder.AppendLine($"{indentation}	}}");
-			builder.AppendLine($"{indentation}	");
-			builder.AppendLine($"{indentation}	public static {definitionType.GetTypeNameRelativeTo(hasNamespace ? $"{modelNamespace}.{modelName}" : modelName)} ModelDefinition {{ get; }}");
-			builder.AppendLine($"{indentation}	");
-			builder.AppendLine($"{indentation}	private ModelErrorDictionary _errorDictionary = new ModelErrorDictionary();");
-			builder.AppendLine($"{indentation}	");
-			builder.AppendLine($"{indentation}	private ModelState _modelState = ModelState.Unset;");
-
-			foreach (var property in properties)
-			{
-				var propertyAccessors = defaultPropertyAccessors;
-
-				if (property.TryGetAttribute(propertyAttributeType, out var propertyAttribute) && propertyAttribute.TryGetProperty<ExternalConstants.PropertyAccessors>(ExternalConstants.PropertyAttribute_Accessors_PropertyName, out var propertyAccessor))
-					propertyAccessors = propertyAccessor;
-
-				var lowercaseName = $"_{Char.ToLower(property.Name[0])}{property.Name.Substring(1)}";
-
-				var propertyTypeName = (property.Type as INamedTypeSymbol).TypeArguments[0].GetTypeNameRelativeTo("System");
-
-				builder.AppendLine($"{indentation}	");
-				builder.AppendLine($"{indentation}	private static ModelDefinition<ModelView>.Property<int> {lowercaseName}_Property;");
-				builder.AppendLine($"{indentation}	private ModelPropertyState {lowercaseName}_State;");
-				builder.AppendLine($"{indentation}	private {propertyTypeName} {lowercaseName};");
-				builder.AppendLine($"{indentation}	public {propertyTypeName} {property.Name}");
-				builder.AppendLine($"{indentation}	{{");
-				if (propertyAccessors.HasFlag(ExternalConstants.PropertyAccessors.Get))
-					builder.AppendLine($"{indentation}		get => Get(nameof({property.Name}), {lowercaseName}, {lowercaseName}_State);");
-				if (propertyAccessors.HasFlag(ExternalConstants.PropertyAccessors.GetAndSet))
-					builder.AppendLine($"{indentation}		set => Set(value, ref {lowercaseName}, ref {lowercaseName}_State);");
-				builder.AppendLine($"{indentation}	}}");
-			}
-
-			builder.AppendLine($"{indentation}	");
-			builder.AppendLine($"{indentation}	private TValue Get<TValue>(string propertyName, TValue value, ModelPropertyState state)");
-			builder.AppendLine($"{indentation}	{{");
-			builder.AppendLine($"{indentation}		if (_modelState == ModelState.Unset)");
-			builder.AppendLine($"{indentation}		{{");
-			builder.AppendLine($"{indentation}			Coerce();");
-			builder.AppendLine($"{indentation}			Validate();");
-			builder.AppendLine($"{indentation}		}}");
-			builder.AppendLine($"{indentation}		else if (_modelState == ModelState.Unvalidated)");
-			builder.AppendLine($"{indentation}			Validate();");
-			builder.AppendLine($"{indentation}		");
-			builder.AppendLine($"{indentation}		return state == ModelPropertyState.Valid");
-			builder.AppendLine($"{indentation}			? value");
-			builder.AppendLine($"{indentation}			: throw new DataInvalidException(_errorDictionary[propertyName]);");
-			builder.AppendLine($"{indentation}	}}");
-			builder.AppendLine($"{indentation}	");
-			builder.AppendLine($"{indentation}	private void Set<TValue>(TValue newValue, ref TValue value, ref ModelPropertyState state)");
-			builder.AppendLine($"{indentation}	{{");
-			builder.AppendLine($"{indentation}		value = newValue;");
-			builder.AppendLine($"{indentation}		state = ModelPropertyState.Unvalidated;");
-			builder.AppendLine($"{indentation}		");
-			builder.AppendLine($"{indentation}		if (_modelState == ModelState.Validated)");
-			builder.AppendLine($"{indentation}			_modelState = ModelState.Unvalidated;");
-			builder.AppendLine($"{indentation}		");
-			builder.AppendLine($"{indentation}		_errorDictionary.Clear();");
-			builder.AppendLine($"{indentation}	}}");
-			builder.AppendLine($"{indentation}	");
-			builder.AppendLine($"{indentation}	private void Coerce()");
-			builder.AppendLine($"{indentation}	{{");
-
-			foreach (var property in properties)
-			{
-				var lowercaseName = $"_{Char.ToLower(property.Name[0])}{property.Name.Substring(1)}";
-
-				builder.AppendLine($"{indentation}		if ({lowercaseName}_State == ModelPropertyState.Unset)");
-				builder.AppendLine($"{indentation}			{lowercaseName}_Property.CoerceUnset(nameof({property.Name}), ref {lowercaseName}, ref {lowercaseName}_State, ref _errorDictionary);");
-				builder.AppendLine($"{indentation}		");
-			}
-
-			builder.AppendLine($"{indentation}		_modelState = ModelState.Unvalidated;");
-			builder.AppendLine($"{indentation}	}}");
-			builder.AppendLine($"{indentation}	");
-			builder.AppendLine($"{indentation}	private void Validate()");
-			builder.AppendLine($"{indentation}	{{");
-			builder.AppendLine($"{indentation}		var view = new ModelView(this);");
-			builder.AppendLine($"{indentation}		");
-
-			foreach (var property in properties)
-			{
-				var lowercaseName = $"_{Char.ToLower(property.Name[0])}{property.Name.Substring(1)}";
-
-				builder.AppendLine($"{indentation}		if ({lowercaseName}_State != ModelPropertyState.CoerceFailed)");
-				builder.AppendLine($"{indentation}			{lowercaseName}_Property.Validate(view, nameof({property.Name}), {lowercaseName}, ref {lowercaseName}_State, ref _errorDictionary);");
-				builder.AppendLine($"{indentation}		");
-			}
-
-			builder.AppendLine($"{indentation}		_modelState = ModelState.Validated;");
-			builder.AppendLine($"{indentation}	}}");
-			builder.AppendLine($"{indentation}	");
-			builder.AppendLine($"{indentation}	public struct ModelView");
-			builder.AppendLine($"{indentation}	{{");
-			builder.AppendLine($"{indentation}		private {modelName} _model;");
-			builder.AppendLine($"{indentation}		");
-			builder.AppendLine($"{indentation}		public ModelView({modelName} model)");
-			builder.AppendLine($"{indentation}			=> _model = model;");
-
-			foreach (var property in properties)
-			{
-				var lowercaseName = $"_{Char.ToLower(property.Name[0])}{property.Name.Substring(1)}";
-
-				var propertyTypeName = (property.Type as INamedTypeSymbol).TypeArguments[0].GetTypeNameRelativeTo("System");
-
-				builder.AppendLine($"{indentation}		");
-				builder.AppendLine($"{indentation}		public Result<{propertyTypeName}, ModelPropertyNotSet> {property.Name} => Get(_model.{lowercaseName}, _model.{lowercaseName}_State);");
-			}
-
-			builder.AppendLine($"{indentation}		");
-			builder.AppendLine($"{indentation}		private Result<TValue, ModelPropertyNotSet> Get<TValue>(TValue value, ModelPropertyState state)");
-			builder.AppendLine($"{indentation}		{{");
-			builder.AppendLine($"{indentation}			if (_model._modelState == ModelState.Unset)");
-			builder.AppendLine($"{indentation}				_model.Coerce();");
-			builder.AppendLine($"{indentation}				");
-			builder.AppendLine($"{indentation}				return Result");
-			builder.AppendLine($"{indentation}					.Create");
-			builder.AppendLine($"{indentation}					(");
-			builder.AppendLine($"{indentation}						state != ModelPropertyState.CoerceFailed,");
-			builder.AppendLine($"{indentation}						value,");
-			builder.AppendLine($"{indentation}						ModelPropertyNotSet.Value");
-			builder.AppendLine($"{indentation}					);");
-			builder.AppendLine($"{indentation}		}}");
-			builder.AppendLine($"{indentation}	}}");
-			builder.AppendLine($"{indentation}}}");
-
-			if (hasNamespace)
-				builder.AppendLine($"}}");
-
-			return builder.ToString();
+			return modelNamespaceSuccess && modelParentClassesSuccess && modelNameSuccess;
 		}
 	}
 }

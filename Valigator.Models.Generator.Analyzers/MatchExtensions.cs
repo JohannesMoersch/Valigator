@@ -41,7 +41,7 @@ namespace Valigator.Models.Generator.Analyzers
 
 					if (num >= match.Groups.Count)
 					{
-						errorMessage = $"No group captured for ${{{num}}}";
+						errorMessage = $"No group captured for ${{{num}}}.";
 						return false;
 					}
 
