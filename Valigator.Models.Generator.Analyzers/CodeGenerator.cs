@@ -29,7 +29,7 @@ namespace Valigator.Models.Generator.Analyzers
 			return builder.ToString();
 		}
 
-		public static string GenerateModel(ITypeSymbol definitionType, AttributeData generatedModelAttribute, INamedTypeSymbol generateModelDefaultsAttributeType, INamedTypeSymbol propertyAttributeType, string modelNamespace, string modelName)
+		public static string GenerateModel(ITypeSymbol definitionType, AttributeData generatedModelAttribute, INamedTypeSymbol generateModelDefaultsAttributeType, INamedTypeSymbol propertyAttributeType, string modelNamespace, string[] parentClasses, string modelName)
 		{
 			var properties = definitionType
 				.GetMembers()
@@ -61,6 +61,14 @@ namespace Valigator.Models.Generator.Analyzers
 			{
 				builder.AppendLine($"namespace {modelNamespace}");
 				builder.AppendLine($"{{");
+			}
+
+			foreach (var parentClass in parentClasses)
+			{
+				builder.AppendLine($"{indentation}public partial class {parentClass}");
+				builder.AppendLine($"{indentation}{{");
+
+				indentation += "\t";
 			}
 
 			builder.AppendLine($"{indentation}public partial class {modelName}");
@@ -200,6 +208,13 @@ namespace Valigator.Models.Generator.Analyzers
 			builder.AppendLine($"{indentation}		}}");
 			builder.AppendLine($"{indentation}	}}");
 			builder.AppendLine($"{indentation}}}");
+
+			foreach (var parentClass in parentClasses)
+			{
+				indentation = indentation.Substring(1);
+
+				builder.AppendLine($"{indentation}}}");
+			}
 
 			if (hasNamespace)
 				builder.AppendLine($"}}");

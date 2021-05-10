@@ -10,20 +10,23 @@ namespace Valigator.Models.Generator.Tests
 	{
 	}
 
-	[GenerateModel(ModelName = "NewTestModel")]
+	[GenerateModel(ModelName = "NewTestModel", ModelParentClasses = "TestTest+Other")]
 	public partial class ThingsAndStuffDefinition
 	{
 		public Property<int> Test { get; } = Data.Value<int>().Required();
 	}
 
-	public static class Stuff
+	public partial class TestTest
 	{
-		public static void Things()
+		public static class Stuff
 		{
-			NewTestModel c;
+			public static void Things()
+			{
+				Other.NewTestModel c;
 
-			Other a = default;
-			Blah b = default;
+				Other a = default;
+				Blah b = default;
+			}
 		}
 	}
 
