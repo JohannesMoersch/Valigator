@@ -18,6 +18,8 @@ namespace Valigator.Models.Generator.Tests
 
 	public partial class TestTest
 	{
+		public partial class Other { }
+
 		public static class Stuff
 		{
 			public static void Things()

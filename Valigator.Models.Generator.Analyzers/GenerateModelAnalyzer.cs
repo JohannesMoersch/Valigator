@@ -22,7 +22,8 @@ namespace Valigator.Models.Generator.Analyzers
 					AnalyzerDiagnosticDescriptors.ModelDefinitionPropertyDoesNotHaveGetter, 
 					AnalyzerDiagnosticDescriptors.ModelDefinitionPropertyHasSetter,
 					AnalyzerDiagnosticDescriptors.ModelDefinitionModelIdentifierMatchFailed,
-					AnalyzerDiagnosticDescriptors.ModelDefinitionModelIdentifierInvalid
+					AnalyzerDiagnosticDescriptors.ModelDefinitionModelIdentifierInvalid,
+					AnalyzerDiagnosticDescriptors.ParentClassNotPartialClass
 				);
 
 		private CodeDomProvider CodeProvider { get; } = CodeDomProvider.CreateProvider("csharp");
@@ -49,6 +50,8 @@ namespace Valigator.Models.Generator.Analyzers
 						if (typeSymbol.TryGetAttribute(generateModelAttributeType, out var generateModelAttribute))
 						{
 							CheckForNotPartialClass(context, classSyntax);
+
+							CheckForParentsNotPartialClass(context, classSyntax, typeSymbol, generateModelAttribute, generateModelDefaultsAttributeType);
 
 							CheckForModelIdentifierIssues(context, classSyntax, typeSymbol, generateModelAttribute, generateModelDefaultsAttributeType);
 
@@ -91,6 +94,39 @@ namespace Valigator.Models.Generator.Analyzers
 							Location.Create(classSyntax.SyntaxTree, classSyntax.Identifier.Span)
 						)
 					);
+			}
+		}
+
+		private void CheckForParentsNotPartialClass(SyntaxNodeAnalysisContext context, ClassDeclarationSyntax classSyntax, INamedTypeSymbol typeSymbol, AttributeData generateModelAttribute, INamedTypeSymbol generateModelDefaultsAttributeType)
+		{
+			var typeName = typeSymbol.GetFullNameWithNamespace();
+
+			if (generateModelAttribute.TryGetGeneratedModelNamespace(typeName, generateModelDefaultsAttributeType, out var modelNamespace, out _, out _) && generateModelAttribute.TryGetGeneratedModelParentClasses(typeName, generateModelDefaultsAttributeType, out var modelParentClasses, out _, out _))
+			{
+				var nonPartialParentClasses = context
+					.SemanticModel
+					.LookupNamespaceAndTypeSymbols(modelNamespace, modelParentClasses)
+					.OfType<ITypeSymbol>()
+					.Where(c => c.GetDeclaringSyntaxReferences(context.CancellationToken).Any(s => !s.IsPartial()))
+					.ToArray();
+
+				if (nonPartialParentClasses.Any())
+				{
+					var messageParameter = nonPartialParentClasses.Length > 1
+						? $"classes {nonPartialParentClasses.Select(t => $"\"{t.Name}\"").JoinListWithOxfordComma()} are"
+						: $"class \"{nonPartialParentClasses[0].Name}\" is";
+
+					context
+						.ReportDiagnostic
+						(
+							Diagnostic.Create
+							(
+								AnalyzerDiagnosticDescriptors.ParentClassNotPartialClass,
+								Location.Create(classSyntax.SyntaxTree, classSyntax.Identifier.Span),
+								messageParameter
+							)
+						);
+				}
 			}
 		}
 

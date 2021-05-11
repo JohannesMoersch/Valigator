@@ -29,17 +29,17 @@ namespace Valigator.Models.Generator.Analyzers
 			var diagnostic = context.Diagnostics.First();
 			var diagnosticSpan = diagnostic.Location.SourceSpan;
 
-			var propertyDeclaration = root
+			var propertySyntax = root
 				?.FindToken(diagnosticSpan.Start)
 				.Parent
 				?.AncestorsAndSelf()
 				.OfType<PropertyDeclarationSyntax>()
 				.First();
 
-			if (propertyDeclaration == null)
+			if (propertySyntax == null)
 				return;
 
-			if (propertyDeclaration.AccessorList?.Accessors.Any(accessor => accessor.Keyword.Text == "get") ?? false)
+			if (propertySyntax.AccessorList?.Accessors.Any(accessor => accessor.Keyword.Text == "get") ?? false)
 			{
 				context
 					.RegisterCodeFix
@@ -48,7 +48,7 @@ namespace Valigator.Models.Generator.Analyzers
 							.Create
 							(
 								title: "Make getter public",
-								createChangedSolution: c => MakeGetterPublic(context.Document, propertyDeclaration, c),
+								createChangedSolution: c => MakeGetterPublic(context.Document, propertySyntax, c),
 								equivalenceKey: "Make getter public"
 							),
 						diagnostic
@@ -63,7 +63,7 @@ namespace Valigator.Models.Generator.Analyzers
 							.Create
 							(
 								title: "Add getter",
-								createChangedSolution: c => AddGetter(context.Document, propertyDeclaration, c),
+								createChangedSolution: c => AddGetter(context.Document, propertySyntax, c),
 								equivalenceKey: "Add getter"
 							),
 						diagnostic
@@ -71,9 +71,9 @@ namespace Valigator.Models.Generator.Analyzers
 			}
 		}
 
-		private async Task<Solution> MakeGetterPublic(Document document, PropertyDeclarationSyntax propertyDeclaration, CancellationToken cancellationToken)
+		private async Task<Solution> MakeGetterPublic(Document document, PropertyDeclarationSyntax propertySyntax, CancellationToken cancellationToken)
 		{
-			var newAccessors = propertyDeclaration
+			var newAccessors = propertySyntax
 				.AccessorList
 				?.Accessors
 				.Select(accessor => accessor.Keyword.Text != "get"
@@ -83,11 +83,11 @@ namespace Valigator.Models.Generator.Analyzers
 
 			var newSyntaxList = new SyntaxList<AccessorDeclarationSyntax>(newAccessors);
 
-			var newPropertyDeclaration = propertyDeclaration.WithAccessorList(propertyDeclaration.AccessorList?.WithAccessors(newSyntaxList) ?? SyntaxFactory.AccessorList(newSyntaxList));
+			var newPropertyDeclaration = propertySyntax.WithAccessorList(propertySyntax.AccessorList?.WithAccessors(newSyntaxList) ?? SyntaxFactory.AccessorList(newSyntaxList));
 
 			var syntaxRoot = await document.GetSyntaxRootAsync(cancellationToken);
 
-			var newSyntaxRoot = syntaxRoot.ReplaceNode(propertyDeclaration, newPropertyDeclaration);
+			var newSyntaxRoot = syntaxRoot.ReplaceNode(propertySyntax, newPropertyDeclaration);
 
 			return document.Project.Solution.WithDocumentSyntaxRoot(document.Id, newSyntaxRoot);
 		}

@@ -10,7 +10,7 @@ namespace Valigator.Models.Generator.Analyzers
 {
 	public sealed class GenerateModelSyntaxReceiver : ISyntaxReceiver
 	{
-		private List<ClassDeclarationSyntax> _candidates = new List<ClassDeclarationSyntax>();
+		private readonly List<ClassDeclarationSyntax> _candidates = new List<ClassDeclarationSyntax>();
 		public IReadOnlyList<ClassDeclarationSyntax> Candidates => _candidates;
 
 		public void OnVisitSyntaxNode(SyntaxNode syntaxNode)

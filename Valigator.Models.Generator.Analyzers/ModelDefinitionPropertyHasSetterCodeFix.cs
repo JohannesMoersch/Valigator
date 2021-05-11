@@ -29,14 +29,14 @@ namespace Valigator.Models.Generator.Analyzers
 			var diagnostic = context.Diagnostics.First();
 			var diagnosticSpan = diagnostic.Location.SourceSpan;
 
-			var propertyDeclaration = root
+			var propertySyntax = root
 				?.FindToken(diagnosticSpan.Start)
 				.Parent
 				?.AncestorsAndSelf()
 				.OfType<PropertyDeclarationSyntax>()
 				.First();
 
-			if (propertyDeclaration == null)
+			if (propertySyntax == null)
 				return;
 
 			context
@@ -46,22 +46,22 @@ namespace Valigator.Models.Generator.Analyzers
 						.Create
 						(
 							title: "Remove setter",
-							createChangedSolution: c => RemoveSetter(context.Document, propertyDeclaration, c),
+							createChangedSolution: c => RemoveSetter(context.Document, propertySyntax, c),
 							equivalenceKey: "Remove setter"
 						),
 					diagnostic
 				);
 		}
 
-		private async Task<Solution> RemoveSetter(Document document, PropertyDeclarationSyntax propertyDeclaration, CancellationToken cancellationToken)
+		private async Task<Solution> RemoveSetter(Document document, PropertyDeclarationSyntax propertySyntax, CancellationToken cancellationToken)
 		{
-			var newSyntaxList = new SyntaxList<AccessorDeclarationSyntax>(propertyDeclaration.AccessorList?.Accessors.Where(accessor => accessor.Keyword.Text != "set"));
+			var newSyntaxList = new SyntaxList<AccessorDeclarationSyntax>(propertySyntax.AccessorList?.Accessors.Where(accessor => accessor.Keyword.Text != "set"));
 
-			var newPropertyDeclaration = propertyDeclaration.WithAccessorList(propertyDeclaration.AccessorList?.WithAccessors(newSyntaxList) ?? SyntaxFactory.AccessorList(newSyntaxList));
+			var newPropertyDeclaration = propertySyntax.WithAccessorList(propertySyntax.AccessorList?.WithAccessors(newSyntaxList) ?? SyntaxFactory.AccessorList(newSyntaxList));
 
 			var syntaxRoot = await document.GetSyntaxRootAsync(cancellationToken);
 
-			var newSyntaxRoot = syntaxRoot.ReplaceNode(propertyDeclaration, newPropertyDeclaration);
+			var newSyntaxRoot = syntaxRoot.ReplaceNode(propertySyntax, newPropertyDeclaration);
 
 			return document.Project.Solution.WithDocumentSyntaxRoot(document.Id, newSyntaxRoot);
 		}

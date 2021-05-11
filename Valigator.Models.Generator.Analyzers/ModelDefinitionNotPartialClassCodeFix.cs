@@ -29,14 +29,14 @@ namespace Valigator.Models.Generator.Analyzers
 			var diagnostic = context.Diagnostics.First();
 			var diagnosticSpan = diagnostic.Location.SourceSpan;
 
-			var classDeclaration = root
+			var classSyntax = root
 				?.FindToken(diagnosticSpan.Start)
 				.Parent
 				?.AncestorsAndSelf()
 				.OfType<ClassDeclarationSyntax>()
 				.First();
 
-			if (classDeclaration == null)
+			if (classSyntax == null)
 				return;
 
 			context
@@ -46,20 +46,20 @@ namespace Valigator.Models.Generator.Analyzers
 						.Create
 						(
 							title: "Make partial",
-							createChangedSolution: c => MakeClassPartial(context.Document, classDeclaration, c),
+							createChangedSolution: c => MakeClassPartial(context.Document, classSyntax, c),
 							equivalenceKey: "Make partial"
 						),
 					diagnostic
 				);
 		}
 
-		private async Task<Solution> MakeClassPartial(Document document, ClassDeclarationSyntax classDeclaration, CancellationToken cancellationToken)
+		private async Task<Solution> MakeClassPartial(Document document, ClassDeclarationSyntax classSyntax, CancellationToken cancellationToken)
 		{
-			var newClassDeclaration = classDeclaration.WithModifiers(classDeclaration.Modifiers.Add(SyntaxFactory.Token(SyntaxKind.PartialKeyword)));
+			var newClassDeclaration = classSyntax.WithModifiers(classSyntax.Modifiers.Add(SyntaxFactory.Token(SyntaxKind.PartialKeyword)));
 
 			var syntaxRoot = await document.GetSyntaxRootAsync(cancellationToken);
 
-			var newSyntaxRoot = syntaxRoot.ReplaceNode(classDeclaration, newClassDeclaration);
+			var newSyntaxRoot = syntaxRoot.ReplaceNode(classSyntax, newClassDeclaration);
 
 			return document.Project.Solution.WithDocumentSyntaxRoot(document.Id, newSyntaxRoot);
 		}

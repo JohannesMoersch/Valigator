@@ -1,8 +1,10 @@
 ﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace Valigator.Models.Generator.Analyzers
 {
@@ -62,6 +64,12 @@ namespace Valigator.Models.Generator.Analyzers
 					yield return t;
 			yield return type;
 		}
+
+		public static IEnumerable<TypeDeclarationSyntax> GetDeclaringSyntaxReferences(this ITypeSymbol typeSymbol, CancellationToken cancellationToken)
+			=> typeSymbol
+				.DeclaringSyntaxReferences
+				.Select(s => s.GetSyntax(cancellationToken))
+				.OfType<TypeDeclarationSyntax>();
 
 		public static string GetFullNameWithNamespace(this ITypeSymbol typeSymbol)
 		{
