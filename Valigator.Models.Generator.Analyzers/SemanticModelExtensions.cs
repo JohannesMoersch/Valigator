@@ -8,7 +8,17 @@ namespace Valigator.Models.Generator.Analyzers
 {
 	public static class SemanticModelExtensions
 	{
-		public static IEnumerable<INamespaceOrTypeSymbol> LookupNamespaceAndTypeSymbols(this SemanticModel semanticModel, string[] namespaceParts, string[] parentClasses)
+		public static INamespaceOrTypeSymbol[] LookupNamespaceAndTypeSymbols(this SemanticModel semanticModel, string[] namespaceParts, string[] parentClasses)
+		{
+			var symbols = InternalLookupNamespaceAndTypeSymbols(semanticModel, namespaceParts, parentClasses).ToArray();
+
+			return Enumerable
+				.Range(0, namespaceParts.Length + parentClasses.Length)
+				.Select(i => i < symbols.Length ? symbols[i] : null)
+				.ToArray();
+		}
+
+		private static IEnumerable<INamespaceOrTypeSymbol> InternalLookupNamespaceAndTypeSymbols(SemanticModel semanticModel, string[] namespaceParts, string[] parentClasses)
 		{
 			INamespaceOrTypeSymbol parentSymbol = null;
 

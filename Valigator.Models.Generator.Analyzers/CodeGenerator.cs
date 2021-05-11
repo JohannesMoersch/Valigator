@@ -57,8 +57,10 @@ namespace Valigator.Models.Generator.Analyzers
 			return builder.ToString();
 		}
 
-		public static string GenerateModel(ITypeSymbol definitionType, AttributeData generatedModelAttribute, INamedTypeSymbol generateModelDefaultsAttributeType, INamedTypeSymbol propertyAttributeType, string modelNamespace, string[] parentClasses, string modelName, CancellationToken cancellationToken)
+		public static string GenerateModel(SemanticModel semanticModel, ITypeSymbol definitionType, AttributeData generatedModelAttribute, INamedTypeSymbol generateModelDefaultsAttributeType, INamedTypeSymbol propertyAttributeType, string[] modelNamespaceParts, string[] parentClasses, string modelName, CancellationToken cancellationToken)
 		{
+			var modelNamespace = String.Join(".", modelNamespaceParts);
+
 			var properties = definitionType
 				.GetMembers()
 				.OfType<IPropertySymbol>()
@@ -93,9 +95,13 @@ namespace Valigator.Models.Generator.Analyzers
 				indentation += "\t";
 			}
 
-			foreach (var parentClass in parentClasses)
+			var typeSymbols = semanticModel.LookupNamespaceAndTypeSymbols(modelNamespaceParts, parentClasses);
+
+			for (int i = 0; i < parentClasses.Length; ++i)
 			{
-				builder.AppendLine($"{indentation}public partial class {parentClass}");
+				var parentClassType = (typeSymbols[i + modelNamespaceParts.Length] as ITypeSymbol)?.TypeKind.ToCSharpCodeString() ?? "class";
+
+				builder.AppendLine($"{indentation}public partial {parentClassType} {parentClasses[i]}");
 				builder.AppendLine($"{indentation}{{");
 
 				indentation += "\t";

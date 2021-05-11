@@ -22,9 +22,9 @@ namespace Valigator.Models.Generator.Tests
 		}
 	}
 
-	public partial class TestTest
+	public partial struct TestTest
 	{
-		public partial class Other { }
+		public partial interface Other { }
 
 		public static class Stuff
 		{

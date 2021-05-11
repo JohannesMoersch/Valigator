@@ -27,10 +27,11 @@ namespace Valigator.Models.Generator.Analyzers
 				
 				foreach (var candidate in receiver.Candidates)
 				{
-					var typeSymbol = context
+					var semanticModel = context
 						.Compilation
-						.GetSemanticModel(candidate.SyntaxTree)
-						.GetDeclaredSymbol(candidate);
+						.GetSemanticModel(candidate.SyntaxTree);
+
+					var typeSymbol = semanticModel.GetDeclaredSymbol(candidate);
 
 					if (typeSymbol != null && typeSymbol.TryGetAttribute(generateModelAttributeType, out var generateModelAttribute) && candidate.IsPartial())
 					{
@@ -43,7 +44,7 @@ namespace Valigator.Models.Generator.Analyzers
 						)
 						{
 							context.AddSource($"{typeSymbol.Name}.g.cs", CodeGenerator.GenerateDefinition(typeSymbol, String.Join(".", modelNamespace.Concat(modelParentClasses)), $"{modelName}.ModelView"));
-							context.AddSource($"{modelName}.g.cs", CodeGenerator.GenerateModel(typeSymbol, generateModelAttribute, generateModelDefaultsAttributeType, propertyAttributeType, String.Join(".", modelNamespace), modelParentClasses, modelName, context.CancellationToken));
+							context.AddSource($"{modelName}.g.cs", CodeGenerator.GenerateModel(semanticModel, typeSymbol, generateModelAttribute, generateModelDefaultsAttributeType, propertyAttributeType, modelNamespace, modelParentClasses, modelName, context.CancellationToken));
 						}
 						else
 							context.AddSource($"{typeSymbol.Name}.g.cs", CodeGenerator.GenerateDefinition(typeSymbol, String.Empty, "object"));
