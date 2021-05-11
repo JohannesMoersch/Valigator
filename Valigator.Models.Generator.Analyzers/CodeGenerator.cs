@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace Valigator.Models.Generator.Analyzers
 {
@@ -29,13 +30,13 @@ namespace Valigator.Models.Generator.Analyzers
 			return builder.ToString();
 		}
 
-		public static string GenerateModel(ITypeSymbol definitionType, AttributeData generatedModelAttribute, INamedTypeSymbol generateModelDefaultsAttributeType, INamedTypeSymbol propertyAttributeType, string modelNamespace, string[] parentClasses, string modelName)
+		public static string GenerateModel(ITypeSymbol definitionType, AttributeData generatedModelAttribute, INamedTypeSymbol generateModelDefaultsAttributeType, INamedTypeSymbol propertyAttributeType, string modelNamespace, string[] parentClasses, string modelName, CancellationToken cancellationToken)
 		{
 			var properties = definitionType
 				.GetMembers()
 				.OfType<IPropertySymbol>()
 				.Where(property => !property.IsStatic)
-				.Select(property => (symbol: property, syntax: property.GetDeclarationSyntax()))
+				.Select(property => (symbol: property, syntax: property.GetDeclarationSyntax(cancellationToken)))
 				.Where(property => property.syntax.IsPublic())
 				.Where(property => (property.syntax.TryGetGetAccessor(out var getAccessor) && !getAccessor.IsPrivate()) || property.syntax.ExpressionBody != null)
 				.Where(property => property.syntax.Type.IsModelDefinitionProperty())

@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace Valigator.Models.Generator.Analyzers
 {
@@ -55,7 +56,7 @@ namespace Valigator.Models.Generator.Analyzers
 
 							CheckForModelIdentifierIssues(context, classSyntax, typeSymbol, generateModelAttribute, generateModelDefaultsAttributeType);
 
-							foreach (var propertySyntax in GetPublicModelDefinitionProperties(typeSymbol))
+							foreach (var propertySyntax in GetPublicModelDefinitionProperties(typeSymbol, context.CancellationToken))
 							{
 								CheckForPropertyDoesNotHaveGetter(context, propertySyntax);
 
@@ -73,11 +74,11 @@ namespace Valigator.Models.Generator.Analyzers
 			generateModelDefaultsAttributeType = context.Compilation.GetTypeByMetadataName(ExternalConstants.GenerateModelDefaultsAttribute_TypeName);
 		}
 
-		private static IEnumerable<PropertyDeclarationSyntax> GetPublicModelDefinitionProperties(INamedTypeSymbol typeSymbol)
+		private static IEnumerable<PropertyDeclarationSyntax> GetPublicModelDefinitionProperties(INamedTypeSymbol typeSymbol, CancellationToken cancellationToken)
 			=> typeSymbol
 				.GetProperties()
 				.Where(property => !property.IsStatic && !property.IsImplicitlyDeclared)
-				.Select(symbol => symbol.GetDeclarationSyntax())
+				.Select(symbol => symbol.GetDeclarationSyntax(cancellationToken))
 				.Where(property => property.IsPublic())
 				.Where(property => property.Type.IsModelDefinitionProperty());
 

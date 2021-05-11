@@ -43,7 +43,7 @@ namespace Valigator.Models.Generator.Analyzers
 						)
 						{
 							context.AddSource($"{typeSymbol.Name}.g.cs", CodeGenerator.GenerateDefinition(typeSymbol, String.Join(".", modelNamespace), $"{String.Join(".", modelParentClasses.Concat(new[] { modelName }))}.ModelView"));
-							context.AddSource($"{modelName}.g.cs", CodeGenerator.GenerateModel(typeSymbol, generateModelAttribute, generateModelDefaultsAttributeType, propertyAttributeType, String.Join(".", modelNamespace), modelParentClasses, modelName));
+							context.AddSource($"{modelName}.g.cs", CodeGenerator.GenerateModel(typeSymbol, generateModelAttribute, generateModelDefaultsAttributeType, propertyAttributeType, String.Join(".", modelNamespace), modelParentClasses, modelName, context.CancellationToken));
 						}
 						else
 							context.AddSource($"{typeSymbol.Name}.g.cs", CodeGenerator.GenerateDefinition(typeSymbol, String.Empty, "object"));
