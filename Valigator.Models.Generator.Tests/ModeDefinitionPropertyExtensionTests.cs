@@ -10,10 +10,16 @@ namespace Valigator.Models.Generator.Tests
 	{
 	}
 
-	[GenerateModel(ModelName = "NewTestModel", ModelParentClasses = "TestTest+Other")]
-	public partial class ThingsAndStuffDefinition
+	public partial struct Edge
 	{
-		public Property<int> Test { get; } = Data.Value<int>().Required();
+		public partial class Outer
+		{
+			[GenerateModel(ModelName = "NewTestModel", ModelParentClasses = "TestTest+Other")]
+			public partial class ThingsAndStuffDefinition
+			{
+				public Property<int> Test { get; } = Data.Value<int>().Required();
+			}
+		}
 	}
 
 	public partial class TestTest

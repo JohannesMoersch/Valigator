@@ -12,12 +12,12 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Valigator.Models.Generator.Analyzers
+namespace Valigator.Models.Generator.Analyzers.CodeFixes
 {
 	[ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(ModelDefinitionNotPartialClassCodeFix)), Shared]
-	public class ParentClassNotPartialCodeFix : CodeFixProvider
+	public class ModelParentClassNotPartialCodeFix : CodeFixProvider
 	{
-		public override ImmutableArray<string> FixableDiagnosticIds => ImmutableArray.Create(AnalyzerDiagnosticDescriptors.ParentClassNotPartialClass.Id);
+		public override ImmutableArray<string> FixableDiagnosticIds => ImmutableArray.Create(AnalyzerDiagnosticDescriptors.ModelParentClassNotPartialClass.Id);
 
 		public override FixAllProvider GetFixAllProvider()
 			=> WellKnownFixAllProviders.BatchFixer;
@@ -59,27 +59,27 @@ namespace Valigator.Models.Generator.Analyzers
 
 			var typeSymbol = semanticModel.GetDeclaredSymbol(classSyntax);
 
-			var typeName = typeSymbol.GetFullNameWithNamespace();
+			var typeName = typeSymbol.GetFullNameWithNamespace("+");
 
 			GetAttributes(semanticModel.Compilation, out var generateModelAttributeType, out var generateModelDefaultsAttributeType);
 
-			if 
+			if
 			(
 				typeSymbol.TryGetAttribute(generateModelAttributeType, out var generateModelAttribute) &&
-				generateModelAttribute.TryGetGeneratedModelNamespace(typeName, generateModelDefaultsAttributeType, out var modelNamespace, out _, out _) && 
+				generateModelAttribute.TryGetGeneratedModelNamespace(typeName, generateModelDefaultsAttributeType, out var modelNamespace, out _, out _) &&
 				generateModelAttribute.TryGetGeneratedModelParentClasses(typeName, generateModelDefaultsAttributeType, out var modelParentClasses, out _, out _)
 			)
 			{
 				var syntaxRoot = await document.GetSyntaxRootAsync(cancellationToken);
 
-				var nonPartialClasses = semanticModel
+				var nonPartialParentClasses = semanticModel
 					.LookupNamespaceAndTypeSymbols(modelNamespace, modelParentClasses)
 					.OfType<ITypeSymbol>()
 					.SelectMany(c => c.GetDeclaringSyntaxReferences(cancellationToken))
 					.Where(s => !s.IsPartial())
 					.ToArray();
 
-				var newSyntaxRoot = syntaxRoot.ReplaceNodes(nonPartialClasses, (_, typeSyntax) => typeSyntax.WithModifiers(typeSyntax.Modifiers.Add(SyntaxFactory.Token(SyntaxKind.PartialKeyword))));
+				var newSyntaxRoot = syntaxRoot.ReplaceNodes(nonPartialParentClasses, (_, typeSyntax) => typeSyntax.WithModifiers(typeSyntax.Modifiers.Add(SyntaxFactory.Token(SyntaxKind.PartialKeyword))));
 
 				return document.Project.Solution.WithDocumentSyntaxRoot(document.Id, newSyntaxRoot);
 			}

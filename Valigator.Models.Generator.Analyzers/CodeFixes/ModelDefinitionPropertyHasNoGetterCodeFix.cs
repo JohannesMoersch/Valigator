@@ -12,7 +12,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Valigator.Models.Generator.Analyzers
+namespace Valigator.Models.Generator.Analyzers.CodeFixes
 {
 	[ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(ModelDefinitionNotPartialClassCodeFix)), Shared]
 	public class ModelDefinitionPropertyHasNoGetterCodeFix : CodeFixProvider
@@ -40,7 +40,6 @@ namespace Valigator.Models.Generator.Analyzers
 				return;
 
 			if (propertySyntax.AccessorList?.Accessors.Any(accessor => accessor.Keyword.Text == "get") ?? false)
-			{
 				context
 					.RegisterCodeFix
 					(
@@ -53,9 +52,7 @@ namespace Valigator.Models.Generator.Analyzers
 							),
 						diagnostic
 					);
-			}
 			else
-			{
 				context
 					.RegisterCodeFix
 					(
@@ -68,7 +65,6 @@ namespace Valigator.Models.Generator.Analyzers
 							),
 						diagnostic
 					);
-			}
 		}
 
 		private async Task<Solution> MakeGetterPublic(Document document, PropertyDeclarationSyntax propertySyntax, CancellationToken cancellationToken)

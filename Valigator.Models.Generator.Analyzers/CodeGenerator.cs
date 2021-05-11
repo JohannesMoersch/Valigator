@@ -12,20 +12,47 @@ namespace Valigator.Models.Generator.Analyzers
 		public static string GenerateDefinition(ITypeSymbol definitionType, string modelNamespace, string modelName)
 		{
 			var definitionNamespace = definitionType.GetFullNamespace();
-			var modelNamespaceToUse = String.IsNullOrEmpty(modelNamespace) || definitionNamespace == modelNamespace
-				? String.Empty
-				: $"{modelNamespace}.";
+			var parentClasses = definitionType.ContainingType?.GetTypeHierarchy().ToArray() ?? Array.Empty<ITypeSymbol>();
+
+			var modelNameAndNamespace = definitionType.GetRelativeTypeNameFrom($"{(!String.IsNullOrEmpty(modelNamespace) ? $"{modelNamespace}." : String.Empty)}{modelName}");
+
+			var hasNamespace = !String.IsNullOrEmpty(definitionNamespace);
+			var indentation = String.Empty;
 
 			var builder = new StringBuilder();
 
 			builder.AppendLine($"using Valigator;");
 			builder.AppendLine($"");
-			builder.AppendLine($"namespace {definitionNamespace}");
-			builder.AppendLine($"{{");
-			builder.AppendLine($"	public partial class {definitionType.Name} : ModelDefinition<{modelNamespaceToUse}{modelName}>");
-			builder.AppendLine($"	{{");
-			builder.AppendLine($"	}}");
-			builder.AppendLine($"}}");
+
+			if (hasNamespace)
+			{
+				builder.AppendLine($"namespace {definitionNamespace}");
+				builder.AppendLine($"{{");
+
+				indentation += "\t";
+			}
+
+			foreach (var parentClass in parentClasses)
+			{
+				builder.AppendLine($"{indentation}public partial {parentClass.TypeKind.ToCSharpCodeString()} {parentClass.Name}");
+				builder.AppendLine($"{indentation}{{");
+
+				indentation += "\t";
+			}
+
+			builder.AppendLine($"{indentation}public partial class {definitionType.Name} : ModelDefinition<{modelNameAndNamespace}>");
+			builder.AppendLine($"{indentation}{{");
+			builder.AppendLine($"{indentation}}}");
+
+			foreach (var parentClass in parentClasses)
+			{
+				indentation = indentation.Substring(1);
+
+				builder.AppendLine($"{indentation}}}");
+			}
+
+			if (hasNamespace)
+				builder.AppendLine($"}}");
 
 			return builder.ToString();
 		}
@@ -46,7 +73,7 @@ namespace Valigator.Models.Generator.Analyzers
 			var defaultPropertyAccessors = generatedModelAttribute.GetGenerateModelPropertyValue<ExternalConstants.PropertyAccessors>(ExternalConstants.GenerateModelAttribute_DefaultPropertyAccessors_PropertyName, generateModelDefaultsAttributeType);
 
 			var hasNamespace = !String.IsNullOrEmpty(modelNamespace);
-			var indentation = hasNamespace ? "\t" : "";
+			var indentation = String.Empty;
 
 			var definitionName = definitionType.GetTypeNameRelativeTo(hasNamespace ? $"{modelNamespace}.{modelName}" : modelName);
 
@@ -62,6 +89,8 @@ namespace Valigator.Models.Generator.Analyzers
 			{
 				builder.AppendLine($"namespace {modelNamespace}");
 				builder.AppendLine($"{{");
+
+				indentation += "\t";
 			}
 
 			foreach (var parentClass in parentClasses)

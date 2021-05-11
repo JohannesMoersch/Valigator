@@ -8,17 +8,6 @@ namespace Valigator.Models.Generator.Analyzers
 {
 	public static class SymbolExtensions
 	{
-		public static bool IsDerivedFrom(this INamedTypeSymbol symbol, INamedTypeSymbol attributeTypeSymbol)
-		{
-			if (symbol.Equals(attributeTypeSymbol, SymbolEqualityComparer.Default))
-				return true;
-
-			if (symbol.BaseType != null)
-				return symbol.BaseType.IsDerivedFrom(attributeTypeSymbol);
-
-			return false;
-		}
-
 		public static bool TryGetAttribute(this ISymbol symbol, INamedTypeSymbol attributeTypeSymbol, out AttributeData attributeData)
 		{
 			attributeData = symbol

@@ -42,7 +42,7 @@ namespace Valigator.Models.Generator.Analyzers
 							codeProvider.IsValidIdentifier(modelName)
 						)
 						{
-							context.AddSource($"{typeSymbol.Name}.g.cs", CodeGenerator.GenerateDefinition(typeSymbol, String.Join(".", modelNamespace), $"{String.Join(".", modelParentClasses.Concat(new[] { modelName }))}.ModelView"));
+							context.AddSource($"{typeSymbol.Name}.g.cs", CodeGenerator.GenerateDefinition(typeSymbol, String.Join(".", modelNamespace.Concat(modelParentClasses)), $"{modelName}.ModelView"));
 							context.AddSource($"{modelName}.g.cs", CodeGenerator.GenerateModel(typeSymbol, generateModelAttribute, generateModelDefaultsAttributeType, propertyAttributeType, String.Join(".", modelNamespace), modelParentClasses, modelName, context.CancellationToken));
 						}
 						else
@@ -61,7 +61,7 @@ namespace Valigator.Models.Generator.Analyzers
 
 		private static bool TryGetModelIdentifiers(INamedTypeSymbol typeSymbol, AttributeData generateModelAttribute, INamedTypeSymbol generateModelDefaultsAttributeType, out string[] modelNamespace, out string[] modelParentClasses, out string modelName)
 		{
-			var fullTypeName = typeSymbol.GetFullNameWithNamespace();
+			var fullTypeName = typeSymbol.GetFullNameWithNamespace("+");
 
 			var modelNamespaceSuccess = generateModelAttribute
 				.TryGetGeneratedModelNamespace

@@ -57,9 +57,19 @@ namespace Valigator.Models.Generator.Analyzers
 			isEnabledByDefault: true
 		);
 
-		public static DiagnosticDescriptor ParentClassNotPartialClass { get; } = new DiagnosticDescriptor
+		public static DiagnosticDescriptor ModelDefinitionParentClassNotPartialClass { get; } = new DiagnosticDescriptor
 		(
 			id: "VL0006",
+			title: "Model Definition Parent Class Not Partial",
+			messageFormat: "Model definition parent {0} not partial.",
+			category: "Generator",
+			DiagnosticSeverity.Error,
+			isEnabledByDefault: true
+		);
+
+		public static DiagnosticDescriptor ModelParentClassNotPartialClass { get; } = new DiagnosticDescriptor
+		(
+			id: "VL0007",
 			title: "Model Parent Class Not Partial",
 			messageFormat: "Generated model parent {0} not partial.",
 			category: "Generator",

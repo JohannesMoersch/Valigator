@@ -24,7 +24,8 @@ namespace Valigator.Models.Generator.Analyzers
 					AnalyzerDiagnosticDescriptors.ModelDefinitionPropertyHasSetter,
 					AnalyzerDiagnosticDescriptors.ModelDefinitionModelIdentifierMatchFailed,
 					AnalyzerDiagnosticDescriptors.ModelDefinitionModelIdentifierInvalid,
-					AnalyzerDiagnosticDescriptors.ParentClassNotPartialClass
+					AnalyzerDiagnosticDescriptors.ModelDefinitionParentClassNotPartialClass,
+					AnalyzerDiagnosticDescriptors.ModelParentClassNotPartialClass
 				);
 
 		private CodeDomProvider CodeProvider { get; } = CodeDomProvider.CreateProvider("csharp");
@@ -52,7 +53,9 @@ namespace Valigator.Models.Generator.Analyzers
 						{
 							CheckForNotPartialClass(context, classSyntax);
 
-							CheckForParentsNotPartialClass(context, classSyntax, typeSymbol, generateModelAttribute, generateModelDefaultsAttributeType);
+							CheckForParentsNotPartialClass(context, classSyntax, typeSymbol);
+
+							CheckForModelParentsNotPartialClass(context, classSyntax, typeSymbol, generateModelAttribute, generateModelDefaultsAttributeType);
 
 							CheckForModelIdentifierIssues(context, classSyntax, typeSymbol, generateModelAttribute, generateModelDefaultsAttributeType);
 
@@ -98,9 +101,34 @@ namespace Valigator.Models.Generator.Analyzers
 			}
 		}
 
-		private void CheckForParentsNotPartialClass(SyntaxNodeAnalysisContext context, ClassDeclarationSyntax classSyntax, INamedTypeSymbol typeSymbol, AttributeData generateModelAttribute, INamedTypeSymbol generateModelDefaultsAttributeType)
+		private void CheckForParentsNotPartialClass(SyntaxNodeAnalysisContext context, ClassDeclarationSyntax classSyntax, INamedTypeSymbol typeSymbol)
 		{
-			var typeName = typeSymbol.GetFullNameWithNamespace();
+			var nonPartialParentClasses = (typeSymbol.ContainingType?.GetTypeHierarchy() ?? Enumerable.Empty<ITypeSymbol>())
+				.Where(c => c.GetDeclaringSyntaxReferences(context.CancellationToken).Any(s => !s.IsPartial()))
+				.ToArray();
+
+			if (nonPartialParentClasses.Any())
+			{
+				var messageParameter = nonPartialParentClasses.Length > 1
+					? $"classes {nonPartialParentClasses.Select(t => $"\"{t.Name}\"").JoinListWithOxfordComma()} are"
+					: $"class \"{nonPartialParentClasses[0].Name}\" is";
+
+				context
+					.ReportDiagnostic
+					(
+						Diagnostic.Create
+						(
+							AnalyzerDiagnosticDescriptors.ModelDefinitionParentClassNotPartialClass,
+							Location.Create(classSyntax.SyntaxTree, classSyntax.Identifier.Span),
+							messageParameter
+						)
+					);
+			}
+		}
+
+		private void CheckForModelParentsNotPartialClass(SyntaxNodeAnalysisContext context, ClassDeclarationSyntax classSyntax, INamedTypeSymbol typeSymbol, AttributeData generateModelAttribute, INamedTypeSymbol generateModelDefaultsAttributeType)
+		{
+			var typeName = typeSymbol.GetFullNameWithNamespace("+");
 
 			if (generateModelAttribute.TryGetGeneratedModelNamespace(typeName, generateModelDefaultsAttributeType, out var modelNamespace, out _, out _) && generateModelAttribute.TryGetGeneratedModelParentClasses(typeName, generateModelDefaultsAttributeType, out var modelParentClasses, out _, out _))
 			{
@@ -122,7 +150,7 @@ namespace Valigator.Models.Generator.Analyzers
 						(
 							Diagnostic.Create
 							(
-								AnalyzerDiagnosticDescriptors.ParentClassNotPartialClass,
+								AnalyzerDiagnosticDescriptors.ModelParentClassNotPartialClass,
 								Location.Create(classSyntax.SyntaxTree, classSyntax.Identifier.Span),
 								messageParameter
 							)
@@ -165,7 +193,7 @@ namespace Valigator.Models.Generator.Analyzers
 
 		private void CheckForModelIdentifierIssues(SyntaxNodeAnalysisContext context, ClassDeclarationSyntax classSyntax, INamedTypeSymbol typeSymbol, AttributeData generateModelAttribute, INamedTypeSymbol generateModelDefaultsAttributeType)
 		{
-			var fullTypeName = typeSymbol.GetFullNameWithNamespace();
+			var fullTypeName = typeSymbol.GetFullNameWithNamespace("+");
 
 			var modelNamespaceSuccess = generateModelAttribute
 				.TryGetGeneratedModelNamespace

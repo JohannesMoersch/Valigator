@@ -31,23 +31,30 @@ namespace Valigator.Models.Generator.Analyzers
 
 		public static string GetTypeNameRelativeTo(this ITypeSymbol type, ITypeSymbol target)
 		{
-			var typeList = type.GetFullNameWithNamespace().Split('.');
-			var targetList = target.GetFullNameWithNamespace().Split('.');
+			var typeList = type.GetFullNameWithNamespace(".").Split('.');
+			var targetList = target.GetFullNameWithNamespace(".").Split('.');
 
-			var length = Math.Min(typeList.Length, targetList.Length);
-
-			for (var i = 0; i < length; ++i)
-				if (typeList[i] != targetList[i])
-					return String.Join(".", typeList.Skip(i));
-
-			return String.Join(".", typeList.Skip(length));
+			return GetRelativeTypeName(typeList, targetList);
 		}
 
 		public static string GetTypeNameRelativeTo(this ITypeSymbol type, string target)
 		{
-			var typeList = type.GetFullNameWithNamespace().Split('.');
+			var typeList = type.GetFullNameWithNamespace(".").Split('.');
 			var targetList = target.Split('.');
 
+			return GetRelativeTypeName(typeList, targetList);
+		}
+
+		public static string GetRelativeTypeNameFrom(this ITypeSymbol target, string type)
+		{
+			var typeList = type.Split('.');
+			var targetList = target.GetFullNameWithNamespace(".").Split('.');
+
+			return GetRelativeTypeName(typeList, targetList);
+		}
+
+		private static string GetRelativeTypeName(string[] typeList, string[] targetList)
+		{
 			var length = Math.Min(typeList.Length, targetList.Length);
 
 			for (var i = 0; i < length; ++i)
@@ -57,7 +64,7 @@ namespace Valigator.Models.Generator.Analyzers
 			return String.Join(".", typeList.Skip(length));
 		}
 
-		private static IEnumerable<ITypeSymbol> GetTypeHierarchy(this ITypeSymbol type)
+		public static IEnumerable<ITypeSymbol> GetTypeHierarchy(this ITypeSymbol type)
 		{
 			if (type.ContainingType != null)
 				foreach (var t in type.ContainingType.GetTypeHierarchy())
@@ -71,10 +78,21 @@ namespace Valigator.Models.Generator.Analyzers
 				.Select(s => s.GetSyntax(cancellationToken))
 				.OfType<TypeDeclarationSyntax>();
 
-		public static string GetFullNameWithNamespace(this ITypeSymbol typeSymbol)
+		public static bool IsDerivedFrom(this ITypeSymbol symbol, INamedTypeSymbol attributeTypeSymbol)
+		{
+			if (symbol.Equals(attributeTypeSymbol, SymbolEqualityComparer.Default))
+				return true;
+
+			if (symbol.BaseType != null)
+				return symbol.BaseType.IsDerivedFrom(attributeTypeSymbol);
+
+			return false;
+		}
+
+		public static string GetFullNameWithNamespace(this ITypeSymbol typeSymbol, string classSeparator)
 		{
 			var ns = typeSymbol.GetFullNamespace();
-			var typeName = String.Join(".", typeSymbol.GetTypeHierarchy().Select(t => t.Name));
+			var typeName = String.Join(classSeparator, typeSymbol.GetTypeHierarchy().Select(t => t.Name));
 
 			if (String.IsNullOrEmpty(ns))
 				return typeName;
