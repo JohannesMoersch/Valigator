@@ -29,45 +29,94 @@ namespace Valigator.Models.Generator.Analyzers
 			{ "System.String", "string" }
 		};
 
+		public static bool TryGetTypeNameRelativeTo(this ITypeSymbol type, ITypeSymbol target, out string relativeName)
+			=> TryGetRelativeTypeName
+			(
+				type.GetFullNameWithNamespace(".").Split('.'),
+				target.GetFullNameWithNamespace(".").Split('.'),
+				out relativeName
+			);
+
 		public static string GetTypeNameRelativeTo(this ITypeSymbol type, ITypeSymbol target)
 		{
-			var typeList = type.GetFullNameWithNamespace(".").Split('.');
-			var targetList = target.GetFullNameWithNamespace(".").Split('.');
+			TryGetTypeNameRelativeTo(type, target, out var relativeName);
 
-			return GetRelativeTypeName(typeList, targetList);
+			return relativeName;
 		}
+
+		public static bool TryGetTypeNameRelativeTo(this ITypeSymbol type, string target, out string relativeName)
+			=> TryGetRelativeTypeName
+			(
+				type.GetFullNameWithNamespace(".").Split('.'),
+				target.Split('.'),
+				out relativeName
+			);
 
 		public static string GetTypeNameRelativeTo(this ITypeSymbol type, string target)
 		{
-			var typeList = type.GetFullNameWithNamespace(".").Split('.');
-			var targetList = target.Split('.');
+			TryGetTypeNameRelativeTo(type, target, out var relativeName);
 
-			return GetRelativeTypeName(typeList, targetList);
+			return relativeName;
 		}
+
+		public static bool TryGetRelativeTypeNameFrom(this ITypeSymbol target, string type, out string relativeName)
+			=> TryGetRelativeTypeName
+			(
+				type.Split('.'),
+				target.GetFullNameWithNamespace(".").Split('.'),
+				out relativeName
+			);
 
 		public static string GetRelativeTypeNameFrom(this ITypeSymbol target, string type)
 		{
-			var typeList = type.Split('.');
-			var targetList = target.GetFullNameWithNamespace(".").Split('.');
+			TryGetRelativeTypeNameFrom(target, type, out var relativeName);
 
-			return GetRelativeTypeName(typeList, targetList);
+			return relativeName;
 		}
 
-		private static string GetRelativeTypeName(string[] typeList, string[] targetList)
+		private static bool TryGetRelativeTypeName(string[] typeList, string[] targetList, out string relativeName)
 		{
 			var length = Math.Min(typeList.Length, targetList.Length);
 
-			for (var i = 0; i < length; ++i)
+			int i;
+			for (i = 0; i < length; ++i)
+			{
 				if (typeList[i] != targetList[i])
-					return String.Join(".", typeList.Skip(i));
+					break;
+			}
 
-			return String.Join(".", typeList.Skip(length));
+			relativeName = String.Join(".", typeList.Skip(i));
+			return i != 0;
 		}
 
-		public static IEnumerable<ITypeSymbol> GetTypeHierarchy(this ITypeSymbol type)
+		public static IEnumerable<ITypeSymbol> GetContainingTypeHierarchy(this ITypeSymbol type)
 		{
 			if (type.ContainingType != null)
-				foreach (var t in type.ContainingType.GetTypeHierarchy())
+				foreach (var t in type.ContainingType.GetContainingTypeHierarchy())
+					yield return t;
+			yield return type;
+		}
+
+		public static IEnumerable<ITypeSymbol> GetBaseTypeHierarchy(this ITypeSymbol type)
+		{
+			if (type.BaseType != null)
+				foreach (var t in type.BaseType.GetBaseTypeHierarchy())
+					yield return t;
+			yield return type;
+		}
+
+		public static IEnumerable<INamedTypeSymbol> GetContainingTypeHierarchy(this INamedTypeSymbol type)
+		{
+			if (type.ContainingType != null)
+				foreach (var t in type.ContainingType.GetContainingTypeHierarchy())
+					yield return t;
+			yield return type;
+		}
+
+		public static IEnumerable<INamedTypeSymbol> GetBaseTypeHierarchy(this INamedTypeSymbol type)
+		{
+			if (type.BaseType != null)
+				foreach (var t in type.BaseType.GetBaseTypeHierarchy())
 					yield return t;
 			yield return type;
 		}
@@ -92,7 +141,7 @@ namespace Valigator.Models.Generator.Analyzers
 		public static string GetFullNameWithNamespace(this ITypeSymbol typeSymbol, string classSeparator)
 		{
 			var ns = typeSymbol.GetFullNamespace();
-			var typeName = String.Join(classSeparator, typeSymbol.GetTypeHierarchy().Select(t => t.Name));
+			var typeName = String.Join(classSeparator, typeSymbol.GetContainingTypeHierarchy().Select(t => t.Name));
 
 			if (String.IsNullOrEmpty(ns))
 				return typeName;

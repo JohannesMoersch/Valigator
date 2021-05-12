@@ -103,7 +103,7 @@ namespace Valigator.Models.Generator.Analyzers
 
 		private void CheckForParentsNotPartialClass(SyntaxNodeAnalysisContext context, ClassDeclarationSyntax classSyntax, INamedTypeSymbol typeSymbol)
 		{
-			var nonPartialParentClasses = (typeSymbol.ContainingType?.GetTypeHierarchy() ?? Enumerable.Empty<ITypeSymbol>())
+			var nonPartialParentClasses = (typeSymbol.ContainingType?.GetContainingTypeHierarchy() ?? Enumerable.Empty<ITypeSymbol>())
 				.Where(c => c.GetDeclaringSyntaxReferences(context.CancellationToken).Any(s => !s.IsPartial()))
 				.ToArray();
 
@@ -217,7 +217,7 @@ namespace Valigator.Models.Generator.Analyzers
 							"model namespace",
 							fullTypeName,
 							modelNamespaceCaptureRegex,
-							modelNamespaceErrorMessage
+							!String.IsNullOrEmpty(modelNamespaceErrorMessage) ? $" {modelNamespaceErrorMessage}" : String.Empty
 						)
 					);
 			}
@@ -246,7 +246,7 @@ namespace Valigator.Models.Generator.Analyzers
 							"model parent classes",
 							fullTypeName,
 							modelParentClassesCaptureRegex,
-							modelParentClassesErrorMessage
+							!String.IsNullOrEmpty(modelParentClassesErrorMessage) ? $" {modelParentClassesErrorMessage}" : String.Empty
 						)
 					);
 			}
@@ -262,7 +262,7 @@ namespace Valigator.Models.Generator.Analyzers
 					out var modelNameCaptureRegex,
 					out var modelNameErrorMessage
 				);
-
+			
 			if (!modelNameSuccess)
 			{
 				context
@@ -275,7 +275,7 @@ namespace Valigator.Models.Generator.Analyzers
 							"model name",
 							fullTypeName,
 							modelNameCaptureRegex,
-							modelNameErrorMessage
+							!String.IsNullOrEmpty(modelNameErrorMessage) ? $" {modelNameErrorMessage}" : String.Empty
 						)
 					);
 			}

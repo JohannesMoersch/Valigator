@@ -41,7 +41,7 @@ namespace Valigator.Models.Generator.Analyzers
 		(
 			id: "VL0004",
 			title: "Model Definition Model Identifier Match Failed",
-			messageFormat: "Model definition {0} match on \"{1}\" using \"{2}\" failed. {3}",
+			messageFormat: "Model definition {0} match on \"{1}\" using \"{2}\" failed.{3}",
 			category: "Generator",
 			DiagnosticSeverity.Error,
 			isEnabledByDefault: true

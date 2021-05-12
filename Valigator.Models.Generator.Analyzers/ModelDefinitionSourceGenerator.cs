@@ -37,17 +37,17 @@ namespace Valigator.Models.Generator.Analyzers
 					{
 						if
 						(
-							TryGetModelIdentifiers(typeSymbol, generateModelAttribute, generateModelDefaultsAttributeType, out var modelNamespace, out var modelParentClasses, out var modelName) &&
-							modelNamespace.All(codeProvider.IsValidIdentifier) &&
+							TryGetModelIdentifiers(typeSymbol, generateModelAttribute, generateModelDefaultsAttributeType, out var modelNamespaceParts, out var modelParentClasses, out var modelName) &&
+							modelNamespaceParts.All(codeProvider.IsValidIdentifier) &&
 							modelParentClasses.All(codeProvider.IsValidIdentifier) &&
 							codeProvider.IsValidIdentifier(modelName)
 						)
 						{
-							context.AddSource($"{typeSymbol.Name}.g.cs", CodeGenerator.GenerateDefinition(typeSymbol, String.Join(".", modelNamespace.Concat(modelParentClasses)), $"{modelName}.ModelView"));
-							context.AddSource($"{modelName}.g.cs", CodeGenerator.GenerateModel(semanticModel, typeSymbol, generateModelAttribute, generateModelDefaultsAttributeType, propertyAttributeType, modelNamespace, modelParentClasses, modelName, context.CancellationToken));
+							context.AddSource($"{typeSymbol.Name}.g.cs", CodeGenerator.GenerateDefinition(typeSymbol, modelNamespaceParts, modelParentClasses, modelName, "ModelView"));
+							context.AddSource($"{modelName}.g.cs", CodeGenerator.GenerateModel(semanticModel, typeSymbol, generateModelAttribute, generateModelDefaultsAttributeType, propertyAttributeType, modelNamespaceParts, modelParentClasses, modelName, context.CancellationToken));
 						}
 						else
-							context.AddSource($"{typeSymbol.Name}.g.cs", CodeGenerator.GenerateDefinition(typeSymbol, String.Empty, "object"));
+							context.AddSource($"{typeSymbol.Name}.g.cs", CodeGenerator.GenerateDefinition(typeSymbol, Array.Empty<string>(), Array.Empty<string>(), "object", String.Empty));
 					}
 				}
 			}
@@ -60,7 +60,7 @@ namespace Valigator.Models.Generator.Analyzers
 			propertyAttributeType = context.Compilation.GetTypeByMetadataName(ExternalConstants.PropertyAttribute_TypeName);
 		}
 
-		private static bool TryGetModelIdentifiers(INamedTypeSymbol typeSymbol, AttributeData generateModelAttribute, INamedTypeSymbol generateModelDefaultsAttributeType, out string[] modelNamespace, out string[] modelParentClasses, out string modelName)
+		private static bool TryGetModelIdentifiers(INamedTypeSymbol typeSymbol, AttributeData generateModelAttribute, INamedTypeSymbol generateModelDefaultsAttributeType, out string[] modelNamespaceParts, out string[] modelParentClasses, out string modelName)
 		{
 			var fullTypeName = typeSymbol.GetFullNameWithNamespace("+");
 
@@ -69,7 +69,7 @@ namespace Valigator.Models.Generator.Analyzers
 				(
 					fullTypeName,
 					generateModelDefaultsAttributeType,
-					out modelNamespace,
+					out modelNamespaceParts,
 					out _,
 					out _
 				);

@@ -3,6 +3,7 @@
 	<PropertyGroup>
 		<TargetFramework>net5.0</TargetFramework>
 		<IsPackable>false</IsPackable>
+		<Nullable>enable</Nullable>
 	</PropertyGroup>
 	
 	<ItemGroup>
@@ -21,7 +22,7 @@
 	</ItemGroup>
 	
 	<ItemGroup Condition=" '$(Configuration)'=='Debug' ">
-		<PackageReference Include="Valigator.Models.Generator.Analyzers" Version="2021.130.41262" />
+		<PackageReference Include="Valigator.Models.Generator.Analyzers" Version="2021.131.37949" />
 	</ItemGroup>
 	
 	<ItemGroup>

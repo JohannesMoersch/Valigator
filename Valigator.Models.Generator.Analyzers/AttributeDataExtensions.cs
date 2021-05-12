@@ -46,7 +46,7 @@ namespace Valigator.Models.Generator.Analyzers
 			return default;
 		}
 
-		public static bool TryGetGeneratedModelNamespace(this AttributeData attributeData, string fullTypeName, INamedTypeSymbol generateModelDefaultsAttributeType, out string[] modelNamespace, out string captureRegex, out string errorMessage)
+		public static bool TryGetGeneratedModelNamespace(this AttributeData attributeData, string fullTypeName, INamedTypeSymbol generateModelDefaultsAttributeType, out string[] modelNamespaceParts, out string captureRegex, out string errorMessage)
 		{
 			var success = TryApplyGenerateModelPropertyPattern
 			(
@@ -60,7 +60,7 @@ namespace Valigator.Models.Generator.Analyzers
 				out errorMessage
 			);
 
-			modelNamespace = success && !String.IsNullOrEmpty(modelNamespaceString) ? modelNamespaceString.Split('.') : Array.Empty<string>();
+			modelNamespaceParts = success && !String.IsNullOrEmpty(modelNamespaceString) ? modelNamespaceString.Split('.') : Array.Empty<string>();
 			return success;
 		}
 

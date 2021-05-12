@@ -59,7 +59,7 @@ namespace Valigator.Models.Generator.Analyzers.CodeFixes
 
 			var typeSymbol = semanticModel.GetDeclaredSymbol(classSyntax);
 
-			var nonPartialParentClasses = (typeSymbol.ContainingType?.GetTypeHierarchy() ?? Enumerable.Empty<ITypeSymbol>())
+			var nonPartialParentClasses = (typeSymbol.ContainingType?.GetContainingTypeHierarchy() ?? Enumerable.Empty<ITypeSymbol>())
 				.SelectMany(c => c.GetDeclaringSyntaxReferences(cancellationToken))
 				.Where(s => !s.IsPartial())
 				.ToArray();

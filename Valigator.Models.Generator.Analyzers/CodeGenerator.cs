@@ -9,12 +9,14 @@ namespace Valigator.Models.Generator.Analyzers
 {
 	public static class CodeGenerator
 	{
-		public static string GenerateDefinition(ITypeSymbol definitionType, string modelNamespace, string modelName)
+		public static string GenerateDefinition(INamedTypeSymbol definitionType, string[] modelNamespaceParts, string[] modelParentClasses, string modelName, string modelViewName)
 		{
 			var definitionNamespace = definitionType.GetFullNamespace();
-			var parentClasses = definitionType.ContainingType?.GetTypeHierarchy().ToArray() ?? Array.Empty<ITypeSymbol>();
+			var parentClasses = definitionType.ContainingType?.GetContainingTypeHierarchy().ToArray() ?? Array.Empty<INamedTypeSymbol>();
 
-			var modelNameAndNamespace = definitionType.GetRelativeTypeNameFrom($"{(!String.IsNullOrEmpty(modelNamespace) ? $"{modelNamespace}." : String.Empty)}{modelName}");
+			var modelParentClassFullName = String.Join(".", modelNamespaceParts.Concat(modelParentClasses));
+
+			var modelNameAndNamespace = definitionType.GetRelativeTypeNameFrom($"{(!String.IsNullOrEmpty(modelParentClassFullName) ? $"{modelParentClassFullName}." : String.Empty)}{modelName}{definitionType.TypeParameters.ToCSharpGenericParameterCode()}");
 
 			var hasNamespace = !String.IsNullOrEmpty(definitionNamespace);
 			var indentation = String.Empty;
@@ -34,13 +36,13 @@ namespace Valigator.Models.Generator.Analyzers
 
 			foreach (var parentClass in parentClasses)
 			{
-				builder.AppendLine($"{indentation}public partial {parentClass.TypeKind.ToCSharpCodeString()} {parentClass.Name}");
+				builder.AppendLine($"{indentation}public partial {parentClass.TypeKind.ToCSharpCodeString()} {parentClass.Name}{parentClass.TypeParameters.ToCSharpGenericParameterCode()}");
 				builder.AppendLine($"{indentation}{{");
 
 				indentation += "\t";
 			}
 
-			builder.AppendLine($"{indentation}public partial class {definitionType.Name} : ModelDefinition<{modelNameAndNamespace}>");
+			builder.AppendLine($"{indentation}public sealed partial class {definitionType.Name}{definitionType.TypeParameters.ToCSharpGenericParameterCode()} : ModelDefinition<{modelNameAndNamespace}{(!String.IsNullOrEmpty(modelViewName) ? $".{modelViewName}" : modelViewName)}>");
 			builder.AppendLine($"{indentation}{{");
 			builder.AppendLine($"{indentation}}}");
 
@@ -57,9 +59,10 @@ namespace Valigator.Models.Generator.Analyzers
 			return builder.ToString();
 		}
 
-		public static string GenerateModel(SemanticModel semanticModel, ITypeSymbol definitionType, AttributeData generatedModelAttribute, INamedTypeSymbol generateModelDefaultsAttributeType, INamedTypeSymbol propertyAttributeType, string[] modelNamespaceParts, string[] parentClasses, string modelName, CancellationToken cancellationToken)
+		public static string GenerateModel(SemanticModel semanticModel, INamedTypeSymbol definitionType, AttributeData generatedModelAttribute, INamedTypeSymbol generateModelDefaultsAttributeType, INamedTypeSymbol propertyAttributeType, string[] modelNamespaceParts, string[] parentClasses, string modelName, CancellationToken cancellationToken)
 		{
 			var modelNamespace = String.Join(".", modelNamespaceParts);
+			var modelFullName = String.Join(".", modelNamespaceParts.Concat(parentClasses).Concat(new[] { modelName }));
 
 			var properties = definitionType
 				.GetMembers()
@@ -77,7 +80,7 @@ namespace Valigator.Models.Generator.Analyzers
 			var hasNamespace = !String.IsNullOrEmpty(modelNamespace);
 			var indentation = String.Empty;
 
-			var definitionName = definitionType.GetTypeNameRelativeTo(hasNamespace ? $"{modelNamespace}.{modelName}" : modelName);
+			var definitionName = $"{definitionType.GetTypeNameRelativeTo(modelFullName)}{definitionType.TypeParameters.ToCSharpGenericParameterCode()}";
 
 			var builder = new StringBuilder();
 
@@ -99,15 +102,19 @@ namespace Valigator.Models.Generator.Analyzers
 
 			for (int i = 0; i < parentClasses.Length; ++i)
 			{
-				var parentClassType = (typeSymbols[i + modelNamespaceParts.Length] as ITypeSymbol)?.TypeKind.ToCSharpCodeString() ?? "class";
+				var parentClassSymbol = typeSymbols[i + modelNamespaceParts.Length] as INamedTypeSymbol;
 
-				builder.AppendLine($"{indentation}public partial {parentClassType} {parentClasses[i]}");
+				builder.AppendLine($"{indentation}public partial {(parentClassSymbol?.TypeKind.ToCSharpCodeString() ?? "class")} {parentClasses[i]}");
 				builder.AppendLine($"{indentation}{{");
 
 				indentation += "\t";
 			}
 
-			builder.AppendLine($"{indentation}public partial class {modelName}");
+			builder.AppendLine($"{indentation}public sealed partial class {modelName}{definitionType.TypeParameters.ToCSharpGenericParameterCode()}");
+
+			foreach (var constraint in definitionType.TypeParameters.ToCSharpGenericParameterConstraintsCode(modelFullName, "System"))
+				builder.AppendLine($"{indentation}\t{constraint}");
+
 			builder.AppendLine($"{indentation}{{");
 			builder.AppendLine($"{indentation}	static {modelName}()");
 			builder.AppendLine($"{indentation}	{{");
@@ -122,7 +129,7 @@ namespace Valigator.Models.Generator.Analyzers
 
 			builder.AppendLine($"{indentation}	}}");
 			builder.AppendLine($"{indentation}	");
-			builder.AppendLine($"{indentation}	public static {definitionType.GetTypeNameRelativeTo(hasNamespace ? $"{modelNamespace}.{modelName}" : modelName)} ModelDefinition {{ get; }}");
+			builder.AppendLine($"{indentation}	public static {definitionName} ModelDefinition {{ get; }}");
 			builder.AppendLine($"{indentation}	");
 			builder.AppendLine($"{indentation}	private ModelErrorDictionary _errorDictionary = new ModelErrorDictionary();");
 			builder.AppendLine($"{indentation}	");
@@ -137,10 +144,15 @@ namespace Valigator.Models.Generator.Analyzers
 
 				var lowercaseName = $"_{Char.ToLower(property.Name[0])}{property.Name.Substring(1)}";
 
-				var propertyTypeName = (property.Type as INamedTypeSymbol).TypeArguments[0].GetTypeNameRelativeTo("System");
+				var propertyType = (property.Type as INamedTypeSymbol).TypeArguments[0];
+				var propertyTypeName = propertyType is ITypeParameterSymbol parameter
+					? parameter.Name
+					: propertyType.TryGetTypeNameRelativeTo(modelFullName, out var relativeName)
+						? relativeName
+						: propertyType.GetTypeNameRelativeTo("System");
 
 				builder.AppendLine($"{indentation}	");
-				builder.AppendLine($"{indentation}	private static ModelDefinition<ModelView>.Property<int> {lowercaseName}_Property;");
+				builder.AppendLine($"{indentation}	private static ModelDefinition<ModelView>.Property<{propertyTypeName}> {lowercaseName}_Property;");
 				builder.AppendLine($"{indentation}	private ModelPropertyState {lowercaseName}_State;");
 				builder.AppendLine($"{indentation}	private {propertyTypeName} {lowercaseName};");
 				builder.AppendLine($"{indentation}	public {propertyTypeName} {property.Name}");
@@ -213,16 +225,21 @@ namespace Valigator.Models.Generator.Analyzers
 			builder.AppendLine($"{indentation}	");
 			builder.AppendLine($"{indentation}	public struct ModelView");
 			builder.AppendLine($"{indentation}	{{");
-			builder.AppendLine($"{indentation}		private {modelName} _model;");
+			builder.AppendLine($"{indentation}		private {modelName}{definitionType.TypeParameters.ToCSharpGenericParameterCode()} _model;");
 			builder.AppendLine($"{indentation}		");
-			builder.AppendLine($"{indentation}		public ModelView({modelName} model)");
+			builder.AppendLine($"{indentation}		public ModelView({modelName}{definitionType.TypeParameters.ToCSharpGenericParameterCode()} model)");
 			builder.AppendLine($"{indentation}			=> _model = model;");
 
 			foreach (var property in properties)
 			{
 				var lowercaseName = $"_{Char.ToLower(property.Name[0])}{property.Name.Substring(1)}";
 
-				var propertyTypeName = (property.Type as INamedTypeSymbol).TypeArguments[0].GetTypeNameRelativeTo("System");
+				var propertyType = (property.Type as INamedTypeSymbol).TypeArguments[0];
+				var propertyTypeName = propertyType is ITypeParameterSymbol parameter
+					? parameter.Name
+					: propertyType.TryGetTypeNameRelativeTo(modelFullName, out var relativeName)
+						? relativeName
+						: propertyType.GetTypeNameRelativeTo("System");
 
 				builder.AppendLine($"{indentation}		");
 				builder.AppendLine($"{indentation}		public Result<{propertyTypeName}, ModelPropertyNotSet> {property.Name} => Get(_model.{lowercaseName}, _model.{lowercaseName}_State);");
