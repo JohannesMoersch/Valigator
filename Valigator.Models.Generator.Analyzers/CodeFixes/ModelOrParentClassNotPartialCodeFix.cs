@@ -15,9 +15,9 @@ using System.Threading.Tasks;
 namespace Valigator.Models.Generator.Analyzers.CodeFixes
 {
 	[ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(ModelDefinitionNotPartialClassCodeFix)), Shared]
-	public class ModelParentClassNotPartialCodeFix : CodeFixProvider
+	public class ModelOrParentClassNotPartialCodeFix : CodeFixProvider
 	{
-		public override ImmutableArray<string> FixableDiagnosticIds => ImmutableArray.Create(AnalyzerDiagnosticDescriptors.ModelParentClassNotPartialClass.Id);
+		public override ImmutableArray<string> FixableDiagnosticIds => ImmutableArray.Create(AnalyzerDiagnosticDescriptors.ModelOrParentClassNotPartialClass.Id);
 
 		public override FixAllProvider GetFixAllProvider()
 			=> WellKnownFixAllProviders.BatchFixer;
@@ -67,13 +67,14 @@ namespace Valigator.Models.Generator.Analyzers.CodeFixes
 			(
 				typeSymbol.TryGetAttribute(generateModelAttributeType, out var generateModelAttribute) &&
 				generateModelAttribute.TryGetGeneratedModelNamespace(typeName, generateModelDefaultsAttributeType, out var modelNamespace, out _, out _) &&
-				generateModelAttribute.TryGetGeneratedModelParentClasses(typeName, generateModelDefaultsAttributeType, out var modelParentClasses, out _, out _)
+				generateModelAttribute.TryGetGeneratedModelParentClasses(typeName, generateModelDefaultsAttributeType, out var modelParentClasses, out _, out _) &&
+				generateModelAttribute.TryGetGeneratedModelName(typeName, generateModelDefaultsAttributeType, out var modelName, out _, out _)
 			)
 			{
 				var syntaxRoot = await document.GetSyntaxRootAsync(cancellationToken);
 
 				var nonPartialParentClasses = semanticModel
-					.LookupNamespaceAndTypeSymbols(modelNamespace, modelParentClasses)
+					.LookupNamespaceAndTypeSymbols(modelNamespace, modelParentClasses.Concat(new[] { modelName }).ToArray())
 					.OfType<ITypeSymbol>()
 					.SelectMany(c => c.GetDeclaringSyntaxReferences(cancellationToken))
 					.Where(s => !s.IsPartial())

@@ -16,46 +16,36 @@ namespace Valigator.Models.Generator.Tests
 	{
 		public partial class Outer
 		{
-			[GenerateModel(ModelName = "NewTestModel", ModelParentClasses = "TestTest+Other")]
-			public partial class ThingsAndStuffDefinition<T, U, A, B, C, D, E, F, G, H, I, J, K, L>
-				where A : struct
-				where B : class
-				where C : class?
-				where D : notnull
-				where E : unmanaged
-				where F : new()
-				where G : Attribute
-				where H : Attribute?
-				where I : IDisposable
-				where J : IDisposable?
-				where K : B
+			[GenerateModel(ModelName = "NewTestModel", ModelParentClasses = "Abc+TestTest+Other")]
+			public partial class ThingsAndStuffDefinition<T>
 			{
 				public Property<Attribute> Test { get; } = Data.Value<Attribute>().Required();
 
 				public Property<T> Other { get; } = Data.Value<T>().Required();
-
-				public Property<U> More { get; } = Data.Value<U>().Required();
 			}
 		}
 	}
 
-	public partial struct TestTest
+	public partial class Abc
 	{
-		public partial interface Other
-		{ 
-			//public partial class NewTestModel<T, U>
-			//{
-			//}
-		}
-
-		public static class Stuff
+		public partial struct TestTest
 		{
-			public static void Things()
+			public partial interface Other
 			{
-				//Other.NewTestModel<float, string,,,,,,,,,,,,> c;
+				public partial class NewTestModel<T>
+				{
+				}
+			}
 
-				Other a = default;
-				Blah b = default;
+			public static class Stuff
+			{
+				public static void Things()
+				{
+					Other.NewTestModel<float> c;
+
+					Other a = default;
+					Blah b = default;
+				}
 			}
 		}
 	}

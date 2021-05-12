@@ -25,7 +25,7 @@ namespace Valigator.Models.Generator.Analyzers
 					AnalyzerDiagnosticDescriptors.ModelDefinitionModelIdentifierMatchFailed,
 					AnalyzerDiagnosticDescriptors.ModelDefinitionModelIdentifierInvalid,
 					AnalyzerDiagnosticDescriptors.ModelDefinitionParentClassNotPartialClass,
-					AnalyzerDiagnosticDescriptors.ModelParentClassNotPartialClass
+					AnalyzerDiagnosticDescriptors.ModelOrParentClassNotPartialClass
 				);
 
 		private CodeDomProvider CodeProvider { get; } = CodeDomProvider.CreateProvider("csharp");
@@ -55,7 +55,7 @@ namespace Valigator.Models.Generator.Analyzers
 
 							CheckForParentsNotPartialClass(context, classSyntax, typeSymbol);
 
-							CheckForModelParentsNotPartialClass(context, classSyntax, typeSymbol, generateModelAttribute, generateModelDefaultsAttributeType);
+							CheckForModelOrParentsNotPartialClass(context, classSyntax, typeSymbol, generateModelAttribute, generateModelDefaultsAttributeType);
 
 							CheckForModelIdentifierIssues(context, classSyntax, typeSymbol, generateModelAttribute, generateModelDefaultsAttributeType);
 
@@ -126,33 +126,55 @@ namespace Valigator.Models.Generator.Analyzers
 			}
 		}
 
-		private void CheckForModelParentsNotPartialClass(SyntaxNodeAnalysisContext context, ClassDeclarationSyntax classSyntax, INamedTypeSymbol typeSymbol, AttributeData generateModelAttribute, INamedTypeSymbol generateModelDefaultsAttributeType)
+		private void CheckForModelOrParentsNotPartialClass(SyntaxNodeAnalysisContext context, ClassDeclarationSyntax classSyntax, INamedTypeSymbol typeSymbol, AttributeData generateModelAttribute, INamedTypeSymbol generateModelDefaultsAttributeType)
 		{
 			var typeName = typeSymbol.GetFullNameWithNamespace("+");
 
-			if (generateModelAttribute.TryGetGeneratedModelNamespace(typeName, generateModelDefaultsAttributeType, out var modelNamespace, out _, out _) && generateModelAttribute.TryGetGeneratedModelParentClasses(typeName, generateModelDefaultsAttributeType, out var modelParentClasses, out _, out _))
+			if (generateModelAttribute.TryGetGeneratedModelNamespace(typeName, generateModelDefaultsAttributeType, out var modelNamespace, out _, out _) && generateModelAttribute.TryGetGeneratedModelParentClasses(typeName, generateModelDefaultsAttributeType, out var modelParentClasses, out _, out _) && generateModelAttribute.TryGetGeneratedModelName(typeName, generateModelDefaultsAttributeType, out var modelName, out _, out _))
 			{
-				var nonPartialParentClasses = context
+				var types = context
 					.SemanticModel
-					.LookupNamespaceAndTypeSymbols(modelNamespace, modelParentClasses)
+					.LookupNamespaceAndTypeSymbols(modelNamespace, modelParentClasses.Concat(new[] { modelName }).ToArray())
+					.ToArray();
+
+				var model = types.Last() as ITypeSymbol;
+
+				var nonPartialModel = model.GetDeclaringSyntaxReferences(context.CancellationToken).Any(s => !s.IsPartial())
+					? model
+					: null;
+
+				var nonPartialParentClasses = types
+					.Take(types.Length - 1)
 					.OfType<ITypeSymbol>()
 					.Where(c => c.GetDeclaringSyntaxReferences(context.CancellationToken).Any(s => !s.IsPartial()))
 					.ToArray();
 
-				if (nonPartialParentClasses.Any())
+				if (nonPartialModel != null || nonPartialParentClasses.Any())
 				{
-					var messageParameter = nonPartialParentClasses.Length > 1
-						? $"classes {nonPartialParentClasses.Select(t => $"\"{t.Name}\"").JoinListWithOxfordComma()} are"
-						: $"class \"{nonPartialParentClasses[0].Name}\" is";
+					var modelMessage = nonPartialModel != null
+						? $"\"{nonPartialModel.Name}\""
+						: null;
+
+					var parentClassesMessage = nonPartialParentClasses.Length == 0
+						? null
+						: nonPartialParentClasses.Length > 1
+							? $"parent classes {nonPartialParentClasses.Select(t => $"\"{t.Name}\"").JoinListWithOxfordComma()}"
+							: $"parent class \"{nonPartialParentClasses[0].Name}\"";
+
+					var message = String.Join(" and ", new[] { modelMessage, parentClassesMessage }.Where(s => s != null));
+
+					var end = ((modelMessage != null ? 1 : 0) + nonPartialParentClasses.Length) > 1
+						? "are"
+						: "is";
 
 					context
 						.ReportDiagnostic
 						(
 							Diagnostic.Create
 							(
-								AnalyzerDiagnosticDescriptors.ModelParentClassNotPartialClass,
+								AnalyzerDiagnosticDescriptors.ModelOrParentClassNotPartialClass,
 								Location.Create(classSyntax.SyntaxTree, classSyntax.Identifier.Span),
-								messageParameter
+								$"{message} {end}"
 							)
 						);
 				}
