@@ -24,7 +24,9 @@ namespace Valigator.Models.Generator.Analyzers
 				GetAttributes(context, out var generateModelAttributeType, out var generateModelDefaultsAttributeType, out var propertyAttributeType);
 
 				var codeProvider = CodeDomProvider.CreateProvider("csharp");
-				
+
+				var usedNames = new HashSet<string>();
+
 				foreach (var candidate in receiver.Candidates)
 				{
 					var semanticModel = context
@@ -43,14 +45,27 @@ namespace Valigator.Models.Generator.Analyzers
 							codeProvider.IsValidIdentifier(modelName)
 						)
 						{
-							context.AddSource($"{typeSymbol.Name}.g.cs", CodeGenerator.GenerateDefinition(typeSymbol, modelNamespaceParts, modelParentClasses, modelName, "ModelView"));
-							context.AddSource($"{modelName}.g.cs", CodeGenerator.GenerateModel(semanticModel, typeSymbol, generateModelAttribute, generateModelDefaultsAttributeType, propertyAttributeType, modelNamespaceParts, modelParentClasses, modelName, context.CancellationToken));
+							context.AddSource(GetUniqueFileName(typeSymbol.Name, usedNames), CodeGenerator.GenerateDefinition(typeSymbol, modelNamespaceParts, modelParentClasses, modelName, "ModelView"));
+							context.AddSource(GetUniqueFileName(modelName, usedNames), CodeGenerator.GenerateModel(semanticModel, typeSymbol, generateModelAttribute, generateModelDefaultsAttributeType, propertyAttributeType, modelNamespaceParts, modelParentClasses, modelName, context.CancellationToken));
 						}
 						else
-							context.AddSource($"{typeSymbol.Name}.g.cs", CodeGenerator.GenerateDefinition(typeSymbol, Array.Empty<string>(), Array.Empty<string>(), "object", String.Empty));
+							context.AddSource(GetUniqueFileName(typeSymbol.Name, usedNames), CodeGenerator.GenerateDefinition(typeSymbol, Array.Empty<string>(), Array.Empty<string>(), "object", String.Empty));
 					}
 				}
 			}
+		}
+
+		private static string GetUniqueFileName(string nameWithoutExtension, HashSet<string> usedNames)
+		{
+			if (usedNames.Add(nameWithoutExtension))
+				return $"{nameWithoutExtension}.g.cs";
+
+			var uniqueName = Enumerable
+				.Range(2, Int32.MaxValue - 2)
+				.Select(i => $"{nameWithoutExtension}_{i}")
+				.FirstOrDefault(name => usedNames.Add(name));
+
+			return $"{uniqueName}.g.cs";
 		}
 
 		private static void GetAttributes(GeneratorExecutionContext context, out INamedTypeSymbol generateModelAttributeType, out INamedTypeSymbol generateModelDefaultsAttributeType, out INamedTypeSymbol propertyAttributeType)
@@ -62,7 +77,7 @@ namespace Valigator.Models.Generator.Analyzers
 
 		private static bool TryGetModelIdentifiers(INamedTypeSymbol typeSymbol, AttributeData generateModelAttribute, INamedTypeSymbol generateModelDefaultsAttributeType, out string[] modelNamespaceParts, out string[] modelParentClasses, out string modelName)
 		{
-			var fullTypeName = typeSymbol.GetFullNameWithNamespace("+");
+			var fullTypeName = typeSymbol.GetFullNameWithNamespace("+", false);
 
 			var modelNamespaceSuccess = generateModelAttribute
 				.TryGetGeneratedModelNamespace

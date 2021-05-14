@@ -16,15 +16,12 @@ namespace Valigator.Models.Generator.Analyzers
 
 			var modelParentClassFullName = String.Join(".", modelNamespaceParts.Concat(modelParentClasses));
 
-			var modelNameAndNamespace = definitionType.GetRelativeTypeNameFrom($"{(!String.IsNullOrEmpty(modelParentClassFullName) ? $"{modelParentClassFullName}." : String.Empty)}{modelName}{definitionType.TypeParameters.ToCSharpGenericParameterCode()}");
+			var modelNameAndNamespace = $"global::{(!String.IsNullOrEmpty(modelParentClassFullName) ? $"{modelParentClassFullName}." : String.Empty)}{modelName}{definitionType.TypeParameters.ToCSharpGenericParameterCode()}";
 
 			var hasNamespace = !String.IsNullOrEmpty(definitionNamespace);
 			var indentation = String.Empty;
 
 			var builder = new StringBuilder();
-
-			builder.AppendLine($"using Valigator;");
-			builder.AppendLine($"");
 
 			if (hasNamespace)
 			{
@@ -42,7 +39,7 @@ namespace Valigator.Models.Generator.Analyzers
 				indentation += "\t";
 			}
 
-			builder.AppendLine($"{indentation}public sealed partial class {definitionType.Name}{definitionType.TypeParameters.ToCSharpGenericParameterCode()} : ModelDefinition<{modelNameAndNamespace}{(!String.IsNullOrEmpty(modelViewName) ? $".{modelViewName}" : modelViewName)}>");
+			builder.AppendLine($"{indentation}public sealed partial class {definitionType.Name}{definitionType.TypeParameters.ToCSharpGenericParameterCode()} : global::Valigator.Models.ModelDefinition<{modelNameAndNamespace}{(!String.IsNullOrEmpty(modelViewName) ? $".{modelViewName}" : modelViewName)}>");
 			builder.AppendLine($"{indentation}{{");
 			builder.AppendLine($"{indentation}}}");
 
@@ -80,15 +77,9 @@ namespace Valigator.Models.Generator.Analyzers
 			var hasNamespace = !String.IsNullOrEmpty(modelNamespace);
 			var indentation = String.Empty;
 
-			var definitionName = $"{definitionType.GetTypeNameRelativeTo(modelFullName)}{definitionType.TypeParameters.ToCSharpGenericParameterCode()}";
+			var definitionName = $"{definitionType.GetFullNameWithNamespace(".", true)}{definitionType.TypeParameters.ToCSharpGenericParameterCode()}";
 
 			var builder = new StringBuilder();
-
-			builder.AppendLine($"using System;");
-			builder.AppendLine($"using Functional;");
-			builder.AppendLine($"using Valigator;");
-			builder.AppendLine($"using Valigator.Models;");
-			builder.AppendLine($"");
 
 			if (hasNamespace)
 			{
@@ -98,7 +89,7 @@ namespace Valigator.Models.Generator.Analyzers
 				indentation += "\t";
 			}
 
-			var typeSymbols = semanticModel.LookupNamespaceAndTypeSymbols(modelNamespaceParts, parentClasses);
+			var typeSymbols = semanticModel.LookupNamespaceAndTypeSymbols(modelNamespaceParts, parentClasses.Concat(new[] { modelName }).ToArray());
 
 			for (int i = 0; i < parentClasses.Length; ++i)
 			{
@@ -110,7 +101,9 @@ namespace Valigator.Models.Generator.Analyzers
 				indentation += "\t";
 			}
 
-			builder.AppendLine($"{indentation}public sealed partial class {modelName}{definitionType.TypeParameters.ToCSharpGenericParameterCode()}");
+			var modelIsValueType = (typeSymbols.Last() as INamedTypeSymbol)?.TypeKind == TypeKind.Struct;
+
+			builder.AppendLine($"{indentation}public {(!modelIsValueType ? "sealed" : String.Empty)} partial {(!modelIsValueType ? "class" : "struct")} {modelName}{definitionType.TypeParameters.ToCSharpGenericParameterCode()}");
 
 			foreach (var constraint in definitionType.TypeParameters.ToCSharpGenericParameterConstraintsCode(modelFullName, "System"))
 				builder.AppendLine($"{indentation}\t{constraint}");
@@ -131,9 +124,9 @@ namespace Valigator.Models.Generator.Analyzers
 			builder.AppendLine($"{indentation}	");
 			builder.AppendLine($"{indentation}	public static {definitionName} ModelDefinition {{ get; }}");
 			builder.AppendLine($"{indentation}	");
-			builder.AppendLine($"{indentation}	private ModelErrorDictionary _errorDictionary = new ModelErrorDictionary();");
+			builder.AppendLine($"{indentation}	private global::Valigator.Models.ModelErrorDictionary _errorDictionary;");
 			builder.AppendLine($"{indentation}	");
-			builder.AppendLine($"{indentation}	private ModelState _modelState = ModelState.Unset;");
+			builder.AppendLine($"{indentation}	private global::Valigator.Models.ModelState _modelState;");
 
 			foreach (var property in properties)
 			{
@@ -147,13 +140,11 @@ namespace Valigator.Models.Generator.Analyzers
 				var propertyType = (property.Type as INamedTypeSymbol).TypeArguments[0];
 				var propertyTypeName = propertyType is ITypeParameterSymbol parameter
 					? parameter.Name
-					: propertyType.TryGetTypeNameRelativeTo(modelFullName, out var relativeName)
-						? relativeName
-						: propertyType.GetTypeNameRelativeTo("System");
+					: propertyType.GetFullNameWithNamespace(".", true);
 
 				builder.AppendLine($"{indentation}	");
-				builder.AppendLine($"{indentation}	private static ModelDefinition<ModelView>.Property<{propertyTypeName}> {lowercaseName}_Property;");
-				builder.AppendLine($"{indentation}	private ModelPropertyState {lowercaseName}_State;");
+				builder.AppendLine($"{indentation}	private static global::Valigator.Models.ModelDefinition<ModelView>.Property<{propertyTypeName}> {lowercaseName}_Property;");
+				builder.AppendLine($"{indentation}	private global::Valigator.Models.ModelPropertyState {lowercaseName}_State;");
 				builder.AppendLine($"{indentation}	private {propertyTypeName} {lowercaseName};");
 				builder.AppendLine($"{indentation}	public {propertyTypeName} {property.Name}");
 				builder.AppendLine($"{indentation}	{{");
@@ -165,28 +156,28 @@ namespace Valigator.Models.Generator.Analyzers
 			}
 
 			builder.AppendLine($"{indentation}	");
-			builder.AppendLine($"{indentation}	private TValue Get<TValue>(string propertyName, TValue value, ModelPropertyState state)");
+			builder.AppendLine($"{indentation}	private TValue Get<TValue>(string propertyName, TValue value, global::Valigator.Models.ModelPropertyState state)");
 			builder.AppendLine($"{indentation}	{{");
-			builder.AppendLine($"{indentation}		if (_modelState == ModelState.Unset)");
+			builder.AppendLine($"{indentation}		if (_modelState == global::Valigator.Models.ModelState.Unset)");
 			builder.AppendLine($"{indentation}		{{");
 			builder.AppendLine($"{indentation}			Coerce();");
 			builder.AppendLine($"{indentation}			Validate();");
 			builder.AppendLine($"{indentation}		}}");
-			builder.AppendLine($"{indentation}		else if (_modelState == ModelState.Unvalidated)");
+			builder.AppendLine($"{indentation}		else if (_modelState == global::Valigator.Models.ModelState.Unvalidated)");
 			builder.AppendLine($"{indentation}			Validate();");
 			builder.AppendLine($"{indentation}		");
-			builder.AppendLine($"{indentation}		return state == ModelPropertyState.Valid");
+			builder.AppendLine($"{indentation}		return state == global::Valigator.Models.ModelPropertyState.Valid");
 			builder.AppendLine($"{indentation}			? value");
-			builder.AppendLine($"{indentation}			: throw new DataInvalidException(_errorDictionary[propertyName]);");
+			builder.AppendLine($"{indentation}			: throw new global::Valigator.DataInvalidException(_errorDictionary[propertyName]);");
 			builder.AppendLine($"{indentation}	}}");
 			builder.AppendLine($"{indentation}	");
-			builder.AppendLine($"{indentation}	private void Set<TValue>(TValue newValue, ref TValue value, ref ModelPropertyState state)");
+			builder.AppendLine($"{indentation}	private void Set<TValue>(TValue newValue, ref TValue value, ref global::Valigator.Models.ModelPropertyState state)");
 			builder.AppendLine($"{indentation}	{{");
 			builder.AppendLine($"{indentation}		value = newValue;");
-			builder.AppendLine($"{indentation}		state = ModelPropertyState.Unvalidated;");
+			builder.AppendLine($"{indentation}		state = global::Valigator.Models.ModelPropertyState.Unvalidated;");
 			builder.AppendLine($"{indentation}		");
-			builder.AppendLine($"{indentation}		if (_modelState == ModelState.Validated)");
-			builder.AppendLine($"{indentation}			_modelState = ModelState.Unvalidated;");
+			builder.AppendLine($"{indentation}		if (_modelState == global::Valigator.Models.ModelState.Validated)");
+			builder.AppendLine($"{indentation}			_modelState = global::Valigator.Models.ModelState.Unvalidated;");
 			builder.AppendLine($"{indentation}		");
 			builder.AppendLine($"{indentation}		_errorDictionary.Clear();");
 			builder.AppendLine($"{indentation}	}}");
@@ -198,12 +189,12 @@ namespace Valigator.Models.Generator.Analyzers
 			{
 				var lowercaseName = $"_{Char.ToLower(property.Name[0])}{property.Name.Substring(1)}";
 
-				builder.AppendLine($"{indentation}		if ({lowercaseName}_State == ModelPropertyState.Unset)");
+				builder.AppendLine($"{indentation}		if ({lowercaseName}_State == global::Valigator.Models.ModelPropertyState.Unset)");
 				builder.AppendLine($"{indentation}			{lowercaseName}_Property.CoerceUnset(nameof({property.Name}), ref {lowercaseName}, ref {lowercaseName}_State, ref _errorDictionary);");
 				builder.AppendLine($"{indentation}		");
 			}
 
-			builder.AppendLine($"{indentation}		_modelState = ModelState.Unvalidated;");
+			builder.AppendLine($"{indentation}		_modelState = global::Valigator.Models.ModelState.Unvalidated;");
 			builder.AppendLine($"{indentation}	}}");
 			builder.AppendLine($"{indentation}	");
 			builder.AppendLine($"{indentation}	private void Validate()");
@@ -215,12 +206,12 @@ namespace Valigator.Models.Generator.Analyzers
 			{
 				var lowercaseName = $"_{Char.ToLower(property.Name[0])}{property.Name.Substring(1)}";
 
-				builder.AppendLine($"{indentation}		if ({lowercaseName}_State != ModelPropertyState.CoerceFailed)");
+				builder.AppendLine($"{indentation}		if ({lowercaseName}_State != global::Valigator.Models.ModelPropertyState.CoerceFailed)");
 				builder.AppendLine($"{indentation}			{lowercaseName}_Property.Validate(view, nameof({property.Name}), {lowercaseName}, ref {lowercaseName}_State, ref _errorDictionary);");
 				builder.AppendLine($"{indentation}		");
 			}
 
-			builder.AppendLine($"{indentation}		_modelState = ModelState.Validated;");
+			builder.AppendLine($"{indentation}		_modelState = global::Valigator.Models.ModelState.Validated;");
 			builder.AppendLine($"{indentation}	}}");
 			builder.AppendLine($"{indentation}	");
 			builder.AppendLine($"{indentation}	public struct ModelView");
@@ -237,27 +228,25 @@ namespace Valigator.Models.Generator.Analyzers
 				var propertyType = (property.Type as INamedTypeSymbol).TypeArguments[0];
 				var propertyTypeName = propertyType is ITypeParameterSymbol parameter
 					? parameter.Name
-					: propertyType.TryGetTypeNameRelativeTo(modelFullName, out var relativeName)
-						? relativeName
-						: propertyType.GetTypeNameRelativeTo("System");
+					: propertyType.GetFullNameWithNamespace(".", true);
 
 				builder.AppendLine($"{indentation}		");
-				builder.AppendLine($"{indentation}		public Result<{propertyTypeName}, ModelPropertyNotSet> {property.Name} => Get(_model.{lowercaseName}, _model.{lowercaseName}_State);");
+				builder.AppendLine($"{indentation}		public global::Functional.Result<{propertyTypeName}, global::Valigator.Models.ModelPropertyNotSet> {property.Name} => Get(_model.{lowercaseName}, _model.{lowercaseName}_State);");
 			}
 
 			builder.AppendLine($"{indentation}		");
-			builder.AppendLine($"{indentation}		private Result<TValue, ModelPropertyNotSet> Get<TValue>(TValue value, ModelPropertyState state)");
+			builder.AppendLine($"{indentation}		private global::Functional.Result<TValue, global::Valigator.Models.ModelPropertyNotSet> Get<TValue>(TValue value, global::Valigator.Models.ModelPropertyState state)");
 			builder.AppendLine($"{indentation}		{{");
-			builder.AppendLine($"{indentation}			if (_model._modelState == ModelState.Unset)");
+			builder.AppendLine($"{indentation}			if (_model._modelState == global::Valigator.Models.ModelState.Unset)");
 			builder.AppendLine($"{indentation}				_model.Coerce();");
 			builder.AppendLine($"{indentation}				");
-			builder.AppendLine($"{indentation}				return Result");
-			builder.AppendLine($"{indentation}					.Create");
-			builder.AppendLine($"{indentation}					(");
-			builder.AppendLine($"{indentation}						state != ModelPropertyState.CoerceFailed,");
-			builder.AppendLine($"{indentation}						value,");
-			builder.AppendLine($"{indentation}						ModelPropertyNotSet.Value");
-			builder.AppendLine($"{indentation}					);");
+			builder.AppendLine($"{indentation}			return global::Functional.Result");
+			builder.AppendLine($"{indentation}				.Create");
+			builder.AppendLine($"{indentation}				(");
+			builder.AppendLine($"{indentation}					state != global::Valigator.Models.ModelPropertyState.CoerceFailed,");
+			builder.AppendLine($"{indentation}					value,");
+			builder.AppendLine($"{indentation}					global::Valigator.Models.ModelPropertyNotSet.Value");
+			builder.AppendLine($"{indentation}				);");
 			builder.AppendLine($"{indentation}		}}");
 			builder.AppendLine($"{indentation}	}}");
 			builder.AppendLine($"{indentation}}}");

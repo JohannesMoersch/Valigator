@@ -128,7 +128,7 @@ namespace Valigator.Models.Generator.Analyzers
 
 		private void CheckForModelOrParentsNotPartialClass(SyntaxNodeAnalysisContext context, ClassDeclarationSyntax classSyntax, INamedTypeSymbol typeSymbol, AttributeData generateModelAttribute, INamedTypeSymbol generateModelDefaultsAttributeType)
 		{
-			var typeName = typeSymbol.GetFullNameWithNamespace("+");
+			var typeName = typeSymbol.GetFullNameWithNamespace("+", false);
 
 			if (generateModelAttribute.TryGetGeneratedModelNamespace(typeName, generateModelDefaultsAttributeType, out var modelNamespace, out _, out _) && generateModelAttribute.TryGetGeneratedModelParentClasses(typeName, generateModelDefaultsAttributeType, out var modelParentClasses, out _, out _) && generateModelAttribute.TryGetGeneratedModelName(typeName, generateModelDefaultsAttributeType, out var modelName, out _, out _))
 			{
@@ -139,7 +139,7 @@ namespace Valigator.Models.Generator.Analyzers
 
 				var model = types.Last() as ITypeSymbol;
 
-				var nonPartialModel = model.GetDeclaringSyntaxReferences(context.CancellationToken).Any(s => !s.IsPartial())
+				var nonPartialModel = model?.GetDeclaringSyntaxReferences(context.CancellationToken).Any(s => !s.IsPartial()) ?? false
 					? model
 					: null;
 
@@ -215,7 +215,7 @@ namespace Valigator.Models.Generator.Analyzers
 
 		private void CheckForModelIdentifierIssues(SyntaxNodeAnalysisContext context, ClassDeclarationSyntax classSyntax, INamedTypeSymbol typeSymbol, AttributeData generateModelAttribute, INamedTypeSymbol generateModelDefaultsAttributeType)
 		{
-			var fullTypeName = typeSymbol.GetFullNameWithNamespace("+");
+			var fullTypeName = typeSymbol.GetFullNameWithNamespace("+", false);
 
 			var modelNamespaceSuccess = generateModelAttribute
 				.TryGetGeneratedModelNamespace

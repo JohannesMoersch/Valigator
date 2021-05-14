@@ -29,66 +29,6 @@ namespace Valigator.Models.Generator.Analyzers
 			{ "System.String", "string" }
 		};
 
-		public static bool TryGetTypeNameRelativeTo(this ITypeSymbol type, ITypeSymbol target, out string relativeName)
-			=> TryGetRelativeTypeName
-			(
-				type.GetFullNameWithNamespace(".").Split('.'),
-				target.GetFullNameWithNamespace(".").Split('.'),
-				out relativeName
-			);
-
-		public static string GetTypeNameRelativeTo(this ITypeSymbol type, ITypeSymbol target)
-		{
-			TryGetTypeNameRelativeTo(type, target, out var relativeName);
-
-			return relativeName;
-		}
-
-		public static bool TryGetTypeNameRelativeTo(this ITypeSymbol type, string target, out string relativeName)
-			=> TryGetRelativeTypeName
-			(
-				type.GetFullNameWithNamespace(".").Split('.'),
-				target.Split('.'),
-				out relativeName
-			);
-
-		public static string GetTypeNameRelativeTo(this ITypeSymbol type, string target)
-		{
-			TryGetTypeNameRelativeTo(type, target, out var relativeName);
-
-			return relativeName;
-		}
-
-		public static bool TryGetRelativeTypeNameFrom(this ITypeSymbol target, string type, out string relativeName)
-			=> TryGetRelativeTypeName
-			(
-				type.Split('.'),
-				target.GetFullNameWithNamespace(".").Split('.'),
-				out relativeName
-			);
-
-		public static string GetRelativeTypeNameFrom(this ITypeSymbol target, string type)
-		{
-			TryGetRelativeTypeNameFrom(target, type, out var relativeName);
-
-			return relativeName;
-		}
-
-		private static bool TryGetRelativeTypeName(string[] typeList, string[] targetList, out string relativeName)
-		{
-			var length = Math.Min(typeList.Length, targetList.Length);
-
-			int i;
-			for (i = 0; i < length; ++i)
-			{
-				if (typeList[i] != targetList[i])
-					break;
-			}
-
-			relativeName = String.Join(".", typeList.Skip(i));
-			return i != 0;
-		}
-
 		public static IEnumerable<ITypeSymbol> GetContainingTypeHierarchy(this ITypeSymbol type)
 		{
 			if (type.ContainingType != null)
@@ -138,7 +78,7 @@ namespace Valigator.Models.Generator.Analyzers
 			return false;
 		}
 
-		public static string GetFullNameWithNamespace(this ITypeSymbol typeSymbol, string classSeparator)
+		public static string GetFullNameWithNamespace(this ITypeSymbol typeSymbol, string classSeparator, bool prefixWithGlobal)
 		{
 			var ns = typeSymbol.GetFullNamespace();
 			var typeName = String.Join(classSeparator, typeSymbol.GetContainingTypeHierarchy().Select(t => t.Name));
@@ -151,7 +91,9 @@ namespace Valigator.Models.Generator.Analyzers
 			if (_primitiveMapping.TryGetValue(name, out var primitiveName))
 				return primitiveName;
 
-			return name;
+			return prefixWithGlobal
+				? $"global::{name}"
+				: name;
 		}
 
 		public static string GetFullNamespace(this ITypeSymbol typeSymbol)

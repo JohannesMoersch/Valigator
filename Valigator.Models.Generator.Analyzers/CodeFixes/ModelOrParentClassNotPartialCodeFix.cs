@@ -59,7 +59,7 @@ namespace Valigator.Models.Generator.Analyzers.CodeFixes
 
 			var typeSymbol = semanticModel.GetDeclaredSymbol(classSyntax);
 
-			var typeName = typeSymbol.GetFullNameWithNamespace("+");
+			var typeName = typeSymbol.GetFullNameWithNamespace("+", false);
 
 			GetAttributes(semanticModel.Compilation, out var generateModelAttributeType, out var generateModelDefaultsAttributeType);
 

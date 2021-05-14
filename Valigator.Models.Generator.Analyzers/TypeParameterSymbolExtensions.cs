@@ -45,9 +45,7 @@ namespace Valigator.Models.Generator.Analyzers
 			{
 				var typeName = set.type is ITypeParameterSymbol parameter
 					? parameter.Name
-					: set.type.TryGetTypeNameRelativeTo(pathsRelativeToPrimary, out var relativeName)
-						? relativeName
-						: set.type.GetTypeNameRelativeTo(pathsRelativeToSecondary);
+					: set.type.GetFullNameWithNamespace(".", true);
 
 				if (set.nullable)
 					constraints.Add($"{typeName}?");
