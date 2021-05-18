@@ -9,14 +9,14 @@ namespace Valigator.Models.Generator.Analyzers
 {
 	public static class CodeGenerator
 	{
-		public static string GenerateDefinition(INamedTypeSymbol definitionType, string[] modelNamespaceParts, string[] modelParentClasses, string modelName, string modelViewName)
+		public static string GenerateDefinition(INamedTypeSymbol definitionType, string[] modelNamespaceParts, string[] modelParentClasses, string modelName, string modelViewName, bool addGenericsOnModel)
 		{
 			var definitionNamespace = definitionType.GetFullNamespace();
 			var parentClasses = definitionType.ContainingType?.GetContainingTypeHierarchy().ToArray() ?? Array.Empty<INamedTypeSymbol>();
 
 			var modelParentClassFullName = String.Join(".", modelNamespaceParts.Concat(modelParentClasses));
 
-			var modelNameAndNamespace = $"global::{(!String.IsNullOrEmpty(modelParentClassFullName) ? $"{modelParentClassFullName}." : String.Empty)}{modelName}{definitionType.TypeParameters.ToCSharpGenericParameterCode()}";
+			var modelNameAndNamespace = $"global::{(!String.IsNullOrEmpty(modelParentClassFullName) ? $"{modelParentClassFullName}." : String.Empty)}{modelName}{(addGenericsOnModel ? definitionType.TypeParameters.ToCSharpGenericParameterCode() : String.Empty)}";
 
 			var hasNamespace = !String.IsNullOrEmpty(definitionNamespace);
 			var indentation = String.Empty;
@@ -41,6 +41,10 @@ namespace Valigator.Models.Generator.Analyzers
 
 			builder.AppendLine($"{indentation}public sealed partial class {definitionType.Name}{definitionType.TypeParameters.ToCSharpGenericParameterCode()} : global::Valigator.Models.ModelDefinition<{modelNameAndNamespace}{(!String.IsNullOrEmpty(modelViewName) ? $".{modelViewName}" : modelViewName)}>");
 			builder.AppendLine($"{indentation}{{");
+
+			if (!definitionType.InstanceConstructors.Any(m => !m.Parameters.Any()))
+				builder.AppendLine($"{indentation}	public {definitionType.Name}() {{ }}");
+
 			builder.AppendLine($"{indentation}}}");
 
 			foreach (var parentClass in parentClasses)

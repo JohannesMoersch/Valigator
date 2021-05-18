@@ -9,11 +9,11 @@ using System.Text.RegularExpressions;
 
 namespace Valigator.Models.Generator.Analyzers
 {
-	// TODO - Deal with generics. At least allow generics on model definition?
-
 	[Generator]
 	public sealed class ModelDefinitionSourceGenerator : ISourceGenerator
 	{
+		private CodeDomProvider CodeProvider { get; } = CodeDomProvider.CreateProvider("csharp");
+
 		public void Initialize(GeneratorInitializationContext context)
 			=> context.RegisterForSyntaxNotifications(() => new GenerateModelSyntaxReceiver());
 
@@ -22,8 +22,6 @@ namespace Valigator.Models.Generator.Analyzers
 			if (context.SyntaxReceiver is GenerateModelSyntaxReceiver receiver)
 			{
 				GetAttributes(context, out var generateModelAttributeType, out var generateModelDefaultsAttributeType, out var propertyAttributeType);
-
-				var codeProvider = CodeDomProvider.CreateProvider("csharp");
 
 				var usedNames = new HashSet<string>();
 
@@ -40,16 +38,17 @@ namespace Valigator.Models.Generator.Analyzers
 						if
 						(
 							TryGetModelIdentifiers(typeSymbol, generateModelAttribute, generateModelDefaultsAttributeType, out var modelNamespaceParts, out var modelParentClasses, out var modelName) &&
-							modelNamespaceParts.All(codeProvider.IsValidIdentifier) &&
-							modelParentClasses.All(codeProvider.IsValidIdentifier) &&
-							codeProvider.IsValidIdentifier(modelName)
+							modelNamespaceParts.All(CodeProvider.IsValidIdentifier) &&
+							modelParentClasses.All(CodeProvider.IsValidIdentifier) &&
+							CodeProvider.IsValidIdentifier(modelName) &&
+							(!typeSymbol.InstanceConstructors.TryGetFirst(m => !m.Parameters.Any(), out var constructor) || constructor.DeclaredAccessibility.IsAccessibleInternally())
 						)
 						{
-							context.AddSource(GetUniqueFileName(typeSymbol.Name, usedNames), CodeGenerator.GenerateDefinition(typeSymbol, modelNamespaceParts, modelParentClasses, modelName, "ModelView"));
+							context.AddSource(GetUniqueFileName(typeSymbol.Name, usedNames), CodeGenerator.GenerateDefinition(typeSymbol, modelNamespaceParts, modelParentClasses, modelName, "ModelView", true));
 							context.AddSource(GetUniqueFileName(modelName, usedNames), CodeGenerator.GenerateModel(semanticModel, typeSymbol, generateModelAttribute, generateModelDefaultsAttributeType, propertyAttributeType, modelNamespaceParts, modelParentClasses, modelName, context.CancellationToken));
 						}
 						else
-							context.AddSource(GetUniqueFileName(typeSymbol.Name, usedNames), CodeGenerator.GenerateDefinition(typeSymbol, Array.Empty<string>(), Array.Empty<string>(), "object", String.Empty));
+							context.AddSource(GetUniqueFileName(typeSymbol.Name, usedNames), CodeGenerator.GenerateDefinition(typeSymbol, new[] { "System" }, Array.Empty<string>(), "Object", String.Empty, false));
 					}
 				}
 			}

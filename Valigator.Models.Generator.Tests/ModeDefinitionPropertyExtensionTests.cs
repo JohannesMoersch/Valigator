@@ -22,6 +22,8 @@ namespace Valigator.Models.Generator.Tests
 				public Property<Attribute> Test { get; } = Data.Value<Attribute>().Required();
 
 				public Property<T> Other { get; } = Data.Value<T>().Required();
+
+				public ThingsAndStuffDefinition() { }
 			}
 		}
 	}
@@ -41,6 +43,8 @@ namespace Valigator.Models.Generator.Tests
 			{
 				public static void Things()
 				{
+					Edge.Outer.ThingsAndStuffDefinition<int> d;
+
 					Other.NewTestModel<float> c;
 
 					Other a = default;

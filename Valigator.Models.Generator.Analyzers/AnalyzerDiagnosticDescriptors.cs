@@ -76,5 +76,15 @@ namespace Valigator.Models.Generator.Analyzers
 			DiagnosticSeverity.Error,
 			isEnabledByDefault: true
 		);
+
+		public static DiagnosticDescriptor ModelDefinitionConstructorInaccessible { get; } = new DiagnosticDescriptor
+		(
+			id: "VL0008",
+			title: "Model Definition Constructor Inaccessible",
+			messageFormat: "Model definition cannot have a private or protected parameterless constructor.",
+			category: "Generator",
+			DiagnosticSeverity.Error,
+			isEnabledByDefault: true
+		);
 	}
 }

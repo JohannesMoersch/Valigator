@@ -25,7 +25,8 @@ namespace Valigator.Models.Generator.Analyzers
 					AnalyzerDiagnosticDescriptors.ModelDefinitionModelIdentifierMatchFailed,
 					AnalyzerDiagnosticDescriptors.ModelDefinitionModelIdentifierInvalid,
 					AnalyzerDiagnosticDescriptors.ModelDefinitionParentClassNotPartialClass,
-					AnalyzerDiagnosticDescriptors.ModelOrParentClassNotPartialClass
+					AnalyzerDiagnosticDescriptors.ModelOrParentClassNotPartialClass,
+					AnalyzerDiagnosticDescriptors.ModelDefinitionConstructorInaccessible
 				);
 
 		private CodeDomProvider CodeProvider { get; } = CodeDomProvider.CreateProvider("csharp");
@@ -52,6 +53,8 @@ namespace Valigator.Models.Generator.Analyzers
 						if (typeSymbol.TryGetAttribute(generateModelAttributeType, out var generateModelAttribute))
 						{
 							CheckForNotPartialClass(context, classSyntax);
+
+							CheckForInaccessibleParameterlessConstructor(context, classSyntax, typeSymbol);
 
 							CheckForParentsNotPartialClass(context, classSyntax, typeSymbol);
 
@@ -96,6 +99,27 @@ namespace Valigator.Models.Generator.Analyzers
 						(
 							AnalyzerDiagnosticDescriptors.ModelDefinitionNotPartialClass,
 							Location.Create(classSyntax.SyntaxTree, classSyntax.Identifier.Span)
+						)
+					);
+			}
+		}
+
+		private void CheckForInaccessibleParameterlessConstructor(SyntaxNodeAnalysisContext context, ClassDeclarationSyntax classSyntax, INamedTypeSymbol typeSymbol)
+		{
+			if (typeSymbol.InstanceConstructors.TryGetFirst(m => !m.Parameters.Any(), out var constructor) && !constructor.DeclaredAccessibility.IsAccessibleInternally())
+			{
+				var constructorSyntax = (ConstructorDeclarationSyntax)constructor
+					.DeclaringSyntaxReferences
+					.First()
+					.GetSyntax(context.CancellationToken);
+
+				context
+					.ReportDiagnostic
+					(
+						Diagnostic.Create
+						(
+							AnalyzerDiagnosticDescriptors.ModelDefinitionConstructorInaccessible,
+							Location.Create(constructorSyntax.SyntaxTree, constructorSyntax.Identifier.Span)
 						)
 					);
 			}
