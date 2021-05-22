@@ -14,10 +14,10 @@ using System.Threading.Tasks;
 
 namespace Valigator.Models.Generator.Analyzers.CodeFixes
 {
-	[ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(ModelNotClassOrStructCodeFix)), Shared]
-	public class ModelNotClassOrStructCodeFix : CodeFixProvider
+	[ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(ModelTypeParameterConstraintMismatchCodeFix)), Shared]
+	public class ModelTypeParameterConstraintMismatchCodeFix : CodeFixProvider
 	{
-		public override ImmutableArray<string> FixableDiagnosticIds => ImmutableArray.Create(AnalyzerDiagnosticDescriptors.ModelNotClassOrStruct.Id);
+		public override ImmutableArray<string> FixableDiagnosticIds => ImmutableArray.Create(AnalyzerDiagnosticDescriptors.ModelTypeParameterConstraintMismatch.Id);
 
 		public override FixAllProvider GetFixAllProvider()
 			=> WellKnownFixAllProviders.BatchFixer;
@@ -45,15 +45,15 @@ namespace Valigator.Models.Generator.Analyzers.CodeFixes
 					CodeAction
 						.Create
 						(
-							title: "Make model a class or struct",
-							createChangedSolution: c => MakeParentClassesPartial(context.Document, classSyntax, c),
-							equivalenceKey: "Make model a class or struct"
+							title: "Remove manually defined model type parameter constraints",
+							createChangedSolution: c => RemoveTypeParameterConstraints(context.Document, classSyntax, c),
+							equivalenceKey: "Remove manually defined model type parameter constraints"
 						),
 					diagnostic
 				);
 		}
 
-		private async Task<Solution> MakeParentClassesPartial(Document document, ClassDeclarationSyntax classSyntax, CancellationToken cancellationToken)
+		private async Task<Solution> RemoveTypeParameterConstraints(Document document, ClassDeclarationSyntax classSyntax, CancellationToken cancellationToken)
 		{
 			var semanticModel = await document.GetSemanticModelAsync(cancellationToken);
 
@@ -72,20 +72,19 @@ namespace Valigator.Models.Generator.Analyzers.CodeFixes
 			)
 			{
 				var syntaxRoot = await document.GetSyntaxRootAsync(cancellationToken);
+				
+				var models = semanticModel
+									.LookupNamespaceAndTypeSymbols(modelNamespace, modelParentClasses.Select(p => (p, 0)).Concat(new[] { (modelName, typeSymbol.TypeParameters.Length) }).ToArray())
+									.OfType<INamedTypeSymbol>()
+									.Last()
+									.GetDeclaringSyntaxReferences(cancellationToken);
 
-				var modelSyntax = semanticModel
-					.LookupAllNamespaceAndTypeSymbols(modelNamespace, modelParentClasses.Select(p => (p, 0)).Concat(new[] { (modelName, typeSymbol.TypeParameters.Length) }).ToArray())
-					.Last()
-					.OfType<INamedTypeSymbol>()
-					.SelectMany(s => s.GetDeclaringSyntaxReferences(cancellationToken))
-					.ToArray() ?? Array.Empty<TypeDeclarationSyntax>();
-
-				var anyClasses = modelSyntax.Any(s => s.Keyword.IsKind(SyntaxKind.ClassKeyword));
-				var anyStructs = modelSyntax.Any(s => s.Keyword.IsKind(SyntaxKind.StructKeyword));
-
-				var newSyntaxRoot = (anyStructs && !anyClasses)
-					? syntaxRoot.ReplaceNodes(modelSyntax.Where(s => !s.Keyword.IsKind(SyntaxKind.StructKeyword)), (_, typeSyntax) => typeSyntax.ToStructDeclarationSyntax())
-					: syntaxRoot.ReplaceNodes(modelSyntax.Where(s => !s.Keyword.IsKind(SyntaxKind.ClassKeyword)), (_, typeSyntax) => typeSyntax.ToClassDeclarationSyntax());
+				var newSyntaxRoot = syntaxRoot
+					.ReplaceNodes
+					(
+						models,
+						(_, model) => model.WithConstraintClauses(new SyntaxList<TypeParameterConstraintClauseSyntax>())
+					);
 
 				return document.Project.Solution.WithDocumentSyntaxRoot(document.Id, newSyntaxRoot);
 			}

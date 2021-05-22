@@ -30,7 +30,8 @@ namespace Valigator.Models.Generator.Analyzers
 					AnalyzerDiagnosticDescriptors.ModelNotPartial,
 					AnalyzerDiagnosticDescriptors.ModelParentNotPartial,
 					AnalyzerDiagnosticDescriptors.ModelAndModelParentNotPartial,
-					AnalyzerDiagnosticDescriptors.ModelTypeParameterMismatch
+					AnalyzerDiagnosticDescriptors.ModelTypeParameterMismatch,
+					AnalyzerDiagnosticDescriptors.ModelTypeParameterConstraintMismatch
 				);
 
 		private CodeDomProvider CodeProvider { get; } = CodeDomProvider.CreateProvider("csharp");
@@ -184,6 +185,34 @@ namespace Valigator.Models.Generator.Analyzers
 					CheckForModelOrParentsNotPartialClass(context, classSyntax, modelTypes);
 
 					CheckForModelTypeParameterMismatch(context, classSyntax, typeSymbol, modelTypes);
+
+					CheckForModelTypeConstraintMismatch(context, classSyntax, typeSymbol, modelTypes);
+				}
+			}
+		}
+
+		private void CheckForModelTypeConstraintMismatch(SyntaxNodeAnalysisContext context, ClassDeclarationSyntax classSyntax, INamedTypeSymbol typeSymbol, INamespaceOrTypeSymbol[] types)
+		{
+			INamedTypeSymbol model = types.Last() as INamedTypeSymbol;
+
+			if (model != null)
+			{
+				var mismatched = typeSymbol
+					.TypeParameters
+					.Zip(model.TypeParameters, (d, m) => (definition: d, model: m))
+					.Any(s => !s.definition.IsEquivalent(s.model));
+
+				if (mismatched)
+				{
+					context
+						.ReportDiagnostic
+						(
+							Diagnostic.Create
+							(
+								AnalyzerDiagnosticDescriptors.ModelTypeParameterConstraintMismatch,
+								Location.Create(classSyntax.SyntaxTree, classSyntax.Identifier.Span)
+							)
+						);
 				}
 			}
 		}

@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Valigator.Models.Generator.Analyzers.CodeFixes
 {
-	[ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(ModelDefinitionNotPartialClassCodeFix)), Shared]
+	[ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(ModelTypeParameterMismatchCodeFix)), Shared]
 	public class ModelTypeParameterMismatchCodeFix : CodeFixProvider
 	{
 		public override ImmutableArray<string> FixableDiagnosticIds => ImmutableArray.Create(AnalyzerDiagnosticDescriptors.ModelTypeParameterMismatch.Id);
@@ -73,18 +73,25 @@ namespace Valigator.Models.Generator.Analyzers.CodeFixes
 			{
 				var syntaxRoot = await document.GetSyntaxRootAsync(cancellationToken);
 
-				var model = semanticModel
+				var models = semanticModel
 					.LookupNamespaceAndTypeSymbols(modelNamespace, modelParentClasses.Select(p => (p, 0)).Concat(new[] { (modelName, typeSymbol.TypeParameters.Length) }).ToArray())
 					.OfType<INamedTypeSymbol>()
 					.Last()
-					.GetDeclaringSyntaxReferences(cancellationToken)
-					.First();
+					.GetDeclaringSyntaxReferences(cancellationToken);
 
-				var parameterList = model.TypeParameterList.Parameters;
-				for (int i = 0; i < model.TypeParameterList.Parameters.Count; ++i)
-					parameterList = parameterList.Replace(parameterList[i], parameterList[i].WithIdentifier(classSyntax.TypeParameterList.Parameters[i].Identifier.WithTriviaFrom(parameterList[i].Identifier)));
+				var newSyntaxRoot = syntaxRoot
+					.ReplaceNodes
+					(
+						models.Select(m => m.TypeParameterList), 
+						(_, typeParameterList) =>
+						{
+							var parameterList = typeParameterList.Parameters;
+							for (int i = 0; i < typeParameterList.Parameters.Count; ++i)
+								parameterList = parameterList.Replace(parameterList[i], parameterList[i].WithIdentifier(classSyntax.TypeParameterList.Parameters[i].Identifier.WithTriviaFrom(parameterList[i].Identifier)));
 
-				var newSyntaxRoot = syntaxRoot.ReplaceNode(model.TypeParameterList, model.TypeParameterList.WithParameters(parameterList));
+							return typeParameterList.WithParameters(parameterList);
+						}
+					);
 
 				return document.Project.Solution.WithDocumentSyntaxRoot(document.Id, newSyntaxRoot);
 			}

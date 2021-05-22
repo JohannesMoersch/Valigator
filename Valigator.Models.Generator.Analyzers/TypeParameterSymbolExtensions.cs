@@ -8,6 +8,28 @@ namespace Valigator.Models.Generator.Analyzers
 {
 	public static class TypeParameterSymbolExtensions
 	{
+		public static bool IsEquivalent(this ITypeParameterSymbol type, ITypeParameterSymbol target)
+			=>
+			type.HasReferenceTypeConstraint == target.HasReferenceTypeConstraint &&
+			type.HasValueTypeConstraint == target.HasValueTypeConstraint &&
+			type.HasConstructorConstraint == target.HasConstructorConstraint &&
+			type.HasNotNullConstraint == target.HasNotNullConstraint &&
+			type.HasUnmanagedTypeConstraint == target.HasUnmanagedTypeConstraint &&
+			IsEqual(type.ReferenceTypeConstraintNullableAnnotation, target.ReferenceTypeConstraintNullableAnnotation) &&
+			type.ConstraintNullableAnnotations.SequenceEqual(target.ConstraintNullableAnnotations, IsEqual) &&
+			type.ConstraintTypes.SequenceEqual(target.ConstraintTypes, IsEqual);
+
+		private static bool IsEqual(NullableAnnotation left, NullableAnnotation right)
+			=> left == NullableAnnotation.None || right == NullableAnnotation.None || left == right;
+
+		private static bool IsEqual(ITypeSymbol left, ITypeSymbol right)
+		{
+			if (left is ITypeParameterSymbol leftParameter && right is ITypeParameterSymbol rightParameter)
+				return left.Name == right.Name;
+		
+			return SymbolEqualityComparer.Default.Equals(left, right);
+		}
+
 		public static string ToCSharpGenericParameterCode(this IEnumerable<ITypeParameterSymbol> typeParameters)
 		{
 			var parameterNames = typeParameters
@@ -17,12 +39,12 @@ namespace Valigator.Models.Generator.Analyzers
 			return parameterNames.Any() ? $"<{String.Join(", ", parameterNames)}>" : String.Empty;
 		}
 
-		public static IEnumerable<string> ToCSharpGenericParameterConstraintsCode(this IEnumerable<ITypeParameterSymbol> typeParameters, string pathsRelativeToPrimary, string pathsRelativeToSecondary)
+		public static IEnumerable<string> ToCSharpGenericParameterConstraintsCode(this IEnumerable<ITypeParameterSymbol> typeParameters)
 			=> typeParameters
-				.Select(t => ToCSharpGenericParameterConstraintsCode(t, pathsRelativeToPrimary, pathsRelativeToSecondary))
+				.Select(t => ToCSharpGenericParameterConstraintsCode(t))
 				.Where(t => !String.IsNullOrEmpty(t));
 
-		private static string ToCSharpGenericParameterConstraintsCode(ITypeParameterSymbol typeParameter, string pathsRelativeToPrimary, string pathsRelativeToSecondary)
+		private static string ToCSharpGenericParameterConstraintsCode(ITypeParameterSymbol typeParameter)
 		{
 			var constraints = new List<string>();
 

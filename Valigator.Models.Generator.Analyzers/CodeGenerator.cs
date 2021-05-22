@@ -1,4 +1,5 @@
 ﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -116,11 +117,18 @@ namespace Valigator.Models.Generator.Analyzers
 				indentation += "\t";
 			}
 
-			var modelIsValueType = (typeSymbols.Last() as INamedTypeSymbol)?.TypeKind == TypeKind.Struct;
+			var model = typeSymbols.Last() as INamedTypeSymbol;
+
+			var modelIsValueType = model?.TypeKind == TypeKind.Struct;
 
 			builder.AppendLine($"{indentation}public {(!modelIsValueType ? "sealed" : String.Empty)} partial {(!modelIsValueType ? "class" : "struct")} {modelName}{definitionType.TypeParameters.ToCSharpGenericParameterCode()}");
 
-			foreach (var constraint in definitionType.TypeParameters.ToCSharpGenericParameterConstraintsCode(modelFullName, "System"))
+			var definedConstraints = (model?.GetDeclaringSyntaxReferences(cancellationToken) ?? Enumerable.Empty<TypeDeclarationSyntax>())
+				.SelectMany(s => s.ConstraintClauses)
+				.Select(c => c.Name.Identifier.Text)
+				.ToArray();
+
+			foreach (var constraint in definitionType.TypeParameters.Where(t => !definedConstraints.Contains(t.Name)).ToCSharpGenericParameterConstraintsCode())
 				builder.AppendLine($"{indentation}\t{constraint}");
 
 			builder.AppendLine($"{indentation}{{");

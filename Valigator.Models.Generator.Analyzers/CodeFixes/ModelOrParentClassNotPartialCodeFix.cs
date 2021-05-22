@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Valigator.Models.Generator.Analyzers.CodeFixes
 {
-	[ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(ModelDefinitionNotPartialClassCodeFix)), Shared]
+	[ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(ModelOrParentClassNotPartialCodeFix)), Shared]
 	public class ModelOrParentClassNotPartialCodeFix : CodeFixProvider
 	{
 		public override ImmutableArray<string> FixableDiagnosticIds => ImmutableArray.Create(AnalyzerDiagnosticDescriptors.ModelNotPartial.Id, AnalyzerDiagnosticDescriptors.ModelParentNotPartial.Id, AnalyzerDiagnosticDescriptors.ModelAndModelParentNotPartial.Id);
