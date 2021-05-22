@@ -1,4 +1,6 @@
-﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,18 +13,18 @@ namespace Valigator.Models.Generator.Analyzers
 		public static bool IsPublic(this PropertyDeclarationSyntax property)
 			=> property
 				.Modifiers
-				.Any(modifier => modifier.Text == "public");
+				.Any(modifier => modifier.IsKind(SyntaxKind.PublicKeyword));
 
 		public static bool TryGetGetAccessor(this PropertyDeclarationSyntax property, out AccessorDeclarationSyntax getAccessor)
 		{
-			getAccessor = property.AccessorList?.Accessors.FirstOrDefault(accessor => accessor.Keyword.Text == "get");
+			getAccessor = property.AccessorList?.Accessors.FirstOrDefault(accessor => accessor.IsKind(SyntaxKind.GetKeyword));
 
 			return getAccessor != null;
 		}
 
 		public static bool TryGetSetAccessor(this PropertyDeclarationSyntax property, out AccessorDeclarationSyntax setAccessor)
 		{
-			setAccessor = property.AccessorList?.Accessors.FirstOrDefault(accessor => accessor.Keyword.Text == "set");
+			setAccessor = property.AccessorList?.Accessors.FirstOrDefault(accessor => accessor.IsKind(SyntaxKind.SetKeyword));
 
 			return setAccessor != null;
 		}

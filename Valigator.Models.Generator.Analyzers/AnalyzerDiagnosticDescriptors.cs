@@ -57,21 +57,11 @@ namespace Valigator.Models.Generator.Analyzers
 			isEnabledByDefault: true
 		);
 
-		public static DiagnosticDescriptor ModelDefinitionParentClassNotPartialClass { get; } = new DiagnosticDescriptor
+		public static DiagnosticDescriptor ModelDefinitionParentNotPartialClass { get; } = new DiagnosticDescriptor
 		(
 			id: "VL0006",
-			title: "Model Definition Parent Class Not Partial",
-			messageFormat: "Model definition parent {0} not partial.",
-			category: "Generator",
-			DiagnosticSeverity.Error,
-			isEnabledByDefault: true
-		);
-
-		public static DiagnosticDescriptor ModelOrParentClassNotPartialClass { get; } = new DiagnosticDescriptor
-		(
-			id: "VL0007",
-			title: "Model Or Parent Class Not Partial",
-			messageFormat: "Generated model {0} not partial.",
+			title: "Model Definition Parent Not Partial",
+			messageFormat: "Model definition {0} not partial.",
 			category: "Generator",
 			DiagnosticSeverity.Error,
 			isEnabledByDefault: true
@@ -79,9 +69,49 @@ namespace Valigator.Models.Generator.Analyzers
 
 		public static DiagnosticDescriptor ModelDefinitionConstructorInaccessible { get; } = new DiagnosticDescriptor
 		(
-			id: "VL0008",
+			id: "VL0007",
 			title: "Model Definition Constructor Inaccessible",
 			messageFormat: "Model definition cannot have a private or protected parameterless constructor.",
+			category: "Generator",
+			DiagnosticSeverity.Error,
+			isEnabledByDefault: true
+		);
+
+		public static DiagnosticDescriptor ModelNotClassOrStruct { get; } = new DiagnosticDescriptor
+		(
+			id: "VL0008",
+			title: "Model Not Class Or Struct",
+			messageFormat: "Model must be a class or a struct.",
+			category: "Generator",
+			DiagnosticSeverity.Error,
+			isEnabledByDefault: true
+		);
+
+		public static DiagnosticDescriptor ModelNotPartial { get; } = new DiagnosticDescriptor
+		(
+			id: "VL0009",
+			title: "Model Not Partial",
+			messageFormat: "Model {0} is not partial.",
+			category: "Generator",
+			DiagnosticSeverity.Error,
+			isEnabledByDefault: true
+		);
+
+		public static DiagnosticDescriptor ModelParentNotPartial { get; } = new DiagnosticDescriptor
+		(
+			id: "VL0010",
+			title: "Model Parent Not Partial",
+			messageFormat: "Model {0} not partial.",
+			category: "Generator",
+			DiagnosticSeverity.Error,
+			isEnabledByDefault: true
+		);
+
+		public static DiagnosticDescriptor ModelAndModelParentNotPartial { get; } = new DiagnosticDescriptor
+		(
+			id: "VL0011",
+			title: "Model And Model Parent Not Partial",
+			messageFormat: "Model {0} and {1} are not partial.",
 			category: "Generator",
 			DiagnosticSeverity.Error,
 			isEnabledByDefault: true

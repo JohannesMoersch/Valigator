@@ -41,17 +41,25 @@ namespace Valigator.Models.Generator.Analyzers
 							modelNamespaceParts.All(CodeProvider.IsValidIdentifier) &&
 							modelParentClasses.All(CodeProvider.IsValidIdentifier) &&
 							CodeProvider.IsValidIdentifier(modelName) &&
-							(!typeSymbol.InstanceConstructors.TryGetFirst(m => !m.Parameters.Any(), out var constructor) || constructor.DeclaredAccessibility.IsAccessibleInternally())
+							(!typeSymbol.InstanceConstructors.TryGetFirst(m => !m.Parameters.Any(), out var constructor) || constructor.DeclaredAccessibility.IsAccessibleInternally()) &&
+							TargetModelIsCompatibleWithGeneratedModel(semanticModel, typeSymbol, modelNamespaceParts, modelParentClasses, modelName)
 						)
 						{
-							context.AddSource(GetUniqueFileName(typeSymbol.Name, usedNames), CodeGenerator.GenerateDefinition(typeSymbol, modelNamespaceParts, modelParentClasses, modelName, "ModelView", true));
+							context.AddSource(GetUniqueFileName(typeSymbol.Name, usedNames), CodeGenerator.GenerateDefinition(typeSymbol, modelNamespaceParts, modelParentClasses, modelName));
 							context.AddSource(GetUniqueFileName(modelName, usedNames), CodeGenerator.GenerateModel(semanticModel, typeSymbol, generateModelAttribute, generateModelDefaultsAttributeType, propertyAttributeType, modelNamespaceParts, modelParentClasses, modelName, context.CancellationToken));
 						}
 						else
-							context.AddSource(GetUniqueFileName(typeSymbol.Name, usedNames), CodeGenerator.GenerateDefinition(typeSymbol, new[] { "System" }, Array.Empty<string>(), "Object", String.Empty, false));
+							context.AddSource(GetUniqueFileName(typeSymbol.Name, usedNames), CodeGenerator.GenerateDefinitionWithoutModel(typeSymbol));
 					}
 				}
 			}
+		}
+
+		private static bool TargetModelIsCompatibleWithGeneratedModel(SemanticModel semanticModel, INamedTypeSymbol typeSymbol, string[] modelNamespaceParts, string[] modelParentClasses, string modelName)
+		{
+			var modelSymbol = semanticModel.LookupAllNamespaceAndTypeSymbols(modelNamespaceParts, modelParentClasses.Select(p => (p, 0)).Concat(new[] { (modelName, typeSymbol.TypeParameters.Length)}).ToArray()).Last().OfType<INamedTypeSymbol>();
+
+			return !modelSymbol.Any() || modelSymbol.All(s => s.TypeKind == TypeKind.Class) || modelSymbol.All(s => s.TypeKind == TypeKind.Struct);
 		}
 
 		private static string GetUniqueFileName(string nameWithoutExtension, HashSet<string> usedNames)

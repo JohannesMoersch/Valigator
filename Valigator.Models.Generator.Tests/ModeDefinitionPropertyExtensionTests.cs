@@ -17,13 +17,15 @@ namespace Valigator.Models.Generator.Tests
 		public partial class Outer
 		{
 			[GenerateModel(ModelName = "NewTestModel", ModelParentClasses = "Abc+TestTest+Other")]
-			public partial class ThingsAndStuffDefinition<T>
+			public partial class ThingsAndStuffDefinition
 			{
 				public Property<Attribute> Test { get; } = Data.Value<Attribute>().Required();
 
-				public Property<T> Other { get; } = Data.Value<T>().Required();
+				public Property<int> Other { get; } = Data.Value<int>().Required();
 
 				public ThingsAndStuffDefinition() { }
+
+				private ThingsAndStuffDefinition(int a) { }
 			}
 		}
 	}
@@ -34,7 +36,11 @@ namespace Valigator.Models.Generator.Tests
 		{
 			public partial interface Other
 			{
-				public partial class NewTestModel<T>
+				public partial class NewTestModel
+				{
+				}
+
+				public partial interface NewTestModel<T>
 				{
 				}
 			}
@@ -43,9 +49,7 @@ namespace Valigator.Models.Generator.Tests
 			{
 				public static void Things()
 				{
-					Edge.Outer.ThingsAndStuffDefinition<int> d;
-
-					Other.NewTestModel<float> c;
+					//Other.NewTestModel<float> c;
 
 					Other a = default;
 					Blah b = default;

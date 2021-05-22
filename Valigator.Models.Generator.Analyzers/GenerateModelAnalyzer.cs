@@ -24,9 +24,12 @@ namespace Valigator.Models.Generator.Analyzers
 					AnalyzerDiagnosticDescriptors.ModelDefinitionPropertyHasSetter,
 					AnalyzerDiagnosticDescriptors.ModelDefinitionModelIdentifierMatchFailed,
 					AnalyzerDiagnosticDescriptors.ModelDefinitionModelIdentifierInvalid,
-					AnalyzerDiagnosticDescriptors.ModelDefinitionParentClassNotPartialClass,
-					AnalyzerDiagnosticDescriptors.ModelOrParentClassNotPartialClass,
-					AnalyzerDiagnosticDescriptors.ModelDefinitionConstructorInaccessible
+					AnalyzerDiagnosticDescriptors.ModelDefinitionParentNotPartialClass,
+					AnalyzerDiagnosticDescriptors.ModelDefinitionConstructorInaccessible,
+					AnalyzerDiagnosticDescriptors.ModelNotClassOrStruct,
+					AnalyzerDiagnosticDescriptors.ModelNotPartial,
+					AnalyzerDiagnosticDescriptors.ModelParentNotPartial,
+					AnalyzerDiagnosticDescriptors.ModelAndModelParentNotPartial
 				);
 
 		private CodeDomProvider CodeProvider { get; } = CodeDomProvider.CreateProvider("csharp");
@@ -58,7 +61,7 @@ namespace Valigator.Models.Generator.Analyzers
 
 							CheckForParentsNotPartialClass(context, classSyntax, typeSymbol);
 
-							CheckForModelOrParentsNotPartialClass(context, classSyntax, typeSymbol, generateModelAttribute, generateModelDefaultsAttributeType);
+							CheckForModelOrParentsNotPartialClassOrModelNotClassOrStruct(context, classSyntax, typeSymbol, generateModelAttribute, generateModelDefaultsAttributeType);
 
 							CheckForModelIdentifierIssues(context, classSyntax, typeSymbol, generateModelAttribute, generateModelDefaultsAttributeType);
 
@@ -134,15 +137,15 @@ namespace Valigator.Models.Generator.Analyzers
 			if (nonPartialParentClasses.Any())
 			{
 				var messageParameter = nonPartialParentClasses.Length > 1
-					? $"classes {nonPartialParentClasses.Select(t => $"\"{t.Name}\"").JoinListWithOxfordComma()} are"
-					: $"class \"{nonPartialParentClasses[0].Name}\" is";
+					? $"parents {nonPartialParentClasses.Select(t => $"\"{t.Name}\"").JoinListWithOxfordComma()} are"
+					: $"parent \"{nonPartialParentClasses[0].Name}\" is";
 
 				context
 					.ReportDiagnostic
 					(
 						Diagnostic.Create
 						(
-							AnalyzerDiagnosticDescriptors.ModelDefinitionParentClassNotPartialClass,
+							AnalyzerDiagnosticDescriptors.ModelDefinitionParentNotPartialClass,
 							Location.Create(classSyntax.SyntaxTree, classSyntax.Identifier.Span),
 							messageParameter
 						)
@@ -150,7 +153,7 @@ namespace Valigator.Models.Generator.Analyzers
 			}
 		}
 
-		private void CheckForModelOrParentsNotPartialClass(SyntaxNodeAnalysisContext context, ClassDeclarationSyntax classSyntax, INamedTypeSymbol typeSymbol, AttributeData generateModelAttribute, INamedTypeSymbol generateModelDefaultsAttributeType)
+		private void CheckForModelOrParentsNotPartialClassOrModelNotClassOrStruct(SyntaxNodeAnalysisContext context, ClassDeclarationSyntax classSyntax, INamedTypeSymbol typeSymbol, AttributeData generateModelAttribute, INamedTypeSymbol generateModelDefaultsAttributeType)
 		{
 			var typeName = typeSymbol.GetFullNameWithNamespace("+", false);
 
@@ -158,49 +161,89 @@ namespace Valigator.Models.Generator.Analyzers
 			{
 				var types = context
 					.SemanticModel
-					.LookupNamespaceAndTypeSymbols(modelNamespace, modelParentClasses.Concat(new[] { modelName }).ToArray())
+					.LookupAllNamespaceAndTypeSymbols(modelNamespace, modelParentClasses.Select(p => (p, 0)).Concat(new[] { (modelName, typeSymbol.TypeParameters.Length) }).ToArray())
 					.ToArray();
 
-				var model = types.Last() as ITypeSymbol;
+				var model = types.Last().OfType<INamedTypeSymbol>().ToArray();
 
-				var nonPartialModel = model?.GetDeclaringSyntaxReferences(context.CancellationToken).Any(s => !s.IsPartial()) ?? false
-					? model
-					: null;
-
-				var nonPartialParentClasses = types
-					.Take(types.Length - 1)
-					.OfType<ITypeSymbol>()
-					.Where(c => c.GetDeclaringSyntaxReferences(context.CancellationToken).Any(s => !s.IsPartial()))
-					.ToArray();
-
-				if (nonPartialModel != null || nonPartialParentClasses.Any())
+				if (model.Any(s => s.TypeKind != TypeKind.Class && s.TypeKind != TypeKind.Struct))
 				{
-					var modelMessage = nonPartialModel != null
-						? $"\"{nonPartialModel.Name}\""
-						: null;
-
-					var parentClassesMessage = nonPartialParentClasses.Length == 0
-						? null
-						: nonPartialParentClasses.Length > 1
-							? $"parent classes {nonPartialParentClasses.Select(t => $"\"{t.Name}\"").JoinListWithOxfordComma()}"
-							: $"parent class \"{nonPartialParentClasses[0].Name}\"";
-
-					var message = String.Join(" and ", new[] { modelMessage, parentClassesMessage }.Where(s => s != null));
-
-					var end = ((modelMessage != null ? 1 : 0) + nonPartialParentClasses.Length) > 1
-						? "are"
-						: "is";
-
 					context
 						.ReportDiagnostic
 						(
 							Diagnostic.Create
 							(
-								AnalyzerDiagnosticDescriptors.ModelOrParentClassNotPartialClass,
-								Location.Create(classSyntax.SyntaxTree, classSyntax.Identifier.Span),
-								$"{message} {end}"
+								AnalyzerDiagnosticDescriptors.ModelNotClassOrStruct,
+								Location.Create(classSyntax.SyntaxTree, classSyntax.Identifier.Span)
 							)
 						);
+				}
+				else
+				{
+					var nonPartialModel = model.FirstOrDefault()?.GetDeclaringSyntaxReferences(context.CancellationToken).Any(s => !s.IsPartial()) ?? false
+						? model.FirstOrDefault()
+						: null;
+
+					var nonPartialParentClasses = types
+						.Take(types.Length - 1)
+						.Select(s => s.FirstOrDefault())
+						.OfType<ITypeSymbol>()
+						.Where(c => c.GetDeclaringSyntaxReferences(context.CancellationToken).Any(s => !s.IsPartial()))
+						.ToArray();
+
+					var modelMessage = nonPartialModel != null
+							? $"\"{nonPartialModel.Name}\""
+							: null;
+
+					var parentClassesMessage = nonPartialParentClasses.Any()
+							? nonPartialParentClasses.Length > 1
+								? $"parents {nonPartialParentClasses.Select(t => $"\"{t.Name}\"").JoinListWithOxfordComma()}"
+								: $"parent \"{nonPartialParentClasses[0].Name}\""
+							: null;
+
+					if (nonPartialModel != null || nonPartialParentClasses.Any())
+					{
+						if (!nonPartialParentClasses.Any())
+						{
+							context
+								.ReportDiagnostic
+								(
+									Diagnostic.Create
+									(
+										AnalyzerDiagnosticDescriptors.ModelNotPartial,
+										Location.Create(classSyntax.SyntaxTree, classSyntax.Identifier.Span),
+										modelMessage
+									)
+								);
+						}
+						else if (nonPartialModel == null)
+						{
+							context
+								.ReportDiagnostic
+								(
+									Diagnostic.Create
+									(
+										AnalyzerDiagnosticDescriptors.ModelParentNotPartial,
+										Location.Create(classSyntax.SyntaxTree, classSyntax.Identifier.Span),
+										$"{parentClassesMessage} {(nonPartialParentClasses.Length > 1 ? "are" : "is")}"
+									)
+								);
+						}
+						else
+						{
+							context
+								.ReportDiagnostic
+								(
+									Diagnostic.Create
+									(
+										AnalyzerDiagnosticDescriptors.ModelAndModelParentNotPartial,
+										Location.Create(classSyntax.SyntaxTree, classSyntax.Identifier.Span),
+										modelMessage,
+										parentClassesMessage
+									)
+								);
+						}
+					}
 				}
 			}
 		}
@@ -215,7 +258,7 @@ namespace Valigator.Models.Generator.Analyzers
 						Diagnostic.Create
 						(
 							AnalyzerDiagnosticDescriptors.ModelDefinitionPropertyDoesNotHaveGetter,
-							Location.Create(propertySyntax.SyntaxTree, getAccessor?.Modifiers.First(modifier => modifier.Text == "private").Span ?? propertySyntax.Identifier.Span)
+							Location.Create(propertySyntax.SyntaxTree, getAccessor?.Modifiers.First(modifier => modifier.IsKind(SyntaxKind.PrivateKeyword)).Span ?? propertySyntax.Identifier.Span)
 						)
 					);
 			}

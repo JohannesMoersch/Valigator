@@ -9,14 +9,25 @@ namespace Valigator.Models.Generator.Analyzers
 {
 	public static class CodeGenerator
 	{
-		public static string GenerateDefinition(INamedTypeSymbol definitionType, string[] modelNamespaceParts, string[] modelParentClasses, string modelName, string modelViewName, bool addGenericsOnModel)
+		public static string GenerateDefinitionWithoutModel(INamedTypeSymbol definitionType)
+			=> GenerateDefinition(definitionType, null, null, null);
+
+		public static string GenerateDefinition(INamedTypeSymbol definitionType, string[] modelNamespaceParts, string[] modelParentClasses, string modelName)
 		{
+			bool useDefaultModel = modelName == null;
+
 			var definitionNamespace = definitionType.GetFullNamespace();
 			var parentClasses = definitionType.ContainingType?.GetContainingTypeHierarchy().ToArray() ?? Array.Empty<INamedTypeSymbol>();
 
-			var modelParentClassFullName = String.Join(".", modelNamespaceParts.Concat(modelParentClasses));
+			string modelNameAndNamespace;
+			if (!useDefaultModel)
+			{
+				var modelParentClassFullName = String.Join(".", modelNamespaceParts.Concat(modelParentClasses));
 
-			var modelNameAndNamespace = $"global::{(!String.IsNullOrEmpty(modelParentClassFullName) ? $"{modelParentClassFullName}." : String.Empty)}{modelName}{(addGenericsOnModel ? definitionType.TypeParameters.ToCSharpGenericParameterCode() : String.Empty)}";
+				modelNameAndNamespace = $"global::{(!String.IsNullOrEmpty(modelParentClassFullName) ? $"{modelParentClassFullName}." : String.Empty)}{modelName}{definitionType.TypeParameters.ToCSharpGenericParameterCode()}.ModelView";
+			}
+			else
+				modelNameAndNamespace = "object";
 
 			var hasNamespace = !String.IsNullOrEmpty(definitionNamespace);
 			var indentation = String.Empty;
@@ -39,7 +50,7 @@ namespace Valigator.Models.Generator.Analyzers
 				indentation += "\t";
 			}
 
-			builder.AppendLine($"{indentation}public sealed partial class {definitionType.Name}{definitionType.TypeParameters.ToCSharpGenericParameterCode()} : global::Valigator.Models.ModelDefinition<{modelNameAndNamespace}{(!String.IsNullOrEmpty(modelViewName) ? $".{modelViewName}" : modelViewName)}>");
+			builder.AppendLine($"{indentation}public sealed partial class {definitionType.Name}{definitionType.TypeParameters.ToCSharpGenericParameterCode()} : global::Valigator.Models.ModelDefinition<{modelNameAndNamespace}>");
 			builder.AppendLine($"{indentation}{{");
 
 			if (!definitionType.InstanceConstructors.Any(m => !m.Parameters.Any()))
@@ -93,7 +104,7 @@ namespace Valigator.Models.Generator.Analyzers
 				indentation += "\t";
 			}
 
-			var typeSymbols = semanticModel.LookupNamespaceAndTypeSymbols(modelNamespaceParts, parentClasses.Concat(new[] { modelName }).ToArray());
+			var typeSymbols = semanticModel.LookupNamespaceAndTypeSymbols(modelNamespaceParts, parentClasses.Select(p => (p, 0)).Concat(new[] { (modelName, definitionType.TypeParameters.Length) }).ToArray());
 
 			for (int i = 0; i < parentClasses.Length; ++i)
 			{

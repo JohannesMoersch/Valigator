@@ -15,9 +15,9 @@ using System.Threading.Tasks;
 namespace Valigator.Models.Generator.Analyzers.CodeFixes
 {
 	[ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(ModelDefinitionNotPartialClassCodeFix)), Shared]
-	public class ModelDefinitionParentClassNotPartialCodeFix : CodeFixProvider
+	public class ModelDefinitionParentNotPartialCodeFix : CodeFixProvider
 	{
-		public override ImmutableArray<string> FixableDiagnosticIds => ImmutableArray.Create(AnalyzerDiagnosticDescriptors.ModelDefinitionParentClassNotPartialClass.Id);
+		public override ImmutableArray<string> FixableDiagnosticIds => ImmutableArray.Create(AnalyzerDiagnosticDescriptors.ModelDefinitionParentNotPartialClass.Id);
 
 		public override FixAllProvider GetFixAllProvider()
 			=> WellKnownFixAllProviders.BatchFixer;
@@ -45,15 +45,15 @@ namespace Valigator.Models.Generator.Analyzers.CodeFixes
 					CodeAction
 						.Create
 						(
-							title: "Make model definition parent classes partial",
-							createChangedSolution: c => MakeParentClassesPartial(context.Document, classSyntax, c),
-							equivalenceKey: "Make model definition parent classes partial"
+							title: "Make model definition parents partial",
+							createChangedSolution: c => MakeParentsPartial(context.Document, classSyntax, c),
+							equivalenceKey: "Make model definition parents partial"
 						),
 					diagnostic
 				);
 		}
 
-		private async Task<Solution> MakeParentClassesPartial(Document document, ClassDeclarationSyntax classSyntax, CancellationToken cancellationToken)
+		private async Task<Solution> MakeParentsPartial(Document document, ClassDeclarationSyntax classSyntax, CancellationToken cancellationToken)
 		{
 			var semanticModel = await document.GetSemanticModelAsync(cancellationToken);
 

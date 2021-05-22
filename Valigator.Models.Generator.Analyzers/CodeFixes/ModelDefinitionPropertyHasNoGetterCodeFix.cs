@@ -39,7 +39,7 @@ namespace Valigator.Models.Generator.Analyzers.CodeFixes
 			if (propertySyntax == null)
 				return;
 
-			if (propertySyntax.AccessorList?.Accessors.Any(accessor => accessor.Keyword.Text == "get") ?? false)
+			if (propertySyntax.AccessorList?.Accessors.Any(accessor => accessor.IsKind(SyntaxKind.GetKeyword)) ?? false)
 				context
 					.RegisterCodeFix
 					(
