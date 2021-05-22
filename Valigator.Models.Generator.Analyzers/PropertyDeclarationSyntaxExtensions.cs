@@ -17,14 +17,14 @@ namespace Valigator.Models.Generator.Analyzers
 
 		public static bool TryGetGetAccessor(this PropertyDeclarationSyntax property, out AccessorDeclarationSyntax getAccessor)
 		{
-			getAccessor = property.AccessorList?.Accessors.FirstOrDefault(accessor => accessor.IsKind(SyntaxKind.GetKeyword));
+			getAccessor = property.AccessorList?.Accessors.FirstOrDefault(accessor => accessor.Keyword.IsKind(SyntaxKind.GetKeyword));
 
 			return getAccessor != null;
 		}
 
 		public static bool TryGetSetAccessor(this PropertyDeclarationSyntax property, out AccessorDeclarationSyntax setAccessor)
 		{
-			setAccessor = property.AccessorList?.Accessors.FirstOrDefault(accessor => accessor.IsKind(SyntaxKind.SetKeyword));
+			setAccessor = property.AccessorList?.Accessors.FirstOrDefault(accessor => accessor.Keyword.IsKind(SyntaxKind.SetKeyword));
 
 			return setAccessor != null;
 		}

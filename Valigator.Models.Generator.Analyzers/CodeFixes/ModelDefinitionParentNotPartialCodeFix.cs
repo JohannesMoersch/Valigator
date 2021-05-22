@@ -57,7 +57,7 @@ namespace Valigator.Models.Generator.Analyzers.CodeFixes
 		{
 			var semanticModel = await document.GetSemanticModelAsync(cancellationToken);
 
-			var typeSymbol = semanticModel.GetDeclaredSymbol(classSyntax);
+			var typeSymbol = semanticModel.GetDeclaredSymbol(classSyntax, cancellationToken);
 
 			var nonPartialParentClasses = (typeSymbol.ContainingType?.GetContainingTypeHierarchy() ?? Enumerable.Empty<ITypeSymbol>())
 				.SelectMany(c => c.GetDeclaringSyntaxReferences(cancellationToken))

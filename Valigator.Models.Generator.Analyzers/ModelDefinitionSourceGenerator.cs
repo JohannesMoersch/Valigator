@@ -31,9 +31,9 @@ namespace Valigator.Models.Generator.Analyzers
 						.Compilation
 						.GetSemanticModel(candidate.SyntaxTree);
 
-					var typeSymbol = semanticModel.GetDeclaredSymbol(candidate);
+					var typeSymbol = semanticModel.GetDeclaredSymbol(candidate, context.CancellationToken);
 
-					if (typeSymbol != null && typeSymbol.TryGetAttribute(generateModelAttributeType, out var generateModelAttribute) && candidate.IsPartial())
+					if (typeSymbol != null && typeSymbol.TryGetAttribute(generateModelAttributeType, out var generateModelAttribute) && candidate.IsPartial() && !candidate.TryGetBaseTypeSyntax(semanticModel, context.CancellationToken, out _))
 					{
 						if
 						(

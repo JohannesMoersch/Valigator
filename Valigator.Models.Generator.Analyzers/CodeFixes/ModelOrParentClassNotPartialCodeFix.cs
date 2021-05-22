@@ -65,7 +65,7 @@ namespace Valigator.Models.Generator.Analyzers.CodeFixes
 		{
 			var semanticModel = await document.GetSemanticModelAsync(cancellationToken);
 
-			var typeSymbol = semanticModel.GetDeclaredSymbol(classSyntax);
+			var typeSymbol = semanticModel.GetDeclaredSymbol(classSyntax, cancellationToken);
 
 			var typeName = typeSymbol.GetFullNameWithNamespace("+", false);
 

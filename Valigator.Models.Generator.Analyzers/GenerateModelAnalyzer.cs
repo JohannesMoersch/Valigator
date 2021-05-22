@@ -26,6 +26,7 @@ namespace Valigator.Models.Generator.Analyzers
 					AnalyzerDiagnosticDescriptors.ModelDefinitionModelIdentifierInvalid,
 					AnalyzerDiagnosticDescriptors.ModelDefinitionParentNotPartialClass,
 					AnalyzerDiagnosticDescriptors.ModelDefinitionConstructorInaccessible,
+					AnalyzerDiagnosticDescriptors.ModelDefinitionManualBaseClass,
 					AnalyzerDiagnosticDescriptors.ModelNotClassOrStruct,
 					AnalyzerDiagnosticDescriptors.ModelNotPartial,
 					AnalyzerDiagnosticDescriptors.ModelParentNotPartial,
@@ -53,17 +54,19 @@ namespace Valigator.Models.Generator.Analyzers
 
 						var typeSymbol = context
 							.SemanticModel
-							.GetDeclaredSymbol(classSyntax);
+							.GetDeclaredSymbol(classSyntax, context.CancellationToken);
 
 						if (typeSymbol.TryGetAttribute(generateModelAttributeType, out var generateModelAttribute))
 						{
 							CheckForNotPartialClass(context, classSyntax);
 
+							CheckForManuallyDefinedBaseClass(context, classSyntax, out var hasManuallyDefinedBaseClass);
+
 							CheckForInaccessibleParameterlessConstructor(context, classSyntax, typeSymbol);
 
 							CheckForParentsNotPartialClass(context, classSyntax, typeSymbol);
 
-							CheckForModelOrParentsNotPartialClassOrModelNotClassOrStruct(context, classSyntax, typeSymbol, generateModelAttribute, generateModelDefaultsAttributeType);
+							CheckForModelOrParentsNotPartialClassOrModelNotClassOrStruct(context, classSyntax, typeSymbol, generateModelAttribute, generateModelDefaultsAttributeType, !hasManuallyDefinedBaseClass);
 
 							CheckForModelIdentifierIssues(context, classSyntax, typeSymbol, generateModelAttribute, generateModelDefaultsAttributeType);
 
@@ -104,6 +107,24 @@ namespace Valigator.Models.Generator.Analyzers
 						(
 							AnalyzerDiagnosticDescriptors.ModelDefinitionNotPartialClass,
 							Location.Create(classSyntax.SyntaxTree, classSyntax.Identifier.Span)
+						)
+					);
+			}
+		}
+
+		private void CheckForManuallyDefinedBaseClass(SyntaxNodeAnalysisContext context, ClassDeclarationSyntax classSyntax, out bool hasManuallyDefinedBaseClass)
+		{
+			hasManuallyDefinedBaseClass = classSyntax.TryGetBaseTypeSyntax(context.SemanticModel, context.CancellationToken, out var baseTypeSyntax);
+
+			if (hasManuallyDefinedBaseClass)
+			{
+				context
+					.ReportDiagnostic
+					(
+						Diagnostic.Create
+						(
+							AnalyzerDiagnosticDescriptors.ModelDefinitionManualBaseClass,
+							Location.Create(baseTypeSyntax.SyntaxTree, baseTypeSyntax.Span)
 						)
 					);
 			}
@@ -155,7 +176,7 @@ namespace Valigator.Models.Generator.Analyzers
 			}
 		}
 
-		private void CheckForModelOrParentsNotPartialClassOrModelNotClassOrStruct(SyntaxNodeAnalysisContext context, ClassDeclarationSyntax classSyntax, INamedTypeSymbol typeSymbol, AttributeData generateModelAttribute, INamedTypeSymbol generateModelDefaultsAttributeType)
+		private void CheckForModelOrParentsNotPartialClassOrModelNotClassOrStruct(SyntaxNodeAnalysisContext context, ClassDeclarationSyntax classSyntax, INamedTypeSymbol typeSymbol, AttributeData generateModelAttribute, INamedTypeSymbol generateModelDefaultsAttributeType, bool checkTypeConstraints)
 		{
 			var typeName = typeSymbol.GetFullNameWithNamespace("+", false);
 
@@ -186,7 +207,8 @@ namespace Valigator.Models.Generator.Analyzers
 
 					CheckForModelTypeParameterMismatch(context, classSyntax, typeSymbol, modelTypes);
 
-					CheckForModelTypeConstraintMismatch(context, classSyntax, typeSymbol, modelTypes);
+					if (checkTypeConstraints)
+						CheckForModelTypeConstraintMismatch(context, classSyntax, typeSymbol, modelTypes);
 				}
 			}
 		}

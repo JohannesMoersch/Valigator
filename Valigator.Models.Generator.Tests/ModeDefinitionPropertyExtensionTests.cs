@@ -18,7 +18,7 @@ namespace Valigator.Models.Generator.Tests
 		{
 			[GenerateModel(ModelName = "NewTestModel", ModelParentClasses = "Abc+TestTest+Other")]
 			public partial class ThingsAndStuffDefinition<T, U>
-					where T : class
+				where T : class
 			{
 				public Property<Attribute> Test { get; } = Data.Value<Attribute>().Required();
 
