@@ -18,6 +18,9 @@ namespace Valigator.Models.Generator.Analyzers
 			return pattern;
 		}
 
+		public static string JoinList(this IEnumerable<string> values, string seperator)
+			=> String.Join(seperator, values);
+
 		public static string JoinListWithOxfordComma(this IEnumerable<string> values)
 		{
 			var items = values.ToArray();

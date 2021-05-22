@@ -29,7 +29,8 @@ namespace Valigator.Models.Generator.Analyzers
 					AnalyzerDiagnosticDescriptors.ModelNotClassOrStruct,
 					AnalyzerDiagnosticDescriptors.ModelNotPartial,
 					AnalyzerDiagnosticDescriptors.ModelParentNotPartial,
-					AnalyzerDiagnosticDescriptors.ModelAndModelParentNotPartial
+					AnalyzerDiagnosticDescriptors.ModelAndModelParentNotPartial,
+					AnalyzerDiagnosticDescriptors.ModelTypeParameterMismatch
 				);
 
 		private CodeDomProvider CodeProvider { get; } = CodeDomProvider.CreateProvider("csharp");
@@ -164,9 +165,7 @@ namespace Valigator.Models.Generator.Analyzers
 					.LookupAllNamespaceAndTypeSymbols(modelNamespace, modelParentClasses.Select(p => (p, 0)).Concat(new[] { (modelName, typeSymbol.TypeParameters.Length) }).ToArray())
 					.ToArray();
 
-				var model = types.Last().OfType<INamedTypeSymbol>().ToArray();
-
-				if (model.Any(s => s.TypeKind != TypeKind.Class && s.TypeKind != TypeKind.Struct))
+				if (types.Last().OfType<INamedTypeSymbol>().Any(s => s.TypeKind != TypeKind.Class && s.TypeKind != TypeKind.Struct))
 				{
 					context
 						.ReportDiagnostic
@@ -180,70 +179,121 @@ namespace Valigator.Models.Generator.Analyzers
 				}
 				else
 				{
-					var nonPartialModel = model.FirstOrDefault()?.GetDeclaringSyntaxReferences(context.CancellationToken).Any(s => !s.IsPartial()) ?? false
-						? model.FirstOrDefault()
+					var modelTypes = types.Select(s => s.FirstOrDefault()).ToArray();
+
+					CheckForModelOrParentsNotPartialClass(context, classSyntax, modelTypes);
+
+					CheckForModelTypeParameterMismatch(context, classSyntax, typeSymbol, modelTypes);
+				}
+			}
+		}
+
+		private void CheckForModelTypeParameterMismatch(SyntaxNodeAnalysisContext context, ClassDeclarationSyntax classSyntax, INamedTypeSymbol typeSymbol, INamespaceOrTypeSymbol[] types)
+		{
+			INamedTypeSymbol model = types.Last() as INamedTypeSymbol;
+
+			if (model != null)
+			{
+				var start = model.TypeParameters.Length == 1
+					? "parameter"
+					: "parameters";
+
+				var middle = model.TypeParameters.Length == 1
+					? "does"
+					: "do";
+
+				var modelTypeParameters = model
+					.TypeParameters
+					.Select(t => t.Name)
+					.JoinList(", ");
+
+				var definitionTypeParameters = typeSymbol
+					.TypeParameters
+					.Select(t => t.Name)
+					.JoinList(", ");
+
+				if (modelTypeParameters != definitionTypeParameters)
+				{
+					context
+						.ReportDiagnostic
+						(
+							Diagnostic.Create
+							(
+								AnalyzerDiagnosticDescriptors.ModelTypeParameterMismatch,
+								Location.Create(classSyntax.SyntaxTree, classSyntax.Identifier.Span),
+								$"{start} \"<{modelTypeParameters}>\" {middle}",
+								$"{start} \"<{definitionTypeParameters}>\""
+							)
+						);
+				}
+			}
+		}
+
+		private void CheckForModelOrParentsNotPartialClass(SyntaxNodeAnalysisContext context, ClassDeclarationSyntax classSyntax, INamespaceOrTypeSymbol[] types)
+		{
+			INamedTypeSymbol model = types.Last() as INamedTypeSymbol;
+
+			var nonPartialModel = model?.GetDeclaringSyntaxReferences(context.CancellationToken).Any(s => !s.IsPartial()) ?? false
+						? model
 						: null;
 
-					var nonPartialParentClasses = types
-						.Take(types.Length - 1)
-						.Select(s => s.FirstOrDefault())
-						.OfType<ITypeSymbol>()
-						.Where(c => c.GetDeclaringSyntaxReferences(context.CancellationToken).Any(s => !s.IsPartial()))
-						.ToArray();
+			var nonPartialParentClasses = types
+				.Take(types.Length - 1)
+				.OfType<ITypeSymbol>()
+				.Where(c => c.GetDeclaringSyntaxReferences(context.CancellationToken).Any(s => !s.IsPartial()))
+				.ToArray();
 
-					var modelMessage = nonPartialModel != null
-							? $"\"{nonPartialModel.Name}\""
-							: null;
+			var modelMessage = nonPartialModel != null
+					? $"\"{nonPartialModel.Name}\""
+					: null;
 
-					var parentClassesMessage = nonPartialParentClasses.Any()
-							? nonPartialParentClasses.Length > 1
-								? $"parents {nonPartialParentClasses.Select(t => $"\"{t.Name}\"").JoinListWithOxfordComma()}"
-								: $"parent \"{nonPartialParentClasses[0].Name}\""
-							: null;
+			var parentClassesMessage = nonPartialParentClasses.Any()
+					? nonPartialParentClasses.Length > 1
+						? $"parents {nonPartialParentClasses.Select(t => $"\"{t.Name}\"").JoinListWithOxfordComma()}"
+						: $"parent \"{nonPartialParentClasses[0].Name}\""
+					: null;
 
-					if (nonPartialModel != null || nonPartialParentClasses.Any())
-					{
-						if (!nonPartialParentClasses.Any())
-						{
-							context
-								.ReportDiagnostic
-								(
-									Diagnostic.Create
-									(
-										AnalyzerDiagnosticDescriptors.ModelNotPartial,
-										Location.Create(classSyntax.SyntaxTree, classSyntax.Identifier.Span),
-										modelMessage
-									)
-								);
-						}
-						else if (nonPartialModel == null)
-						{
-							context
-								.ReportDiagnostic
-								(
-									Diagnostic.Create
-									(
-										AnalyzerDiagnosticDescriptors.ModelParentNotPartial,
-										Location.Create(classSyntax.SyntaxTree, classSyntax.Identifier.Span),
-										$"{parentClassesMessage} {(nonPartialParentClasses.Length > 1 ? "are" : "is")}"
-									)
-								);
-						}
-						else
-						{
-							context
-								.ReportDiagnostic
-								(
-									Diagnostic.Create
-									(
-										AnalyzerDiagnosticDescriptors.ModelAndModelParentNotPartial,
-										Location.Create(classSyntax.SyntaxTree, classSyntax.Identifier.Span),
-										modelMessage,
-										parentClassesMessage
-									)
-								);
-						}
-					}
+			if (nonPartialModel != null || nonPartialParentClasses.Any())
+			{
+				if (!nonPartialParentClasses.Any())
+				{
+					context
+						.ReportDiagnostic
+						(
+							Diagnostic.Create
+							(
+								AnalyzerDiagnosticDescriptors.ModelNotPartial,
+								Location.Create(classSyntax.SyntaxTree, classSyntax.Identifier.Span),
+								modelMessage
+							)
+						);
+				}
+				else if (nonPartialModel == null)
+				{
+					context
+						.ReportDiagnostic
+						(
+							Diagnostic.Create
+							(
+								AnalyzerDiagnosticDescriptors.ModelParentNotPartial,
+								Location.Create(classSyntax.SyntaxTree, classSyntax.Identifier.Span),
+								$"{parentClassesMessage} {(nonPartialParentClasses.Length > 1 ? "are" : "is")}"
+							)
+						);
+				}
+				else
+				{
+					context
+						.ReportDiagnostic
+						(
+							Diagnostic.Create
+							(
+								AnalyzerDiagnosticDescriptors.ModelAndModelParentNotPartial,
+								Location.Create(classSyntax.SyntaxTree, classSyntax.Identifier.Span),
+								modelMessage,
+								parentClassesMessage
+							)
+						);
 				}
 			}
 		}

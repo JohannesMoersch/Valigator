@@ -116,5 +116,15 @@ namespace Valigator.Models.Generator.Analyzers
 			DiagnosticSeverity.Error,
 			isEnabledByDefault: true
 		);
+
+		public static DiagnosticDescriptor ModelTypeParameterMismatch { get; } = new DiagnosticDescriptor
+		(
+			id: "VL0012",
+			title: "Model Type Parameter Mismatch",
+			messageFormat: "Model type {0} not match model definition type {1}.",
+			category: "Generator",
+			DiagnosticSeverity.Error,
+			isEnabledByDefault: true
+		);
 	}
 }
