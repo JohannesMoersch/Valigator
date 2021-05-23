@@ -27,6 +27,7 @@ namespace Valigator.Models.Generator.Analyzers
 					AnalyzerDiagnosticDescriptors.ModelDefinitionParentNotPartialClass,
 					AnalyzerDiagnosticDescriptors.ModelDefinitionConstructorInaccessible,
 					AnalyzerDiagnosticDescriptors.ModelDefinitionManualBaseClass,
+					AnalyzerDiagnosticDescriptors.ModelDefinitionParentsGenerics,
 					AnalyzerDiagnosticDescriptors.ModelNotClassOrStruct,
 					AnalyzerDiagnosticDescriptors.ModelNotPartial,
 					AnalyzerDiagnosticDescriptors.ModelParentNotPartial,
@@ -58,15 +59,17 @@ namespace Valigator.Models.Generator.Analyzers
 
 						if (typeSymbol.TryGetAttribute(generateModelAttributeType, out var generateModelAttribute))
 						{
-							CheckForNotPartialClass(context, classSyntax);
+							CheckForNotPartialClass(context, classSyntax, out var isPartial);
 
 							CheckForManuallyDefinedBaseClass(context, classSyntax, out var hasManuallyDefinedBaseClass);
 
-							CheckForInaccessibleParameterlessConstructor(context, classSyntax, typeSymbol);
+							CheckForInaccessibleParameterlessConstructor(context, typeSymbol, out var hasInaccessibleParameterlessConstructor);
 
 							CheckForParentsNotPartialClass(context, classSyntax, typeSymbol);
 
-							CheckForModelOrParentsNotPartialClassOrModelNotClassOrStruct(context, classSyntax, typeSymbol, generateModelAttribute, generateModelDefaultsAttributeType, !hasManuallyDefinedBaseClass);
+							CheckForGenericParents(context, classSyntax, typeSymbol, out var hasGenericParents);
+
+							CheckForModelOrParentsNotPartialClassOrModelNotClassOrStruct(context, classSyntax, typeSymbol, generateModelAttribute, generateModelDefaultsAttributeType, isPartial && !hasManuallyDefinedBaseClass && !hasInaccessibleParameterlessConstructor && !hasGenericParents);
 
 							CheckForModelIdentifierIssues(context, classSyntax, typeSymbol, generateModelAttribute, generateModelDefaultsAttributeType);
 
@@ -96,9 +99,11 @@ namespace Valigator.Models.Generator.Analyzers
 				.Where(property => property.IsPublic())
 				.Where(property => property.Type.IsModelDefinitionProperty());
 
-		private void CheckForNotPartialClass(SyntaxNodeAnalysisContext context, ClassDeclarationSyntax classSyntax)
+		private void CheckForNotPartialClass(SyntaxNodeAnalysisContext context, ClassDeclarationSyntax classSyntax, out bool isPartial)
 		{
-			if (!classSyntax.IsPartial())
+			isPartial = classSyntax.IsPartial();
+
+			if (!isPartial)
 			{
 				context
 					.ReportDiagnostic
@@ -130,9 +135,11 @@ namespace Valigator.Models.Generator.Analyzers
 			}
 		}
 
-		private void CheckForInaccessibleParameterlessConstructor(SyntaxNodeAnalysisContext context, ClassDeclarationSyntax classSyntax, INamedTypeSymbol typeSymbol)
+		private void CheckForInaccessibleParameterlessConstructor(SyntaxNodeAnalysisContext context, INamedTypeSymbol typeSymbol, out bool hasInaccessibleParameterlessConstructor)
 		{
-			if (typeSymbol.InstanceConstructors.TryGetFirst(m => !m.Parameters.Any(), out var constructor) && !constructor.DeclaredAccessibility.IsAccessibleInternally())
+			hasInaccessibleParameterlessConstructor = typeSymbol.TryGetPrivateOrProtectedParameterlessConstructor(out var constructor);
+
+			if (hasInaccessibleParameterlessConstructor)
 			{
 				var constructorSyntax = (ConstructorDeclarationSyntax)constructor
 					.DeclaringSyntaxReferences
@@ -154,7 +161,7 @@ namespace Valigator.Models.Generator.Analyzers
 		private void CheckForParentsNotPartialClass(SyntaxNodeAnalysisContext context, ClassDeclarationSyntax classSyntax, INamedTypeSymbol typeSymbol)
 		{
 			var nonPartialParentClasses = (typeSymbol.ContainingType?.GetContainingTypeHierarchy() ?? Enumerable.Empty<ITypeSymbol>())
-				.Where(c => c.GetDeclaringSyntaxReferences(context.CancellationToken).Any(s => !s.IsPartial()))
+				.Where(t => t.GetDeclaringSyntaxReferences(context.CancellationToken).Any(s => !s.IsPartial()))
 				.ToArray();
 
 			if (nonPartialParentClasses.Any())
@@ -169,6 +176,33 @@ namespace Valigator.Models.Generator.Analyzers
 						Diagnostic.Create
 						(
 							AnalyzerDiagnosticDescriptors.ModelDefinitionParentNotPartialClass,
+							Location.Create(classSyntax.SyntaxTree, classSyntax.Identifier.Span),
+							messageParameter
+						)
+					);
+			}
+		}
+
+		private void CheckForGenericParents(SyntaxNodeAnalysisContext context, ClassDeclarationSyntax classSyntax, INamedTypeSymbol typeSymbol, out bool hasGenericParents)
+		{
+			var genericParentClasses = typeSymbol
+				.GetGenericParents()
+				.ToArray();
+
+			hasGenericParents = genericParentClasses.Any();
+
+			if (hasGenericParents)
+			{
+				var messageParameter = genericParentClasses.Length > 1
+					? $"parents {genericParentClasses.Select(t => $"\"{t.Name}\"").JoinListWithOxfordComma()} are"
+					: $"parent \"{genericParentClasses[0].Name}\" is";
+
+				context
+					.ReportDiagnostic
+					(
+						Diagnostic.Create
+						(
+							AnalyzerDiagnosticDescriptors.ModelDefinitionParentsGenerics,
 							Location.Create(classSyntax.SyntaxTree, classSyntax.Identifier.Span),
 							messageParameter
 						)
@@ -226,6 +260,8 @@ namespace Valigator.Models.Generator.Analyzers
 
 				if (mismatched)
 				{
+					System.Diagnostics.Debugger.Launch();
+
 					context
 						.ReportDiagnostic
 						(

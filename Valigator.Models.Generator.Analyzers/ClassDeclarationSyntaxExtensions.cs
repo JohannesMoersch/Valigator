@@ -19,5 +19,7 @@ namespace Valigator.Models.Generator.Analyzers
 			return false;
 		}
 
+		public static bool HasBaseClass(this ClassDeclarationSyntax classDeclarationSyntax, SemanticModel semanticModel, CancellationToken cancellationToken)
+			=> classDeclarationSyntax.TryGetBaseTypeSyntax(semanticModel, cancellationToken, out _);
 	}
 }

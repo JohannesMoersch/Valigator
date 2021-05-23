@@ -29,6 +29,21 @@ namespace Valigator.Models.Generator.Analyzers
 			{ "System.String", "string" }
 		};
 
+		public static bool TryGetPrivateOrProtectedParameterlessConstructor(this INamedTypeSymbol typeSymbol, out IMethodSymbol constructor)
+			=> typeSymbol.InstanceConstructors.TryGetFirst(m => !m.Parameters.Any(), out constructor) && !constructor.DeclaredAccessibility.IsAccessibleInternally();
+
+		public static bool HasPrivateOrProtectedParameterlessConstructor(this INamedTypeSymbol typeSymbol)
+			=> TryGetPrivateOrProtectedParameterlessConstructor(typeSymbol, out _);
+
+		public static IEnumerable<ITypeSymbol> GetGenericParents(this INamedTypeSymbol typeSymbol)
+			=> (typeSymbol.ContainingType?.GetContainingTypeHierarchy() ?? Enumerable.Empty<ITypeSymbol>())
+				.Where(t => t is INamedTypeSymbol namedType && namedType.TypeParameters.Any());
+
+		public static bool HasGenericParents(this INamedTypeSymbol typeSymbol)
+			=> typeSymbol
+				.GetGenericParents()
+				.Any();
+
 		public static IEnumerable<ITypeSymbol> GetContainingTypeHierarchy(this ITypeSymbol type)
 		{
 			if (type.ContainingType != null)

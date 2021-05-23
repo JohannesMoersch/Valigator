@@ -33,7 +33,7 @@ namespace Valigator.Models.Generator.Analyzers
 
 					var typeSymbol = semanticModel.GetDeclaredSymbol(candidate, context.CancellationToken);
 
-					if (typeSymbol != null && typeSymbol.TryGetAttribute(generateModelAttributeType, out var generateModelAttribute) && candidate.IsPartial() && !candidate.TryGetBaseTypeSyntax(semanticModel, context.CancellationToken, out _))
+					if (typeSymbol != null && typeSymbol.TryGetAttribute(generateModelAttributeType, out var generateModelAttribute) && candidate.IsPartial() && !candidate.HasBaseClass(semanticModel, context.CancellationToken))
 					{
 						if
 						(
@@ -41,7 +41,7 @@ namespace Valigator.Models.Generator.Analyzers
 							modelNamespaceParts.All(CodeProvider.IsValidIdentifier) &&
 							modelParentClasses.All(CodeProvider.IsValidIdentifier) &&
 							CodeProvider.IsValidIdentifier(modelName) &&
-							(!typeSymbol.InstanceConstructors.TryGetFirst(m => !m.Parameters.Any(), out var constructor) || constructor.DeclaredAccessibility.IsAccessibleInternally()) &&
+							ModelDefinitionPassesValidation(typeSymbol) &&
 							TargetModelIsCompatibleWithGeneratedModel(semanticModel, typeSymbol, modelNamespaceParts, modelParentClasses, modelName)
 						)
 						{
@@ -54,6 +54,12 @@ namespace Valigator.Models.Generator.Analyzers
 				}
 			}
 		}
+
+		private static bool ModelDefinitionPassesValidation(INamedTypeSymbol typeSymbol)
+			=>
+			!typeSymbol.HasPrivateOrProtectedParameterlessConstructor() &&
+			!typeSymbol.HasGenericParents();
+
 
 		private static bool TargetModelIsCompatibleWithGeneratedModel(SemanticModel semanticModel, INamedTypeSymbol typeSymbol, string[] modelNamespaceParts, string[] modelParentClasses, string modelName)
 		{
