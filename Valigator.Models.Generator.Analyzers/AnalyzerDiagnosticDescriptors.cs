@@ -156,5 +156,15 @@ namespace Valigator.Models.Generator.Analyzers
 			DiagnosticSeverity.Error,
 			isEnabledByDefault: true
 		);
+
+		public static DiagnosticDescriptor GenerateModelAttributePropertiesSet { get; } = new DiagnosticDescriptor
+		(
+			id: "VL0016",
+			title: "GenerateModelAttribute Properties Set",
+			messageFormat: "Setting GenerateModelAttribute properties outside of attribute usage does not work for Valigator model generator. Use GenerateModelDefaultsAttribute on derived attribute instead.",
+			category: "Generator",
+			DiagnosticSeverity.Warning,
+			isEnabledByDefault: true
+		);
 	}
 }

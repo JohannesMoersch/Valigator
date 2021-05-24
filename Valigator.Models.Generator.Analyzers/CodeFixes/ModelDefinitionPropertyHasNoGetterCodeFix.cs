@@ -72,9 +72,9 @@ namespace Valigator.Models.Generator.Analyzers.CodeFixes
 			var newAccessors = propertySyntax
 				.AccessorList
 				?.Accessors
-				.Select(accessor => accessor.Keyword.Text != "get"
+				.Select(accessor => accessor.Keyword.IsKind(SyntaxKind.GetKeyword)
 					? accessor
-					: accessor.WithModifiers(new SyntaxTokenList(accessor.Modifiers.Where(modifier => modifier.Text != "private")))
+					: accessor.WithModifiers(new SyntaxTokenList(accessor.Modifiers.Where(modifier => modifier.IsKind(SyntaxKind.PrivateKeyword))))
 				);
 
 			var newSyntaxList = new SyntaxList<AccessorDeclarationSyntax>(newAccessors);

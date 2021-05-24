@@ -35,6 +35,9 @@ namespace Valigator.Models.Generator.Analyzers
 
 			var builder = new StringBuilder();
 
+			builder.AppendLine("#nullable enable");
+			builder.AppendLine();
+
 			if (hasNamespace)
 			{
 				builder.AppendLine($"namespace {definitionNamespace}");
@@ -69,6 +72,9 @@ namespace Valigator.Models.Generator.Analyzers
 			if (hasNamespace)
 				builder.AppendLine($"}}");
 
+			builder.AppendLine();
+			builder.AppendLine("#nullable disable");
+
 			return builder.ToString();
 		}
 
@@ -96,6 +102,9 @@ namespace Valigator.Models.Generator.Analyzers
 			var definitionName = $"{definitionType.GetFullNameWithNamespace(".", true)}{definitionType.TypeParameters.ToCSharpGenericParameterCode()}";
 
 			var builder = new StringBuilder();
+
+			builder.AppendLine("#nullable enable");
+			builder.AppendLine();
 
 			if (hasNamespace)
 			{
@@ -283,6 +292,9 @@ namespace Valigator.Models.Generator.Analyzers
 
 			if (hasNamespace)
 				builder.AppendLine($"}}");
+
+			builder.AppendLine();
+			builder.AppendLine("#nullable disable");
 
 			return builder.ToString();
 		}

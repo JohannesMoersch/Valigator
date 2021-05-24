@@ -8,6 +8,14 @@ namespace Valigator.Models.Generator.Tests
 	[GenerateModelDefaults(DefaultPropertyAccessors = PropertyAccessors.GetAndSet)]
 	public class CustomGenerateAttribute : GenerateModelAttribute
 	{
+		public CustomGenerateAttribute()
+		{
+			ModelName = "Abc";
+
+			var a = new { Stuff = new CustomGenerateAttribute() };
+
+			a.Stuff.ModelName = "A";
+		}
 	}
 
 	public class Tester { }
