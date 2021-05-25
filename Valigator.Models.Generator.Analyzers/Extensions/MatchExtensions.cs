@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Valigator.Models.Generator.Analyzers
+namespace Valigator.Models.Generator.Analyzers.Extensions
 {
 	public static class MatchExtensions
 	{
@@ -13,8 +13,7 @@ namespace Valigator.Models.Generator.Analyzers
 
 			var builder = new StringBuilder();
 
-			for (int i = 0; i < pattern.Length; ++i)
-			{
+			for (var i = 0; i < pattern.Length; ++i)
 				if (pattern[i] == '$')
 				{
 					if (i >= pattern.Length - 3 || pattern[i + 1] != '{' || !Char.IsDigit(pattern[i + 2]))
@@ -23,7 +22,7 @@ namespace Valigator.Models.Generator.Analyzers
 						return false;
 					}
 
-					int num = 0;
+					var num = 0;
 					i += 2;
 
 					while (i < pattern.Length && Char.IsDigit(pattern[i]))
@@ -55,7 +54,6 @@ namespace Valigator.Models.Generator.Analyzers
 				}
 				else
 					builder.Append(pattern[i]);
-			}
 
 			value = builder.ToString();
 			errorMessage = String.Empty;

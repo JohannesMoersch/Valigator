@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Valigator.Models.Generator.Analyzers
+namespace Valigator.Models.Generator.Analyzers.Extensions
 {
 	public static class AccessorDeclarationSyntaxExtensions
 	{

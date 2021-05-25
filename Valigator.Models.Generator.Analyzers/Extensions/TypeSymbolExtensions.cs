@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 
-namespace Valigator.Models.Generator.Analyzers
+namespace Valigator.Models.Generator.Analyzers.Extensions
 {
 	internal static class TypeSymbolExtensions
 	{
@@ -33,7 +33,7 @@ namespace Valigator.Models.Generator.Analyzers
 			=> typeSymbol.InstanceConstructors.TryGetFirst(m => !m.Parameters.Any(), out constructor) && !constructor.DeclaredAccessibility.IsAccessibleInternally();
 
 		public static bool HasPrivateOrProtectedParameterlessConstructor(this INamedTypeSymbol typeSymbol)
-			=> TryGetPrivateOrProtectedParameterlessConstructor(typeSymbol, out _);
+			=> typeSymbol.TryGetPrivateOrProtectedParameterlessConstructor(out _);
 
 		public static IEnumerable<ITypeSymbol> GetGenericParents(this INamedTypeSymbol typeSymbol)
 			=> (typeSymbol.ContainingType?.GetContainingTypeHierarchy() ?? Enumerable.Empty<ITypeSymbol>())

@@ -5,20 +5,18 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Valigator.Models.Generator.Analyzers
+namespace Valigator.Models.Generator.Analyzers.Extensions
 {
 	public static class AttributeDataExtensions
 	{
 		public static bool TryGetProperty<T>(this AttributeData attributeData, string propertyName, out T value)
 		{
 			foreach (var kvp in attributeData.NamedArguments)
-			{
 				if (kvp.Key == propertyName)
 				{
 					value = (T)kvp.Value.Value;
 					return true;
 				}
-			}
 
 			value = default;
 			return false;
@@ -48,9 +46,8 @@ namespace Valigator.Models.Generator.Analyzers
 
 		public static bool TryGetGeneratedModelNamespace(this AttributeData attributeData, string fullTypeName, INamedTypeSymbol generateModelDefaultsAttributeType, out string[] modelNamespaceParts, out string captureRegex, out string errorMessage)
 		{
-			var success = TryApplyGenerateModelPropertyPattern
+			var success = attributeData.TryApplyGenerateModelPropertyPattern
 			(
-				attributeData,
 				fullTypeName,
 				ExternalConstants.GenerateModelAttribute_ModelNamespace_PropertyName,
 				ExternalConstants.GenerateModelAttribute_ModelNamespaceCaptureRegex_PropertyName,
@@ -66,9 +63,8 @@ namespace Valigator.Models.Generator.Analyzers
 
 		public static bool TryGetGeneratedModelParentClasses(this AttributeData attributeData, string fullTypeName, INamedTypeSymbol generateModelDefaultsAttributeType, out string[] modelParentClasses, out string captureRegex, out string errorMessage)
 		{
-			var success = TryApplyGenerateModelPropertyPattern
+			var success = attributeData.TryApplyGenerateModelPropertyPattern
 			(
-				attributeData,
 				fullTypeName,
 				ExternalConstants.GenerateModelAttribute_ModelParentClasses_PropertyName,
 				ExternalConstants.GenerateModelAttribute_ModelParentClassesCaptureRegex_PropertyName,
@@ -83,9 +79,8 @@ namespace Valigator.Models.Generator.Analyzers
 		}
 
 		public static bool TryGetGeneratedModelName(this AttributeData attributeData, string fullTypeName, INamedTypeSymbol generateModelDefaultsAttributeType, out string modelName, out string captureRegex, out string errorMessage)
-			=> TryApplyGenerateModelPropertyPattern
+			=> attributeData.TryApplyGenerateModelPropertyPattern
 			(
-				attributeData,
 				fullTypeName,
 				ExternalConstants.GenerateModelAttribute_ModelName_PropertyName,
 				ExternalConstants.GenerateModelAttribute_ModelNameCaptureRegex_PropertyName,

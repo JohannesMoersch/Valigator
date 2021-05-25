@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Valigator.Models.Generator.Analyzers
+namespace Valigator.Models.Generator.Analyzers.Extensions
 {
 	public static class TypeParameterSymbolExtensions
 	{
@@ -26,7 +26,7 @@ namespace Valigator.Models.Generator.Analyzers
 		{
 			if (left is ITypeParameterSymbol leftParameter && right is ITypeParameterSymbol rightParameter)
 				return left.Name == right.Name;
-		
+
 			return SymbolEqualityComparer.Default.Equals(left, right);
 		}
 
@@ -49,19 +49,17 @@ namespace Valigator.Models.Generator.Analyzers
 			var constraints = new List<string>();
 
 			if (typeParameter.HasReferenceTypeConstraint)
-			{
 				if (typeParameter.ReferenceTypeConstraintNullableAnnotation == NullableAnnotation.Annotated)
 					constraints.Add("class?");
 				else
 					constraints.Add("class");
-			}
 			else if (typeParameter.HasUnmanagedTypeConstraint)
 				constraints.Add("unmanaged");
 			else if (typeParameter.HasValueTypeConstraint)
 				constraints.Add("struct");
 			else if (typeParameter.HasNotNullConstraint)
 				constraints.Add("notnull");
-			
+
 
 			foreach (var set in typeParameter.ConstraintTypes.Zip(typeParameter.ConstraintNullableAnnotations, (type, nullable) => (type, nullable: nullable == NullableAnnotation.Annotated)))
 			{

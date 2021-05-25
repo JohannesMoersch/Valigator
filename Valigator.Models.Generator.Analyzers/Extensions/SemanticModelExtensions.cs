@@ -5,7 +5,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 
-namespace Valigator.Models.Generator.Analyzers
+namespace Valigator.Models.Generator.Analyzers.Extensions
 {
 	public static class SemanticModelExtensions
 	{
@@ -39,14 +39,14 @@ namespace Valigator.Models.Generator.Analyzers
 			{
 				var matches = parentSymbols
 					.SelectMany(s => semanticModel.LookupSymbols(0, s, symbolName.name))
-					.Where(s =>  symbolName.genericCount is int count ? s is INamedTypeSymbol type && type.TypeParameters.Length == count : true)
+					.Where(s => symbolName.genericCount is int count ? s is INamedTypeSymbol type && type.TypeParameters.Length == count : true)
 					.ToArray();
 
 				if (!matches.Any())
 					break;
 
 				symbols.Add(matches);
-				
+
 				parentSymbols = matches.OfType<INamespaceOrTypeSymbol>();
 			}
 

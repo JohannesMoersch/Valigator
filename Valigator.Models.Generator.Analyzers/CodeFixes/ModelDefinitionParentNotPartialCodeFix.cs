@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Valigator.Models.Generator.Analyzers.Extensions;
 
 namespace Valigator.Models.Generator.Analyzers.CodeFixes
 {

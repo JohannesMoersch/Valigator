@@ -9,6 +9,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using Valigator.Models.Generator.Analyzers.Extensions;
 
 namespace Valigator.Models.Generator.Analyzers
 {

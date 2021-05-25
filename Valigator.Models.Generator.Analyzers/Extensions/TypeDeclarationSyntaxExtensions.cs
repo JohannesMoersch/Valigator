@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Valigator.Models.Generator.Analyzers
+namespace Valigator.Models.Generator.Analyzers.Extensions
 {
 	public static class TypeDeclarationSyntaxExtensions
 	{
@@ -22,8 +22,8 @@ namespace Valigator.Models.Generator.Analyzers
 					typeSyntax.AttributeLists,
 					typeSyntax.Modifiers,
 					SyntaxFactory.Token(SyntaxKind.ClassKeyword),
-					typeSyntax.Identifier, 
-					typeSyntax.TypeParameterList, 
+					typeSyntax.Identifier,
+					typeSyntax.TypeParameterList,
 					typeSyntax.BaseList,
 					typeSyntax.ConstraintClauses,
 					typeSyntax.OpenBraceToken,

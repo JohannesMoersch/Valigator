@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Valigator.Models.Generator.Analyzers
+namespace Valigator.Models.Generator.Analyzers.Extensions
 {
 	public static class PropertyDeclarationSyntaxExtensions
 	{
@@ -45,10 +45,8 @@ namespace Valigator.Models.Generator.Analyzers
 						return true;
 
 					if (modelNameSyntax.Left is QualifiedNameSyntax namespaceSyntax && namespaceSyntax.Right.IsNamespaceSyntax("Models"))
-					{
 						if (namespaceSyntax.Left.IsNamespaceSyntax("Valigator"))
 							return true;
-					}
 				}
 			}
 

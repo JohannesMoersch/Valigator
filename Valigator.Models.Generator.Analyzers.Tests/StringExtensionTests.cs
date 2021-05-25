@@ -1,5 +1,6 @@
 using FluentAssertions;
 using System;
+using Valigator.Models.Generator.Analyzers.Extensions;
 using Xunit;
 
 namespace Valigator.Models.Generator.Analyzers.Tests

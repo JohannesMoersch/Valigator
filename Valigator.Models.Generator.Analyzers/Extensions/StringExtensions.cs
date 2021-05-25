@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Valigator.Models.Generator.Analyzers
+namespace Valigator.Models.Generator.Analyzers.Extensions
 {
 	public static class StringExtensions
 	{
@@ -11,7 +11,7 @@ namespace Valigator.Models.Generator.Analyzers
 		{
 			if (!pattern.StartsWith("^"))
 				pattern = "^" + pattern;
-			
+
 			if (!pattern.EndsWith("$"))
 				pattern += "$";
 
