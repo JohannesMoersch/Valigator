@@ -50,7 +50,7 @@ namespace Valigator.Models.Generator.Analyzers
 				(
 					context =>
 					{
-						GetAttributes(context, out var generateModelAttributeType, out var generateModelDefaultsAttributeType);
+						GetTypes(context, out var generateModelAttributeType, out var generateModelDefaultsAttributeType, out var modelDefinitionPropertyType);
 
 						var classSyntax = (ClassDeclarationSyntax)context.Node;
 
@@ -74,7 +74,7 @@ namespace Valigator.Models.Generator.Analyzers
 
 							CheckForModelIdentifierIssues(context, classSyntax, typeSymbol, generateModelAttribute, generateModelDefaultsAttributeType);
 
-							foreach (var propertySyntax in GetPublicModelDefinitionProperties(typeSymbol, context.CancellationToken))
+							foreach (var propertySyntax in GetPublicModelDefinitionProperties(typeSymbol, modelDefinitionPropertyType, context.CancellationToken))
 							{
 								CheckForPropertyDoesNotHaveGetter(context, propertySyntax);
 
@@ -86,19 +86,18 @@ namespace Valigator.Models.Generator.Analyzers
 				);
 		}
 
-		private static void GetAttributes(SyntaxNodeAnalysisContext context, out INamedTypeSymbol generateModelAttributeType, out INamedTypeSymbol generateModelDefaultsAttributeType)
+		private static void GetTypes(SyntaxNodeAnalysisContext context, out INamedTypeSymbol generateModelAttributeType, out INamedTypeSymbol generateModelDefaultsAttributeType, out INamedTypeSymbol modelDefinitionPropertyType)
 		{
 			generateModelAttributeType = context.Compilation.GetTypeByMetadataName(ExternalConstants.GenerateModelAttribute_TypeName);
 			generateModelDefaultsAttributeType = context.Compilation.GetTypeByMetadataName(ExternalConstants.GenerateModelDefaultsAttribute_TypeName);
+			modelDefinitionPropertyType = context.Compilation.GetTypeByMetadataName(ExternalConstants.ModelDefinition_Property_TypeName);
 		}
 
-		private static IEnumerable<PropertyDeclarationSyntax> GetPublicModelDefinitionProperties(INamedTypeSymbol typeSymbol, CancellationToken cancellationToken)
+		private static IEnumerable<PropertyDeclarationSyntax> GetPublicModelDefinitionProperties(INamedTypeSymbol typeSymbol, INamedTypeSymbol modelDefinitionPropertyType, CancellationToken cancellationToken)
 			=> typeSymbol
 				.GetProperties()
-				.Where(property => !property.IsStatic && !property.IsImplicitlyDeclared)
-				.Select(symbol => symbol.GetDeclarationSyntax(cancellationToken))
-				.Where(property => property.IsPublic())
-				.Where(property => property.Type.IsModelDefinitionProperty());
+				.Where(property => property.IsEligibleModelDefinitionProperty(modelDefinitionPropertyType, cancellationToken))
+				.Select(symbol => symbol.GetDeclarationSyntax(cancellationToken));
 
 		private void CheckForNotPartialClass(SyntaxNodeAnalysisContext context, ClassDeclarationSyntax classSyntax, out bool isPartial)
 		{
@@ -261,8 +260,6 @@ namespace Valigator.Models.Generator.Analyzers
 
 				if (mismatched)
 				{
-					System.Diagnostics.Debugger.Launch();
-
 					context
 						.ReportDiagnostic
 						(

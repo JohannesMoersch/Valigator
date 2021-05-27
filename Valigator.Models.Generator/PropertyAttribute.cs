@@ -7,6 +7,6 @@ namespace Valigator
 	[AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = false)]
 	public class PropertyAttribute : Attribute
 	{
-		public PropertyAccessors Accessors { get; set; } = PropertyAccessors.Get;
+		public bool GenerateSetterMethod { get; set; }
 	}
 }

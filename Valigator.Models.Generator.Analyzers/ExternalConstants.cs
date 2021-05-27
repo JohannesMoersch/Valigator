@@ -12,9 +12,11 @@ namespace Valigator.Models.Generator.Analyzers
 
 		public const string PropertyAttribute_TypeName = "Valigator.PropertyAttribute";
 
+		public const string Optional_TypeName = "Valigator.Optional`1";
+
 		public const string ModelDefinition_Property_TypeName = "Valigator.Models.ModelDefinition`1+Property`1";
 
-		public const string GenerateModelAttribute_DefaultPropertyAccessors_PropertyName = "DefaultPropertyAccessors";
+		public const string GenerateModelAttribute_GenerateSetterMethods_PropertyName = "GenerateSetterMethods";
 
 		public const string GenerateModelAttribute_ModelNamespace_PropertyName = "ModelNamespace";
 
@@ -30,12 +32,6 @@ namespace Valigator.Models.Generator.Analyzers
 
 		public const string GenerateModelAttribute_ModelType_PropertyName = "ModelType";
 
-		public const string PropertyAttribute_Accessors_PropertyName = "Accessors";
-
-		public enum PropertyAccessors
-		{
-			Get,
-			GetAndSet
-		}
+		public const string PropertyAttribute_GenerateSetterMethod_PropertyName = "GenerateSetterMethod";
 	}
 }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Valigator
 {
 	[GenerateModelDefaults(
-		DefaultPropertyAccessors = PropertyAccessors.Get,
+		GenerateSetterMethods = false,
 		ModelNamespace = "${2}",
 		ModelNamespaceCaptureRegex = "((.*)[\\.])?([^\\.]+)",
 		ModelParentClasses = "${3}",
@@ -18,7 +18,7 @@ namespace Valigator
 	[AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
 	public class GenerateModelAttribute : Attribute
 	{
-		public PropertyAccessors DefaultPropertyAccessors { get; set; }
+		public bool GenerateSetterMethods { get; set; }
 
 		public string? ModelNamespace { get; set; }
 

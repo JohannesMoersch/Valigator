@@ -22,7 +22,7 @@ namespace Valigator.Models.Generator.Analyzers
 		{
 			if (context.SyntaxReceiver is GenerateModelSyntaxReceiver receiver)
 			{
-				GetAttributes(context, out var generateModelAttributeType, out var generateModelDefaultsAttributeType, out var propertyAttributeType);
+				GetTypes(context, out var generateModelAttributeType, out var generateModelDefaultsAttributeType, out var propertyAttributeType, out var optionalType, out var modelDefinitionPropertyType);
 
 				var usedNames = new HashSet<string>();
 
@@ -47,7 +47,7 @@ namespace Valigator.Models.Generator.Analyzers
 						)
 						{
 							context.AddSource(GetUniqueFileName(typeSymbol.Name, usedNames), CodeGenerator.GenerateDefinition(typeSymbol, modelNamespaceParts, modelParentClasses, modelName));
-							context.AddSource(GetUniqueFileName(modelName, usedNames), CodeGenerator.GenerateModel(semanticModel, typeSymbol, generateModelAttribute, generateModelDefaultsAttributeType, propertyAttributeType, modelNamespaceParts, modelParentClasses, modelName, context.CancellationToken));
+							context.AddSource(GetUniqueFileName(modelName, usedNames), CodeGenerator.GenerateModel(semanticModel, typeSymbol, generateModelAttribute, generateModelDefaultsAttributeType, propertyAttributeType, optionalType, modelDefinitionPropertyType, modelNamespaceParts, modelParentClasses, modelName, context.CancellationToken));
 						}
 						else
 							context.AddSource(GetUniqueFileName(typeSymbol.Name, usedNames), CodeGenerator.GenerateDefinitionWithoutModel(typeSymbol));
@@ -82,11 +82,13 @@ namespace Valigator.Models.Generator.Analyzers
 			return $"{uniqueName}.g.cs";
 		}
 
-		private static void GetAttributes(GeneratorExecutionContext context, out INamedTypeSymbol generateModelAttributeType, out INamedTypeSymbol generateModelDefaultsAttributeType, out INamedTypeSymbol propertyAttributeType)
+		private static void GetTypes(GeneratorExecutionContext context, out INamedTypeSymbol generateModelAttributeType, out INamedTypeSymbol generateModelDefaultsAttributeType, out INamedTypeSymbol propertyAttributeType, out INamedTypeSymbol optionalType, out INamedTypeSymbol modelDefinitionPropertyType)
 		{
 			generateModelAttributeType = context.Compilation.GetTypeByMetadataName(ExternalConstants.GenerateModelAttribute_TypeName);
 			generateModelDefaultsAttributeType = context.Compilation.GetTypeByMetadataName(ExternalConstants.GenerateModelDefaultsAttribute_TypeName);
 			propertyAttributeType = context.Compilation.GetTypeByMetadataName(ExternalConstants.PropertyAttribute_TypeName);
+			optionalType = context.Compilation.GetTypeByMetadataName(ExternalConstants.Optional_TypeName);
+			modelDefinitionPropertyType = context.Compilation.GetTypeByMetadataName(ExternalConstants.ModelDefinition_Property_TypeName);
 		}
 
 		private static bool TryGetModelIdentifiers(INamedTypeSymbol typeSymbol, AttributeData generateModelAttribute, INamedTypeSymbol generateModelDefaultsAttributeType, out string[] modelNamespaceParts, out string[] modelParentClasses, out string modelName)

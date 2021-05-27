@@ -79,7 +79,7 @@ namespace Valigator.Models.Generator.Analyzers
 			return builder.ToString();
 		}
 
-		public static string GenerateModel(SemanticModel semanticModel, INamedTypeSymbol definitionType, AttributeData generatedModelAttribute, INamedTypeSymbol generateModelDefaultsAttributeType, INamedTypeSymbol propertyAttributeType, string[] modelNamespaceParts, string[] parentClasses, string modelName, CancellationToken cancellationToken)
+		public static string GenerateModel(SemanticModel semanticModel, INamedTypeSymbol definitionType, AttributeData generatedModelAttribute, INamedTypeSymbol generateModelDefaultsAttributeType, INamedTypeSymbol propertyAttributeType, INamedTypeSymbol optionalType, INamedTypeSymbol modelDefinitionPropertyType, string[] modelNamespaceParts, string[] parentClasses, string modelName, CancellationToken cancellationToken)
 		{
 			var modelNamespace = String.Join(".", modelNamespaceParts);
 			var modelFullName = String.Join(".", modelNamespaceParts.Concat(parentClasses).Concat(new[] { modelName }));
@@ -87,15 +87,10 @@ namespace Valigator.Models.Generator.Analyzers
 			var properties = definitionType
 				.GetMembers()
 				.OfType<IPropertySymbol>()
-				.Where(property => !property.IsStatic)
-				.Select(property => (symbol: property, syntax: property.GetDeclarationSyntax(cancellationToken)))
-				.Where(property => property.syntax.IsPublic())
-				.Where(property => (property.syntax.TryGetGetAccessor(out var getAccessor) && !getAccessor.IsPrivate()) || property.syntax.ExpressionBody != null)
-				.Where(property => property.syntax.Type.IsModelDefinitionProperty())
-				.Select(property => property.symbol)
+				.Where(property => property.IsEligibleModelDefinitionProperty(modelDefinitionPropertyType, cancellationToken))
 				.ToArray();
 
-			var defaultPropertyAccessors = generatedModelAttribute.GetGenerateModelPropertyValue<ExternalConstants.PropertyAccessors>(ExternalConstants.GenerateModelAttribute_DefaultPropertyAccessors_PropertyName, generateModelDefaultsAttributeType);
+			var generateSetterMethodsDefault = generatedModelAttribute.GetGenerateModelPropertyValue<bool>(ExternalConstants.GenerateModelAttribute_GenerateSetterMethods_PropertyName, generateModelDefaultsAttributeType);
 
 			var hasNamespace = !String.IsNullOrEmpty(modelNamespace);
 			var indentation = String.Empty;
@@ -163,14 +158,17 @@ namespace Valigator.Models.Generator.Analyzers
 
 			foreach (var property in properties)
 			{
-				var propertyAccessors = defaultPropertyAccessors;
+				var generateSetterMethod = generateSetterMethodsDefault;
 
-				if (property.TryGetAttribute(propertyAttributeType, out var propertyAttribute) && propertyAttribute.TryGetProperty<ExternalConstants.PropertyAccessors>(ExternalConstants.PropertyAttribute_Accessors_PropertyName, out var propertyAccessor))
-					propertyAccessors = propertyAccessor;
+				if (property.TryGetAttribute(propertyAttributeType, out var propertyAttribute) && propertyAttribute.TryGetProperty<bool>(ExternalConstants.PropertyAttribute_GenerateSetterMethod_PropertyName, out var propertyGenerateSetterMethod))
+					generateSetterMethod = propertyGenerateSetterMethod;
 
 				var lowercaseName = $"_{Char.ToLower(property.Name[0])}{property.Name.Substring(1)}";
 
-				var propertyTypeName = (property.Type as INamedTypeSymbol).TypeArguments[0].ToCSharpTypeCode();
+				var propertyType = (property.Type as INamedTypeSymbol).TypeArguments[0] as INamedTypeSymbol;
+				var isOptional = propertyType.OriginalDefinition.Equals(optionalType, SymbolEqualityComparer.Default);
+
+				var propertyTypeName = propertyType.ToCSharpTypeCode();
 
 				builder.AppendLine($"{indentation}	");
 				builder.AppendLine($"{indentation}	private static global::Valigator.Models.ModelDefinition<ModelView>.Property<{propertyTypeName}> {lowercaseName}_Property;");
@@ -178,15 +176,27 @@ namespace Valigator.Models.Generator.Analyzers
 				builder.AppendLine($"{indentation}	private {propertyTypeName} {lowercaseName};");
 				builder.AppendLine($"{indentation}	public {propertyTypeName} {property.Name}");
 				builder.AppendLine($"{indentation}	{{");
-				if (propertyAccessors.HasFlag(ExternalConstants.PropertyAccessors.Get))
-					builder.AppendLine($"{indentation}		get => Get(nameof({property.Name}), {lowercaseName}, ref {lowercaseName}_State);");
-				if (propertyAccessors.HasFlag(ExternalConstants.PropertyAccessors.GetAndSet))
-					builder.AppendLine($"{indentation}		set => Set(value, ref {lowercaseName}, ref {lowercaseName}_State);");
+				builder.AppendLine($"{indentation}		get => Get(nameof({property.Name}), ref {lowercaseName}, ref {lowercaseName}_State);");
 				builder.AppendLine($"{indentation}	}}");
+
+				if (generateSetterMethod)
+				{
+					builder.AppendLine();
+					if (isOptional)
+					{
+						builder.AppendLine($"{indentation}	public void Set{property.Name}({propertyType.TypeArguments[0].ToCSharpTypeCode()} value)");
+						builder.AppendLine($"{indentation}		=> Set(global::Valigator.Optional.Set(value), ref {lowercaseName}, ref {lowercaseName}_State);");
+					}
+					else
+					{
+						builder.AppendLine($"{indentation}	public void Set{property.Name}({propertyTypeName} value)");
+						builder.AppendLine($"{indentation}		=> Set(value, ref {lowercaseName}, ref {lowercaseName}_State);");
+					}
+				}
 			}
 
 			builder.AppendLine($"{indentation}	");
-			builder.AppendLine($"{indentation}	private TValue Get<TValue>(string propertyName, TValue value, ref global::Valigator.Models.ModelPropertyState state)");
+			builder.AppendLine($"{indentation}	private TValue Get<TValue>(string propertyName, ref TValue value, ref global::Valigator.Models.ModelPropertyState state)");
 			builder.AppendLine($"{indentation}	{{");
 			builder.AppendLine($"{indentation}		if (_modelState == global::Valigator.Models.ModelState.Unset)");
 			builder.AppendLine($"{indentation}		{{");
@@ -258,11 +268,11 @@ namespace Valigator.Models.Generator.Analyzers
 				var propertyTypeName = (property.Type as INamedTypeSymbol).TypeArguments[0].ToCSharpTypeCode();
 
 				builder.AppendLine($"{indentation}		");
-				builder.AppendLine($"{indentation}		public global::Functional.Result<{propertyTypeName}, global::Valigator.Models.ModelPropertyNotSet> {property.Name} => Get(_model.{lowercaseName}, _model.{lowercaseName}_State);");
+				builder.AppendLine($"{indentation}		public global::Functional.Result<{propertyTypeName}, global::Valigator.Models.ModelPropertyNotSet> {property.Name} => Get(ref _model.{lowercaseName}, _model.{lowercaseName}_State);");
 			}
 
 			builder.AppendLine($"{indentation}		");
-			builder.AppendLine($"{indentation}		private global::Functional.Result<TValue, global::Valigator.Models.ModelPropertyNotSet> Get<TValue>(TValue value, global::Valigator.Models.ModelPropertyState state)");
+			builder.AppendLine($"{indentation}		private global::Functional.Result<TValue, global::Valigator.Models.ModelPropertyNotSet> Get<TValue>(ref TValue value, global::Valigator.Models.ModelPropertyState state)");
 			builder.AppendLine($"{indentation}		{{");
 			builder.AppendLine($"{indentation}			if (_model._modelState == global::Valigator.Models.ModelState.Unset)");
 			builder.AppendLine($"{indentation}				_model.Coerce();");

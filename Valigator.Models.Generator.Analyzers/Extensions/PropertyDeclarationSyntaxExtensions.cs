@@ -50,16 +50,16 @@ namespace Valigator.Models.Generator.Analyzers.Extensions
 				}
 			}
 
-			return false;
-		}
+           return false;
+       }
 
-		private static bool IsPropertyNameSyntax(this TypeSyntax type)
-			=> type is GenericNameSyntax genericName && genericName.Identifier.Text == "Property" && genericName.TypeArgumentList.Arguments.Count == 1;
+       private static bool IsPropertyNameSyntax(this TypeSyntax type)
+           => type is GenericNameSyntax genericName && genericName.Identifier.Text == "Property" && genericName.TypeArgumentList.Arguments.Count == 1;
 
-		private static bool IsModelDefinitionNameSyntax(this TypeSyntax type)
-			=> type is GenericNameSyntax genericName && genericName.Identifier.Text == "ModelDefinition" && genericName.TypeArgumentList.Arguments.Count == 1;
+       private static bool IsModelDefinitionNameSyntax(this TypeSyntax type)
+           => type is GenericNameSyntax genericName && genericName.Identifier.Text == "ModelDefinition" && genericName.TypeArgumentList.Arguments.Count == 1;
 
-		private static bool IsNamespaceSyntax(this TypeSyntax type, string ns)
-			=> type is IdentifierNameSyntax identifierName && identifierName.Identifier.Text == ns;
+       private static bool IsNamespaceSyntax(this TypeSyntax type, string ns)
+           => type is IdentifierNameSyntax identifierName && identifierName.Identifier.Text == ns;
 	}
 }
