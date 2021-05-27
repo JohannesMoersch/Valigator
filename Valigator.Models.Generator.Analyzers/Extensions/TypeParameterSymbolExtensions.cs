@@ -24,10 +24,17 @@ namespace Valigator.Models.Generator.Analyzers.Extensions
 
 		private static bool IsEqual(ITypeSymbol left, ITypeSymbol right)
 		{
+			if (!IsEqual(left.NullableAnnotation, right.NullableAnnotation))
+				return false;
+
 			if (left is ITypeParameterSymbol leftParameter && right is ITypeParameterSymbol rightParameter)
 				return left.Name == right.Name;
 
-			return SymbolEqualityComparer.Default.Equals(left, right);
+			if (left is INamedTypeSymbol leftSymbol && right is INamedTypeSymbol rightSymbol)
+				return SymbolEqualityComparer.Default.Equals(leftSymbol.OriginalDefinition, rightSymbol.OriginalDefinition)
+					&& leftSymbol.TypeArguments.SequenceEqual(rightSymbol.TypeArguments, IsEqual);
+
+			return SymbolEqualityComparer.Default.Equals(left.OriginalDefinition, right.OriginalDefinition);
 		}
 
 		public static string ToCSharpGenericParameterCode(this IEnumerable<ITypeParameterSymbol> typeParameters)
@@ -61,17 +68,8 @@ namespace Valigator.Models.Generator.Analyzers.Extensions
 				constraints.Add("notnull");
 
 
-			foreach (var set in typeParameter.ConstraintTypes.Zip(typeParameter.ConstraintNullableAnnotations, (type, nullable) => (type, nullable: nullable == NullableAnnotation.Annotated)))
-			{
-				var typeName = set.type is ITypeParameterSymbol parameter
-					? parameter.Name
-					: set.type.GetFullNameWithNamespace(".", true);
-
-				if (set.nullable)
-					constraints.Add($"{typeName}?");
-				else
-					constraints.Add(typeName);
-			}
+			foreach (var type in typeParameter.ConstraintTypes)
+				constraints.Add(type.ToCSharpTypeCode());
 
 			if (typeParameter.HasConstructorConstraint)
 				constraints.Add("new()");

@@ -11,7 +11,7 @@ namespace Valigator.Models.Generator.Tests
 	public partial class GenericModelTests
 	{
 		public class TestClass { }
-		public interface TestInterface { }
+		public interface TestInterface<T> { }
 
 		[GenerateModel]
 		public partial class SystemTypeConstraintModelDefinition<T, U, V, W>
@@ -52,7 +52,7 @@ namespace Valigator.Models.Generator.Tests
 		[GenerateModel]
 		public partial class TypeConstraintModelDefinition<T, U, V>
 			where T : TestClass
-			where U : TestInterface
+			where U : TestInterface<int>
 			where V : T, U
 		{
 		}
@@ -62,43 +62,43 @@ namespace Valigator.Models.Generator.Tests
 			=> typeof(TypeConstraintModel<,,>)
 				.Should()
 				.HaveGenericTypeParameter(0, t => t.HaveDerivesFromConstraint(typeof(TestClass))).And
-				.HaveGenericTypeParameter(1, t => t.HaveDerivesFromConstraint(typeof(TestInterface))).And
+				.HaveGenericTypeParameter(1, t => t.HaveDerivesFromConstraint(typeof(TestInterface<int>))).And
 				.HaveGenericTypeParameter(2, t => t.HaveDerivesFromConstraint(typeof(TypeConstraintModel<,,>).GetGenericArguments()[0], typeof(TypeConstraintModel<,,>).GetGenericArguments()[1]));
 
 		[GenerateModel]
 		public partial class NullableTypeConstraintModelDefinition<T, U, V, W>
 			where T : class?
 			where U : TestClass?
-			where V : TestInterface?
+			where V : TestInterface<TestInterface<U?>>?
 			where W : U?, V?
 		{
 		}
 
 		[Fact]
 		public void NullableTypeConstraints()
-			=> typeof(NullableTypeConstraintModelDefinition<,,,>)
+			=> typeof(NullableTypeConstraintModel<,,,>)
 				.Should()
 				.HaveGenericTypeParameter(0, t => t.HaveReferenceTypeConstraint()).And
 				.HaveGenericTypeParameter(1, t => t.HaveDerivesFromConstraint(typeof(TestClass))).And
-				.HaveGenericTypeParameter(2, t => t.HaveDerivesFromConstraint(typeof(TestInterface))).And
-				.HaveGenericTypeParameter(3, t => t.HaveDerivesFromConstraint(typeof(NullableTypeConstraintModelDefinition<,,,>).GetGenericArguments()[1], typeof(NullableTypeConstraintModelDefinition<,,,>).GetGenericArguments()[2]));
+				.HaveGenericTypeParameter(2, t => t.HaveDerivesFromConstraint(typeof(TestInterface<>).MakeGenericType(typeof(TestInterface<>).MakeGenericType(typeof(NullableTypeConstraintModel<,,,>).GetGenericArguments()[1])))).And
+				.HaveGenericTypeParameter(3, t => t.HaveDerivesFromConstraint(typeof(NullableTypeConstraintModel<,,,>).GetGenericArguments()[1], typeof(NullableTypeConstraintModel<,,,>).GetGenericArguments()[2]));
 		
 		[GenerateModel]
 		public partial class CombinationConstraintModelDefinition<T>
-			where T : class, TestInterface, new()
+			where T : class, TestInterface<int>, new()
 		{
 		}
 
 		[Fact]
 		public void CombinationConstraints()
-			=> typeof(CombinationConstraintModelDefinition<>)
+			=> typeof(CombinationConstraintModel<>)
 				.Should()
 				.HaveGenericTypeParameter
 				(
 					0, 
 					t => t
 						.HaveReferenceTypeConstraint().And
-						.HaveDerivesFromConstraint(typeof(TestInterface)).And
+						.HaveDerivesFromConstraint(typeof(TestInterface<int>)).And
 						.HaveDefaultConstructorConstraint()
 				);
 	}

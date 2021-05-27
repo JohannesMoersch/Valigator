@@ -170,10 +170,7 @@ namespace Valigator.Models.Generator.Analyzers
 
 				var lowercaseName = $"_{Char.ToLower(property.Name[0])}{property.Name.Substring(1)}";
 
-				var propertyType = (property.Type as INamedTypeSymbol).TypeArguments[0];
-				var propertyTypeName = propertyType is ITypeParameterSymbol parameter
-					? parameter.Name
-					: propertyType.GetFullNameWithNamespace(".", true);
+				var propertyTypeName = (property.Type as INamedTypeSymbol).TypeArguments[0].ToCSharpTypeCode();
 
 				builder.AppendLine($"{indentation}	");
 				builder.AppendLine($"{indentation}	private static global::Valigator.Models.ModelDefinition<ModelView>.Property<{propertyTypeName}> {lowercaseName}_Property;");
@@ -182,14 +179,14 @@ namespace Valigator.Models.Generator.Analyzers
 				builder.AppendLine($"{indentation}	public {propertyTypeName} {property.Name}");
 				builder.AppendLine($"{indentation}	{{");
 				if (propertyAccessors.HasFlag(ExternalConstants.PropertyAccessors.Get))
-					builder.AppendLine($"{indentation}		get => Get(nameof({property.Name}), {lowercaseName}, {lowercaseName}_State);");
+					builder.AppendLine($"{indentation}		get => Get(nameof({property.Name}), {lowercaseName}, ref {lowercaseName}_State);");
 				if (propertyAccessors.HasFlag(ExternalConstants.PropertyAccessors.GetAndSet))
 					builder.AppendLine($"{indentation}		set => Set(value, ref {lowercaseName}, ref {lowercaseName}_State);");
 				builder.AppendLine($"{indentation}	}}");
 			}
 
 			builder.AppendLine($"{indentation}	");
-			builder.AppendLine($"{indentation}	private TValue Get<TValue>(string propertyName, TValue value, global::Valigator.Models.ModelPropertyState state)");
+			builder.AppendLine($"{indentation}	private TValue Get<TValue>(string propertyName, TValue value, ref global::Valigator.Models.ModelPropertyState state)");
 			builder.AppendLine($"{indentation}	{{");
 			builder.AppendLine($"{indentation}		if (_modelState == global::Valigator.Models.ModelState.Unset)");
 			builder.AppendLine($"{indentation}		{{");
@@ -258,10 +255,7 @@ namespace Valigator.Models.Generator.Analyzers
 			{
 				var lowercaseName = $"_{Char.ToLower(property.Name[0])}{property.Name.Substring(1)}";
 
-				var propertyType = (property.Type as INamedTypeSymbol).TypeArguments[0];
-				var propertyTypeName = propertyType is ITypeParameterSymbol parameter
-					? parameter.Name
-					: propertyType.GetFullNameWithNamespace(".", true);
+				var propertyTypeName = (property.Type as INamedTypeSymbol).TypeArguments[0].ToCSharpTypeCode();
 
 				builder.AppendLine($"{indentation}		");
 				builder.AppendLine($"{indentation}		public global::Functional.Result<{propertyTypeName}, global::Valigator.Models.ModelPropertyNotSet> {property.Name} => Get(_model.{lowercaseName}, _model.{lowercaseName}_State);");

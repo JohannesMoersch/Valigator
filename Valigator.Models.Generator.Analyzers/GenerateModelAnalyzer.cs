@@ -261,6 +261,8 @@ namespace Valigator.Models.Generator.Analyzers
 
 				if (mismatched)
 				{
+					System.Diagnostics.Debugger.Launch();
+
 					context
 						.ReportDiagnostic
 						(

@@ -95,6 +95,9 @@ namespace Valigator.Models.Generator.Analyzers.Extensions
 
 		public static string GetFullNameWithNamespace(this ITypeSymbol typeSymbol, string classSeparator, bool prefixWithGlobal)
 		{
+			if (typeSymbol is ITypeParameterSymbol typeParameterSymbol)
+				return typeParameterSymbol.Name;
+
 			var ns = typeSymbol.GetFullNamespace();
 			var typeName = String.Join(classSeparator, typeSymbol.GetContainingTypeHierarchy().Select(t => t.Name));
 
@@ -123,5 +126,23 @@ namespace Valigator.Models.Generator.Analyzers.Extensions
 			=> typeSymbol
 				.GetMembers()
 				.OfType<IPropertySymbol>();
+
+		public static string ToCSharpTypeCode(this ITypeSymbol typeSymbol)
+			=> $"{typeSymbol.GetFullNameWithNamespace(".", true)}{typeSymbol.ToCSharpGenericArgumentCode()}{(typeSymbol.NullableAnnotation == NullableAnnotation.Annotated ? "?" : String.Empty)}";
+
+		public static string ToCSharpGenericArgumentCode(this ITypeSymbol typeSymbol)
+		{
+			if (typeSymbol is INamedTypeSymbol namedTypeSymbol)
+			{
+				var parameterNames = namedTypeSymbol
+					.TypeArguments
+					.Select(type => type.ToCSharpTypeCode())
+					.ToArray();
+
+				return parameterNames.Any() ? $"<{String.Join(", ", parameterNames)}>" : String.Empty;
+			}
+
+			return String.Empty;
+		}
 	}
 }
