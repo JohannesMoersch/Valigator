@@ -14,7 +14,7 @@ namespace Valigator.Models.Generator.Analyzers
 
 		public const string Optional_TypeName = "Valigator.Optional`1";
 
-		public const string ModelDefinition_Property_TypeName = "Valigator.Models.ModelDefinition`1+Property`1";
+		public const string IModelPropertyData_TypeName = "Valigator.Core.IModelPropertyData`2";
 
 		public const string GenerateModelAttribute_GenerateSetterMethods_PropertyName = "GenerateSetterMethods";
 

@@ -29,6 +29,7 @@ namespace Valigator.Models.Generator.Analyzers
 					AnalyzerDiagnosticDescriptors.ModelDefinitionConstructorInaccessible,
 					AnalyzerDiagnosticDescriptors.ModelDefinitionManualBaseClass,
 					AnalyzerDiagnosticDescriptors.ModelDefinitionParentsGenerics,
+					AnalyzerDiagnosticDescriptors.ModelDefinitionPropertyTypeMismatch,
 					AnalyzerDiagnosticDescriptors.ModelNotClassOrStruct,
 					AnalyzerDiagnosticDescriptors.ModelNotPartial,
 					AnalyzerDiagnosticDescriptors.ModelParentNotPartial,
@@ -50,7 +51,7 @@ namespace Valigator.Models.Generator.Analyzers
 				(
 					context =>
 					{
-						GetTypes(context, out var generateModelAttributeType, out var generateModelDefaultsAttributeType, out var modelDefinitionPropertyType);
+						GetTypes(context, out var generateModelAttributeType, out var generateModelDefaultsAttributeType, out var modelPropertyDataType);
 
 						var classSyntax = (ClassDeclarationSyntax)context.Node;
 
@@ -74,30 +75,33 @@ namespace Valigator.Models.Generator.Analyzers
 
 							CheckForModelIdentifierIssues(context, classSyntax, typeSymbol, generateModelAttribute, generateModelDefaultsAttributeType);
 
-							foreach (var propertySyntax in GetPublicModelDefinitionProperties(typeSymbol, modelDefinitionPropertyType, context.CancellationToken))
+							foreach (var propertySymbol in GetPublicModelDefinitionProperties(typeSymbol, context.CancellationToken))
 							{
-								CheckForPropertyDoesNotHaveGetter(context, propertySyntax);
+								CheckForPropertyDoesNotHaveGetter(context, propertySymbol, context.CancellationToken);
 
-								CheckForPropertyHasSetter(context, propertySyntax);
+								CheckForPropertyHasSetter(context, propertySymbol, context.CancellationToken);
 							}
+
+							foreach (var propertySymbol in typeSymbol.GetProperties())
+								CheckForPropertyTypeMismatch(context, propertySymbol, modelPropertyDataType, context.CancellationToken);
+
 						}
 					},
 					SyntaxKind.ClassDeclaration
 				);
 		}
 
-		private static void GetTypes(SyntaxNodeAnalysisContext context, out INamedTypeSymbol generateModelAttributeType, out INamedTypeSymbol generateModelDefaultsAttributeType, out INamedTypeSymbol modelDefinitionPropertyType)
+		private static void GetTypes(SyntaxNodeAnalysisContext context, out INamedTypeSymbol generateModelAttributeType, out INamedTypeSymbol generateModelDefaultsAttributeType, out INamedTypeSymbol modelPropertyDataType)
 		{
 			generateModelAttributeType = context.Compilation.GetTypeByMetadataName(ExternalConstants.GenerateModelAttribute_TypeName);
 			generateModelDefaultsAttributeType = context.Compilation.GetTypeByMetadataName(ExternalConstants.GenerateModelDefaultsAttribute_TypeName);
-			modelDefinitionPropertyType = context.Compilation.GetTypeByMetadataName(ExternalConstants.ModelDefinition_Property_TypeName);
+			modelPropertyDataType = context.Compilation.GetTypeByMetadataName(ExternalConstants.IModelPropertyData_TypeName);
 		}
 
-		private static IEnumerable<PropertyDeclarationSyntax> GetPublicModelDefinitionProperties(INamedTypeSymbol typeSymbol, INamedTypeSymbol modelDefinitionPropertyType, CancellationToken cancellationToken)
+		private static IEnumerable<IPropertySymbol> GetPublicModelDefinitionProperties(INamedTypeSymbol typeSymbol, CancellationToken cancellationToken)
 			=> typeSymbol
 				.GetProperties()
-				.Where(property => property.IsEligibleModelDefinitionProperty(modelDefinitionPropertyType, cancellationToken))
-				.Select(symbol => symbol.GetDeclarationSyntax(cancellationToken));
+				.Where(property => property.IsEligibleModelDefinitionProperty(cancellationToken));
 
 		private void CheckForNotPartialClass(SyntaxNodeAnalysisContext context, ClassDeclarationSyntax classSyntax, out bool isPartial)
 		{
@@ -383,8 +387,10 @@ namespace Valigator.Models.Generator.Analyzers
 			}
 		}
 
-		private void CheckForPropertyDoesNotHaveGetter(SyntaxNodeAnalysisContext context, PropertyDeclarationSyntax propertySyntax)
+		private void CheckForPropertyDoesNotHaveGetter(SyntaxNodeAnalysisContext context, IPropertySymbol propertySymbol, CancellationToken cancellationToken)
 		{
+			var propertySyntax = propertySymbol.GetDeclarationSyntax(cancellationToken);
+
 			if (propertySyntax.ExpressionBody == null && (!propertySyntax.TryGetGetAccessor(out var getAccessor) || getAccessor.IsPrivate()))
 			{
 				context
@@ -399,8 +405,10 @@ namespace Valigator.Models.Generator.Analyzers
 			}
 		}
 
-		private void CheckForPropertyHasSetter(SyntaxNodeAnalysisContext context, PropertyDeclarationSyntax propertySyntax)
+		private void CheckForPropertyHasSetter(SyntaxNodeAnalysisContext context, IPropertySymbol propertySymbol, CancellationToken cancellationToken)
 		{
+			var propertySyntax = propertySymbol.GetDeclarationSyntax(cancellationToken);
+
 			if (propertySyntax.TryGetSetAccessor(out var setAccessor) && !setAccessor.IsPrivate())
 			{
 				context
@@ -412,6 +420,43 @@ namespace Valigator.Models.Generator.Analyzers
 							Location.Create(propertySyntax.SyntaxTree, setAccessor.Keyword.Span)
 						)
 					);
+			}
+		}
+
+		private void CheckForPropertyTypeMismatch(SyntaxNodeAnalysisContext context, IPropertySymbol propertySymbol, INamedTypeSymbol modelPropertyDataType, CancellationToken cancellationToken)
+		{
+			var propertySyntax = propertySymbol.GetDeclarationSyntax(cancellationToken);
+
+			var propertyInitializer = propertySyntax.ExpressionBody?.Expression ?? propertySyntax.Initializer?.Value;
+
+			if (propertyInitializer != null)
+				CheckForMismatch(context, propertyInitializer, () => propertySymbol, modelPropertyDataType, cancellationToken);
+		}
+
+		private void CheckForMismatch(SyntaxNodeAnalysisContext context, ExpressionSyntax expressionSyntax, Func<IPropertySymbol> propertySymbolGetter, INamedTypeSymbol modelPropertyDataType, CancellationToken cancellationToken)
+		{
+			var propertyTypeFromInitializer = expressionSyntax.GetModelPropertyArgumentType(context.SemanticModel, modelPropertyDataType);
+
+			if (propertyTypeFromInitializer != null)
+			{
+				var propertySymbol = propertySymbolGetter.Invoke();
+
+				var propertyTypeFromProperty = propertySymbol.IsModelDefinitionProperty(cancellationToken)
+					? (propertySymbol.Type as INamedTypeSymbol).TypeArguments[0]
+					: null;
+
+				if (!SymbolEqualityComparer.Default.Equals(propertyTypeFromProperty, propertyTypeFromInitializer))
+				{
+					context
+						.ReportDiagnostic
+						(
+							Diagnostic.Create
+							(
+								AnalyzerDiagnosticDescriptors.ModelDefinitionPropertyTypeMismatch,
+								Location.Create(expressionSyntax.SyntaxTree, expressionSyntax.Span)
+							)
+						);
+				}
 			}
 		}
 

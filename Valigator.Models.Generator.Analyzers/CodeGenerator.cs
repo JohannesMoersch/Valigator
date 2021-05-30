@@ -79,7 +79,7 @@ namespace Valigator.Models.Generator.Analyzers
 			return builder.ToString();
 		}
 
-		public static string GenerateModel(SemanticModel semanticModel, INamedTypeSymbol definitionType, AttributeData generatedModelAttribute, INamedTypeSymbol generateModelDefaultsAttributeType, INamedTypeSymbol propertyAttributeType, INamedTypeSymbol optionalType, INamedTypeSymbol modelDefinitionPropertyType, string[] modelNamespaceParts, string[] parentClasses, string modelName, CancellationToken cancellationToken)
+		public static string GenerateModel(SemanticModel semanticModel, INamedTypeSymbol definitionType, AttributeData generatedModelAttribute, INamedTypeSymbol generateModelDefaultsAttributeType, INamedTypeSymbol propertyAttributeType, INamedTypeSymbol optionalType, string[] modelNamespaceParts, string[] parentClasses, string modelName, CancellationToken cancellationToken)
 		{
 			var modelNamespace = String.Join(".", modelNamespaceParts);
 			var modelFullName = String.Join(".", modelNamespaceParts.Concat(parentClasses).Concat(new[] { modelName }));
@@ -87,7 +87,7 @@ namespace Valigator.Models.Generator.Analyzers
 			var properties = definitionType
 				.GetMembers()
 				.OfType<IPropertySymbol>()
-				.Where(property => property.IsEligibleModelDefinitionProperty(modelDefinitionPropertyType, cancellationToken))
+				.Where(property => property.IsEligibleModelDefinitionProperty(cancellationToken))
 				.ToArray();
 
 			var generateSetterMethodsDefault = generatedModelAttribute.GetGenerateModelPropertyValue<bool>(ExternalConstants.GenerateModelAttribute_GenerateSetterMethods_PropertyName, generateModelDefaultsAttributeType);

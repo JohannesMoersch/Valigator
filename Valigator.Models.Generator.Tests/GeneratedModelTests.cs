@@ -158,5 +158,59 @@ namespace Valigator.Models.Generator.Tests
 				.AssertSome()
 				.Should()
 				.Be(2);
+
+		public class ValueValidator : IValidator<int>
+		{
+			public Result<Unit, ValidationError[]> Validate(int value)
+				=> Result.Create(value >= 0, Unit.Value, () => new[] { new ValidationError("Value invalid.") });
+		}
+
+		[GenerateModel(GenerateSetterMethods = true)]
+		public partial class ValueWithValidatorModelDefinition
+		{
+			public Property<int> Value => Data.Value<int>().Required().WithValidator(new ValueValidator());
+		}
+
+		[Fact]
+		public void ValidValueWithValidator()
+			=> new ValueWithValidatorModel()
+				.Do(o => o.SetValue(5))
+				.Value
+				.Should()
+				.Be(5);
+
+		[Fact]
+		public void InvalidValueWithValidator()
+			=> new ValueWithValidatorModel()
+				.Do(o => o.SetValue(-5))
+				.Throws(default(DataInvalidException), o => o.Value);
+
+		[GenerateModel(GenerateSetterMethods = true)]
+		public partial class NullableValueWithValidatorModelDefinition
+		{
+			public Property<Option<int>> Value => Data.Value<int>(o => o.Nullable()).Required().WithValidator(new ValueValidator());
+		}
+
+		[Fact]
+		public void ValidNullableValueWithValidator()
+			=> new NullableValueWithValidatorModel()
+				.Do(o => o.SetValue(Option.Some(5)))
+				.Value
+				.Should()
+				.Be(5);
+
+		[Fact]
+		public void InvalidNullableValueWithValidator()
+			=> new NullableValueWithValidatorModel()
+				.Do(o => o.SetValue(Option.Some(-5)))
+				.Throws(default(DataInvalidException), o => o.Value);
+
+		[Fact]
+		public void NoneNullableValueWithValidator()
+			=> new NullableValueWithValidatorModel()
+				.Do(o => o.SetValue(Option.None<int>()))
+				.Value
+				.Should()
+				.Be(5);
 	}
 }
