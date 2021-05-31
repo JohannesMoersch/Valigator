@@ -14,7 +14,7 @@ using Valigator.Models.Generator.Analyzers.Extensions;
 namespace Valigator.Models.Generator.Analyzers
 {
 	[DiagnosticAnalyzer(LanguageNames.CSharp)]
-	public class GenerateModelAnalyzer : DiagnosticAnalyzer
+	public class ModelDefinitionAnalyzer : DiagnosticAnalyzer
 	{
 		public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics 
 			=> ImmutableArray
@@ -29,7 +29,6 @@ namespace Valigator.Models.Generator.Analyzers
 					AnalyzerDiagnosticDescriptors.ModelDefinitionConstructorInaccessible,
 					AnalyzerDiagnosticDescriptors.ModelDefinitionManualBaseClass,
 					AnalyzerDiagnosticDescriptors.ModelDefinitionParentsGenerics,
-					AnalyzerDiagnosticDescriptors.ModelDefinitionPropertyTypeMismatch,
 					AnalyzerDiagnosticDescriptors.ModelNotClassOrStruct,
 					AnalyzerDiagnosticDescriptors.ModelNotPartial,
 					AnalyzerDiagnosticDescriptors.ModelParentNotPartial,
@@ -81,10 +80,6 @@ namespace Valigator.Models.Generator.Analyzers
 
 								CheckForPropertyHasSetter(context, propertySymbol, context.CancellationToken);
 							}
-
-							foreach (var propertySymbol in typeSymbol.GetProperties())
-								CheckForPropertyTypeMismatch(context, propertySymbol, modelPropertyDataType, context.CancellationToken);
-
 						}
 					},
 					SyntaxKind.ClassDeclaration
@@ -420,43 +415,6 @@ namespace Valigator.Models.Generator.Analyzers
 							Location.Create(propertySyntax.SyntaxTree, setAccessor.Keyword.Span)
 						)
 					);
-			}
-		}
-
-		private void CheckForPropertyTypeMismatch(SyntaxNodeAnalysisContext context, IPropertySymbol propertySymbol, INamedTypeSymbol modelPropertyDataType, CancellationToken cancellationToken)
-		{
-			var propertySyntax = propertySymbol.GetDeclarationSyntax(cancellationToken);
-
-			var propertyInitializer = propertySyntax.ExpressionBody?.Expression ?? propertySyntax.Initializer?.Value;
-
-			if (propertyInitializer != null)
-				CheckForMismatch(context, propertyInitializer, () => propertySymbol, modelPropertyDataType, cancellationToken);
-		}
-
-		private void CheckForMismatch(SyntaxNodeAnalysisContext context, ExpressionSyntax expressionSyntax, Func<IPropertySymbol> propertySymbolGetter, INamedTypeSymbol modelPropertyDataType, CancellationToken cancellationToken)
-		{
-			var propertyTypeFromInitializer = expressionSyntax.GetModelPropertyArgumentType(context.SemanticModel, modelPropertyDataType);
-
-			if (propertyTypeFromInitializer != null)
-			{
-				var propertySymbol = propertySymbolGetter.Invoke();
-
-				var propertyTypeFromProperty = propertySymbol.IsModelDefinitionProperty(cancellationToken)
-					? (propertySymbol.Type as INamedTypeSymbol).TypeArguments[0]
-					: null;
-
-				if (!SymbolEqualityComparer.Default.Equals(propertyTypeFromProperty, propertyTypeFromInitializer))
-				{
-					context
-						.ReportDiagnostic
-						(
-							Diagnostic.Create
-							(
-								AnalyzerDiagnosticDescriptors.ModelDefinitionPropertyTypeMismatch,
-								Location.Create(expressionSyntax.SyntaxTree, expressionSyntax.Span)
-							)
-						);
-				}
 			}
 		}
 

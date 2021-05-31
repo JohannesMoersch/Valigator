@@ -61,22 +61,27 @@ namespace Valigator.Models.Generator.Analyzers.CodeFixes
 
 			var modelPropertyDataType = semanticModel.Compilation.GetTypeByMetadataName(ExternalConstants.IModelPropertyData_TypeName);
 
-			var propertySyntax = expressionSyntax
+			var setterSyntax = expressionSyntax
 				.Ancestors()
-				.OfType<PropertyDeclarationSyntax>()
+				.Where(s => s is ArrowExpressionClauseSyntax || s is EqualsValueClauseSyntax || s is AssignmentExpressionSyntax)
 				.FirstOrDefault();
 
-			var propertyInitializer = propertySyntax.ExpressionBody?.Expression ?? propertySyntax.Initializer?.Value;
+			if (setterSyntax.TryGetPropertyAndExpressionForPropertyAssignment(semanticModel, cancellationToken, out var propertySymbol, out var newExpressionSyntax))
+			{
+				var propertySyntax = propertySymbol.GetDeclarationSyntax(cancellationToken);
 
-			var propertyTypeFromInitializer = propertyInitializer.GetModelPropertyArgumentType(semanticModel, modelPropertyDataType);
+				var propertyTypeFromInitializer = newExpressionSyntax.GetModelPropertyArgumentType(semanticModel, modelPropertyDataType);
 
-			var newPropertyDeclaration = propertySyntax.WithType(SyntaxFactory.ParseTypeName($"Property<{propertyTypeFromInitializer.ToCSharpTypeCode()}>").WithTriviaFrom(propertySyntax.Type));
+				var newPropertyDeclaration = propertySyntax.WithType(SyntaxFactory.ParseTypeName($"Property<{propertyTypeFromInitializer.ToCSharpTypeCode()}>").WithTriviaFrom(propertySyntax.Type));
 
-			var syntaxRoot = await document.GetSyntaxRootAsync(cancellationToken);
+				var syntaxRoot = await document.GetSyntaxRootAsync(cancellationToken);
 
-			var newSyntaxRoot = syntaxRoot.ReplaceNode(propertySyntax, newPropertyDeclaration.WithAdditionalAnnotations(Simplifier.Annotation));
+				var newSyntaxRoot = syntaxRoot.ReplaceNode(propertySyntax, newPropertyDeclaration.WithAdditionalAnnotations(Simplifier.Annotation));
 
-			return document.Project.Solution.WithDocumentSyntaxRoot(document.Id, newSyntaxRoot);
+				return document.Project.Solution.WithDocumentSyntaxRoot(document.Id, newSyntaxRoot);
+			}
+
+			return document.Project.Solution;
 		}
 	}
 }

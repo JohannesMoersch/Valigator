@@ -168,7 +168,7 @@ namespace Valigator.Models.Generator.Tests
 		[GenerateModel(GenerateSetterMethods = true)]
 		public partial class ValueWithValidatorModelDefinition
 		{
-			public Property<int> Value => Data.Value<int>().Required().WithValidator(new ValueValidator());
+			public Property<int> Value { get; } = Data.Value<int>().Required().WithValidator(new ValueValidator());
 		}
 
 		[Fact]
@@ -188,7 +188,10 @@ namespace Valigator.Models.Generator.Tests
 		[GenerateModel(GenerateSetterMethods = true)]
 		public partial class NullableValueWithValidatorModelDefinition
 		{
-			public Property<Option<int>> Value => Data.Value<int>(o => o.Nullable()).Required().WithValidator(new ValueValidator());
+			public Property<Option<int>> Value { get; }
+			
+			public NullableValueWithValidatorModelDefinition()
+				=> Value = Data.Value<int>(o => o.Nullable()).Required().WithValidator(new ValueValidator());
 		}
 
 		[Fact]
@@ -196,6 +199,7 @@ namespace Valigator.Models.Generator.Tests
 			=> new NullableValueWithValidatorModel()
 				.Do(o => o.SetValue(Option.Some(5)))
 				.Value
+				.AssertSome()
 				.Should()
 				.Be(5);
 
@@ -210,7 +214,6 @@ namespace Valigator.Models.Generator.Tests
 			=> new NullableValueWithValidatorModel()
 				.Do(o => o.SetValue(Option.None<int>()))
 				.Value
-				.Should()
-				.Be(5);
+				.AssertNone();
 	}
 }
