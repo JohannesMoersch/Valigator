@@ -61,7 +61,9 @@ namespace Valigator.Models.Generator.Tests
 					{
 						var dictionary = new ModelErrorDictionary();
 
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
 						dictionary.Add("One", null);
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
 					}
 				);
 
@@ -175,7 +177,9 @@ namespace Valigator.Models.Generator.Tests
 					{
 						var dictionary = new ModelErrorDictionary();
 
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
 						dictionary["One"] = null;
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
 					}
 				);
 

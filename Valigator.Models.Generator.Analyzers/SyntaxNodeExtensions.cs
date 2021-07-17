@@ -22,9 +22,12 @@ namespace Valigator.Models.Generator.Analyzers
 					.OfType<PropertyDeclarationSyntax>()
 					.FirstOrDefault();
 
-				propertySymbol = semanticModel.GetDeclaredSymbol(propertyDeclarationSyntax, cancellationToken);
+				if (propertyDeclarationSyntax != null)
+				{
+					propertySymbol = semanticModel.GetDeclaredSymbol(propertyDeclarationSyntax, cancellationToken);
 
-				return true;
+					return true;
+				}
 			}
 			else if (syntaxNode is EqualsValueClauseSyntax equalsValue)
 			{
@@ -35,9 +38,12 @@ namespace Valigator.Models.Generator.Analyzers
 					.OfType<PropertyDeclarationSyntax>()
 					.FirstOrDefault();
 
-				propertySymbol = semanticModel.GetDeclaredSymbol(propertyDeclarationSyntax, cancellationToken);
+				if (propertyDeclarationSyntax != null)
+				{
+					propertySymbol = semanticModel.GetDeclaredSymbol(propertyDeclarationSyntax, cancellationToken);
 
-				return true;
+					return true;
+				}
 			}
 			else if (syntaxNode is AssignmentExpressionSyntax assignmentExpression)
 			{
@@ -47,7 +53,8 @@ namespace Valigator.Models.Generator.Analyzers
 					.GetSymbolInfo(assignmentExpression.Left, cancellationToken)
 					.Symbol as IPropertySymbol;
 
-				return true;
+				if (propertySymbol != null)
+					return true;
 			}
 		
 			propertySymbol = null;
