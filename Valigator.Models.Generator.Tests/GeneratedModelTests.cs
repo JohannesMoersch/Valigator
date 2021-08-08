@@ -11,7 +11,7 @@ namespace Valigator.Models.Generator.Tests
 {
 	public partial class GeneratedModelTests
 	{
-		[GenerateModel(GenerateSetterMethods = true)]
+		[GenerateModel(DefaultPropertyAccessors = PropertyAccessors.GetAndSet)]
 		public partial class RequiredValueModelDefinition
 		{
 			public Property<int> Value => Data.Value<int>().Required();
@@ -20,7 +20,7 @@ namespace Valigator.Models.Generator.Tests
 		[Fact]
 		public void SetWhenRequired()
 			=> new RequiredValueModel()
-				.Do(o => o.SetValue(5))
+				.Do(o => o.Value = 5)
 				.Value
 				.Should()
 				.Be(5);
@@ -30,7 +30,7 @@ namespace Valigator.Models.Generator.Tests
 			=> new RequiredValueModel()
 				.Throws(default(DataInvalidException), o => o.Value);
 
-		[GenerateModel(GenerateSetterMethods = true)]
+		[GenerateModel(DefaultPropertyAccessors = PropertyAccessors.GetAndSet)]
 		public partial class RequiredNullableValueModelDefinition
 		{
 			public Property<Option<int>> Value => Data.Value<int>(o => o.Nullable()).Required();
@@ -39,7 +39,7 @@ namespace Valigator.Models.Generator.Tests
 		[Fact]
 		public void SetSomeWhenNullableRequired()
 			=> new RequiredNullableValueModel()
-				.Do(o => o.SetValue(Option.Some(5)))
+				.Do(o => o.Value = Option.Some(5))
 				.Value
 				.AssertSome()
 				.Should()
@@ -48,7 +48,7 @@ namespace Valigator.Models.Generator.Tests
 		[Fact]
 		public void SetNoneWhenNullableRequired()
 			=> new RequiredNullableValueModel()
-				.Do(o => o.SetValue(Option.None<int>()))
+				.Do(o => o.Value = Option.None<int>())
 				.Value
 				.AssertNone();
 
@@ -57,7 +57,7 @@ namespace Valigator.Models.Generator.Tests
 			=> new RequiredNullableValueModel()
 				.Throws(default(DataInvalidException), o => o.Value);
 
-		[GenerateModel(GenerateSetterMethods = true)]
+		[GenerateModel(DefaultPropertyAccessors = PropertyAccessors.GetAndSet)]
 		public partial class OptionalValueModelDefinition
 		{
 			public Property<Optional<int>> Value => Data.Value<int>().Optional();
@@ -66,7 +66,7 @@ namespace Valigator.Models.Generator.Tests
 		[Fact]
 		public void SetWhenOptional()
 			=> new OptionalValueModel()
-				.Do(o => o.SetValue(5))
+				.Do(o => o.Value = Optional.Set(5))
 				.Value
 				.AssertSet()
 				.Should()
@@ -78,7 +78,7 @@ namespace Valigator.Models.Generator.Tests
 				.Value
 				.AssertUnset();
 
-		[GenerateModel(GenerateSetterMethods = true)]
+		[GenerateModel(DefaultPropertyAccessors = PropertyAccessors.GetAndSet)]
 		public partial class OptionalNullableValueModelDefinition
 		{
 			public Property<Optional<Option<int>>> Value => Data.Value<int>(o => o.Nullable()).Optional();
@@ -87,7 +87,7 @@ namespace Valigator.Models.Generator.Tests
 		[Fact]
 		public void SetSomeWhenNullableOptional()
 			=> new OptionalNullableValueModel()
-				.Do(o => o.SetValue(Option.Some(5)))
+				.Do(o => o.Value = Optional.Set(Option.Some(5)))
 				.Value
 				.AssertSet()
 				.AssertSome()
@@ -97,7 +97,7 @@ namespace Valigator.Models.Generator.Tests
 		[Fact]
 		public void SetNoneWhenNullableOptional()
 			=> new OptionalNullableValueModel()
-				.Do(o => o.SetValue(Option.None<int>()))
+				.Do(o => o.Value = Optional.Set(Option.None<int>()))
 				.Value
 				.AssertSet()
 				.AssertNone();
@@ -108,7 +108,7 @@ namespace Valigator.Models.Generator.Tests
 				.Value
 				.AssertUnset();
 
-		[GenerateModel(GenerateSetterMethods = true)]
+		[GenerateModel(DefaultPropertyAccessors = PropertyAccessors.GetAndSet)]
 		public partial class DefaultedValueModelDefinition
 		{
 			public Property<int> Value => Data.Value<int>().Defaulted(2);
@@ -117,7 +117,7 @@ namespace Valigator.Models.Generator.Tests
 		[Fact]
 		public void SetWhenDefaulted()
 			=> new DefaultedValueModel()
-				.Do(o => o.SetValue(5))
+				.Do(o => o.Value = 5)
 				.Value
 				.Should()
 				.Be(5);
@@ -129,7 +129,7 @@ namespace Valigator.Models.Generator.Tests
 				.Should()
 				.Be(2);
 
-		[GenerateModel(GenerateSetterMethods = true)]
+		[GenerateModel(DefaultPropertyAccessors = PropertyAccessors.GetAndSet)]
 		public partial class DefaultedNullableValueModelDefinition
 		{
 			public Property<Option<int>> Value => Data.Value<int>(o => o.Nullable()).Defaulted(Option.Some(2));
@@ -138,7 +138,7 @@ namespace Valigator.Models.Generator.Tests
 		[Fact]
 		public void SetSomeWhenNullableDefaulted()
 			=> new DefaultedNullableValueModel()
-				.Do(o => o.SetValue(Option.Some(5)))
+				.Do(o => o.Value = Option.Some(5))
 				.Value
 				.AssertSome()
 				.Should()
@@ -147,7 +147,7 @@ namespace Valigator.Models.Generator.Tests
 		[Fact]
 		public void SetNoneWhenNullableDefaulted()
 			=> new DefaultedNullableValueModel()
-				.Do(o => o.SetValue(Option.None<int>()))
+				.Do(o => o.Value = Option.None<int>())
 				.Value
 				.AssertNone();
 
@@ -165,7 +165,7 @@ namespace Valigator.Models.Generator.Tests
 				=> Result.Create(value >= 0, Unit.Value, () => new[] { new ValidationError("Value invalid.") });
 		}
 
-		[GenerateModel(GenerateSetterMethods = true)]
+		[GenerateModel(DefaultPropertyAccessors = PropertyAccessors.GetAndSet)]
 		public partial class ValueWithValidatorModelDefinition
 		{
 			public Property<int> Value { get; } = Data.Value<int>().Required().WithValidator(new ValueValidator());
@@ -174,7 +174,7 @@ namespace Valigator.Models.Generator.Tests
 		[Fact]
 		public void ValidValueWithValidator()
 			=> new ValueWithValidatorModel()
-				.Do(o => o.SetValue(5))
+				.Do(o => o.Value = 5)
 				.Value
 				.Should()
 				.Be(5);
@@ -182,10 +182,10 @@ namespace Valigator.Models.Generator.Tests
 		[Fact]
 		public void InvalidValueWithValidator()
 			=> new ValueWithValidatorModel()
-				.Do(o => o.SetValue(-5))
+				.Do(o => o.Value = -5)
 				.Throws(default(DataInvalidException), o => o.Value);
 
-		[GenerateModel(GenerateSetterMethods = true)]
+		[GenerateModel(DefaultPropertyAccessors = PropertyAccessors.GetAndSet)]
 		public partial class NullableValueWithValidatorModelDefinition
 		{
 			public Property<Option<int>> Value { get; }
@@ -197,7 +197,7 @@ namespace Valigator.Models.Generator.Tests
 		[Fact]
 		public void ValidNullableValueWithValidator()
 			=> new NullableValueWithValidatorModel()
-				.Do(o => o.SetValue(Option.Some(5)))
+				.Do(o => o.Value = Option.Some(5))
 				.Value
 				.AssertSome()
 				.Should()
@@ -206,13 +206,13 @@ namespace Valigator.Models.Generator.Tests
 		[Fact]
 		public void InvalidNullableValueWithValidator()
 			=> new NullableValueWithValidatorModel()
-				.Do(o => o.SetValue(Option.Some(-5)))
+				.Do(o => o.Value = Option.Some(-5))
 				.Throws(default(DataInvalidException), o => o.Value);
 
 		[Fact]
 		public void NoneNullableValueWithValidator()
 			=> new NullableValueWithValidatorModel()
-				.Do(o => o.SetValue(Option.None<int>()))
+				.Do(o => o.Value = Option.None<int>())
 				.Value
 				.AssertNone();
 	}

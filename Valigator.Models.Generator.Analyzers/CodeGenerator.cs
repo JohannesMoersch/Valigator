@@ -79,7 +79,7 @@ namespace Valigator.Models.Generator.Analyzers
 			return builder.ToString();
 		}
 
-		public static string GenerateModel(SemanticModel semanticModel, INamedTypeSymbol definitionType, AttributeData generatedModelAttribute, INamedTypeSymbol generateModelDefaultsAttributeType, INamedTypeSymbol propertyAttributeType, INamedTypeSymbol optionalType, string[] modelNamespaceParts, string[] parentClasses, string modelName, CancellationToken cancellationToken)
+		public static string GenerateModel(SemanticModel semanticModel, INamedTypeSymbol definitionType, AttributeData generatedModelAttribute, INamedTypeSymbol generateModelDefaultsAttributeType, INamedTypeSymbol propertyAttributeType, string[] modelNamespaceParts, string[] parentClasses, string modelName, CancellationToken cancellationToken)
 		{
 			var modelNamespace = String.Join(".", modelNamespaceParts);
 			var modelFullName = String.Join(".", modelNamespaceParts.Concat(parentClasses).Concat(new[] { modelName }));
@@ -90,7 +90,7 @@ namespace Valigator.Models.Generator.Analyzers
 				.Where(property => property.IsEligibleModelDefinitionProperty(cancellationToken))
 				.ToArray();
 
-			var generateSetterMethodsDefault = generatedModelAttribute.GetGenerateModelPropertyValue<bool>(ExternalConstants.GenerateModelAttribute_GenerateSetterMethods_PropertyName, generateModelDefaultsAttributeType);
+			var defaultPropertyAccessors = generatedModelAttribute.GetGenerateModelPropertyValue<ExternalConstants.PropertyAccessors>(ExternalConstants.GenerateModelAttribute_DefaultPropertyAccessors_PropertyName, generateModelDefaultsAttributeType);
 
 			var hasNamespace = !String.IsNullOrEmpty(modelNamespace);
 			var indentation = String.Empty;
@@ -158,16 +158,14 @@ namespace Valigator.Models.Generator.Analyzers
 
 			foreach (var property in properties)
 			{
-				var generateSetterMethod = generateSetterMethodsDefault;
+				var propertyAccessors = defaultPropertyAccessors;
 
-				if (property.TryGetAttribute(propertyAttributeType, out var propertyAttribute) && propertyAttribute.TryGetProperty<bool>(ExternalConstants.PropertyAttribute_GenerateSetterMethod_PropertyName, out var propertyGenerateSetterMethod))
-					generateSetterMethod = propertyGenerateSetterMethod;
+				if (property.TryGetAttribute(propertyAttributeType, out var propertyAttribute) && propertyAttribute.TryGetProperty<ExternalConstants.PropertyAccessors>(ExternalConstants.PropertyAttribute_Accessors_PropertyName, out var propertyAccessor))
+					propertyAccessors = propertyAccessor;
 
 				var lowercaseName = $"_{Char.ToLower(property.Name[0])}{property.Name.Substring(1)}";
 
 				var propertyType = (property.Type as INamedTypeSymbol).TypeArguments[0] as INamedTypeSymbol;
-				var isOptional = propertyType.OriginalDefinition.Equals(optionalType, SymbolEqualityComparer.Default);
-
 				var propertyTypeName = propertyType.ToCSharpTypeCode();
 
 				builder.AppendLine($"{indentation}	");
@@ -177,22 +175,11 @@ namespace Valigator.Models.Generator.Analyzers
 				builder.AppendLine($"{indentation}	public {propertyTypeName} {property.Name}");
 				builder.AppendLine($"{indentation}	{{");
 				builder.AppendLine($"{indentation}		get => Get(nameof({property.Name}), ref {lowercaseName}, ref {lowercaseName}_State);");
-				builder.AppendLine($"{indentation}	}}");
 
-				if (generateSetterMethod)
-				{
-					builder.AppendLine();
-					if (isOptional)
-					{
-						builder.AppendLine($"{indentation}	public void Set{property.Name}({propertyType.TypeArguments[0].ToCSharpTypeCode()} value)");
-						builder.AppendLine($"{indentation}		=> Set(global::Valigator.Optional.Set(value), ref {lowercaseName}, ref {lowercaseName}_State);");
-					}
-					else
-					{
-						builder.AppendLine($"{indentation}	public void Set{property.Name}({propertyTypeName} value)");
-						builder.AppendLine($"{indentation}		=> Set(value, ref {lowercaseName}, ref {lowercaseName}_State);");
-					}
-				}
+				if (propertyAccessors == ExternalConstants.PropertyAccessors.GetAndSet)
+					builder.AppendLine($"{indentation}		set => Set(value, ref {lowercaseName}, ref {lowercaseName}_State);");
+				
+				builder.AppendLine($"{indentation}	}}");
 			}
 
 			builder.AppendLine($"{indentation}	");
