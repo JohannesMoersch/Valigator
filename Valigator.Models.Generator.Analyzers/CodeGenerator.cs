@@ -175,7 +175,7 @@ namespace Valigator.Models.Generator.Analyzers
 				builder.AppendLine($"{indentation}	public {propertyTypeName} {property.Name}");
 				builder.AppendLine($"{indentation}	{{");
 				builder.AppendLine($"{indentation}		get => Get(nameof({property.Name}), ref {lowercaseName}, ref {lowercaseName}_State);");
-				builder.AppendLine($"{indentation}		{(propertyAccessors == ExternalConstants.PropertyAccessors.Get ? "private " : "")}set => Set(value, ref {lowercaseName}, ref {lowercaseName}_State);");
+				builder.AppendLine($"{indentation}		{(propertyAccessors == ExternalConstants.PropertyAccessors.Get ? "private " : "")}{(propertyAccessors == ExternalConstants.PropertyAccessors.GetAndInit ? "init" : "set")} => Set(value, ref {lowercaseName}, ref {lowercaseName}_State);");
 				builder.AppendLine($"{indentation}	}}");
 			}
 

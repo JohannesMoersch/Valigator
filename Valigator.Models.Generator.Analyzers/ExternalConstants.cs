@@ -36,8 +36,9 @@ namespace Valigator.Models.Generator.Analyzers
 
 		public enum PropertyAccessors
 		{
-			Get,
-			GetAndSet
+			Get = 0,
+			GetAndSet = 1,
+			GetAndInit = 2
 		}
 	}
 }
