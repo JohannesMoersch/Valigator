@@ -126,7 +126,7 @@ namespace Valigator.Models.Generator.Analyzers
 
 			var modelIsValueType = model?.TypeKind == TypeKind.Struct;
 
-			builder.AppendLine($"{indentation}public {(!modelIsValueType ? "sealed" : String.Empty)} partial {(!modelIsValueType ? "class" : "struct")} {modelName}{definitionType.TypeParameters.ToCSharpGenericParameterCode()}");
+			builder.AppendLine($"{indentation}public {(!modelIsValueType ? "sealed " : String.Empty)}partial {(!modelIsValueType ? "class" : "struct")} {modelName}{definitionType.TypeParameters.ToCSharpGenericParameterCode()}");
 
 			var definedConstraints = (model?.GetDeclaringSyntaxReferences(cancellationToken) ?? Enumerable.Empty<TypeDeclarationSyntax>())
 				.SelectMany(s => s.ConstraintClauses)
@@ -175,10 +175,31 @@ namespace Valigator.Models.Generator.Analyzers
 				builder.AppendLine($"{indentation}	public {propertyTypeName} {property.Name}");
 				builder.AppendLine($"{indentation}	{{");
 				builder.AppendLine($"{indentation}		get => Get(nameof({property.Name}), ref {lowercaseName}, ref {lowercaseName}_State);");
+				builder.AppendLine($"{indentation}		{(propertyAccessors == ExternalConstants.PropertyAccessors.Get ? "private " : "")}set => Set(value, ref {lowercaseName}, ref {lowercaseName}_State);");
+				builder.AppendLine($"{indentation}	}}");
+			}
 
-				if (propertyAccessors == ExternalConstants.PropertyAccessors.GetAndSet)
-					builder.AppendLine($"{indentation}		set => Set(value, ref {lowercaseName}, ref {lowercaseName}_State);");
+			if (!modelIsValueType)
+			{
+				builder.AppendLine($"{indentation}	");
+				builder.AppendLine($"{indentation}	public {modelName}()");
+				builder.AppendLine($"{indentation}	{{");
+				builder.AppendLine($"{indentation}	}}");
+			}
+
+			if (properties.Length > 0)
+			{
+				builder.AppendLine($"{indentation}	");
+				builder.AppendLine($"{indentation}	public {modelName}({properties.Select(p => $"{(p.Type as INamedTypeSymbol).TypeArguments[0].ToCSharpTypeCode()} {p.Name.ToPascalCase()}").JoinList(", ")})");
 				
+				if (modelIsValueType)
+					builder.AppendLine($"{indentation}		: this()");
+
+				builder.AppendLine($"{indentation}	{{");
+
+				foreach (var property in properties)
+					builder.AppendLine($"{indentation}		this.{property.Name} = {property.Name.ToPascalCase()};");
+
 				builder.AppendLine($"{indentation}	}}");
 			}
 
