@@ -2,6 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
+    <Title>Valigator.Text.Json</Title>
+    <Description>This package contains json serializers for valigator types.</Description>
+    <PackageTags>validation</PackageTags>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Nullable>enable</Nullable>
+    <RootNamespace>Valigator</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
