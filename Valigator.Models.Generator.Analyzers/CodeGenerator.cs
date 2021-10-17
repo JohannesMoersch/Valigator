@@ -101,6 +101,8 @@ namespace Valigator.Models.Generator.Analyzers
 
 			builder.AppendLine("#nullable enable");
 			builder.AppendLine();
+			builder.AppendLine("using Valigator.Models;");
+			builder.AppendLine();
 
 			if (hasNamespace)
 			{
@@ -126,7 +128,7 @@ namespace Valigator.Models.Generator.Analyzers
 
 			var modelIsValueType = model?.TypeKind == TypeKind.Struct;
 
-			builder.AppendLine($"{indentation}public {(!modelIsValueType ? "sealed " : String.Empty)}partial {(!modelIsValueType ? "class" : "struct")} {modelName}{definitionType.TypeParameters.ToCSharpGenericParameterCode()}");
+			builder.AppendLine($"{indentation}public {(!modelIsValueType ? "sealed " : String.Empty)}partial {(!modelIsValueType ? "class" : "struct")} {modelName}{definitionType.TypeParameters.ToCSharpGenericParameterCode()} : System.IEquatable<{modelName}{definitionType.TypeParameters.ToCSharpGenericParameterCode()}>");
 
 			var definedConstraints = (model?.GetDeclaringSyntaxReferences(cancellationToken) ?? Enumerable.Empty<TypeDeclarationSyntax>())
 				.SelectMany(s => s.ConstraintClauses)
@@ -261,6 +263,44 @@ namespace Valigator.Models.Generator.Analyzers
 
 			builder.AppendLine($"{indentation}		_modelState = global::Valigator.Models.ModelState.Validated;");
 			builder.AppendLine($"{indentation}	}}");
+			builder.AppendLine($"{indentation}	");
+
+			builder.AppendLine($"{indentation}	public override bool Equals(object obj)");
+			builder.AppendLine($"{indentation}		=> obj is {modelName}{definitionType.TypeParameters.ToCSharpGenericParameterCode()} value && Equals(value);");
+			builder.AppendLine($"{indentation}	");
+
+			builder.AppendLine($"{indentation}	public bool Equals({modelName}{definitionType.TypeParameters.ToCSharpGenericParameterCode()} other)");
+
+			if (!modelIsValueType)
+				builder.Append($"{indentation}		=> other != null");
+			else
+				builder.Append($"{indentation}		=> true");
+
+			foreach (var property in properties)
+			{
+				builder.AppendLine($" &&");
+				builder.Append($"{indentation}			{property.Name} == other.{property.Name}");
+			}
+
+			builder.AppendLine(";");
+
+			builder.AppendLine($"{indentation}	");
+			builder.AppendLine($"{indentation}	public override int GetHashCode()");
+
+			if (properties.Length > 0)
+			{
+				builder.AppendLine($"{indentation}	{{");
+				builder.AppendLine($"{indentation}		var hash = new System.HashCode();");
+				
+				foreach (var property in properties)
+					builder.AppendLine($"{indentation}		hash.Add({property.Name});");
+
+				builder.AppendLine($"{indentation}		return hash.ToHashCode();");
+				builder.AppendLine($"{indentation}	}}");
+			}
+			else
+				builder.AppendLine($"{indentation}		=> 0;");
+
 			builder.AppendLine($"{indentation}	");
 			builder.AppendLine($"{indentation}	public struct ModelView");
 			builder.AppendLine($"{indentation}	{{");

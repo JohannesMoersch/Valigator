@@ -31,11 +31,13 @@
 	<Target Name="CopyPackage" AfterTargets="Pack" Condition=" '$(Configuration)'=='Debug' ">
 		<ItemGroup>
 			<FilesToDelete Include="$(SolutionDir)packages\$(PackageId).*.nupkg" />
-			<UpdatedProjectContents Include="$([System.Text.RegularExpressions.Regex]::Replace($([System.IO.File]::ReadAllText(&quot;$(SolutionDir)Valigator.Models.Generator.Tests\Valigator.Models.Generator.Tests.csproj&quot;)),(&lt;\s*PackageReference\s+Include\s*=\s*&quot;Valigator.Models.Generator.Analyzers&quot;\s+Version\s*=\s*)&quot;\d+\.\d+\.\d+&quot;(\s*\/&gt;),&quot;$1%22$(PackageVersion)%22$2&quot;))" />
-		</ItemGroup>   
+			<UpdatedModelGeneratorProjectContents Include="$([System.Text.RegularExpressions.Regex]::Replace($([System.IO.File]::ReadAllText(&quot;$(SolutionDir)Valigator.Models.Generator.Tests\Valigator.Models.Generator.Tests.csproj&quot;)),(&lt;\s*PackageReference\s+Include\s*=\s*&quot;Valigator.Models.Generator.Analyzers&quot;\s+Version\s*=\s*)&quot;\d+\.\d+\.\d+&quot;(\s*\/&gt;),&quot;$1%22$(PackageVersion)%22$2&quot;))" />
+      <UpdatedTextJsonProjectContents Include="$([System.Text.RegularExpressions.Regex]::Replace($([System.IO.File]::ReadAllText(&quot;$(SolutionDir)Valigator.Text.Json.Tests\Valigator.Text.Json.Tests.csproj&quot;)),(&lt;\s*PackageReference\s+Include\s*=\s*&quot;Valigator.Models.Generator.Analyzers&quot;\s+Version\s*=\s*)&quot;\d+\.\d+\.\d+&quot;(\s*\/&gt;),&quot;$1%22$(PackageVersion)%22$2&quot;))" />
+		</ItemGroup>
 		<Delete Files="@(FilesToDelete)" />  
 		<Copy SourceFiles="$(OutputPath)..\$(PackageId).$(PackageVersion).nupkg" DestinationFolder="$(SolutionDir)packages\" />
-		<WriteLinesToFile File="$(SolutionDir)Valigator.Models.Generator.Tests\Valigator.Models.Generator.Tests.csproj" Lines="@(UpdatedProjectContents)" Overwrite="true" />
+		<WriteLinesToFile File="$(SolutionDir)Valigator.Models.Generator.Tests\Valigator.Models.Generator.Tests.csproj" Lines="@(UpdatedModelGeneratorProjectContents)" Overwrite="true" />
+    <WriteLinesToFile File="$(SolutionDir)Valigator.Text.Json.Tests\Valigator.Text.Json.Tests.csproj" Lines="@(UpdatedTextJsonProjectContents)" Overwrite="true" />
 	</Target>
 
 </Project>
