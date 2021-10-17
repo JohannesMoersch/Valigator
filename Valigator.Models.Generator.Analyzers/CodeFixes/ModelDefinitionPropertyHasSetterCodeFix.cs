@@ -55,7 +55,7 @@ namespace Valigator.Models.Generator.Analyzers.CodeFixes
 
 		private async Task<Solution> RemoveSetter(Document document, PropertyDeclarationSyntax propertySyntax, CancellationToken cancellationToken)
 		{
-			var newSyntaxList = new SyntaxList<AccessorDeclarationSyntax>(propertySyntax.AccessorList?.Accessors.Where(accessor => accessor.Keyword.IsKind(SyntaxKind.SetKeyword)));
+			var newSyntaxList = new SyntaxList<AccessorDeclarationSyntax>(propertySyntax.AccessorList?.Accessors.Where(accessor => accessor.Keyword.IsKind(SyntaxKind.GetKeyword)));
 
 			var newPropertyDeclaration = propertySyntax.WithAccessorList(propertySyntax.AccessorList?.WithAccessors(newSyntaxList) ?? SyntaxFactory.AccessorList(newSyntaxList));
 
