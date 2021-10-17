@@ -23,6 +23,7 @@ namespace Valigator.Models.Generator.Analyzers
 					AnalyzerDiagnosticDescriptors.ModelDefinitionNotPartialClass, 
 					AnalyzerDiagnosticDescriptors.ModelDefinitionPropertyDoesNotHaveGetter, 
 					AnalyzerDiagnosticDescriptors.ModelDefinitionPropertyHasSetter,
+					AnalyzerDiagnosticDescriptors.ModelDefinitionFieldIsPropertyType,
 					AnalyzerDiagnosticDescriptors.ModelDefinitionModelIdentifierMatchFailed,
 					AnalyzerDiagnosticDescriptors.ModelDefinitionModelIdentifierInvalid,
 					AnalyzerDiagnosticDescriptors.ModelDefinitionParentNotPartialClass,
@@ -74,6 +75,8 @@ namespace Valigator.Models.Generator.Analyzers
 
 							CheckForModelIdentifierIssues(context, classSyntax, typeSymbol, generateModelAttribute, generateModelDefaultsAttributeType);
 
+							CheckForPropertyFields(context, typeSymbol, context.CancellationToken);
+
 							foreach (var propertySymbol in GetPublicModelDefinitionProperties(typeSymbol, context.CancellationToken))
 							{
 								CheckForPropertyDoesNotHaveGetter(context, propertySymbol, context.CancellationToken);
@@ -85,6 +88,30 @@ namespace Valigator.Models.Generator.Analyzers
 					SyntaxKind.ClassDeclaration
 				);
 		}
+
+		private static void CheckForPropertyFields(SyntaxNodeAnalysisContext context, INamedTypeSymbol typeSymbol, CancellationToken cancellationToken)
+		{
+			foreach (var fieldSyntax in GetPublicFieldsOfPropertyType(typeSymbol, cancellationToken))
+			{
+				context
+					.ReportDiagnostic
+					(
+						Diagnostic.Create
+						(
+							AnalyzerDiagnosticDescriptors.ModelDefinitionFieldIsPropertyType,
+							Location.Create(fieldSyntax.SyntaxTree, fieldSyntax.Identifier.Span)
+						)
+					);
+			}
+		}
+
+		private static IEnumerable<VariableDeclaratorSyntax> GetPublicFieldsOfPropertyType(INamedTypeSymbol typeSymbol, CancellationToken cancellationToken)
+			=> typeSymbol
+				.GetFields()
+				.Where(field => !field.IsStatic)
+				.Where(field => field.DeclaredAccessibility == Accessibility.Public)
+				.Select(field => field.GetDeclarationSyntax(cancellationToken))
+				.Where(field => ((VariableDeclarationSyntax)field.Parent).Type.IsModelDefinitionProperty());
 
 		private static void GetTypes(SyntaxNodeAnalysisContext context, out INamedTypeSymbol generateModelAttributeType, out INamedTypeSymbol generateModelDefaultsAttributeType, out INamedTypeSymbol modelPropertyDataType)
 		{

@@ -37,9 +37,19 @@ namespace Valigator.Models.Generator.Analyzers
 			isEnabledByDefault: true
 		);
 
-		public static DiagnosticDescriptor ModelDefinitionModelIdentifierMatchFailed { get; } = new DiagnosticDescriptor
+		public static DiagnosticDescriptor ModelDefinitionFieldIsPropertyType { get; } = new DiagnosticDescriptor
 		(
 			id: "VL0004",
+			title: "Model Definition Field Is Property Type",
+			messageFormat: "Model definition public field is a property type. Did you mean to create a property instead of a field?",
+			category: "Generator",
+			DiagnosticSeverity.Warning,
+			isEnabledByDefault: true
+		);
+
+		public static DiagnosticDescriptor ModelDefinitionModelIdentifierMatchFailed { get; } = new DiagnosticDescriptor
+		(
+			id: "VL0005",
 			title: "Model Definition Model Identifier Match Failed",
 			messageFormat: "Model definition {0} match on \"{1}\" using \"{2}\" failed.{3}",
 			category: "Generator",
@@ -49,7 +59,7 @@ namespace Valigator.Models.Generator.Analyzers
 
 		public static DiagnosticDescriptor ModelDefinitionModelIdentifierInvalid { get; } = new DiagnosticDescriptor
 		(
-			id: "VL0005",
+			id: "VL0006",
 			title: "Model Definition Model Identifier Invalid",
 			messageFormat: "Model definition {0} identifier \"{1}\" is invalid.",
 			category: "Generator",
@@ -59,7 +69,7 @@ namespace Valigator.Models.Generator.Analyzers
 
 		public static DiagnosticDescriptor ModelDefinitionParentNotPartialClass { get; } = new DiagnosticDescriptor
 		(
-			id: "VL0006",
+			id: "VL0007",
 			title: "Model Definition Parent Not Partial",
 			messageFormat: "Model definition {0} not partial.",
 			category: "Generator",
@@ -69,7 +79,7 @@ namespace Valigator.Models.Generator.Analyzers
 
 		public static DiagnosticDescriptor ModelDefinitionConstructorInaccessible { get; } = new DiagnosticDescriptor
 		(
-			id: "VL0007",
+			id: "VL0008",
 			title: "Model Definition Constructor Inaccessible",
 			messageFormat: "Model definition cannot have a private or protected parameterless constructor.",
 			category: "Generator",
@@ -79,7 +89,7 @@ namespace Valigator.Models.Generator.Analyzers
 
 		public static DiagnosticDescriptor ModelDefinitionManualBaseClass { get; } = new DiagnosticDescriptor
 		(
-			id: "VL0008",
+			id: "VL0009",
 			title: "Model Definition Has Manual Base Class",
 			messageFormat: "Model definition cannot have a manually defined base class.",
 			category: "Generator",
@@ -89,7 +99,7 @@ namespace Valigator.Models.Generator.Analyzers
 
 		public static DiagnosticDescriptor ModelDefinitionParentsGenerics { get; } = new DiagnosticDescriptor
 		(
-			id: "VL0009",
+			id: "VL0010",
 			title: "Model Definition Has Generic Parents",
 			messageFormat: "Model definition {0} generic.",
 			category: "Generator",
@@ -99,7 +109,7 @@ namespace Valigator.Models.Generator.Analyzers
 
 		public static DiagnosticDescriptor ModelDefinitionPropertyTypeMismatch { get; } = new DiagnosticDescriptor
 		(
-			id: "VL0010",
+			id: "VL0011",
 			title: "Model Definition Property Type Mismatch",
 			messageFormat: "Model definition property type is incorrect.",
 			category: "Generator",
@@ -109,7 +119,7 @@ namespace Valigator.Models.Generator.Analyzers
 
 		public static DiagnosticDescriptor ModelNotClassOrStruct { get; } = new DiagnosticDescriptor
 		(
-			id: "VL0011",
+			id: "VL0012",
 			title: "Model Not Class Or Struct",
 			messageFormat: "Model must be a class or a struct.",
 			category: "Generator",
@@ -119,7 +129,7 @@ namespace Valigator.Models.Generator.Analyzers
 
 		public static DiagnosticDescriptor ModelNotPartial { get; } = new DiagnosticDescriptor
 		(
-			id: "VL0012",
+			id: "VL0013",
 			title: "Model Not Partial",
 			messageFormat: "Model {0} is not partial.",
 			category: "Generator",
@@ -129,7 +139,7 @@ namespace Valigator.Models.Generator.Analyzers
 
 		public static DiagnosticDescriptor ModelParentNotPartial { get; } = new DiagnosticDescriptor
 		(
-			id: "VL0013",
+			id: "VL0014",
 			title: "Model Parent Not Partial",
 			messageFormat: "Model {0} not partial.",
 			category: "Generator",
@@ -139,7 +149,7 @@ namespace Valigator.Models.Generator.Analyzers
 
 		public static DiagnosticDescriptor ModelAndModelParentNotPartial { get; } = new DiagnosticDescriptor
 		(
-			id: "VL0014",
+			id: "VL0015",
 			title: "Model And Model Parent Not Partial",
 			messageFormat: "Model {0} and {1} are not partial.",
 			category: "Generator",
@@ -149,7 +159,7 @@ namespace Valigator.Models.Generator.Analyzers
 
 		public static DiagnosticDescriptor ModelTypeParameterMismatch { get; } = new DiagnosticDescriptor
 		(
-			id: "VL0015",
+			id: "VL0016",
 			title: "Model Type Parameter Mismatch",
 			messageFormat: "Model type {0} not match model definition type {1}.",
 			category: "Generator",
@@ -159,7 +169,7 @@ namespace Valigator.Models.Generator.Analyzers
 
 		public static DiagnosticDescriptor ModelTypeParameterConstraintMismatch { get; } = new DiagnosticDescriptor
 		(
-			id: "VL0016",
+			id: "VL0017",
 			title: "Model Type Parameter Constraints Mismatch",
 			messageFormat: "Model type constraints do not match model definition type constraints.",
 			category: "Generator",
@@ -169,7 +179,7 @@ namespace Valigator.Models.Generator.Analyzers
 
 		public static DiagnosticDescriptor GenerateModelAttributePropertiesSet { get; } = new DiagnosticDescriptor
 		(
-			id: "VL0017",
+			id: "VL0018",
 			title: "GenerateModelAttribute Properties Set",
 			messageFormat: "Setting GenerateModelAttribute properties outside of attribute usage does not work for Valigator model generator. Use GenerateModelDefaultsAttribute on derived attribute instead.",
 			category: "Generator",

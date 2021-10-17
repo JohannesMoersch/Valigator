@@ -122,6 +122,11 @@ namespace Valigator.Models.Generator.Analyzers.Extensions
 				? $"{namespaceSymbol.ContainingNamespace.GetFullNamespace()}.{namespaceSymbol.Name}"
 				: namespaceSymbol.Name;
 
+		public static IEnumerable<IFieldSymbol> GetFields(this ITypeSymbol typeSymbol)
+			=> typeSymbol
+				.GetMembers()
+				.OfType<IFieldSymbol>();
+
 		public static IEnumerable<IPropertySymbol> GetProperties(this ITypeSymbol typeSymbol)
 			=> typeSymbol
 				.GetMembers()

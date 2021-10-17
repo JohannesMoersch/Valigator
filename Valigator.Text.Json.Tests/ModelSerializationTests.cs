@@ -14,7 +14,6 @@ namespace Valigator.Text.Json.Tests
 		[GenerateModel(DefaultPropertyAccessors = PropertyAccessors.GetAndSet)]
 		public partial class TestModelDefinition
 		{
-			// TODO - Add warning for public property fields
 			public Property<int> Required => Data.Value<int>().Required();
 
 			public Property<Option<int>> RequiredNullable => Data.Value<int>(o => o.Nullable()).Required();
