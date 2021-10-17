@@ -128,7 +128,7 @@ namespace Valigator.Models.Generator.Analyzers
 
 			var modelIsValueType = model?.TypeKind == TypeKind.Struct;
 
-			builder.AppendLine($"{indentation}public {(!modelIsValueType ? "sealed " : String.Empty)}partial {(!modelIsValueType ? "class" : "struct")} {modelName}{definitionType.TypeParameters.ToCSharpGenericParameterCode()} : System.IEquatable<{modelName}{definitionType.TypeParameters.ToCSharpGenericParameterCode()}>");
+			builder.AppendLine($"{indentation}public {(!modelIsValueType ? "sealed " : String.Empty)}partial {(!modelIsValueType ? "class" : "struct")} {modelName}{definitionType.TypeParameters.ToCSharpGenericParameterCode()} : System.IEquatable<{modelName}{definitionType.TypeParameters.ToCSharpGenericParameterCode()}?>");
 
 			var definedConstraints = (model?.GetDeclaringSyntaxReferences(cancellationToken) ?? Enumerable.Empty<TypeDeclarationSyntax>())
 				.SelectMany(s => s.ConstraintClauses)
@@ -265,21 +265,20 @@ namespace Valigator.Models.Generator.Analyzers
 			builder.AppendLine($"{indentation}	}}");
 			builder.AppendLine($"{indentation}	");
 
-			builder.AppendLine($"{indentation}	public override bool Equals(object obj)");
+			builder.AppendLine($"{indentation}	public override bool Equals(object? obj)");
 			builder.AppendLine($"{indentation}		=> obj is {modelName}{definitionType.TypeParameters.ToCSharpGenericParameterCode()} value && Equals(value);");
 			builder.AppendLine($"{indentation}	");
 
-			builder.AppendLine($"{indentation}	public bool Equals({modelName}{definitionType.TypeParameters.ToCSharpGenericParameterCode()} other)");
+			builder.AppendLine($"{indentation}	public bool Equals({modelName}{definitionType.TypeParameters.ToCSharpGenericParameterCode()}? other)");
+			builder.Append($"{indentation}		=> other is {modelName}{definitionType.TypeParameters.ToCSharpGenericParameterCode()}");
 
-			if (!modelIsValueType)
-				builder.Append($"{indentation}		=> other != null");
-			else
-				builder.Append($"{indentation}		=> true");
+			if (properties.Length > 0)
+				builder.Append(" value");
 
 			foreach (var property in properties)
 			{
 				builder.AppendLine($" &&");
-				builder.Append($"{indentation}			{property.Name} == other.{property.Name}");
+				builder.Append($"{indentation}			{property.Name} == value.{property.Name}");
 			}
 
 			builder.AppendLine(";");
