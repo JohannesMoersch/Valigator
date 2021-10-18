@@ -111,6 +111,7 @@ namespace Valigator.Models.Generator.Analyzers
 				.Where(field => !field.IsStatic)
 				.Where(field => field.DeclaredAccessibility == Accessibility.Public)
 				.Select(field => field.GetDeclarationSyntax(cancellationToken))
+				.Where(field => field.Initializer != null)
 				.Where(field => ((VariableDeclarationSyntax)field.Parent).Type.IsModelDefinitionProperty());
 
 		private static void GetTypes(SyntaxNodeAnalysisContext context, out INamedTypeSymbol generateModelAttributeType, out INamedTypeSymbol generateModelDefaultsAttributeType, out INamedTypeSymbol modelPropertyDataType)

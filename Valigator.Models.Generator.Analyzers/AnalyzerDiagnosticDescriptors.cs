@@ -41,7 +41,7 @@ namespace Valigator.Models.Generator.Analyzers
 		(
 			id: "VL0004",
 			title: "Model Definition Field Is Property Type",
-			messageFormat: "Model definition public field is a property type. Did you mean to create a property instead of a field?",
+			messageFormat: "Initialized public field on model definition is of type \"Property<>\". Did you mean to create an expression bodied property instead of a field?",
 			category: "Generator",
 			DiagnosticSeverity.Warning,
 			isEnabledByDefault: true
