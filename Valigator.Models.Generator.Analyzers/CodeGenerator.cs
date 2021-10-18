@@ -90,7 +90,7 @@ namespace Valigator.Models.Generator.Analyzers
 				.Where(property => property.IsEligibleModelDefinitionProperty(cancellationToken))
 				.ToArray();
 
-			var defaultPropertyAccessors = generatedModelAttribute.GetGenerateModelPropertyValue<ExternalConstants.PropertyAccessors>(ExternalConstants.GenerateModelAttribute_DefaultPropertyAccessors_PropertyName, generateModelDefaultsAttributeType);
+			var defaultPropertyAccessors = generatedModelAttribute.GetGenerateModelPropertyValue<ExternalConstants.PropertyAccessors>(ExternalConstants.GenerateModelAttribute_DefaultPropertyAccessors_PropertyName, generateModelDefaultsAttributeType, ExternalConstants.PropertyAccessors.Unset);
 
 			var hasNamespace = !String.IsNullOrEmpty(modelNamespace);
 			var indentation = String.Empty;

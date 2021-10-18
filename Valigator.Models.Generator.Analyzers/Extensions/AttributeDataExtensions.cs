@@ -23,6 +23,9 @@ namespace Valigator.Models.Generator.Analyzers.Extensions
 		}
 
 		public static T GetGenerateModelPropertyValue<T>(this AttributeData attributeData, string propertyName, INamedTypeSymbol generateModelDefaultsAttributeType)
+			=> attributeData.GetGenerateModelPropertyValue<T>(propertyName, generateModelDefaultsAttributeType, default);
+
+		public static T GetGenerateModelPropertyValue<T>(this AttributeData attributeData, string propertyName, INamedTypeSymbol generateModelDefaultsAttributeType, T skipValue)
 		{
 			if (attributeData.TryGetProperty(propertyName, out T value))
 				return value;
@@ -35,7 +38,7 @@ namespace Valigator.Models.Generator.Analyzers.Extensions
 					.GetAttributes()
 					.FirstOrDefault(att => att.AttributeClass.Equals(generateModelDefaultsAttributeType, SymbolEqualityComparer.Default));
 
-				if (defaults != null && defaults.TryGetProperty(propertyName, out value))
+				if (defaults != null && defaults.TryGetProperty(propertyName, out value) && !Equals(value, skipValue))
 					return value;
 
 				attributeClass = attributeClass.BaseType;

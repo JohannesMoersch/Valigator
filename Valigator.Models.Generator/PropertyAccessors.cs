@@ -8,6 +8,7 @@ namespace Valigator
 {
 	public enum PropertyAccessors
 	{
+		Unset = -1,
 		Get = 0,
 		GetAndSet = 1,
 		GetAndInit = 2

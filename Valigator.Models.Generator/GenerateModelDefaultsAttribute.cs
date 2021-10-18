@@ -7,7 +7,7 @@ namespace Valigator
 	[AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
 	public sealed class GenerateModelDefaultsAttribute : Attribute
 	{
-		public PropertyAccessors DefaultPropertyAccessors { get; set; }
+		public PropertyAccessors DefaultPropertyAccessors { get; set; } = PropertyAccessors.Unset;
 
 		public string? ModelNamespace { get; set; }
 

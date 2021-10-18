@@ -22,7 +22,7 @@
 	</ItemGroup>
 	
 	<ItemGroup Condition=" '$(Configuration)'=='Debug' ">
-		<PackageReference Include="Valigator.Models.Generator.Analyzers" Version="2021.290.40039" />
+		<PackageReference Include="Valigator.Models.Generator.Analyzers" Version="2021.290.40438" />
 	</ItemGroup>
 	
 	<ItemGroup>
