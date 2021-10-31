@@ -32,7 +32,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Valigator.Models.Generator.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Valigator.Models.Generator.Analyzers", "Valigator.Models.Generator.Analyzers\Valigator.Models.Generator.Analyzers.csproj", "{503D3176-EE37-4CFE-93F2-B508BBA9CF08}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Valigator.Models.Generator.Analyzers.Tests", "Valigator.Models.Generator.Analyzers.Tests\Valigator.Models.Generator.Analyzers.Tests.csproj", "{662C81AD-38EF-4B10-B069-932B4B4430DC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Valigator.Models.Generator.Analyzers.Tests", "Valigator.Models.Generator.Analyzers.Tests\Valigator.Models.Generator.Analyzers.Tests.csproj", "{662C81AD-38EF-4B10-B069-932B4B4430DC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Valigator.AspNetCore", "Valigator.AspNetCore\Valigator.AspNetCore.csproj", "{E02F8561-3D78-42CB-A83C-A76673DB4987}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Valigator.AspNetCore.TestAPI", "Valigator.AspNetCore.TestAPI\Valigator.AspNetCore.TestAPI.csproj", "{E73578A7-F653-424D-9918-26F0B826613A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -92,6 +96,14 @@ Global
 		{662C81AD-38EF-4B10-B069-932B4B4430DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{662C81AD-38EF-4B10-B069-932B4B4430DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{662C81AD-38EF-4B10-B069-932B4B4430DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E02F8561-3D78-42CB-A83C-A76673DB4987}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E02F8561-3D78-42CB-A83C-A76673DB4987}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E02F8561-3D78-42CB-A83C-A76673DB4987}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E02F8561-3D78-42CB-A83C-A76673DB4987}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E73578A7-F653-424D-9918-26F0B826613A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E73578A7-F653-424D-9918-26F0B826613A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E73578A7-F653-424D-9918-26F0B826613A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E73578A7-F653-424D-9918-26F0B826613A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -104,6 +116,7 @@ Global
 		{1971620E-23DD-4A17-8BE1-62220879DE10} = {137279B6-5BCB-4DBE-BE57-027755F6EF90}
 		{A86BCA52-AC6F-41FB-8978-2062A04C3250} = {137279B6-5BCB-4DBE-BE57-027755F6EF90}
 		{662C81AD-38EF-4B10-B069-932B4B4430DC} = {137279B6-5BCB-4DBE-BE57-027755F6EF90}
+		{E73578A7-F653-424D-9918-26F0B826613A} = {137279B6-5BCB-4DBE-BE57-027755F6EF90}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A6C90724-4F3B-4764-8DD5-1C4CAD083884}

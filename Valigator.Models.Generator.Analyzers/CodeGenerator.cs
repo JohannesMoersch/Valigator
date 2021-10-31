@@ -101,8 +101,6 @@ namespace Valigator.Models.Generator.Analyzers
 
 			builder.AppendLine("#nullable enable");
 			builder.AppendLine();
-			builder.AppendLine("using Valigator.Models;");
-			builder.AppendLine();
 
 			if (hasNamespace)
 			{
@@ -128,7 +126,7 @@ namespace Valigator.Models.Generator.Analyzers
 
 			var modelIsValueType = model?.TypeKind == TypeKind.Struct;
 
-			builder.AppendLine($"{indentation}public {(!modelIsValueType ? "sealed " : String.Empty)}partial {(!modelIsValueType ? "class" : "struct")} {modelName}{definitionType.TypeParameters.ToCSharpGenericParameterCode()} : System.IEquatable<{modelName}{definitionType.TypeParameters.ToCSharpGenericParameterCode()}?>");
+			builder.AppendLine($"{indentation}public {(!modelIsValueType ? "sealed " : String.Empty)}partial {(!modelIsValueType ? "class" : "struct")} {modelName}{definitionType.TypeParameters.ToCSharpGenericParameterCode()} : global::Valigator.IModel, global::System.IEquatable<{modelName}{definitionType.TypeParameters.ToCSharpGenericParameterCode()}{(!modelIsValueType ? "?" : "")}>");
 
 			var definedConstraints = (model?.GetDeclaringSyntaxReferences(cancellationToken) ?? Enumerable.Empty<TypeDeclarationSyntax>())
 				.SelectMany(s => s.ConstraintClauses)
@@ -240,7 +238,7 @@ namespace Valigator.Models.Generator.Analyzers
 				var lowercaseName = $"_{Char.ToLower(property.Name[0])}{property.Name.Substring(1)}";
 
 				builder.AppendLine($"{indentation}		if ({lowercaseName}_State == global::Valigator.Models.ModelPropertyState.Unset)");
-				builder.AppendLine($"{indentation}			{lowercaseName}_Property.CoerceUnset(nameof({property.Name}), ref {lowercaseName}, ref {lowercaseName}_State, ref _errorDictionary);");
+				builder.AppendLine($"{indentation}			global::Valigator.Models.ModelDefinitionPropertyExtensions.CoerceUnset({lowercaseName}_Property, nameof({property.Name}), ref {lowercaseName}, ref {lowercaseName}_State, ref _errorDictionary);");
 				builder.AppendLine($"{indentation}		");
 			}
 
@@ -257,7 +255,7 @@ namespace Valigator.Models.Generator.Analyzers
 				var lowercaseName = $"_{Char.ToLower(property.Name[0])}{property.Name.Substring(1)}";
 
 				builder.AppendLine($"{indentation}		if ({lowercaseName}_State != global::Valigator.Models.ModelPropertyState.CoerceFailed)");
-				builder.AppendLine($"{indentation}			{lowercaseName}_Property.Validate(view, nameof({property.Name}), {lowercaseName}, ref {lowercaseName}_State, ref _errorDictionary);");
+				builder.AppendLine($"{indentation}			global::Valigator.Models.ModelDefinitionPropertyExtensions.Validate({lowercaseName}_Property, view, nameof({property.Name}), {lowercaseName}, ref {lowercaseName}_State, ref _errorDictionary);");
 				builder.AppendLine($"{indentation}		");
 			}
 
@@ -269,16 +267,41 @@ namespace Valigator.Models.Generator.Analyzers
 			builder.AppendLine($"{indentation}		=> obj is {modelName}{definitionType.TypeParameters.ToCSharpGenericParameterCode()} value && Equals(value);");
 			builder.AppendLine($"{indentation}	");
 
-			builder.AppendLine($"{indentation}	public bool Equals({modelName}{definitionType.TypeParameters.ToCSharpGenericParameterCode()}? other)");
-			builder.Append($"{indentation}		=> other is {modelName}{definitionType.TypeParameters.ToCSharpGenericParameterCode()}");
-
-			if (properties.Length > 0)
-				builder.Append(" value");
-
-			foreach (var property in properties)
+			if (modelIsValueType)
 			{
-				builder.AppendLine($" &&");
-				builder.Append($"{indentation}			{property.Name} == value.{property.Name}");
+				builder.AppendLine($"{indentation}	public bool Equals({modelName}{definitionType.TypeParameters.ToCSharpGenericParameterCode()} other)");
+
+				bool first = true;
+
+				foreach (var property in properties)
+				{
+					if (!first)
+					{
+						builder.AppendLine($" &&");
+						builder.Append($"{indentation}		{property.Name} == other.{property.Name}");
+					}
+					else
+						builder.Append($"{indentation}	=> {property.Name} == other.{property.Name}");
+
+					first = false;
+				}
+
+				if (first)
+					builder.Append($"{indentation}	=> true");
+			}
+			else
+			{
+				builder.AppendLine($"{indentation}	public bool Equals({modelName}{definitionType.TypeParameters.ToCSharpGenericParameterCode()}? other)");
+				builder.Append($"{indentation}		=> other is {modelName}{definitionType.TypeParameters.ToCSharpGenericParameterCode()}");
+
+				if (properties.Length > 0)
+					builder.Append(" value");
+
+				foreach (var property in properties)
+				{
+					builder.AppendLine($" &&");
+					builder.Append($"{indentation}			{property.Name} == value.{property.Name}");
+				}
 			}
 
 			builder.AppendLine(";");

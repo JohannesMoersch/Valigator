@@ -42,7 +42,7 @@ namespace Valigator
 		public override int GetHashCode()
 			=> _hasValue && _value != null ? _value.GetHashCode() * 31 : 0;
 
-		public override bool Equals(object obj)
+		public override bool Equals(object? obj)
 			=> obj is Optional<TValue> Nullable && Equals(Nullable);
 
 		public override string ToString()
