@@ -126,6 +126,13 @@ namespace Valigator.Models.Generator.Analyzers
 
 			var modelIsValueType = model?.TypeKind == TypeKind.Struct;
 
+			builder.Append($"{indentation}[global::Valigator.GeneratedFrom(typeof({definitionType.GetFullNameWithNamespace(".", true)}");
+
+			if (definitionType.TypeParameters.Any())
+				builder.AppendLine($"<{Enumerable.Range(0, definitionType.TypeParameters.Length).Select(_ => "").JoinList(",")}>))]");
+			else
+				builder.AppendLine("))]");
+
 			builder.AppendLine($"{indentation}public {(!modelIsValueType ? "sealed " : String.Empty)}partial {(!modelIsValueType ? "class" : "struct")} {modelName}{definitionType.TypeParameters.ToCSharpGenericParameterCode()} : global::Valigator.IModel, global::System.IEquatable<{modelName}{definitionType.TypeParameters.ToCSharpGenericParameterCode()}{(!modelIsValueType ? "?" : "")}>");
 
 			var definedConstraints = (model?.GetDeclaringSyntaxReferences(cancellationToken) ?? Enumerable.Empty<TypeDeclarationSyntax>())
