@@ -31,7 +31,7 @@ namespace Valigator.Text.Json.Tests
 			public Property<Option<int>> DefaultedNullable => Data.Value<int>(o => o.Nullable()).Defaulted(Option.Some(5));
 		}
 
-		public TestModel CreatePopulatedTestModel()
+		private TestModel CreatePopulatedTestModel()
 			=> new TestModel
 			(
 				required: 10,
@@ -43,6 +43,46 @@ namespace Valigator.Text.Json.Tests
 				defaulted: 30,
 				defaultedNullable: Option.Some(35)
 			);
+
+		private string PopulatedTestModelString => JsonHelper
+			.Format
+			(@"
+				{
+					""Required"": 10,
+					""RequiredNullable"": 15,
+					""SetOptional"": 20,
+					""SetOptionalNullable"": 25,
+					""Defaulted"": 30,
+					""DefaultedNullable"": 35
+				}"
+			);
+
+		[Fact]
+		public void PopulatedModelSerializesToStringSuccessfully()
+			=> JsonHelper
+				.Serialize(CreatePopulatedTestModel())
+				.Should()
+				.Be(PopulatedTestModelString);
+
+		[Fact]
+		public void PopulatedModelDeserializesFromStringSuccessfully()
+			=> JsonHelper
+				.Deserialize<TestModel>(PopulatedTestModelString)
+				.Should()
+				.Be(CreatePopulatedTestModel());
+
+		[Fact]
+		public void PopulatedModelDeserializesFromLowercaseStringWhenCaseInsensitiveSuccessfully()
+			=> JsonHelper
+				.Deserialize<TestModel>(PopulatedTestModelString.ToLower(), false)
+				.Should()
+				.Be(CreatePopulatedTestModel());
+
+		[Fact]
+		public void PopulatedModelFailsToDeserializesFromLowercaseStringWhenCaseSensitive()
+			=> JsonHelper
+				.Deserialize<TestModel>(PopulatedTestModelString.ToLower())
+				.Throws(default(DataInvalidException), o => o.Required);
 
 		[Fact]
 		public void PopulatedModelSerializesAndDeserializesSuccessfully()
@@ -74,26 +114,26 @@ namespace Valigator.Text.Json.Tests
 		public class WhenDeserializingEmptyObject
 		{
 			[Fact]
-			public void RequiredShouldBeDefault()
+			public void RequiredShouldThrowException()
 				=> JsonHelper
 					.Deserialize<TestModel>("{}")
 					.Throws(default(DataInvalidException), o => o.Required);
 
 			[Fact]
-			public void RequiredNullableShouldBeNone()
+			public void RequiredNullableThrowException()
 				=> JsonHelper
 					.Deserialize<TestModel>("{}")
 					.Throws(default(DataInvalidException), o => o.RequiredNullable);
 
 			[Fact]
-			public void OptionalShouldBeDefault()
+			public void OptionalShouldBeUnset()
 				=> JsonHelper
 					.Deserialize<TestModel>("{}")
 					.UnsetOptional
 					.AssertUnset();
 
 			[Fact]
-			public void OptionalNullableShouldBeNone()
+			public void OptionalNullableShouldUnset()
 				=> JsonHelper
 					.Deserialize<TestModel>("{}")
 					.UnsetOptionalNullable
@@ -108,7 +148,7 @@ namespace Valigator.Text.Json.Tests
 					.Be(5);
 
 			[Fact]
-			public void DefaultedNullableShouldBeNone()
+			public void DefaultedNullableShouldBeDefault()
 				=> JsonHelper
 					.Deserialize<TestModel>("{}")
 					.DefaultedNullable
