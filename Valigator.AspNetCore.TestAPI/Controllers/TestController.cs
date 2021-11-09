@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace Valigator.AspNetCore.TestAPI.Controllers
 {
 	[ApiController]
-	[Route("[controller]")]
+	[Route("Test")]
 	public class TestController : ControllerBase
 	{
 		[HttpGet]

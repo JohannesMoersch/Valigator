@@ -5,11 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Functional.All" Version="2.7.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(Configuration)'=='Debug' ">
-    <PackageReference Include="Valigator.Models.Generator.Analyzers" Version="2021.304.41425" />
+    <PackageReference Include="Valigator.Models.Generator.Analyzers" Version="2021.312.40120" />
   </ItemGroup>
 
   <ItemGroup>

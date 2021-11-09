@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
@@ -9,6 +9,8 @@
   <ItemGroup>
     <PackageReference Include="FluentAssertions" Version="5.10.3" />
     <PackageReference Include="Functional.All" Version="2.7.0" />
+    <PackageReference Include="Interrogator.Http" Version="0.11.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="5.0.12" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.4" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
@@ -22,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Valigator.Models.Generator.Analyzers\Valigator.Models.Generator.Analyzers.csproj" />
+    <ProjectReference Include="..\Valigator.AspNetCore.TestAPI\Valigator.AspNetCore.TestAPI.csproj" />
   </ItemGroup>
 
 </Project>
