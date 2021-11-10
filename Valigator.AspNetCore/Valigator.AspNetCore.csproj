@@ -1,19 +1,24 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net5.0</TargetFramework>
+		<Title>Valigator.Validators</Title>
+		<Description>This package contains support for Asp.Net Core for Valigator.</Description>
+		<PackageTags>validation</PackageTags>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <FrameworkReference Include="Microsoft.AspNetCore.App" />
-  </ItemGroup>
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Valigator.Core\Valigator.Core.csproj" />
-    <ProjectReference Include="..\Valigator.Models.Generator\Valigator.Models.Generator.csproj" />
-    <ProjectReference Include="..\Valigator.Models\Valigator.Models.csproj" />
-    <ProjectReference Include="..\Valigator.Text.Json\Valigator.Text.Json.csproj" />
-    <ProjectReference Include="..\Valigator.Validators\Valigator.Validators.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Valigator.Core\Valigator.Core.csproj" />
+		<ProjectReference Include="..\Valigator.Models.Generator\Valigator.Models.Generator.csproj" />
+		<ProjectReference Include="..\Valigator.Models\Valigator.Models.csproj" />
+		<ProjectReference Include="..\Valigator.Text.Json\Valigator.Text.Json.csproj" />
+		<ProjectReference Include="..\Valigator.Validators\Valigator.Validators.csproj" />
+	</ItemGroup>
 
 </Project>

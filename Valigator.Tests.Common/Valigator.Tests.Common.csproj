@@ -1,20 +1,22 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<RootNamespace>Valigator</RootNamespace>
-  </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="FluentAssertions" Version="5.10.3" />
-    <PackageReference Include="Functional.All" Version="2.7.0" />
-    <PackageReference Include="xunit" Version="2.4.1" />
-  </ItemGroup>
+		<IsPackable>false</IsPackable>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Valigator.Core\Valigator.Core.csproj" />
-    <ProjectReference Include="..\Valigator.Models\Valigator.Models.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="FluentAssertions" Version="5.10.3" />
+		<PackageReference Include="Functional.All" Version="2.7.0" />
+		<PackageReference Include="xunit" Version="2.4.1" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Valigator.Core\Valigator.Core.csproj" />
+		<ProjectReference Include="..\Valigator.Models\Valigator.Models.csproj" />
+	</ItemGroup>
 
 </Project>
