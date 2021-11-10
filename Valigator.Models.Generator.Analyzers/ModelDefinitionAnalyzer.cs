@@ -262,7 +262,10 @@ namespace Valigator.Models.Generator.Analyzers
 				}
 				else
 				{
-					var modelTypes = types.Select(s => s.FirstOrDefault()).ToArray();
+					var modelTypes = types
+						.Select(s => s.FirstOrDefault())
+						.Zip(typeSymbol.ContainingType?.GetContainingTypeHierarchy() ?? Enumerable.Empty<ITypeSymbol>(), (s1, s2) => !SymbolEqualityComparer.Default.Equals(s1, s2) ? s1 : null)
+						.ToArray();
 
 					CheckForModelOrParentsNotPartialClass(context, classSyntax, modelTypes);
 
