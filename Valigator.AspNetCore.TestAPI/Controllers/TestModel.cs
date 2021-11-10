@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Valigator.AspNetCore.TestAPI.Controllers
 {
-	[GenerateModel]
+	[GenerateModel(Type = ModelType.Struct)]
 	public partial class TestModelDefinition
 	{
 		public Property<int> Required => Data.Value<int>().Required();

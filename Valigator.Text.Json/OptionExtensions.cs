@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Valigator
+namespace Valigator.Text.Json
 {
 	internal static class OptionExtensions
 	{

@@ -160,8 +160,8 @@ namespace Valigator.Models.Generator.Analyzers
 		public static DiagnosticDescriptor ModelTypeParameterMismatch { get; } = new DiagnosticDescriptor
 		(
 			id: "VL0016",
-			title: "Model Type Parameter Mismatch",
-			messageFormat: "Model type {0} not match model definition type {1}.",
+			title: "Model Type Generic Parameter Mismatch",
+			messageFormat: "Model type generic {0} not match model definition type generic {1}.",
 			category: "Generator",
 			DiagnosticSeverity.Error,
 			isEnabledByDefault: true
@@ -170,8 +170,8 @@ namespace Valigator.Models.Generator.Analyzers
 		public static DiagnosticDescriptor ModelTypeParameterConstraintMismatch { get; } = new DiagnosticDescriptor
 		(
 			id: "VL0017",
-			title: "Model Type Parameter Constraints Mismatch",
-			messageFormat: "Model type constraints do not match model definition type constraints.",
+			title: "Model Type Generic Parameter Constraints Mismatch",
+			messageFormat: "Model type generic constraints do not match model definition type generic constraints.",
 			category: "Generator",
 			DiagnosticSeverity.Error,
 			isEnabledByDefault: true

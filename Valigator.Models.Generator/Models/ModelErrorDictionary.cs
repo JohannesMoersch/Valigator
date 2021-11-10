@@ -33,6 +33,11 @@ namespace Valigator.Models
 
 		public IEnumerable<ValidationError[]> Values => _errors?.Values ?? Enumerable.Empty<ValidationError[]>();
 
+		public ModelErrorDictionary(IReadOnlyDictionary<string, ValidationError[]>? errors)
+			=> _errors = errors != null
+				? new Dictionary<string, ValidationError[]>(errors)
+				: null;
+
 		public bool ContainsKey(string key)
 			=> _errors?.ContainsKey(key) ?? false;
 
@@ -77,10 +82,16 @@ namespace Valigator.Models
 		public void Clear()
 			=> _errors = null;
 
+		public ReadOnlyModelErrorDictionary ToReadOnly()
+			=> new ReadOnlyModelErrorDictionary(_errors);
+
 		public IEnumerator<KeyValuePair<string, ValidationError[]>> GetEnumerator()
 			=> _errors?.GetEnumerator() ?? Enumerable.Empty<KeyValuePair<string, ValidationError[]>>().GetEnumerator();
 
 		IEnumerator IEnumerable.GetEnumerator()
 			=> GetEnumerator();
+
+		public static implicit operator ReadOnlyModelErrorDictionary(ModelErrorDictionary modelErrorDictionary)
+			=> modelErrorDictionary.ToReadOnly();
 	}
 }

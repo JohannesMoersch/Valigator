@@ -388,5 +388,21 @@ namespace Valigator.Models.Generator.Tests
 				.Should()
 				.BeEquivalentTo(new KeyValuePair<string, ValidationError[]>("One", ErrorsOne), new KeyValuePair<string, ValidationError[]>("Two", ErrorsTwo));
 		}
+
+		[Fact]
+		public void EditingCloneDoesNotModifyOriginal()
+		{
+			var dictionary = new ModelErrorDictionary();
+
+			dictionary.Add("One", ErrorsOne);
+
+			var clone = dictionary.ToReadOnly().Clone();
+
+			clone.Add("Two", ErrorsTwo);
+
+			dictionary
+				.Should()
+				.NotBeEquivalentTo(clone);
+		}
 	}
 }

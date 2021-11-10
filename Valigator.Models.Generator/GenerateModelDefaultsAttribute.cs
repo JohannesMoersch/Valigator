@@ -9,6 +9,8 @@ namespace Valigator
 	{
 		public PropertyAccessors DefaultPropertyAccessors { get; set; } = PropertyAccessors.Unset;
 
+		public ModelType Type { get; set; }
+
 		public string? ModelNamespace { get; set; }
 
 		public string? ModelParentClasses { get; set; }

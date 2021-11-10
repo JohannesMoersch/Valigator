@@ -8,6 +8,7 @@ namespace Valigator
 {
 	[GenerateModelDefaults(
 		DefaultPropertyAccessors = PropertyAccessors.GetAndInit,
+		Type = ModelType.Auto,
 		ModelNamespace = "${2}",
 		ModelNamespaceCaptureRegex = "((.*)[\\.])?([^\\.]+)",
 		ModelParentClasses = "${3}",
@@ -20,6 +21,8 @@ namespace Valigator
 	{
 		public PropertyAccessors DefaultPropertyAccessors { get; set; }
 
+		public ModelType Type { get; set; }
+
 		public string? ModelNamespace { get; set; }
 
 		public string? ModelParentClasses { get; set; }
@@ -31,7 +34,5 @@ namespace Valigator
 		public string? ModelParentClassesCaptureRegex { get; set; }
 
 		public string? ModelNameCaptureRegex { get; set; }
-
-		public Type? ModelType { get; set; }
 	}
 }

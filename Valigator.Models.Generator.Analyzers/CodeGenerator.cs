@@ -90,7 +90,9 @@ namespace Valigator.Models.Generator.Analyzers
 				.Where(property => property.IsEligibleModelDefinitionProperty(cancellationToken))
 				.ToArray();
 
-			var defaultPropertyAccessors = generatedModelAttribute.GetGenerateModelPropertyValue<ExternalConstants.PropertyAccessors>(ExternalConstants.GenerateModelAttribute_DefaultPropertyAccessors_PropertyName, generateModelDefaultsAttributeType, ExternalConstants.PropertyAccessors.Unset);
+			var defaultPropertyAccessors = generatedModelAttribute.GetGenerateModelPropertyValue(ExternalConstants.GenerateModelAttribute_DefaultPropertyAccessors_PropertyName, generateModelDefaultsAttributeType, ExternalConstants.PropertyAccessors.Unset);
+
+			var modelTypeMode = generatedModelAttribute.GetGenerateModelPropertyValue(ExternalConstants.GenerateModelAttribute_ModelType_PropertyName, generateModelDefaultsAttributeType, ExternalConstants.ModelType.Unset);
 
 			var hasNamespace = !String.IsNullOrEmpty(modelNamespace);
 			var indentation = String.Empty;
@@ -124,7 +126,7 @@ namespace Valigator.Models.Generator.Analyzers
 
 			var model = typeSymbols.Last() as INamedTypeSymbol;
 
-			var modelIsValueType = model?.TypeKind == TypeKind.Struct;
+			var modelIsValueType = (modelTypeMode == ExternalConstants.ModelType.Auto && model?.TypeKind == TypeKind.Struct) || modelTypeMode == ExternalConstants.ModelType.Struct;
 
 			builder.Append($"{indentation}[global::Valigator.GeneratedFrom(typeof({definitionType.GetFullNameWithNamespace(".", true)}");
 

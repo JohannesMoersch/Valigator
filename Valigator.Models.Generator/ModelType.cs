@@ -6,14 +6,17 @@ using System.Threading.Tasks;
 
 namespace Valigator
 {
-	public enum PropertyAccessors
+	public enum ModelType
 	{
 		/// <summary>
 		/// Unset tells the generator to use the parent classes attribute value.
 		/// </summary>
 		Unset = -1,
-		Get = 0,
-		GetAndSet = 1,
-		GetAndInit = 2
+		/// <summary>
+		/// Auto will default to class unless the model has already been manually define as a partial struct.
+		/// </summary>
+		Auto = 0,
+		Class = 1,
+		Struct = 2
 	}
 }

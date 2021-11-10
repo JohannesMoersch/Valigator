@@ -8,7 +8,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace Valigator
+namespace Valigator.Text.Json
 {
 	public class ModelConverterFactory : JsonConverterFactory
 	{
