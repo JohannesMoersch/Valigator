@@ -16,7 +16,7 @@ namespace Valigator.Models.Generator.Analyzers
 
 		public const string GenerateModelAttribute_DefaultPropertyAccessors_PropertyName = "DefaultPropertyAccessors";
 
-		public const string GenerateModelAttribute_ModelType_PropertyName = "Type";
+		public const string GenerateModelAttribute_Type_PropertyName = "Type";
 
 		public const string GenerateModelAttribute_ModelNamespace_PropertyName = "ModelNamespace";
 

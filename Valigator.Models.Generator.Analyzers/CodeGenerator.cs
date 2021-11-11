@@ -92,7 +92,7 @@ namespace Valigator.Models.Generator.Analyzers
 
 			var defaultPropertyAccessors = generatedModelAttribute.GetGenerateModelPropertyValue(ExternalConstants.GenerateModelAttribute_DefaultPropertyAccessors_PropertyName, generateModelDefaultsAttributeType, ExternalConstants.PropertyAccessors.Unset);
 
-			var modelTypeMode = generatedModelAttribute.GetGenerateModelPropertyValue(ExternalConstants.GenerateModelAttribute_ModelType_PropertyName, generateModelDefaultsAttributeType, ExternalConstants.ModelType.Unset);
+			var modelTypeMode = generatedModelAttribute.GetGenerateModelPropertyValue(ExternalConstants.GenerateModelAttribute_Type_PropertyName, generateModelDefaultsAttributeType, ExternalConstants.ModelType.Unset);
 
 			var hasNamespace = !String.IsNullOrEmpty(modelNamespace);
 			var indentation = String.Empty;

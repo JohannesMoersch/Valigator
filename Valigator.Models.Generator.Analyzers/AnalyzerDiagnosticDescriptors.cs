@@ -177,9 +177,19 @@ namespace Valigator.Models.Generator.Analyzers
 			isEnabledByDefault: true
 		);
 
-		public static DiagnosticDescriptor GenerateModelAttributePropertiesSet { get; } = new DiagnosticDescriptor
+		public static DiagnosticDescriptor ModelDefinitionTypeMismatch { get; } = new DiagnosticDescriptor
 		(
 			id: "VL0018",
+			title: "Model Definition Type Mismatch",
+			messageFormat: "Manual implementation is not declared as a {0} as defined by the model definition.",
+			category: "Generator",
+			DiagnosticSeverity.Error,
+			isEnabledByDefault: true
+		);
+
+		public static DiagnosticDescriptor GenerateModelAttributePropertiesSet { get; } = new DiagnosticDescriptor
+		(
+			id: "VL0019",
 			title: "GenerateModelAttribute Properties Set",
 			messageFormat: "Setting GenerateModelAttribute properties outside of attribute usage does not work for Valigator model generator. Use GenerateModelDefaultsAttribute on derived attribute instead.",
 			category: "Generator",
