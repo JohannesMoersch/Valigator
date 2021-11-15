@@ -63,11 +63,17 @@ namespace Valigator.Models.Generator.Analyzers
 
 
 		private static bool TargetModelIsCompatibleWithGeneratedModel(SemanticModel semanticModel, INamedTypeSymbol typeSymbol, string[] modelNamespaceParts, string[] modelParentClasses, string modelName)
-		{
-			var modelSymbol = semanticModel.LookupAllNamespaceAndTypeSymbols(modelNamespaceParts, modelParentClasses.Select(p => (p, 0)).Concat(new[] { (modelName, typeSymbol.TypeParameters.Length)}).ToArray()).Last().OfType<INamedTypeSymbol>();
-
-			return !modelSymbol.Any() || modelSymbol.All(s => s.TypeKind == TypeKind.Class) || modelSymbol.All(s => s.TypeKind == TypeKind.Struct);
-		}
+			=> semanticModel
+				.LookupAllNamespaceAndTypeSymbols<ISymbol>
+				(
+					modelNamespaceParts, 
+					modelParentClasses
+						.Select(p => (p, 0))
+						.Concat(new[] { (modelName, typeSymbol.TypeParameters.Length)})
+						.ToArray()
+				)
+				.Last()
+				.All(s => s is INamedTypeSymbol { TypeKind: TypeKind.Class or TypeKind.Struct });
 
 		private static string GetUniqueFileName(string nameWithoutExtension, HashSet<string> usedNames)
 		{

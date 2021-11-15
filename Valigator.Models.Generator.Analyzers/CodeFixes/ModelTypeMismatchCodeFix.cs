@@ -15,16 +15,16 @@ using Valigator.Models.Generator.Analyzers.Extensions;
 
 namespace Valigator.Models.Generator.Analyzers.CodeFixes
 {
-	[ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(ModelNotClassOrStructCodeFix)), Shared]
-	public class ModelNotClassOrStructCodeFix : CodeFixProvider
-	{
-		public override ImmutableArray<string> FixableDiagnosticIds => ImmutableArray.Create(AnalyzerDiagnosticDescriptors.ModelNotClassOrStruct.Id);
+    [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(ModelTypeMismatchCodeFix)), Shared]
+    public class ModelTypeMismatchCodeFix : CodeFixProvider
+    {
+        public override ImmutableArray<string> FixableDiagnosticIds => ImmutableArray.Create(AnalyzerDiagnosticDescriptors.ModelTypeMismatch.Id);
 
-		public override FixAllProvider GetFixAllProvider()
-			=> WellKnownFixAllProviders.BatchFixer;
+        public override FixAllProvider GetFixAllProvider()
+            => WellKnownFixAllProviders.BatchFixer;
 
-		public override async Task RegisterCodeFixesAsync(CodeFixContext context)
-		{
+        public override async Task RegisterCodeFixesAsync(CodeFixContext context)
+        {
 			var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken);
 
 			var diagnostic = context.Diagnostics.First();
@@ -46,15 +46,15 @@ namespace Valigator.Models.Generator.Analyzers.CodeFixes
 					CodeAction
 						.Create
 						(
-							title: "Make model a class or struct",
-							createChangedSolution: c => MakeParentClassesPartial(context.Document, classSyntax, c),
-							equivalenceKey: "Make model a class or struct"
+							title: "Make model type match definition",
+							createChangedSolution: c => MakeModelTypeMatchDefinition(context.Document, classSyntax, c),
+							equivalenceKey: "Make model type match definition"
 						),
 					diagnostic
 				);
 		}
 
-		private async Task<Solution> MakeParentClassesPartial(Document document, ClassDeclarationSyntax classSyntax, CancellationToken cancellationToken)
+        private async Task<Solution> MakeModelTypeMatchDefinition(Document document, ClassDeclarationSyntax classSyntax, CancellationToken cancellationToken)
 		{
 			var semanticModel = await document.GetSemanticModelAsync(cancellationToken);
 
@@ -81,12 +81,19 @@ namespace Valigator.Models.Generator.Analyzers.CodeFixes
 					.SelectMany(s => s.GetDeclaringSyntaxReferences(cancellationToken))
 					.ToArray() ?? Array.Empty<TypeDeclarationSyntax>();
 
-				var anyClasses = modelSyntax.Any(s => s.Keyword.IsKind(SyntaxKind.ClassKeyword));
-				var anyStructs = modelSyntax.Any(s => s.Keyword.IsKind(SyntaxKind.StructKeyword));
+				var modelTypeMode = generateModelAttribute.GetGenerateModelPropertyValue(ExternalConstants.GenerateModelAttribute_Type_PropertyName, generateModelDefaultsAttributeType, ExternalConstants.ModelType.Unset);
 
-				var newSyntaxRoot = (anyStructs && !anyClasses)
-					? syntaxRoot.ReplaceNodes(modelSyntax.Where(s => !s.Keyword.IsKind(SyntaxKind.StructKeyword)), (_, typeSyntax) => typeSyntax.ToStructDeclarationSyntax())
-					: syntaxRoot.ReplaceNodes(modelSyntax.Where(s => !s.Keyword.IsKind(SyntaxKind.ClassKeyword)), (_, typeSyntax) => typeSyntax.ToClassDeclarationSyntax());
+				var expectedTypeKind = modelTypeMode == ExternalConstants.ModelType.Auto
+					? modelSyntax.Any(s => s.Keyword.IsKind(SyntaxKind.ClassKeyword)) || modelSyntax.Any(s => !s.Keyword.IsKind(SyntaxKind.StructKeyword))
+						? TypeKind.Class
+						: TypeKind.Struct
+					: modelTypeMode == ExternalConstants.ModelType.Struct
+						? TypeKind.Struct
+						: TypeKind.Class;
+
+				var newSyntaxRoot = expectedTypeKind == TypeKind.Class
+					? syntaxRoot.ReplaceNodes(modelSyntax.Where(s => !s.Keyword.IsKind(SyntaxKind.ClassKeyword)), (_, typeSyntax) => typeSyntax.ToClassDeclarationSyntax())
+					: syntaxRoot.ReplaceNodes(modelSyntax.Where(s => !s.Keyword.IsKind(SyntaxKind.StructKeyword)), (_, typeSyntax) => typeSyntax.ToStructDeclarationSyntax());
 
 				return document.Project.Solution.WithDocumentSyntaxRoot(document.Id, newSyntaxRoot);
 			}

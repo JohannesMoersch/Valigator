@@ -30,13 +30,13 @@ namespace Valigator.Models.Generator.Analyzers
 					AnalyzerDiagnosticDescriptors.ModelDefinitionConstructorInaccessible,
 					AnalyzerDiagnosticDescriptors.ModelDefinitionManualBaseClass,
 					AnalyzerDiagnosticDescriptors.ModelDefinitionParentsGenerics,
-					AnalyzerDiagnosticDescriptors.ModelNotClassOrStruct,
+					AnalyzerDiagnosticDescriptors.ModelTypeMismatch,
+					AnalyzerDiagnosticDescriptors.ModelNameConflict,
 					AnalyzerDiagnosticDescriptors.ModelNotPartial,
 					AnalyzerDiagnosticDescriptors.ModelParentNotPartial,
 					AnalyzerDiagnosticDescriptors.ModelAndModelParentNotPartial,
 					AnalyzerDiagnosticDescriptors.ModelTypeParameterMismatch,
-					AnalyzerDiagnosticDescriptors.ModelTypeParameterConstraintMismatch,
-					AnalyzerDiagnosticDescriptors.ModelDefinitionTypeMismatch
+					AnalyzerDiagnosticDescriptors.ModelTypeParameterConstraintMismatch
 				);
 
 		private CodeDomProvider CodeProvider { get; } = CodeDomProvider.CreateProvider("csharp");
@@ -72,7 +72,7 @@ namespace Valigator.Models.Generator.Analyzers
 
 							CheckForGenericParents(context, classSyntax, typeSymbol, out var hasGenericParents);
 
-							CheckForModelOrParentsNotPartialClassOrModelNotClassOrStructOrModelTypeMismatch(context, classSyntax, typeSymbol, generateModelAttribute, generateModelDefaultsAttributeType, isPartial && !hasManuallyDefinedBaseClass && !hasInaccessibleParameterlessConstructor && !hasGenericParents);
+							CheckForModelOrParentsNotPartialClassOrModelTypeMismatchOrModelNotClassOrStruct(context, classSyntax, typeSymbol, generateModelAttribute, generateModelDefaultsAttributeType, isPartial && !hasManuallyDefinedBaseClass && !hasInaccessibleParameterlessConstructor && !hasGenericParents);
 
 							CheckForModelIdentifierIssues(context, classSyntax, typeSymbol, generateModelAttribute, generateModelDefaultsAttributeType);
 
@@ -238,7 +238,7 @@ namespace Valigator.Models.Generator.Analyzers
 			}
 		}
 
-		private void CheckForModelOrParentsNotPartialClassOrModelNotClassOrStructOrModelTypeMismatch(SyntaxNodeAnalysisContext context, ClassDeclarationSyntax classSyntax, INamedTypeSymbol typeSymbol, AttributeData generateModelAttribute, INamedTypeSymbol generateModelDefaultsAttributeType, bool checkTypeConstraints)
+		private void CheckForModelOrParentsNotPartialClassOrModelTypeMismatchOrModelNotClassOrStruct(SyntaxNodeAnalysisContext context, ClassDeclarationSyntax classSyntax, INamedTypeSymbol typeSymbol, AttributeData generateModelAttribute, INamedTypeSymbol generateModelDefaultsAttributeType, bool checkTypeConstraints)
 		{
 			var typeName = typeSymbol.GetFullNameWithNamespace("+", false);
 
@@ -246,7 +246,7 @@ namespace Valigator.Models.Generator.Analyzers
 			{
 				var types = context
 					.SemanticModel
-					.LookupAllNamespaceAndTypeSymbols(modelNamespace, modelParentClasses.Select(p => (p, 0)).Concat(new[] { (modelName, typeSymbol.TypeParameters.Length) }).ToArray())
+					.LookupAllNamespaceAndTypeSymbols<ISymbol>(modelNamespace, modelParentClasses.Select(p => (p, 0)).Concat(new[] { (modelName, typeSymbol.TypeParameters.Length) }).ToArray())
 					.ToArray();
 
 				var modelTypes = types.Last().OfType<INamedTypeSymbol>().ToArray();
@@ -254,46 +254,54 @@ namespace Valigator.Models.Generator.Analyzers
 				var modelTypeMode = generateModelAttribute.GetGenerateModelPropertyValue(ExternalConstants.GenerateModelAttribute_Type_PropertyName, generateModelDefaultsAttributeType, ExternalConstants.ModelType.Unset);
 
 				var expectedTypeKind = modelTypeMode == ExternalConstants.ModelType.Auto
-					? modelTypes.Any(t => t.TypeKind == TypeKind.Class) || modelTypes.All(t => t.TypeKind != TypeKind.Struct)
+					? modelTypes.Any(t => t.TypeKind == TypeKind.Class)
 						? TypeKind.Class
 						: TypeKind.Struct
 					: modelTypeMode == ExternalConstants.ModelType.Struct
 						? TypeKind.Struct
 						: TypeKind.Class;
 
-				if (modelTypes.Any(t => t.TypeKind != expectedTypeKind))
+				bool modelGenerationWillBeSkipped = false;
+
+				if (modelTypes.Where(s => s.TypeKind == TypeKind.Class || s.TypeKind == TypeKind.Struct).Any(t => t.TypeKind != expectedTypeKind))
 				{
 					context
 						.ReportDiagnostic
 						(
 							Diagnostic.Create
 							(
-								AnalyzerDiagnosticDescriptors.ModelDefinitionTypeMismatch,
+								AnalyzerDiagnosticDescriptors.ModelTypeMismatch,
 								Location.Create(classSyntax.SyntaxTree, classSyntax.Identifier.Span),
 								expectedTypeKind == TypeKind.Class ? "class" : "struct"
 							)
 						);
+
+					modelGenerationWillBeSkipped = true;
 				}
 
-				if (modelTypes.Any(s => s.TypeKind != TypeKind.Class && s.TypeKind != TypeKind.Struct))
+				if (types.Last().Any(s => !(s is INamedTypeSymbol symbol) || symbol.TypeKind != TypeKind.Class && symbol.TypeKind != TypeKind.Struct))
 				{
 					context
 						.ReportDiagnostic
 						(
 							Diagnostic.Create
 							(
-								AnalyzerDiagnosticDescriptors.ModelNotClassOrStruct,
-								Location.Create(classSyntax.SyntaxTree, classSyntax.Identifier.Span)
+								AnalyzerDiagnosticDescriptors.ModelNameConflict,
+								Location.Create(classSyntax.SyntaxTree, classSyntax.Identifier.Span),
+								modelTypes.FirstOrDefault()?.GetFullNameWithNamespace(".", false)
 							)
 						);
+
+					modelGenerationWillBeSkipped = true;
 				}
-				else
+				
+				if (!modelGenerationWillBeSkipped)
 				{
 					var modelDefinitionParentTypes = (typeSymbol.ContainingType?.GetContainingTypeHierarchy() ?? Enumerable.Empty<ITypeSymbol>())
 						.Concat(Enumerable.Repeat<INamespaceOrTypeSymbol>(null, types.Length));
 
 					var modelParentTypes = types
-						.Select(s => s.FirstOrDefault())
+						.Select(s => s.OfType<INamespaceOrTypeSymbol>().FirstOrDefault())
 						.Zip(modelDefinitionParentTypes, (s1, s2) => !SymbolEqualityComparer.Default.Equals(s1, s2) ? s1 : null)
 						.ToArray();
 

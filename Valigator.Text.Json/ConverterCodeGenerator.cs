@@ -16,9 +16,9 @@ namespace Valigator.Text.Json
 
 		public delegate void ReadDelegate<T>(ref Utf8JsonReader reader, ref T model, JsonSerializerOptions options);
 
+		private static readonly MethodInfo IsSetMethod;
 		private static readonly MethodInfo WritePropertyNameMethod;
 		private static readonly MethodInfo SerializeMethod;
-		private static readonly MethodInfo IsSetMethod;
 
 		private static readonly MethodInfo DeserializeMethod;
 		private static readonly MethodInfo GetStringMethod;
@@ -26,13 +26,57 @@ namespace Valigator.Text.Json
 
 		static ConverterCodeGenerator()
 		{
-			WritePropertyNameMethod = typeof(Utf8JsonWriter).GetMethods().First(m => m.Name == nameof(Utf8JsonWriter.WritePropertyName) && m.GetParameters()[0].ParameterType == typeof(string));
-			SerializeMethod = typeof(JsonSerializer).GetMethods().First(m => m.Name == nameof(JsonSerializer.Serialize) && m.IsGenericMethod && m.GetParameters().Length == 3);
-			IsSetMethod = typeof(ConverterCodeGenerator).GetMethods(BindingFlags.NonPublic | BindingFlags.Static).First(m => m.Name == nameof(IsSet));
+			IsSetMethod = typeof(ConverterCodeGenerator)
+				.GetMethods(BindingFlags.NonPublic | BindingFlags.Static)
+				.First(m => m.Name == nameof(IsSet));
 
-			DeserializeMethod = typeof(JsonSerializer).GetMethods().First(m => m.Name == nameof(JsonSerializer.Deserialize) && m.IsGenericMethod && m.GetParameters()[0].ParameterType.IsByRef);
-			GetStringMethod = typeof(Utf8JsonReader).GetMethods().First(m => m.Name == nameof(Utf8JsonReader.GetString));
-			ReadMethod = typeof(Utf8JsonReader).GetMethods().First(m => m.Name == nameof(Utf8JsonReader.Read));
+			WritePropertyNameMethod = typeof(Utf8JsonWriter)
+				.GetMethods(BindingFlags.Public | BindingFlags.Instance)
+				.First
+				(
+					m => m.Name == nameof(Utf8JsonWriter.WritePropertyName)
+						&& !m.IsGenericMethod
+						&& m.GetParameters().FirstOrDefault()?.ParameterType == typeof(string)
+				);
+			
+			SerializeMethod = typeof(JsonSerializer)
+				.GetMethods(BindingFlags.Public | BindingFlags.Static)
+				.First(
+					m => m.Name == nameof(JsonSerializer.Serialize) 
+						&& m.IsGenericMethod 
+						&& m.GetParameters()
+							.Select(p => p.ParameterType)
+							.SequenceEqual(new[] { typeof(Utf8JsonWriter), m.GetGenericArguments()[0], typeof(JsonSerializerOptions) })
+				);
+
+			DeserializeMethod = typeof(JsonSerializer)
+				.GetMethods(BindingFlags.Public | BindingFlags.Static)
+				.First
+				(
+					m => m.Name == nameof(JsonSerializer.Deserialize) 
+						&& m.IsGenericMethod 
+						&& m.GetParameters()
+							.Select(p => p.ParameterType)
+							.SequenceEqual(new[] { typeof(Utf8JsonReader).MakeByRefType(), typeof(JsonSerializerOptions) })
+				);
+			
+			GetStringMethod = typeof(Utf8JsonReader)
+				.GetMethods(BindingFlags.Public | BindingFlags.Instance)
+				.First
+				(
+					m => m.Name == nameof(Utf8JsonReader.GetString)
+						&& !m.IsGenericMethod
+						&& m.GetParameters().Length == 0
+				);
+			
+			ReadMethod = typeof(Utf8JsonReader)
+				.GetMethods(BindingFlags.Public | BindingFlags.Instance)
+				.First
+				(
+					m => m.Name == nameof(Utf8JsonReader.Read)
+						&& !m.IsGenericMethod
+						&& m.GetParameters().Length == 0
+				);
 		}
 
 		public static WriteDelegate<T> CreateWriteMethod<T>()

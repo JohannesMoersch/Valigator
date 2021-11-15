@@ -24,7 +24,6 @@ namespace Valigator.AspNetCore.TestAPI.Controllers
 				unsetOptionalNullable: Optional.Unset<Option<int>>(),
 				defaulted: 30,
 				defaultedNullable: Option.Some(35)
-			) with
-			{ Required = 10 } ;
+			);
 	}
 }

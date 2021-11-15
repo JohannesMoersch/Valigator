@@ -117,11 +117,21 @@ namespace Valigator.Models.Generator.Analyzers
 			isEnabledByDefault: true
 		);
 
-		public static DiagnosticDescriptor ModelNotClassOrStruct { get; } = new DiagnosticDescriptor
+		public static DiagnosticDescriptor ModelTypeMismatch { get; } = new DiagnosticDescriptor
 		(
 			id: "VL0012",
-			title: "Model Not Class Or Struct",
-			messageFormat: "Model must be a class or a struct.",
+			title: "Model Type Mismatch",
+			messageFormat: "Manual implementation is not declared as a {0} as defined by the model definition.",
+			category: "Generator",
+			DiagnosticSeverity.Error,
+			isEnabledByDefault: true
+		);
+
+		public static DiagnosticDescriptor ModelNameConflict { get; } = new DiagnosticDescriptor
+		(
+			id: "VL0013",
+			title: "Model Name Conflict",
+			messageFormat: "Another member is conflicting with generated model name \"{0}\".",
 			category: "Generator",
 			DiagnosticSeverity.Error,
 			isEnabledByDefault: true
@@ -129,7 +139,7 @@ namespace Valigator.Models.Generator.Analyzers
 
 		public static DiagnosticDescriptor ModelNotPartial { get; } = new DiagnosticDescriptor
 		(
-			id: "VL0013",
+			id: "VL0014",
 			title: "Model Not Partial",
 			messageFormat: "Model {0} is not partial.",
 			category: "Generator",
@@ -139,7 +149,7 @@ namespace Valigator.Models.Generator.Analyzers
 
 		public static DiagnosticDescriptor ModelParentNotPartial { get; } = new DiagnosticDescriptor
 		(
-			id: "VL0014",
+			id: "VL0015",
 			title: "Model Parent Not Partial",
 			messageFormat: "Model {0} not partial.",
 			category: "Generator",
@@ -149,7 +159,7 @@ namespace Valigator.Models.Generator.Analyzers
 
 		public static DiagnosticDescriptor ModelAndModelParentNotPartial { get; } = new DiagnosticDescriptor
 		(
-			id: "VL0015",
+			id: "VL0016",
 			title: "Model And Model Parent Not Partial",
 			messageFormat: "Model {0} and {1} are not partial.",
 			category: "Generator",
@@ -159,7 +169,7 @@ namespace Valigator.Models.Generator.Analyzers
 
 		public static DiagnosticDescriptor ModelTypeParameterMismatch { get; } = new DiagnosticDescriptor
 		(
-			id: "VL0016",
+			id: "VL0017",
 			title: "Model Type Generic Parameter Mismatch",
 			messageFormat: "Model type generic {0} not match model definition type generic {1}.",
 			category: "Generator",
@@ -169,19 +179,9 @@ namespace Valigator.Models.Generator.Analyzers
 
 		public static DiagnosticDescriptor ModelTypeParameterConstraintMismatch { get; } = new DiagnosticDescriptor
 		(
-			id: "VL0017",
+			id: "VL0018",
 			title: "Model Type Generic Parameter Constraints Mismatch",
 			messageFormat: "Model type generic constraints do not match model definition type generic constraints.",
-			category: "Generator",
-			DiagnosticSeverity.Error,
-			isEnabledByDefault: true
-		);
-
-		public static DiagnosticDescriptor ModelDefinitionTypeMismatch { get; } = new DiagnosticDescriptor
-		(
-			id: "VL0018",
-			title: "Model Definition Type Mismatch",
-			messageFormat: "Manual implementation is not declared as a {0} as defined by the model definition.",
 			category: "Generator",
 			DiagnosticSeverity.Error,
 			isEnabledByDefault: true

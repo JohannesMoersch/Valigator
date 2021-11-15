@@ -9,25 +9,31 @@ namespace Valigator.Models.Generator.Analyzers.Extensions
 {
 	public static class SemanticModelExtensions
 	{
-		public static INamespaceOrTypeSymbol[] LookupNamespaceAndTypeSymbols(this SemanticModel semanticModel, string[] namespaceParts, (string name, int genericCount)[] classes)
+		public static TSymbol[] LookupNamespaceAndTypeSymbols<TSymbol>(this SemanticModel semanticModel, string[] namespaceParts, (string name, int genericCount)[] classes)
 		{
 			var symbols = InternalLookupNamespaceAndTypeSymbols(semanticModel, namespaceParts, classes).ToArray();
 
 			return Enumerable
 				.Range(0, namespaceParts.Length + classes.Length)
-				.Select(i => i < symbols.Length ? symbols[i].OfType<INamespaceOrTypeSymbol>().FirstOrDefault() : null)
+				.Select(i => i < symbols.Length ? symbols[i].OfType<TSymbol>().FirstOrDefault() : default(TSymbol))
+				.ToArray();
+		}
+
+		public static INamespaceOrTypeSymbol[] LookupNamespaceAndTypeSymbols(this SemanticModel semanticModel, string[] namespaceParts, (string name, int genericCount)[] classes)
+			=> semanticModel.LookupNamespaceAndTypeSymbols<INamespaceOrTypeSymbol>(namespaceParts, classes);
+
+		public static TSymbol[][] LookupAllNamespaceAndTypeSymbols<TSymbol>(this SemanticModel semanticModel, string[] namespaceParts, (string name, int genericCount)[] classes)
+		{
+			var symbols = InternalLookupNamespaceAndTypeSymbols(semanticModel, namespaceParts, classes).ToArray();
+
+			return Enumerable
+				.Range(0, namespaceParts.Length + classes.Length)
+				.Select(i => i < symbols.Length ? symbols[i].OfType<TSymbol>().ToArray() : Array.Empty<TSymbol>())
 				.ToArray();
 		}
 
 		public static INamespaceOrTypeSymbol[][] LookupAllNamespaceAndTypeSymbols(this SemanticModel semanticModel, string[] namespaceParts, (string name, int genericCount)[] classes)
-		{
-			var symbols = InternalLookupNamespaceAndTypeSymbols(semanticModel, namespaceParts, classes).ToArray();
-
-			return Enumerable
-				.Range(0, namespaceParts.Length + classes.Length)
-				.Select(i => i < symbols.Length ? symbols[i].OfType<INamespaceOrTypeSymbol>().ToArray() : Array.Empty<INamespaceOrTypeSymbol>())
-				.ToArray();
-		}
+			=> semanticModel.LookupAllNamespaceAndTypeSymbols<INamespaceOrTypeSymbol>(namespaceParts, classes);
 
 		private static IReadOnlyList<ISymbol[]> InternalLookupNamespaceAndTypeSymbols(SemanticModel semanticModel, string[] namespaceParts, (string name, int genericCount)[] classes)
 		{
@@ -39,7 +45,7 @@ namespace Valigator.Models.Generator.Analyzers.Extensions
 			{
 				var matches = parentSymbols
 					.SelectMany(s => semanticModel.LookupSymbols(0, s, symbolName.name))
-					.Where(s => symbolName.genericCount is int count ? s is INamedTypeSymbol type && type.TypeParameters.Length == count : true)
+					.Where(s => symbolName.genericCount is int count && count > 0 ? s is INamedTypeSymbol type && type.TypeParameters.Length == count : true)
 					.ToArray();
 
 				if (!matches.Any())

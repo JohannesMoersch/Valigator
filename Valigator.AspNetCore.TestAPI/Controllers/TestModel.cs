@@ -10,7 +10,7 @@ namespace Valigator.AspNetCore.TestAPI.Controllers
 	public partial class TestModelDefinition
 	{
 		public Property<int> Required => Data.Value<int>().Required();
-		
+
 		public Property<Option<int>> RequiredNullable => Data.Value<int>(o => o.Nullable()).Required();
 
 		public Property<Optional<int>> SetOptional => Data.Value<int>().Optional();
