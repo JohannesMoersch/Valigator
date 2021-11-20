@@ -161,7 +161,7 @@ namespace Valigator.Models.Generator.Analyzers
 			builder.AppendLine($"{indentation}	");
 			builder.AppendLine($"{indentation}	public static {definitionName} ModelDefinition {{ get; }}");
 			builder.AppendLine($"{indentation}	");
-			builder.AppendLine($"{indentation}	private global::Valigator.Models.ModelErrorDictionary _errorDictionary;");
+			builder.AppendLine($"{indentation}	private global::Valigator.Models.ReadOnlyModelErrorDictionary _errorDictionary;");
 			builder.AppendLine($"{indentation}	");
 			builder.AppendLine($"{indentation}	private global::Valigator.Models.ModelState _modelState;");
 
@@ -236,26 +236,31 @@ namespace Valigator.Models.Generator.Analyzers
 			builder.AppendLine($"{indentation}		if (_modelState == global::Valigator.Models.ModelState.Validated)");
 			builder.AppendLine($"{indentation}			_modelState = global::Valigator.Models.ModelState.Unvalidated;");
 			builder.AppendLine($"{indentation}		");
-			builder.AppendLine($"{indentation}		_errorDictionary.Clear();");
+			builder.AppendLine($"{indentation}		_errorDictionary = global::Valigator.Models.ReadOnlyModelErrorDictionary.Empty;");
 			builder.AppendLine($"{indentation}	}}");
 			builder.AppendLine($"{indentation}	");
 			builder.AppendLine($"{indentation}	private void Coerce()");
 			builder.AppendLine($"{indentation}	{{");
+			builder.AppendLine($"{indentation}		var errorDictionary = _errorDictionary.Clone();");
+			builder.AppendLine($"{indentation}		");
 
 			foreach (var property in properties)
 			{
 				var lowercaseName = $"_{Char.ToLower(property.Name[0])}{property.Name.Substring(1)}";
 
 				builder.AppendLine($"{indentation}		if ({lowercaseName}_State == global::Valigator.Models.ModelPropertyState.Unset)");
-				builder.AppendLine($"{indentation}			global::Valigator.Models.ModelDefinitionPropertyExtensions.CoerceUnset({lowercaseName}_Property, nameof({property.Name}), ref {lowercaseName}, ref {lowercaseName}_State, ref _errorDictionary);");
+				builder.AppendLine($"{indentation}			global::Valigator.Models.ModelDefinitionPropertyExtensions.CoerceUnset({lowercaseName}_Property, nameof({property.Name}), ref {lowercaseName}, ref {lowercaseName}_State, ref errorDictionary);");
 				builder.AppendLine($"{indentation}		");
 			}
 
+			builder.AppendLine($"{indentation}		_errorDictionary = errorDictionary;");
 			builder.AppendLine($"{indentation}		_modelState = global::Valigator.Models.ModelState.Unvalidated;");
 			builder.AppendLine($"{indentation}	}}");
 			builder.AppendLine($"{indentation}	");
 			builder.AppendLine($"{indentation}	private void Validate()");
 			builder.AppendLine($"{indentation}	{{");
+			builder.AppendLine($"{indentation}		var errorDictionary = _errorDictionary.Clone();");
+			builder.AppendLine($"{indentation}		");
 			builder.AppendLine($"{indentation}		var view = new ModelView(this);");
 			builder.AppendLine($"{indentation}		");
 
@@ -268,6 +273,7 @@ namespace Valigator.Models.Generator.Analyzers
 				builder.AppendLine($"{indentation}		");
 			}
 
+			builder.AppendLine($"{indentation}		_errorDictionary = errorDictionary;");
 			builder.AppendLine($"{indentation}		_modelState = global::Valigator.Models.ModelState.Validated;");
 			builder.AppendLine($"{indentation}	}}");
 			builder.AppendLine($"{indentation}	");

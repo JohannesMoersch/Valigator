@@ -10,6 +10,8 @@ namespace Valigator.Models
 {
 	public struct ReadOnlyModelErrorDictionary : IReadOnlyDictionary<string, ValidationError[]>
 	{
+		public static ReadOnlyModelErrorDictionary Empty => default(ReadOnlyModelErrorDictionary);
+
 		private IReadOnlyDictionary<string, ValidationError[]>? _errors;
 
 		public ValidationError[] this[string key] => _errors?[key] ?? throw new KeyNotFoundException();
