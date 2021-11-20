@@ -11,7 +11,7 @@ namespace Valigator.Text.Json.Tests
 {
 	public partial class ModelSerializationTests
 	{
-		[GenerateModel]
+		[GenerateModel(Type = ModelType.Struct)]
 		public partial class TestModelDefinition
 		{
 			public Property<int> Required => Data.Value<int>().Required();

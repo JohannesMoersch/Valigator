@@ -23,6 +23,7 @@ namespace Valigator.Text.Json
 		private static readonly MethodInfo DeserializeMethod;
 		private static readonly MethodInfo GetStringMethod;
 		private static readonly MethodInfo ReadMethod;
+		private static readonly MethodInfo ToLowerMethod;
 
 		static ConverterCodeGenerator()
 		{
@@ -74,6 +75,15 @@ namespace Valigator.Text.Json
 				.First
 				(
 					m => m.Name == nameof(Utf8JsonReader.Read)
+						&& !m.IsGenericMethod
+						&& m.GetParameters().Length == 0
+				);
+			
+			ToLowerMethod = typeof(String)
+				.GetMethods(BindingFlags.Public | BindingFlags.Instance)
+				.First
+				(
+					m => m.Name == nameof(String.ToLower)
 						&& !m.IsGenericMethod
 						&& m.GetParameters().Length == 0
 				);
@@ -166,16 +176,20 @@ namespace Valigator.Text.Json
 			var caseSensitiveSwitchExpression = Expression
 				.Switch
 				(
+					typeof(void),
 					propertyNameVariableExpression,
 					Expression.Call(DeserializeMethod.MakeGenericMethod(typeof(object)), readerParameterExpression, optionsParameterExpression),
+					null,
 					caseSensitiveSwitchCases
 				);
 
 			var caseInsensitiveSwitchExpression = Expression
 				.Switch
 				(
-					propertyNameVariableExpression,
+					typeof(void),
+					Expression.Call(propertyNameVariableExpression, ToLowerMethod),
 					Expression.Call(DeserializeMethod.MakeGenericMethod(typeof(object)), readerParameterExpression, optionsParameterExpression),
+					null,
 					caseInsensitiveSwitchCases
 				);
 
@@ -236,8 +250,7 @@ namespace Valigator.Text.Json
 								(
 									Expression.Property(modelParameterExpression, property),
 									Expression.Call(DeserializeMethod.MakeGenericMethod(property.PropertyType), readerParameterExpression, optionsParameterExpression)
-								),
-								Expression.Constant(null, typeof(object))
+								)
 						),
 						Expression.Constant(propertyName, typeof(string))
 				);

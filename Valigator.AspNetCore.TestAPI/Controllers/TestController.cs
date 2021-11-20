@@ -25,5 +25,18 @@ namespace Valigator.AspNetCore.TestAPI.Controllers
 				defaulted: 30,
 				defaultedNullable: Option.Some(35)
 			);
+
+		[HttpPost]
+		public TestModel Post([FromBody] TestModel model)
+			=> model;
+
+		[HttpPost("Mutate")]
+		public TestModel Mutate([FromBody] TestModel model)
+			=> model
+				with
+				{
+					Required = model.Required + 5,
+					Defaulted = model.Defaulted + 5
+				};
 	}
 }
