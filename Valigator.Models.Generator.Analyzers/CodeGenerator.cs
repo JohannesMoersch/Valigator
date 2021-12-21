@@ -269,7 +269,7 @@ namespace Valigator.Models.Generator.Analyzers
 				var lowercaseName = $"_{Char.ToLower(property.Name[0])}{property.Name.Substring(1)}";
 
 				builder.AppendLine($"{indentation}		if ({lowercaseName}_State != global::Valigator.Models.ModelPropertyState.CoerceFailed)");
-				builder.AppendLine($"{indentation}			global::Valigator.Models.ModelDefinitionPropertyExtensions.Validate({lowercaseName}_Property, view, nameof({property.Name}), {lowercaseName}, ref {lowercaseName}_State, ref _errorDictionary);");
+				builder.AppendLine($"{indentation}			global::Valigator.Models.ModelDefinitionPropertyExtensions.Validate({lowercaseName}_Property, view, nameof({property.Name}), {lowercaseName}, ref {lowercaseName}_State, ref errorDictionary);");
 				builder.AppendLine($"{indentation}		");
 			}
 
