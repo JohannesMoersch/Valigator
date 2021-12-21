@@ -73,7 +73,7 @@ namespace Valigator.PropertyFactories
 		public RequiredNullableOptionDictionaryValidationData<TKey, TValue> Required()
 			=> new RequiredNullableOptionDictionaryValidationData<TKey, TValue>(new ValidationData<IReadOnlyDictionary<TKey, Option<TValue>>>());
 
-		public OptionalNullableOptionDictionaryValidationData<TKey, TValue> NullableOptional()
+		public OptionalNullableOptionDictionaryValidationData<TKey, TValue> Optional()
 			=> new OptionalNullableOptionDictionaryValidationData<TKey, TValue>(new ValidationData<IReadOnlyDictionary<TKey, Option<TValue>>>());
 
 		public DefaultedNullableOptionDictionaryValidationData<TKey, TValue> Defaulted(Option<IReadOnlyDictionary<TKey, Option<TValue>>> defaultValue)
