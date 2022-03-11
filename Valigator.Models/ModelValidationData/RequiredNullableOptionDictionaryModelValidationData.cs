@@ -26,14 +26,14 @@ namespace Valigator.ModelValidationData
 		public RequiredNullableOptionDictionaryModelValidationData<TModel, TKey, TValue> WithValidator(IInvertableModelValidator<TModel, IReadOnlyDictionary<TKey, Option<TValue>>> value)
 			=> new RequiredNullableOptionDictionaryModelValidationData<TModel, TKey, TValue>(_validationData.WithValidator(value));
 
-		public override Result<Option<IReadOnlyDictionary<TKey, Option<TValue>>>, ValidationError[]> CoerceUnset()
-			=> Result.Success<Option<IReadOnlyDictionary<TKey, Option<TValue>>>, ValidationError[]>(Option.None<IReadOnlyDictionary<TKey, Option<TValue>>>());
+		public override Result<Option<IReadOnlyDictionary<TKey, Option<TValue>>>, CoercionValidationError[]> CoerceUnset()
+			=> Result.Success<Option<IReadOnlyDictionary<TKey, Option<TValue>>>, CoercionValidationError[]>(Option.None<IReadOnlyDictionary<TKey, Option<TValue>>>());
 
-		public override Result<Option<IReadOnlyDictionary<TKey, Option<TValue>>>, ValidationError[]> CoerceNone()
-			=> Result.Failure<Option<IReadOnlyDictionary<TKey, Option<TValue>>>, ValidationError[]>(new[] { ValidationErrors.UnsetValuesNotAllowed() });
+		public override Result<Option<IReadOnlyDictionary<TKey, Option<TValue>>>, CoercionValidationError[]> CoerceNone()
+			=> Result.Failure<Option<IReadOnlyDictionary<TKey, Option<TValue>>>, CoercionValidationError[]>(new[] { CoercionValidationErrors.UnsetValuesNotAllowed() });
 
-		public Result<Option<IReadOnlyDictionary<TKey, Option<TValue>>>, ValidationError[]> CoerceValue(IReadOnlyDictionary<TKey, Option<TValue>> value)
-			=> Result.Success<Option<IReadOnlyDictionary<TKey, Option<TValue>>>, ValidationError[]>(Option.Some(value));
+		public Result<Option<IReadOnlyDictionary<TKey, Option<TValue>>>, CoercionValidationError[]> CoerceValue(IReadOnlyDictionary<TKey, Option<TValue>> value)
+			=> Result.Success<Option<IReadOnlyDictionary<TKey, Option<TValue>>>, CoercionValidationError[]>(Option.Some(value));
 
 		public override Result<Unit, ValidationError[]> Validate(TModel model, Option<IReadOnlyDictionary<TKey, Option<TValue>>> value)
 		{

@@ -24,12 +24,12 @@ namespace Valigator.ValidationData
 			=> Result.Success<Optional<IReadOnlyDictionary<TKey, TValue>>, ValidationError[]>(Optional.Unset<IReadOnlyDictionary<TKey, TValue>>());
 
 		public override Result<Optional<IReadOnlyDictionary<TKey, TValue>>, ValidationError[]> CoerceNone()
-			=> Result.Failure<Optional<IReadOnlyDictionary<TKey, TValue>>, ValidationError[]>(new[] { ValidationErrors.NullValuesNotAllowed() });
+			=> Result.Failure<Optional<IReadOnlyDictionary<TKey, TValue>>, ValidationError[]>(new[] { CoercionValidationErrors.NullValuesNotAllowed() });
 
 		public Result<Optional<IReadOnlyDictionary<TKey, TValue>>, ValidationError[]> CoerceValue(IReadOnlyDictionary<TKey, Option<TValue>> value)
 			=> value.GetValuesOrNullIndices().TryGetValue(out var values, out var nullIndices)
 				? Result.Success<Optional<IReadOnlyDictionary<TKey, TValue>>, ValidationError[]>(Optional.Set(values))
-				: Result.Failure<Optional<IReadOnlyDictionary<TKey, TValue>>, ValidationError[]>(nullIndices.Select(i => ValidationErrors.NullValueAtKeyIsNotAllowed(i)).ToArray());
+				: Result.Failure<Optional<IReadOnlyDictionary<TKey, TValue>>, ValidationError[]>(nullIndices.Select(i => CoercionValidationErrors.NullValueAtKeyIsNotAllowed(i)).ToArray());
 
 		public override Result<Unit, ValidationError[]> Validate(Optional<IReadOnlyDictionary<TKey, TValue>> value)
 		{

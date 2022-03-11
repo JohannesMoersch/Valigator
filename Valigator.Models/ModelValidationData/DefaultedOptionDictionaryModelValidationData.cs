@@ -31,14 +31,14 @@ namespace Valigator.ModelValidationData
 		public DefaultedOptionDictionaryModelValidationData<TModel, TKey, TValue> WithValidator(IInvertableModelValidator<TModel, IReadOnlyDictionary<TKey, Option<TValue>>> value)
 			=> new DefaultedOptionDictionaryModelValidationData<TModel, TKey, TValue>(_defaultValue, _validationData.WithValidator(value));
 
-		public override Result<IReadOnlyDictionary<TKey, Option<TValue>>, ValidationError[]> CoerceUnset()
-			=> Result.Success<IReadOnlyDictionary<TKey, Option<TValue>>, ValidationError[]>(_defaultValue.Invoke());
+		public override Result<IReadOnlyDictionary<TKey, Option<TValue>>, CoercionValidationError[]> CoerceUnset()
+			=> Result.Success<IReadOnlyDictionary<TKey, Option<TValue>>, CoercionValidationError[]>(_defaultValue.Invoke());
 
-		public override Result<IReadOnlyDictionary<TKey, Option<TValue>>, ValidationError[]> CoerceNone()
-			=> Result.Failure<IReadOnlyDictionary<TKey, Option<TValue>>, ValidationError[]>(new[] { ValidationErrors.NullValuesNotAllowed() });
+		public override Result<IReadOnlyDictionary<TKey, Option<TValue>>, CoercionValidationError[]> CoerceNone()
+			=> Result.Failure<IReadOnlyDictionary<TKey, Option<TValue>>, CoercionValidationError[]>(new[] { CoercionValidationErrors.NullValuesNotAllowed() });
 
-		public Result<IReadOnlyDictionary<TKey, Option<TValue>>, ValidationError[]> CoerceValue(IReadOnlyDictionary<TKey, Option<TValue>> value)
-			=> Result.Success<IReadOnlyDictionary<TKey, Option<TValue>>, ValidationError[]>(value);
+		public Result<IReadOnlyDictionary<TKey, Option<TValue>>, CoercionValidationError[]> CoerceValue(IReadOnlyDictionary<TKey, Option<TValue>> value)
+			=> Result.Success<IReadOnlyDictionary<TKey, Option<TValue>>, CoercionValidationError[]>(value);
 
 		public override Result<Unit, ValidationError[]> Validate(TModel model, IReadOnlyDictionary<TKey, Option<TValue>> value)
 			=> _validationData.Process(ModelValue.Create(model, value));

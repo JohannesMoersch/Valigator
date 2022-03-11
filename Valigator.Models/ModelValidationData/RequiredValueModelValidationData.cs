@@ -25,14 +25,14 @@ namespace Valigator.ModelValidationData
 		public RequiredValueModelValidationData<TModel, TValue> WithValidator(IInvertableModelValidator<TModel, TValue> value)
 			=> new RequiredValueModelValidationData<TModel, TValue>(_validationData.WithValidator(value));
 
-		public override Result<TValue, ValidationError[]> CoerceUnset()
-			=> Result.Failure<TValue, ValidationError[]>(new[] { ValidationErrors.UnsetValuesNotAllowed() });
+		public override Result<TValue, CoercionValidationError[]> CoerceUnset()
+			=> Result.Failure<TValue, CoercionValidationError[]>(new[] { CoercionValidationErrors.UnsetValuesNotAllowed() });
 
-		public override Result<TValue, ValidationError[]> CoerceNone()
-			=> Result.Failure<TValue, ValidationError[]>(new[] { ValidationErrors.NullValuesNotAllowed() });
+		public override Result<TValue, CoercionValidationError[]> CoerceNone()
+			=> Result.Failure<TValue, CoercionValidationError[]>(new[] { CoercionValidationErrors.NullValuesNotAllowed() });
 
-		public Result<TValue, ValidationError[]> CoerceValue(TValue value)
-			=> Result.Success<TValue, ValidationError[]>(value);
+		public Result<TValue, CoercionValidationError[]> CoerceValue(TValue value)
+			=> Result.Success<TValue, CoercionValidationError[]>(value);
 
 		public override Result<Unit, ValidationError[]> Validate(TModel model, TValue value)
 			=> _validationData.Process(ModelValue.Create(model, value));

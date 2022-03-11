@@ -21,7 +21,7 @@ namespace Valigator.ValidationData
 			=> new RequiredNullableCollectionValidationData<TValue>(_validationData.WithValidator(value));
 
 		public override Result<Option<IReadOnlyList<TValue>>, ValidationError[]> CoerceUnset()
-			=> Result.Failure<Option<IReadOnlyList<TValue>>, ValidationError[]>(new[] { ValidationErrors.UnsetValuesNotAllowed() });
+			=> Result.Failure<Option<IReadOnlyList<TValue>>, ValidationError[]>(new[] { CoercionValidationErrors.UnsetValuesNotAllowed() });
 
 		public override Result<Option<IReadOnlyList<TValue>>, ValidationError[]> CoerceNone()
 			=> Result.Success<Option<IReadOnlyList<TValue>>, ValidationError[]>(Option.None<IReadOnlyList<TValue>>());
@@ -29,7 +29,7 @@ namespace Valigator.ValidationData
 		public Result<Option<IReadOnlyList<TValue>>, ValidationError[]> CoerceValue(IReadOnlyList<Option<TValue>> value)
 			=> value.GetValuesOrNullIndices().TryGetValue(out var values, out var nullIndices)
 				? Result.Success<Option<IReadOnlyList<TValue>>, ValidationError[]>(Option.Some(values))
-				: Result.Failure<Option<IReadOnlyList<TValue>>, ValidationError[]>(nullIndices.Select(i => ValidationErrors.NullValueAtIndexIsNotAllowed(i)).ToArray());
+				: Result.Failure<Option<IReadOnlyList<TValue>>, ValidationError[]>(nullIndices.Select(i => CoercionValidationErrors.NullValueAtIndexIsNotAllowed(i)).ToArray());
 
 		public override Result<Unit, ValidationError[]> Validate(Option<IReadOnlyList<TValue>> value)
 		{

@@ -20,10 +20,10 @@ namespace Valigator.ValidationData
 			=> new RequiredValueValidationData<TValue>(_validationData.WithValidator(value));
 
 		public override Result<TValue, ValidationError[]> CoerceUnset()
-			=> Result.Failure<TValue, ValidationError[]>(new[] { ValidationErrors.UnsetValuesNotAllowed() });
+			=> Result.Failure<TValue, ValidationError[]>(new[] { CoercionValidationErrors.UnsetValuesNotAllowed() });
 
 		public override Result<TValue, ValidationError[]> CoerceNone()
-			=> Result.Failure<TValue, ValidationError[]>(new[] { ValidationErrors.NullValuesNotAllowed() });
+			=> Result.Failure<TValue, ValidationError[]>(new[] { CoercionValidationErrors.NullValuesNotAllowed() });
 
 		public Result<TValue, ValidationError[]> CoerceValue(TValue value)
 			=> Result.Success<TValue, ValidationError[]>(value);

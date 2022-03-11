@@ -21,10 +21,10 @@ namespace Valigator.ValidationData
 			=> new RequiredOptionCollectionValidationData<TValue>(_validationData.WithValidator(value));
 
 		public override Result<IReadOnlyList<Option<TValue>>, ValidationError[]> CoerceUnset()
-			=> Result.Failure<IReadOnlyList<Option<TValue>>, ValidationError[]>(new[] { ValidationErrors.UnsetValuesNotAllowed() });
+			=> Result.Failure<IReadOnlyList<Option<TValue>>, ValidationError[]>(new[] { CoercionValidationErrors.UnsetValuesNotAllowed() });
 
 		public override Result<IReadOnlyList<Option<TValue>>, ValidationError[]> CoerceNone()
-			=> Result.Failure<IReadOnlyList<Option<TValue>>, ValidationError[]>(new[] { ValidationErrors.NullValuesNotAllowed() });
+			=> Result.Failure<IReadOnlyList<Option<TValue>>, ValidationError[]>(new[] { CoercionValidationErrors.NullValuesNotAllowed() });
 
 		public Result<IReadOnlyList<Option<TValue>>, ValidationError[]> CoerceValue(IReadOnlyList<Option<TValue>> value)
 			=> Result.Success<IReadOnlyList<Option<TValue>>, ValidationError[]>(value);

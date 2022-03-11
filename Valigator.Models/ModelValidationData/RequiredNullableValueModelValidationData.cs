@@ -25,14 +25,14 @@ namespace Valigator.ModelValidationData
 		public RequiredNullableValueModelValidationData<TModel, TValue> WithValidator(IInvertableModelValidator<TModel, TValue> value)
 			=> new RequiredNullableValueModelValidationData<TModel, TValue>(_validationData.WithValidator(value));
 
-		public override Result<Option<TValue>, ValidationError[]> CoerceUnset()
-			=> Result.Failure<Option<TValue>, ValidationError[]>(new[] { ValidationErrors.UnsetValuesNotAllowed() });
+		public override Result<Option<TValue>, CoercionValidationError[]> CoerceUnset()
+			=> Result.Failure<Option<TValue>, CoercionValidationError[]>(new[] { CoercionValidationErrors.UnsetValuesNotAllowed() });
 
-		public override Result<Option<TValue>, ValidationError[]> CoerceNone()
-			=> Result.Success<Option<TValue>, ValidationError[]>(Option.None<TValue>());
+		public override Result<Option<TValue>, CoercionValidationError[]> CoerceNone()
+			=> Result.Success<Option<TValue>, CoercionValidationError[]>(Option.None<TValue>());
 
-		public Result<Option<TValue>, ValidationError[]> CoerceValue(TValue value)
-			=> Result.Success<Option<TValue>, ValidationError[]>(Option.Some(value));
+		public Result<Option<TValue>, CoercionValidationError[]> CoerceValue(TValue value)
+			=> Result.Success<Option<TValue>, CoercionValidationError[]>(Option.Some(value));
 
 		public override Result<Unit, ValidationError[]> Validate(TModel model, Option<TValue> value)
 		{

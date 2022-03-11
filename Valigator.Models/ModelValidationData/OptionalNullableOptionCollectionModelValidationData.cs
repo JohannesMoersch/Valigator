@@ -26,14 +26,14 @@ namespace Valigator.ModelValidationData
 		public OptionalNullableOptionCollectionModelValidationData<TModel, TValue> WithValidator(IInvertableModelValidator<TModel, IReadOnlyList<Option<TValue>>> value)
 			=> new OptionalNullableOptionCollectionModelValidationData<TModel, TValue>(_validationData.WithValidator(value));
 
-		public override Result<Optional<Option<IReadOnlyList<Option<TValue>>>>, ValidationError[]> CoerceUnset()
-			=> Result.Success<Optional<Option<IReadOnlyList<Option<TValue>>>>, ValidationError[]>(Optional.Unset<Option<IReadOnlyList<Option<TValue>>>>());
+		public override Result<Optional<Option<IReadOnlyList<Option<TValue>>>>, CoercionValidationError[]> CoerceUnset()
+			=> Result.Success<Optional<Option<IReadOnlyList<Option<TValue>>>>, CoercionValidationError[]>(Optional.Unset<Option<IReadOnlyList<Option<TValue>>>>());
 
-		public override Result<Optional<Option<IReadOnlyList<Option<TValue>>>>, ValidationError[]> CoerceNone()
-			=> Result.Success<Optional<Option<IReadOnlyList<Option<TValue>>>>, ValidationError[]>(Optional.Set(Option.None<IReadOnlyList<Option<TValue>>>()));
+		public override Result<Optional<Option<IReadOnlyList<Option<TValue>>>>, CoercionValidationError[]> CoerceNone()
+			=> Result.Success<Optional<Option<IReadOnlyList<Option<TValue>>>>, CoercionValidationError[]>(Optional.Set(Option.None<IReadOnlyList<Option<TValue>>>()));
 
-		public Result<Optional<Option<IReadOnlyList<Option<TValue>>>>, ValidationError[]> CoerceValue(IReadOnlyList<Option<TValue>> value)
-			=> Result.Success<Optional<Option<IReadOnlyList<Option<TValue>>>>, ValidationError[]>(Optional.Set(Option.Some(value)));
+		public Result<Optional<Option<IReadOnlyList<Option<TValue>>>>, CoercionValidationError[]> CoerceValue(IReadOnlyList<Option<TValue>> value)
+			=> Result.Success<Optional<Option<IReadOnlyList<Option<TValue>>>>, CoercionValidationError[]>(Optional.Set(Option.Some(value)));
 
 		public override Result<Unit, ValidationError[]> Validate(TModel model, Optional<Option<IReadOnlyList<Option<TValue>>>> value)
 		{

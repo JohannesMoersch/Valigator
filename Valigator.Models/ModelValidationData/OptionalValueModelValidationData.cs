@@ -25,14 +25,14 @@ namespace Valigator.ModelValidationData
 		public OptionalValueModelValidationData<TModel, TValue> WithValidator(IInvertableModelValidator<TModel, TValue> value)
 			=> new OptionalValueModelValidationData<TModel, TValue>(_validationData.WithValidator(value));
 
-		public override Result<Optional<TValue>, ValidationError[]> CoerceUnset()
-			=> Result.Success<Optional<TValue>, ValidationError[]>(Optional.Unset<TValue>());
+		public override Result<Optional<TValue>, CoercionValidationError[]> CoerceUnset()
+			=> Result.Success<Optional<TValue>, CoercionValidationError[]>(Optional.Unset<TValue>());
 
-		public override Result<Optional<TValue>, ValidationError[]> CoerceNone()
-			=> Result.Failure<Optional<TValue>, ValidationError[]>(new[] { ValidationErrors.NullValuesNotAllowed() });
+		public override Result<Optional<TValue>, CoercionValidationError[]> CoerceNone()
+			=> Result.Failure<Optional<TValue>, CoercionValidationError[]>(new[] { CoercionValidationErrors.NullValuesNotAllowed() });
 
-		public Result<Optional<TValue>, ValidationError[]> CoerceValue(TValue value)
-			=> Result.Success<Optional<TValue>, ValidationError[]>(Optional.Set(value));
+		public Result<Optional<TValue>, CoercionValidationError[]> CoerceValue(TValue value)
+			=> Result.Success<Optional<TValue>, CoercionValidationError[]>(Optional.Set(value));
 
 		public override Result<Unit, ValidationError[]> Validate(TModel model, Optional<TValue> value)
 		{

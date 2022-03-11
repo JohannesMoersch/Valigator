@@ -10,7 +10,7 @@ namespace Valigator
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static class ModelPropertyDataExtensions
 	{
-		public static Result<TValue, ValidationError[]> Coerce<TModel, TInput, TValue>(this IModelPropertyData<TModel, TInput, TValue> propertyData, Optional<Option<TInput>> value)
+		public static Result<TValue, CoercionValidationError[]> Coerce<TModel, TInput, TValue>(this IModelPropertyData<TModel, TInput, TValue> propertyData, Optional<Option<TInput>> value)
 		{
 			if (value.TryGetValue(out var option))
 			{

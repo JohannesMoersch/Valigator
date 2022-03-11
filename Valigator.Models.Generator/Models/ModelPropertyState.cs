@@ -9,9 +9,7 @@ namespace Valigator.Models
 	public enum ModelPropertyState : byte
 	{
 		Unset = default,
-		CoerceFailed,
-		Unvalidated,
-		Invalid,
-		Valid
+		Set,
+		CoerceFailed
 	}
 }

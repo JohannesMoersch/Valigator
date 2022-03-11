@@ -26,14 +26,14 @@ namespace Valigator.ModelValidationData
 		public OptionalOptionDictionaryModelValidationData<TModel, TKey, TValue> WithValidator(IInvertableModelValidator<TModel, IReadOnlyDictionary<TKey, Option<TValue>>> value)
 			=> new OptionalOptionDictionaryModelValidationData<TModel, TKey, TValue>(_validationData.WithValidator(value));
 
-		public override Result<Optional<IReadOnlyDictionary<TKey, Option<TValue>>>, ValidationError[]> CoerceUnset()
-			=> Result.Success<Optional<IReadOnlyDictionary<TKey, Option<TValue>>>, ValidationError[]>(Optional.Unset<IReadOnlyDictionary<TKey, Option<TValue>>>());
+		public override Result<Optional<IReadOnlyDictionary<TKey, Option<TValue>>>, CoercionValidationError[]> CoerceUnset()
+			=> Result.Success<Optional<IReadOnlyDictionary<TKey, Option<TValue>>>, CoercionValidationError[]>(Optional.Unset<IReadOnlyDictionary<TKey, Option<TValue>>>());
 
-		public override Result<Optional<IReadOnlyDictionary<TKey, Option<TValue>>>, ValidationError[]> CoerceNone()
-			=> Result.Failure<Optional<IReadOnlyDictionary<TKey, Option<TValue>>>, ValidationError[]>(new[] { ValidationErrors.NullValuesNotAllowed() });
+		public override Result<Optional<IReadOnlyDictionary<TKey, Option<TValue>>>, CoercionValidationError[]> CoerceNone()
+			=> Result.Failure<Optional<IReadOnlyDictionary<TKey, Option<TValue>>>, CoercionValidationError[]>(new[] { CoercionValidationErrors.NullValuesNotAllowed() });
 
-		public Result<Optional<IReadOnlyDictionary<TKey, Option<TValue>>>, ValidationError[]> CoerceValue(IReadOnlyDictionary<TKey, Option<TValue>> value)
-			=> Result.Success<Optional<IReadOnlyDictionary<TKey, Option<TValue>>>, ValidationError[]>(Optional.Set(value));
+		public Result<Optional<IReadOnlyDictionary<TKey, Option<TValue>>>, CoercionValidationError[]> CoerceValue(IReadOnlyDictionary<TKey, Option<TValue>> value)
+			=> Result.Success<Optional<IReadOnlyDictionary<TKey, Option<TValue>>>, CoercionValidationError[]>(Optional.Set(value));
 
 		public override Result<Unit, ValidationError[]> Validate(TModel model, Optional<IReadOnlyDictionary<TKey, Option<TValue>>> value)
 		{

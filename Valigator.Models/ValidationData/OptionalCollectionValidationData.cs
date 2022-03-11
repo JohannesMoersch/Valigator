@@ -24,12 +24,12 @@ namespace Valigator.ValidationData
 			=> Result.Success<Optional<IReadOnlyList<TValue>>, ValidationError[]>(Optional.Unset<IReadOnlyList<TValue>>());
 
 		public override Result<Optional<IReadOnlyList<TValue>>, ValidationError[]> CoerceNone()
-			=> Result.Failure<Optional<IReadOnlyList<TValue>>, ValidationError[]>(new[] { ValidationErrors.NullValuesNotAllowed() });
+			=> Result.Failure<Optional<IReadOnlyList<TValue>>, ValidationError[]>(new[] { CoercionValidationErrors.NullValuesNotAllowed() });
 
 		public Result<Optional<IReadOnlyList<TValue>>, ValidationError[]> CoerceValue(IReadOnlyList<Option<TValue>> value)
 			=> value.GetValuesOrNullIndices().TryGetValue(out var values, out var nullIndices)
 				? Result.Success<Optional<IReadOnlyList<TValue>>, ValidationError[]>(Optional.Set(values))
-				: Result.Failure<Optional<IReadOnlyList<TValue>>, ValidationError[]>(nullIndices.Select(i => ValidationErrors.NullValueAtIndexIsNotAllowed(i)).ToArray());
+				: Result.Failure<Optional<IReadOnlyList<TValue>>, ValidationError[]>(nullIndices.Select(i => CoercionValidationErrors.NullValueAtIndexIsNotAllowed(i)).ToArray());
 
 		public override Result<Unit, ValidationError[]> Validate(Optional<IReadOnlyList<TValue>> value)
 		{

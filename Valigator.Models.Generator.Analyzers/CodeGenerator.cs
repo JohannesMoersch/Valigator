@@ -161,7 +161,7 @@ namespace Valigator.Models.Generator.Analyzers
 			builder.AppendLine($"{indentation}	");
 			builder.AppendLine($"{indentation}	public static {definitionName} ModelDefinition {{ get; }}");
 			builder.AppendLine($"{indentation}	");
-			builder.AppendLine($"{indentation}	private global::Valigator.Models.ReadOnlyModelErrorDictionary _errorDictionary;");
+			builder.AppendLine($"{indentation}	private global::Valigator.Models.ReadOnlyModelErrorDictionary? _errorDictionary;");
 			builder.AppendLine($"{indentation}	");
 			builder.AppendLine($"{indentation}	private global::Valigator.Models.ModelState _modelState;");
 
@@ -236,7 +236,7 @@ namespace Valigator.Models.Generator.Analyzers
 			builder.AppendLine($"{indentation}		if (_modelState == global::Valigator.Models.ModelState.Validated)");
 			builder.AppendLine($"{indentation}			_modelState = global::Valigator.Models.ModelState.Unvalidated;");
 			builder.AppendLine($"{indentation}		");
-			builder.AppendLine($"{indentation}		_errorDictionary = global::Valigator.Models.ReadOnlyModelErrorDictionary.Empty;");
+			builder.AppendLine($"{indentation}		_errorDictionary = global::Valigator.Models.ReadOnlyModelErrorDictionary.Unvalidated;");
 			builder.AppendLine($"{indentation}	}}");
 			builder.AppendLine($"{indentation}	");
 			builder.AppendLine($"{indentation}	private void Coerce()");

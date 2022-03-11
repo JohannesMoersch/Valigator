@@ -8,15 +8,15 @@ namespace Valigator.Core
 {
 	public interface IModelPropertyData<TModel, TValue>
 	{
-		Result<TValue, ValidationError[]> CoerceUnset();
+		Result<TValue, CoercionValidationError[]> CoerceUnset();
 
-		Result<TValue, ValidationError[]> CoerceNone();
+		Result<TValue, CoercionValidationError[]> CoerceNone();
 
 		Result<Unit, ValidationError[]> Validate(TModel model, TValue value);
 	}
 
 	public interface IModelPropertyData<TModel, TInput, TValue> : IModelPropertyData<TModel, TValue>
 	{
-		Result<TValue, ValidationError[]> CoerceValue(TInput value);
+		Result<TValue, CoercionValidationError[]> CoerceValue(TInput value);
 	}
 }

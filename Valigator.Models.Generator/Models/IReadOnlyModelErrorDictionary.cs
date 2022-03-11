@@ -6,10 +6,7 @@ using System.Threading.Tasks;
 
 namespace Valigator.Models
 {
-	public enum ModelState : byte
+	public interface IReadOnlyModelErrorDictionary : IReadOnlyDictionary<string, ValidationError[]>
 	{
-		Unset,
-		Unvalidated,
-		Validated
 	}
 }

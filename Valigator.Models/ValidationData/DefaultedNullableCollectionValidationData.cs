@@ -35,7 +35,7 @@ namespace Valigator.ValidationData
 		 => value.GetValuesOrNullIndices().TryGetValue(out var values, out var nullIndices)
 			? Result.Success<Option<IReadOnlyList<TValue>>, ValidationError[]>(Option.Some(values))
 					
-			: Result.Failure<Option<IReadOnlyList<TValue>>, ValidationError[]>(nullIndices.Select(i => ValidationErrors.NullValueAtIndexIsNotAllowed(i)).ToArray());
+			: Result.Failure<Option<IReadOnlyList<TValue>>, ValidationError[]>(nullIndices.Select(i => CoercionValidationErrors.NullValueAtIndexIsNotAllowed(i)).ToArray());
 
 		public override Result<Unit, ValidationError[]> Validate(Option<IReadOnlyList<TValue>> value)
 		{

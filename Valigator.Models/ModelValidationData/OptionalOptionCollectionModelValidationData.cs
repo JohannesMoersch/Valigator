@@ -26,14 +26,14 @@ namespace Valigator.ModelValidationData
 		public OptionalOptionCollectionModelValidationData<TModel, TValue> WithValidator(IInvertableModelValidator<TModel, IReadOnlyList<Option<TValue>>> value)
 			=> new OptionalOptionCollectionModelValidationData<TModel, TValue>(_validationData.WithValidator(value));
 
-		public override Result<Optional<IReadOnlyList<Option<TValue>>>, ValidationError[]> CoerceUnset()
-			=> Result.Success<Optional<IReadOnlyList<Option<TValue>>>, ValidationError[]>(Optional.Unset<IReadOnlyList<Option<TValue>>>());
+		public override Result<Optional<IReadOnlyList<Option<TValue>>>, CoercionValidationError[]> CoerceUnset()
+			=> Result.Success<Optional<IReadOnlyList<Option<TValue>>>, CoercionValidationError[]>(Optional.Unset<IReadOnlyList<Option<TValue>>>());
 
-		public override Result<Optional<IReadOnlyList<Option<TValue>>>, ValidationError[]> CoerceNone()
-			=> Result.Failure<Optional<IReadOnlyList<Option<TValue>>>, ValidationError[]>(new[] { ValidationErrors.NullValuesNotAllowed() });
+		public override Result<Optional<IReadOnlyList<Option<TValue>>>, CoercionValidationError[]> CoerceNone()
+			=> Result.Failure<Optional<IReadOnlyList<Option<TValue>>>, CoercionValidationError[]>(new[] { CoercionValidationErrors.NullValuesNotAllowed() });
 
-		public Result<Optional<IReadOnlyList<Option<TValue>>>, ValidationError[]> CoerceValue(IReadOnlyList<Option<TValue>> value)
-			=> Result.Success<Optional<IReadOnlyList<Option<TValue>>>, ValidationError[]>(Optional.Set(value));
+		public Result<Optional<IReadOnlyList<Option<TValue>>>, CoercionValidationError[]> CoerceValue(IReadOnlyList<Option<TValue>> value)
+			=> Result.Success<Optional<IReadOnlyList<Option<TValue>>>, CoercionValidationError[]>(Optional.Set(value));
 
 		public override Result<Unit, ValidationError[]> Validate(TModel model, Optional<IReadOnlyList<Option<TValue>>> value)
 		{

@@ -16,7 +16,7 @@ namespace Valigator.Models.Generator.Tests
 		[Fact]
 		public void AddWhenEmptyIsSuccessful()
 		{
-			var dictionary = new ModelErrorDictionary();
+			var dictionary = new ModelErrorDictionaryBase();
 
 			dictionary.Add("One", ErrorsOne);
 
@@ -28,7 +28,7 @@ namespace Valigator.Models.Generator.Tests
 		[Fact]
 		public void AddWhenNotEmptyIsSuccessful()
 		{
-			var dictionary = new ModelErrorDictionary();
+			var dictionary = new ModelErrorDictionaryBase();
 
 			dictionary.Add("One", ErrorsOne);
 			dictionary.Add("Two", ErrorsTwo);
@@ -45,7 +45,7 @@ namespace Valigator.Models.Generator.Tests
 				(
 					() =>
 					{
-						var dictionary = new ModelErrorDictionary();
+						var dictionary = new ModelErrorDictionaryBase();
 
 						dictionary.Add("One", ErrorsOne);
 						dictionary.Add("One", ErrorsTwo);
@@ -59,7 +59,7 @@ namespace Valigator.Models.Generator.Tests
 				(
 					() =>
 					{
-						var dictionary = new ModelErrorDictionary();
+						var dictionary = new ModelErrorDictionaryBase();
 
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
 						dictionary.Add("One", null);
@@ -70,7 +70,7 @@ namespace Valigator.Models.Generator.Tests
 		[Fact]
 		public void RemoveExistingItemIsSuccessfulAndReturnsTrue()
 		{
-			var dictionary = new ModelErrorDictionary();
+			var dictionary = new ModelErrorDictionaryBase();
 
 			dictionary.Add("One", ErrorsOne);
 			dictionary.Add("Two", ErrorsTwo);
@@ -89,7 +89,7 @@ namespace Valigator.Models.Generator.Tests
 		[Fact]
 		public void RemoveLastExistingItemIsSuccessfulAndReturnsTrue()
 		{
-			var dictionary = new ModelErrorDictionary();
+			var dictionary = new ModelErrorDictionaryBase();
 
 			dictionary.Add("One", ErrorsOne);
 
@@ -107,7 +107,7 @@ namespace Valigator.Models.Generator.Tests
 		[Fact]
 		public void RemoveMissingItemReturnsFalse()
 		{
-			var dictionary = new ModelErrorDictionary();
+			var dictionary = new ModelErrorDictionaryBase();
 
 			dictionary.Add("One", ErrorsOne);
 
@@ -120,7 +120,7 @@ namespace Valigator.Models.Generator.Tests
 		[Fact]
 		public void RemoveWhenEmptyReturnsFalse()
 		{
-			var dictionary = new ModelErrorDictionary();
+			var dictionary = new ModelErrorDictionaryBase();
 
 			dictionary
 				.Remove("One")
@@ -131,7 +131,7 @@ namespace Valigator.Models.Generator.Tests
 		[Fact]
 		public void SetNewItemWhenEmptyIsSuccessful()
 		{
-			var dictionary = new ModelErrorDictionary();
+			var dictionary = new ModelErrorDictionaryBase();
 
 			dictionary["One"] = ErrorsOne;
 
@@ -143,7 +143,7 @@ namespace Valigator.Models.Generator.Tests
 		[Fact]
 		public void SetNewItemWhenNotEmptyIsSuccessful()
 		{
-			var dictionary = new ModelErrorDictionary();
+			var dictionary = new ModelErrorDictionaryBase();
 
 			dictionary.Add("One", ErrorsOne);
 
@@ -157,7 +157,7 @@ namespace Valigator.Models.Generator.Tests
 		[Fact]
 		public void SetExistingItemIsSuccessful()
 		{
-			var dictionary = new ModelErrorDictionary();
+			var dictionary = new ModelErrorDictionaryBase();
 
 			dictionary.Add("One", ErrorsOne);
 
@@ -175,7 +175,7 @@ namespace Valigator.Models.Generator.Tests
 				(
 					() =>
 					{
-						var dictionary = new ModelErrorDictionary();
+						var dictionary = new ModelErrorDictionaryBase();
 
 #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
 						dictionary["One"] = null;
@@ -186,7 +186,7 @@ namespace Valigator.Models.Generator.Tests
 		[Fact]
 		public void ClearWhenEmptyIsSuccessful()
 		{
-			var dictionary = new ModelErrorDictionary();
+			var dictionary = new ModelErrorDictionaryBase();
 
 			dictionary.Clear();
 
@@ -199,7 +199,7 @@ namespace Valigator.Models.Generator.Tests
 		[Fact]
 		public void ClearWhenNotEmptyIsSuccessful()
 		{
-			var dictionary = new ModelErrorDictionary();
+			var dictionary = new ModelErrorDictionaryBase();
 
 			dictionary.Add("One", ErrorsOne);
 			dictionary.Add("Two", ErrorsTwo);
@@ -215,7 +215,7 @@ namespace Valigator.Models.Generator.Tests
 		[Fact]
 		public void TryGetValueForExistingItemIsSuccessfulReturnsTrue()
 		{
-			var dictionary = new ModelErrorDictionary();
+			var dictionary = new ModelErrorDictionaryBase();
 
 			dictionary.Add("One", ErrorsOne);
 
@@ -232,7 +232,7 @@ namespace Valigator.Models.Generator.Tests
 		[Fact]
 		public void TryGetValueForMissingItemReturnsFalse()
 		{
-			var dictionary = new ModelErrorDictionary();
+			var dictionary = new ModelErrorDictionaryBase();
 
 			dictionary.Add("One", ErrorsOne);
 
@@ -245,7 +245,7 @@ namespace Valigator.Models.Generator.Tests
 		[Fact]
 		public void TryGetValueWhenEmptyReturnsFalse()
 		{
-			var dictionary = new ModelErrorDictionary();
+			var dictionary = new ModelErrorDictionaryBase();
 
 			dictionary
 				.TryGetValue("One", out _)
@@ -256,7 +256,7 @@ namespace Valigator.Models.Generator.Tests
 		[Fact]
 		public void CountWhenEmptyIsZero()
 		{
-			var dictionary = new ModelErrorDictionary();
+			var dictionary = new ModelErrorDictionaryBase();
 
 			dictionary
 				.Count
@@ -267,7 +267,7 @@ namespace Valigator.Models.Generator.Tests
 		[Fact]
 		public void CountWhenNotEmptyIsSuccessful()
 		{
-			var dictionary = new ModelErrorDictionary();
+			var dictionary = new ModelErrorDictionaryBase();
 
 			dictionary.Add("One", ErrorsOne);
 			dictionary.Add("Two", ErrorsTwo);
@@ -281,7 +281,7 @@ namespace Valigator.Models.Generator.Tests
 		[Fact]
 		public void KeysWhenEmptyIsSuccessful()
 		{
-			var dictionary = new ModelErrorDictionary();
+			var dictionary = new ModelErrorDictionaryBase();
 
 			dictionary
 				.Keys
@@ -292,7 +292,7 @@ namespace Valigator.Models.Generator.Tests
 		[Fact]
 		public void KeysWhenNotEmptyIsSuccessful()
 		{
-			var dictionary = new ModelErrorDictionary();
+			var dictionary = new ModelErrorDictionaryBase();
 
 			dictionary.Add("One", ErrorsOne);
 			dictionary.Add("Two", ErrorsTwo);
@@ -306,7 +306,7 @@ namespace Valigator.Models.Generator.Tests
 		[Fact]
 		public void ValuesWhenEmptyIsSuccessful()
 		{
-			var dictionary = new ModelErrorDictionary();
+			var dictionary = new ModelErrorDictionaryBase();
 
 			dictionary
 				.Values
@@ -317,7 +317,7 @@ namespace Valigator.Models.Generator.Tests
 		[Fact]
 		public void ValuesWhenNotEmptyIsSuccessful()
 		{
-			var dictionary = new ModelErrorDictionary();
+			var dictionary = new ModelErrorDictionaryBase();
 
 			dictionary.Add("One", ErrorsOne);
 			dictionary.Add("Two", ErrorsTwo);
@@ -331,7 +331,7 @@ namespace Valigator.Models.Generator.Tests
 		[Fact]
 		public void ContainsKeyWhenEmptyReturnFalse()
 		{
-			var dictionary = new ModelErrorDictionary();
+			var dictionary = new ModelErrorDictionaryBase();
 
 			dictionary
 				.ContainsKey("One")
@@ -342,7 +342,7 @@ namespace Valigator.Models.Generator.Tests
 		[Fact]
 		public void ContainsKeyForExistingItemReturnsTrue()
 		{
-			var dictionary = new ModelErrorDictionary();
+			var dictionary = new ModelErrorDictionaryBase();
 
 			dictionary.Add("One", ErrorsOne);
 
@@ -355,7 +355,7 @@ namespace Valigator.Models.Generator.Tests
 		[Fact]
 		public void ContainsKeyForMissingItemReturnsFalse()
 		{
-			var dictionary = new ModelErrorDictionary();
+			var dictionary = new ModelErrorDictionaryBase();
 
 			dictionary.Add("One", ErrorsOne);
 
@@ -368,7 +368,7 @@ namespace Valigator.Models.Generator.Tests
 		[Fact]
 		public void GetEnumeratorWhenEmptyIsSuccessful()
 		{
-			var dictionary = new ModelErrorDictionary();
+			var dictionary = new ModelErrorDictionaryBase();
 
 
 			dictionary
@@ -379,7 +379,7 @@ namespace Valigator.Models.Generator.Tests
 		[Fact]
 		public void GetEnumeratorWhenNotEmptyIsSuccessful()
 		{
-			var dictionary = new ModelErrorDictionary();
+			var dictionary = new ModelErrorDictionaryBase();
 
 			dictionary.Add("One", ErrorsOne);
 			dictionary.Add("Two", ErrorsTwo);
@@ -392,7 +392,7 @@ namespace Valigator.Models.Generator.Tests
 		[Fact]
 		public void EditingCloneDoesNotModifyOriginal()
 		{
-			var dictionary = new ModelErrorDictionary();
+			var dictionary = new ModelErrorDictionaryBase();
 
 			dictionary.Add("One", ErrorsOne);
 

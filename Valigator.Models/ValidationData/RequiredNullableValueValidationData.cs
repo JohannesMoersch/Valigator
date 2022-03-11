@@ -20,7 +20,7 @@ namespace Valigator.ValidationData
 			=> new RequiredNullableValueValidationData<TValue>(_validationData.WithValidator(value));
 
 		public override Result<Option<TValue>, ValidationError[]> CoerceUnset()
-			=> Result.Failure<Option<TValue>, ValidationError[]>(new[] { ValidationErrors.UnsetValuesNotAllowed() });
+			=> Result.Failure<Option<TValue>, ValidationError[]>(new[] { CoercionValidationErrors.UnsetValuesNotAllowed() });
 
 		public override Result<Option<TValue>, ValidationError[]> CoerceNone()
 			=> Result.Success<Option<TValue>, ValidationError[]>(Option.None<TValue>());

@@ -26,16 +26,16 @@ namespace Valigator.ModelValidationData
 		public OptionalDictionaryModelValidationData<TModel, TKey, TValue> WithValidator(IInvertableModelValidator<TModel, IReadOnlyDictionary<TKey, TValue>> value)
 			=> new OptionalDictionaryModelValidationData<TModel, TKey, TValue>(_validationData.WithValidator(value));
 
-		public override Result<Optional<IReadOnlyDictionary<TKey, TValue>>, ValidationError[]> CoerceUnset()
-			=> Result.Success<Optional<IReadOnlyDictionary<TKey, TValue>>, ValidationError[]>(Optional.Unset<IReadOnlyDictionary<TKey, TValue>>());
+		public override Result<Optional<IReadOnlyDictionary<TKey, TValue>>, CoercionValidationError[]> CoerceUnset()
+			=> Result.Success<Optional<IReadOnlyDictionary<TKey, TValue>>, CoercionValidationError[]>(Optional.Unset<IReadOnlyDictionary<TKey, TValue>>());
 
-		public override Result<Optional<IReadOnlyDictionary<TKey, TValue>>, ValidationError[]> CoerceNone()
-			=> Result.Failure<Optional<IReadOnlyDictionary<TKey, TValue>>, ValidationError[]>(new[] { ValidationErrors.NullValuesNotAllowed() });
+		public override Result<Optional<IReadOnlyDictionary<TKey, TValue>>, CoercionValidationError[]> CoerceNone()
+			=> Result.Failure<Optional<IReadOnlyDictionary<TKey, TValue>>, CoercionValidationError[]>(new[] { CoercionValidationErrors.NullValuesNotAllowed() });
 
-		public Result<Optional<IReadOnlyDictionary<TKey, TValue>>, ValidationError[]> CoerceValue(IReadOnlyDictionary<TKey, Option<TValue>> value)
+		public Result<Optional<IReadOnlyDictionary<TKey, TValue>>, CoercionValidationError[]> CoerceValue(IReadOnlyDictionary<TKey, Option<TValue>> value)
 			=> value.GetValuesOrNullIndices().TryGetValue(out var values, out var nullIndices)
-				? Result.Success<Optional<IReadOnlyDictionary<TKey, TValue>>, ValidationError[]>(Optional.Set(values))
-				: Result.Failure<Optional<IReadOnlyDictionary<TKey, TValue>>, ValidationError[]>(nullIndices.Select(i => ValidationErrors.NullValueAtKeyIsNotAllowed(i)).ToArray());
+				? Result.Success<Optional<IReadOnlyDictionary<TKey, TValue>>, CoercionValidationError[]>(Optional.Set(values))
+				: Result.Failure<Optional<IReadOnlyDictionary<TKey, TValue>>, CoercionValidationError[]>(nullIndices.Select(i => CoercionValidationErrors.NullValueAtKeyIsNotAllowed(i)).ToArray());
 
 		public override Result<Unit, ValidationError[]> Validate(TModel model, Optional<IReadOnlyDictionary<TKey, TValue>> value)
 		{

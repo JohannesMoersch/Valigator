@@ -31,14 +31,14 @@ namespace Valigator.ModelValidationData
 		public DefaultedNullableOptionDictionaryModelValidationData<TModel, TKey, TValue> WithValidator(IInvertableModelValidator<TModel, IReadOnlyDictionary<TKey, Option<TValue>>> value)
 			=> new DefaultedNullableOptionDictionaryModelValidationData<TModel, TKey, TValue>(_defaultValue, _validationData.WithValidator(value));
 
-		public override Result<Option<IReadOnlyDictionary<TKey, Option<TValue>>>, ValidationError[]> CoerceUnset()
-			=> Result.Success<Option<IReadOnlyDictionary<TKey, Option<TValue>>>, ValidationError[]>(_defaultValue.Invoke());
+		public override Result<Option<IReadOnlyDictionary<TKey, Option<TValue>>>, CoercionValidationError[]> CoerceUnset()
+			=> Result.Success<Option<IReadOnlyDictionary<TKey, Option<TValue>>>, CoercionValidationError[]>(_defaultValue.Invoke());
 
-		public override Result<Option<IReadOnlyDictionary<TKey, Option<TValue>>>, ValidationError[]> CoerceNone()
-			=> Result.Success<Option<IReadOnlyDictionary<TKey, Option<TValue>>>, ValidationError[]>(Option.None<IReadOnlyDictionary<TKey, Option<TValue>>>());
+		public override Result<Option<IReadOnlyDictionary<TKey, Option<TValue>>>, CoercionValidationError[]> CoerceNone()
+			=> Result.Success<Option<IReadOnlyDictionary<TKey, Option<TValue>>>, CoercionValidationError[]>(Option.None<IReadOnlyDictionary<TKey, Option<TValue>>>());
 
-		public Result<Option<IReadOnlyDictionary<TKey, Option<TValue>>>, ValidationError[]> CoerceValue(IReadOnlyDictionary<TKey, Option<TValue>> value)
-			=> Result.Success<Option<IReadOnlyDictionary<TKey, Option<TValue>>>, ValidationError[]>(Option.Some(value));
+		public Result<Option<IReadOnlyDictionary<TKey, Option<TValue>>>, CoercionValidationError[]> CoerceValue(IReadOnlyDictionary<TKey, Option<TValue>> value)
+			=> Result.Success<Option<IReadOnlyDictionary<TKey, Option<TValue>>>, CoercionValidationError[]>(Option.Some(value));
 
 		public override Result<Unit, ValidationError[]> Validate(TModel model, Option<IReadOnlyDictionary<TKey, Option<TValue>>> value)
 		{

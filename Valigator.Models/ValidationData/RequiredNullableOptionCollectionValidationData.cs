@@ -21,7 +21,7 @@ namespace Valigator.ValidationData
 			=> new RequiredNullableOptionCollectionValidationData<TValue>(_validationData.WithValidator(value));
 
 		public override Result<Option<IReadOnlyList<Option<TValue>>>, ValidationError[]> CoerceUnset()
-			=> Result.Failure<Option<IReadOnlyList<Option<TValue>>>, ValidationError[]>(new[] { ValidationErrors.UnsetValuesNotAllowed() });
+			=> Result.Failure<Option<IReadOnlyList<Option<TValue>>>, ValidationError[]>(new[] { CoercionValidationErrors.UnsetValuesNotAllowed() });
 
 		public override Result<Option<IReadOnlyList<Option<TValue>>>, ValidationError[]> CoerceNone()
 			=> Result.Success<Option<IReadOnlyList<Option<TValue>>>, ValidationError[]>(Option.None<IReadOnlyList<Option<TValue>>>());

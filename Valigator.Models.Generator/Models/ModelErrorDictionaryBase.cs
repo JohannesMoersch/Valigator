@@ -8,9 +8,15 @@ using System.Threading.Tasks;
 
 namespace Valigator.Models
 {
-	public struct ModelErrorDictionary : IReadOnlyDictionary<string, ValidationError[]>
+	public class ModelErrorDictionaryBase : IReadOnlyModelErrorDictionary
 	{
-		private Dictionary<string, ValidationError[]>? _errors;
+		public static IReadOnlyModelErrorDictionary? Uncoerced { get; } = null;
+
+		public static IReadOnlyModelErrorDictionary? Unvalidated { get; } = new ModelErrorDictionaryBase(null);
+
+		public static IReadOnlyModelErrorDictionary? Valid { get; } = new ModelErrorDictionaryBase(null);
+
+		protected Dictionary<string, ValidationError[]>? _errors;
 
 		public ValidationError[] this[string key] 
 		{
@@ -33,7 +39,9 @@ namespace Valigator.Models
 
 		public IEnumerable<ValidationError[]> Values => _errors?.Values ?? Enumerable.Empty<ValidationError[]>();
 
-		public ModelErrorDictionary(IReadOnlyDictionary<string, ValidationError[]>? errors)
+		public ModelErrorDictionaryBase() { }
+
+		public ModelErrorDictionaryBase(IReadOnlyDictionary<string, ValidationError[]>? errors)
 			=> _errors = errors != null
 				? new Dictionary<string, ValidationError[]>(errors)
 				: null;
@@ -82,16 +90,10 @@ namespace Valigator.Models
 		public void Clear()
 			=> _errors = null;
 
-		public ReadOnlyModelErrorDictionary ToReadOnly()
-			=> new ReadOnlyModelErrorDictionary(_errors);
-
 		public IEnumerator<KeyValuePair<string, ValidationError[]>> GetEnumerator()
 			=> _errors?.GetEnumerator() ?? Enumerable.Empty<KeyValuePair<string, ValidationError[]>>().GetEnumerator();
 
 		IEnumerator IEnumerable.GetEnumerator()
 			=> GetEnumerator();
-
-		public static implicit operator ReadOnlyModelErrorDictionary(ModelErrorDictionary modelErrorDictionary)
-			=> modelErrorDictionary.ToReadOnly();
 	}
 }

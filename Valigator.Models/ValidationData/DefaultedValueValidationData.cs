@@ -29,7 +29,7 @@ namespace Valigator.ValidationData
 			=> Result.Success<TValue, ValidationError[]>(_defaultValue.Invoke());
 
 		public override Result<TValue, ValidationError[]> CoerceNone()
-			=> Result.Failure<TValue, ValidationError[]>(new[] { ValidationErrors.NullValuesNotAllowed() });
+			=> Result.Failure<TValue, ValidationError[]>(new[] { CoercionValidationErrors.NullValuesNotAllowed() });
 
 		public Result<TValue, ValidationError[]> CoerceValue(TValue value)
 			=> Result.Success<TValue, ValidationError[]>(value);
